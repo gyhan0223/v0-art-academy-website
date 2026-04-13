@@ -10,8 +10,8 @@ const notoSansKR = Noto_Sans_KR({
 })
 
 export const metadata: Metadata = {
-  title: '모두다른고양이 미술학원 일산점 | 최상위권 미대 입시 전문',
-  description: '기초 소양과 최상위권 미대 입시에 특화된 모두다른고양이 미술학원 일산점. 체계적인 커리큘럼과 1:1 맞춤형 진학 컨설팅으로 최고의 결과를 만들어 드립니다.',
+  title: '모두다른고양이 미술학원 | 생각의 구조를 설계합니다',
+  description: '단순한 기술 훈련이 아닌, 창의적 사고의 본질을 탐구합니다. 서울대, 홍익대 등 최상위권 미대 합격을 위한 맞춤형 미술 교육.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -38,8 +38,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" className={`${notoSansKR.variable} bg-background`}>
-      <body className="font-sans antialiased">
+    <html lang="ko" className={`${notoSansKR.variable}`}>
+      <body className="font-sans antialiased bg-background text-foreground">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

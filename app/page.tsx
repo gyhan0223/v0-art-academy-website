@@ -1,23 +1,15 @@
-import Header from "@/components/academy/Header"
-import HeroSection from "@/components/academy/HeroSection"
-import FeaturesSection from "@/components/academy/FeaturesSection"
-import GallerySection from "@/components/academy/GallerySection"
-import LocationSection from "@/components/academy/LocationSection"
-import ContactSection from "@/components/academy/ContactSection"
-import Footer from "@/components/academy/Footer"
-import KakaoFAB from "@/components/academy/KakaoFAB"
+import Scene1 from "@/components/cinematic/Scene1"
+import Scene2 from "@/components/cinematic/Scene2"
+import Scene3 from "@/components/cinematic/Scene3"
+import Scene4 from "@/components/cinematic/Scene4"
 
 export default function Page() {
   return (
-    <main className="min-h-screen max-w-md mx-auto relative">
-      <Header />
-      <HeroSection />
-      <FeaturesSection />
-      <GallerySection />
-      <LocationSection />
-      <ContactSection />
-      <Footer />
-      <KakaoFAB />
+    <main className="bg-background text-foreground overflow-x-hidden">
+      <Scene1 />
+      <Scene2 />
+      <Scene3 />
+      <Scene4 />
     </main>
   )
 }

@@ -40,18 +40,19 @@ function ProgressIndicator({
   index: number
   total: number
 }) {
+  const startRange = index / total
+  const endRange = (index + 1) / total
   const segmentProgress = useTransform(
     scrollYProgress,
-    [(index * 1) / total, ((index + 1) * 1) / total],
+    [startRange, endRange],
     [0, 1]
   )
-  const height = useTransform(segmentProgress, [0, 1], ["0%", "100%"])
 
   return (
     <div className="w-1 h-8 bg-muted rounded-full overflow-hidden">
       <motion.div
-        className="w-full bg-primary rounded-full"
-        style={{ height }}
+        className="w-full bg-primary rounded-full origin-top"
+        style={{ scaleY: segmentProgress }}
       />
     </div>
   )
@@ -64,14 +65,15 @@ export default function Scene3() {
     offset: ["start start", "end end"],
   })
 
+  // Horizontal scroll: move from 0% to -300% (4 cards, showing 1 at a time)
   const x = useTransform(
     scrollYProgress,
     [0, 1],
-    ["0%", `-${(features.length - 1) * 100}%`]
+    ["0%", "-300%"]
   )
 
   return (
-    <section ref={containerRef} className="relative h-[400vh] bg-background">
+    <section ref={containerRef} className="relative h-[300vh] bg-background">
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* Section header */}
         <motion.div
@@ -124,12 +126,8 @@ function FeatureCard({
   index: number
 }) {
   return (
-    <motion.div
+    <div
       className="relative w-[85vw] md:w-[60vw] lg:w-[50vw] h-[70vh] flex-shrink-0 rounded-2xl overflow-hidden"
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      viewport={{ once: true, amount: 0.3 }}
     >
       {/* Background image */}
       <Image
@@ -175,6 +173,6 @@ function FeatureCard({
           0{index + 1}
         </span>
       </div>
-    </motion.div>
+    </div>
   )
 }

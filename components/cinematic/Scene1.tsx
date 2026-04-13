@@ -10,14 +10,15 @@ export default function Scene1() {
     offset: ["start start", "end start"],
   })
 
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.8, 1, 1, 1.1])
-  const glowIntensity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 0])
+  // Simpler, more responsive transforms
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1, 0])
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.05])
+  const glowIntensity = useTransform(scrollYProgress, [0, 0.3, 0.7], [0.5, 1, 0.3])
 
   return (
     <section
       ref={containerRef}
-      className="relative h-[200vh] bg-background"
+      className="relative h-[150vh] bg-background"
     >
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         {/* Ambient glow effect */}
@@ -25,7 +26,7 @@ export default function Scene1() {
           className="absolute inset-0 pointer-events-none"
           style={{
             opacity: glowIntensity,
-            background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(245, 136, 70, 0.15), transparent 70%)",
+            background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(245, 136, 70, 0.12), transparent 70%)",
           }}
         />
 
@@ -37,7 +38,7 @@ export default function Scene1() {
           <motion.p
             className="text-muted-foreground text-sm md:text-base tracking-[0.3em] uppercase mb-8"
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             모두다른고양이 미술학원
@@ -47,7 +48,7 @@ export default function Scene1() {
             <motion.span
               className="block text-foreground"
               initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               우리는
@@ -59,7 +60,7 @@ export default function Scene1() {
                 textShadow: "0 0 60px rgba(245, 136, 70, 0.5), 0 0 120px rgba(245, 136, 70, 0.3)",
               }}
               initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
               생각의 구조를
@@ -67,7 +68,7 @@ export default function Scene1() {
             <motion.span
               className="block mt-2 text-foreground"
               initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8 }}
             >
               설계합니다
@@ -77,7 +78,7 @@ export default function Scene1() {
           <motion.p
             className="mt-12 text-muted-foreground text-base md:text-lg max-w-xl mx-auto leading-relaxed"
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1.2 }}
           >
             단순한 기술 훈련이 아닌, 창의적 사고의 본질을 탐구합니다

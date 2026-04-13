@@ -1,7 +1,7 @@
 "use client"
 
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
-import { useRef, useState, useCallback } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useState, useCallback } from "react"
 import { Phone, MapPin, Clock, MessageCircle } from "lucide-react"
 
 interface Particle {
@@ -14,17 +14,8 @@ interface Particle {
 }
 
 export default function Scene4() {
-  const containerRef = useRef<HTMLDivElement>(null)
   const [particles, setParticles] = useState<Particle[]>([])
   const [isExploding, setIsExploding] = useState(false)
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end end"],
-  })
-
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1])
-  const y = useTransform(scrollYProgress, [0, 0.3], [100, 0])
 
   const handleCTAClick = useCallback(() => {
     if (isExploding) return
@@ -54,20 +45,15 @@ export default function Scene4() {
   }, [isExploding])
 
   return (
-    <section
-      ref={containerRef}
-      className="relative min-h-screen bg-background py-20 md:py-32"
-    >
-      <motion.div
-        className="max-w-4xl mx-auto px-6"
-        style={{ opacity, y }}
-      >
+    <section className="relative min-h-screen bg-background py-20 md:py-32">
+      <div className="max-w-4xl mx-auto px-6">
         {/* CTA Section */}
         <div className="text-center mb-20">
           <motion.p
             className="text-muted-foreground text-sm tracking-[0.3em] uppercase mb-4"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
             Start Your Journey
@@ -77,6 +63,7 @@ export default function Scene4() {
             className="text-3xl md:text-5xl lg:text-6xl font-black text-foreground mb-6"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <span className="text-balance">
@@ -98,6 +85,7 @@ export default function Scene4() {
             className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto mb-12"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             카카오톡으로 간편하게 상담 예약하세요. 
@@ -109,6 +97,7 @@ export default function Scene4() {
             className="relative inline-block"
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <button
@@ -160,6 +149,7 @@ export default function Scene4() {
           className="grid md:grid-cols-3 gap-4 md:gap-6"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <ContactCard
@@ -186,6 +176,7 @@ export default function Scene4() {
           className="mt-20 pt-10 border-t border-border text-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
           <p className="text-muted-foreground text-sm">
@@ -195,7 +186,7 @@ export default function Scene4() {
             &copy; {new Date().getFullYear()} All rights reserved.
           </p>
         </motion.footer>
-      </motion.div>
+      </div>
     </section>
   )
 }

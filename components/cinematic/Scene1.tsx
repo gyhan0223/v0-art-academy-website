@@ -1,32 +1,41 @@
-"use client"
+"use client";
 
-import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef } from "react"
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef } from "react";
 
 export default function Scene1() {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end start"],
-  })
+    offset: ["start start", "start end"],
+  });
+
+  // scrollYProgress를 직접 쓰지 말고, useSpring으로 한 번 거르세요!
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100, // 탄성 (높을수록 빠르게 반응)
+    damping: 30, // 저항 (높을수록 덜 출렁거림)
+    restDelta: 0.001,
+  });
 
   // Simpler, more responsive transforms
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1, 0])
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.05])
-  const glowIntensity = useTransform(scrollYProgress, [0, 0.3, 0.7], [0.5, 1, 0.3])
+  const opacity = useTransform(smoothProgress, [0, 0.5, 1], [1, 1, 0]);
+  const scale = useTransform(smoothProgress, [0, 1], [1, 1.05]);
+  const glowIntensity = useTransform(
+    scrollYProgress,
+    [0, 0.3, 0.7],
+    [0.5, 1, 0.3],
+  );
 
   return (
-    <section
-      ref={containerRef}
-      className="relative h-[150vh] bg-background"
-    >
+    <section ref={containerRef} className="relative h-[150dvh] bg-background">
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         {/* Ambient glow effect */}
         <motion.div
           className="absolute inset-0 pointer-events-none"
           style={{
             opacity: glowIntensity,
-            background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(245, 136, 70, 0.12), transparent 70%)",
+            background:
+              "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(245, 136, 70, 0.12), transparent 70%)",
           }}
         />
 
@@ -57,7 +66,8 @@ export default function Scene1() {
               className="block mt-2"
               style={{
                 color: "var(--orange-glow)",
-                textShadow: "0 0 60px rgba(245, 136, 70, 0.5), 0 0 120px rgba(245, 136, 70, 0.3)",
+                textShadow:
+                  "0 0 60px rgba(245, 136, 70, 0.5), 0 0 120px rgba(245, 136, 70, 0.3)",
               }}
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
@@ -100,11 +110,15 @@ export default function Scene1() {
             <motion.div
               className="w-1 h-2 bg-primary rounded-full mt-2"
               animate={{ opacity: [0.3, 1, 0.3] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             />
           </motion.div>
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

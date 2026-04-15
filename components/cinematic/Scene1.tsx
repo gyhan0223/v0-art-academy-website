@@ -7,7 +7,7 @@ export default function Scene1() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "start end"],
+    offset: ["start start", "end start"],
   });
 
   // scrollYProgress를 직접 쓰지 말고, useSpring으로 한 번 거르세요!
@@ -28,7 +28,7 @@ export default function Scene1() {
 
   return (
     <section ref={containerRef} className="relative h-[150dvh] bg-background">
-      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-dvh flex items-center justify-center overflow-hidden">
         {/* Ambient glow effect */}
         <motion.div
           className="absolute inset-0 pointer-events-none"

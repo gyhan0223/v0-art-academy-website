@@ -42,9 +42,9 @@ export default function Scene2() {
   ]
 
   return (
-    <section ref={containerRef} className="relative h-[250vh] bg-background">
+    <section ref={containerRef} className="relative h-[300vh] bg-background">
       {/* Sticky background image */}
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <div className="sticky top-0 h-[100dvh] overflow-hidden">
         <motion.div
           className="absolute inset-0"
           style={{ y: backgroundY, scale: backgroundScale }}

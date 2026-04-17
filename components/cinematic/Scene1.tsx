@@ -94,30 +94,6 @@ export default function Scene1() {
             단순한 기술 훈련이 아닌, 창의적 사고의 본질을 탐구합니다
           </motion.p>
         </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 1 }}
-        >
-          <motion.div
-            className="w-6 h-10 border-2 border-muted-foreground/30 rounded-full flex justify-center"
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <motion.div
-              className="w-1 h-2 bg-primary rounded-full mt-2"
-              animate={{ opacity: [0.3, 1, 0.3] }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          </motion.div>
-        </motion.div>
       </div>
     </section>
   );

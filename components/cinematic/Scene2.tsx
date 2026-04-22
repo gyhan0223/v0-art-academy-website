@@ -24,14 +24,14 @@ export default function Scene2() {
   // 1. 전체 스크롤 진행도를 촘촘하게 압축하여 속도감을 높였습니다.
   const line0Opacity = useTransform(
     scrollYProgress,
-    [0, 0.05, 0.1, 0.15],
+    [0, 0.1, 0.2, 0.3],
     [0, 1, 1, 0.3],
   );
   const line0Y = useTransform(scrollYProgress, [0, 0.1], [30, 0]);
 
   const line1Opacity = useTransform(
     scrollYProgress,
-    [0.1, 0.15, 0.2, 0.25],
+    [0.2, 0.3, 0.4, 0.5],
     [0, 1, 1, 0.3],
   );
   const line1Y = useTransform(scrollYProgress, [0.2, 0.3], [30, 0]);
@@ -63,6 +63,9 @@ export default function Scene2() {
     // 3. 기존 h-[300vh] 또는 h-[250vh]였던 높이를 h-[200vh]로 대폭 줄여
     // 문장이 뜨는 데 필요한 스크롤 소모량을 눈에 띄게 줄였습니다.
     <section ref={containerRef} className="relative h-[200vh] bg-background">
+      {/* Scene 2의 시작 지점을 표시하는 초록색 선 */}
+      <div className="absolute top-0 left-0 w-full h-2 bg-green-500 z-50" />
+
       <div className="sticky top-0 h-[100dvh] overflow-hidden">
         <motion.div
           className="absolute inset-0"
@@ -112,6 +115,7 @@ function PhilosophyLine({
 }) {
   return (
     <motion.div
+      initial={{ opacity: 0, y: 30 }}
       className={`text-3xl md:text-5xl lg:text-6xl font-black ${
         index % 2 === 0 ? "text-left" : "text-right"
       }`}

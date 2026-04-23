@@ -3,34 +3,39 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 
+// 1. 데이터에 logoOpacity 속성을 추가하여 개별 투명도를 설정합니다.
 const universityCards = [
   {
     text: "기초가 탄탄해야",
     highlight: false,
     logo: "/images/logo-snu.png",
-    color: "#0F0F70", // 서울대
-    logoSize: { mobile: "100vw", desktop: "70vw" }, //
+    color: "#0F0F70",
+    logoSize: { mobile: "120vw", desktop: "70vw" },
+    logoOpacity: "opacity-10", // 굵은 로고는 10% 유지
   },
   {
     text: "창의가 빛난다",
     highlight: true,
     logo: "/images/logo-hongik.png",
-    color: "#1833DB", // 홍익대
-    logoSize: { mobile: "150vw", desktop: "100vw" }, // 홍익대 로고만 더 크게 설정
+    color: "#1833DB",
+    logoSize: { mobile: "150vw", desktop: "100vw" },
+    logoOpacity: "opacity-10",
   },
   {
     text: "매 순간의 선택이",
     highlight: false,
     logo: "/images/logo-kookmin.png",
-    color: "#004F9E", // 국민대
-    logoSize: { mobile: "100vw", desktop: "70vw" }, //
+    color: "#004F9E",
+    logoSize: { mobile: "110vw", desktop: "60vw" },
+    logoOpacity: "opacity-25", // 선이 얇은 로고는 20~30%로 투명도를 올림
   },
   {
     text: "작품이 된다",
     highlight: true,
     logo: "/images/logo-ewha.png",
-    color: "#00643E", // 이화여대
-    logoSize: { mobile: "100vw", desktop: "70vw" }, //
+    color: "#00643E",
+    logoSize: { mobile: "130vw", desktop: "70vw" },
+    logoOpacity: "opacity-30", // 가장 디테일이 많은 로고는 더 밝게
   },
 ];
 

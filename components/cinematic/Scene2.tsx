@@ -7,7 +7,7 @@ import Image from "next/image";
 const universityCards = [
   {
     text: "기초가 탄탄해야",
-    highlight: false,
+    highlight: true,
     logo: "/images/logo-snu.png",
     color: "#0F0F70",
     logoSize: { mobile: "120vw", desktop: "70vw" },
@@ -23,7 +23,7 @@ const universityCards = [
   },
   {
     text: "매 순간의 선택이",
-    highlight: false,
+    highlight: true,
     logo: "/images/logo-kookmin.png",
     color: "#004F9E",
     logoSize: { mobile: "110vw", desktop: "60vw" },

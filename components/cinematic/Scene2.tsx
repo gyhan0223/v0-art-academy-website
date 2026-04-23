@@ -4,11 +4,32 @@ import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
 
+// 1. 각 문구에 해당하는 로고 이미지 경로와 대체 텍스트(alt)를 추가합니다.
 const philosophyLines = [
-  { text: "기초가 탄탄해야", highlight: false },
-  { text: "창의가 빛난다", highlight: true },
-  { text: "매 순간의 선택이", highlight: false },
-  { text: "작품이 된다", highlight: true },
+  {
+    text: "기초가 탄탄해야",
+    highlight: false,
+    logo: "/images/logo-snu.png",
+    alt: "서울대학교 로고",
+  },
+  {
+    text: "창의가 빛난다",
+    highlight: true,
+    logo: "/images/logo-hongik.png",
+    alt: "홍익대학교 로고",
+  },
+  {
+    text: "매 순간의 선택이",
+    highlight: false,
+    logo: "/images/logo-kookmin.png",
+    alt: "국민대학교 로고",
+  },
+  {
+    text: "작품이 된다",
+    highlight: true,
+    logo: "/images/logo-ewha.png",
+    alt: "이화여자대학교 로고",
+  },
 ];
 
 export default function Scene2() {
@@ -18,10 +39,6 @@ export default function Scene2() {
     offset: ["start start", "end end"],
   });
 
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
-  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
-
-  // 1. 전체 스크롤 진행도를 촘촘하게 압축하여 속도감을 높였습니다.
   const line0Opacity = useTransform(
     scrollYProgress,
     [0.05, 0.1, 0.15, 0.2], // 기존 [0, 0.1, 0.2, 0.3]에서 수정
@@ -60,34 +77,22 @@ export default function Scene2() {
   ];
 
   return (
-    // 3. 기존 h-[300vh] 또는 h-[250vh]였던 높이를 h-[200vh]로 대폭 줄여
-    // 문장이 뜨는 데 필요한 스크롤 소모량을 눈에 띄게 줄였습니다.
     <section ref={containerRef} className="relative h-[200vh] bg-background">
-      {/* Scene 2의 시작 지점을 표시하는 초록색 선 */}
       <div className="absolute top-0 left-0 w-full h-2 bg-green-500 z-50" />
 
       <div className="sticky top-0 h-[100dvh] overflow-hidden">
-        <motion.div
-          className="absolute inset-0"
-          style={{ y: backgroundY, scale: backgroundScale }}
-        >
-          <Image
-            src="/images/gallery-1.jpg"
-            alt="Art studio atmosphere"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/70 to-background" />
-        </motion.div>
+        {/* 2. 기존의 전체 배경화면(gallery-1.jpg) 코드를 제거했습니다. */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
 
         <div className="relative h-full flex items-center justify-center px-6">
-          <div className="max-w-3xl w-full space-y-4 md:space-y-6">
+          <div className="max-w-4xl w-full space-y-8 md:space-y-12">
             {philosophyLines.map((line, index) => (
               <PhilosophyLine
                 key={index}
                 text={line.text}
                 highlight={line.highlight}
+                logo={line.logo}
+                alt={line.alt}
                 opacity={lineTransforms[index].opacity}
                 y={lineTransforms[index].y}
                 index={index}
@@ -103,37 +108,73 @@ export default function Scene2() {
 function PhilosophyLine({
   text,
   highlight,
+  logo,
+  alt,
   opacity,
   y,
   index,
 }: {
   text: string;
   highlight: boolean;
+  logo: string;
+  alt: string;
   opacity: MotionValue<number>;
   y: MotionValue<number>;
   index: number;
 }) {
+  const isLeft = index % 2 === 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
-      className={`text-3xl md:text-5xl lg:text-6xl font-black ${
-        index % 2 === 0 ? "text-left" : "text-right"
+      // 3. Flexbox를 사용하여 로고와 텍스트를 나란히 배치합니다.
+      className={`flex items-center gap-4 md:gap-8 ${
+        isLeft ? "justify-start" : "justify-end"
       }`}
       style={{ opacity, y }}
     >
-      <span
-        className={highlight ? "text-primary" : "text-foreground"}
-        style={
-          highlight
-            ? {
-                textShadow:
-                  "0 0 40px rgba(245, 136, 70, 0.4), 0 0 80px rgba(245, 136, 70, 0.2)",
-              }
-            : undefined
-        }
+      {/* 왼쪽 정렬일 때는 로고가 텍스트 왼쪽에 배치됩니다. */}
+      {isLeft && (
+        <div className="relative w-16 h-16 md:w-24 md:h-24 flex-shrink-0">
+          <Image
+            src={logo}
+            alt={alt}
+            fill
+            className="object-contain dark:invert"
+            /* 필요시 다크모드에서 로고 색상을 반전시키려면 dark:invert 유지 */
+          />
+        </div>
+      )}
+
+      <div
+        className={`text-3xl md:text-5xl lg:text-6xl font-black ${isLeft ? "text-left" : "text-right"}`}
       >
-        {text}
-      </span>
+        <span
+          className={highlight ? "text-primary" : "text-foreground"}
+          style={
+            highlight
+              ? {
+                  textShadow:
+                    "0 0 40px rgba(245, 136, 70, 0.4), 0 0 80px rgba(245, 136, 70, 0.2)",
+                }
+              : undefined
+          }
+        >
+          {text}
+        </span>
+      </div>
+
+      {/* 오른쪽 정렬일 때는 로고가 텍스트 오른쪽에 배치됩니다. */}
+      {!isLeft && (
+        <div className="relative w-16 h-16 md:w-24 md:h-24 flex-shrink-0">
+          <Image
+            src={logo}
+            alt={alt}
+            fill
+            className="object-contain dark:invert"
+          />
+        </div>
+      )}
     </motion.div>
   );
 }

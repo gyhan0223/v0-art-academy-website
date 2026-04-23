@@ -24,14 +24,14 @@ export default function Scene2() {
   // 1. 전체 스크롤 진행도를 촘촘하게 압축하여 속도감을 높였습니다.
   const line0Opacity = useTransform(
     scrollYProgress,
-    [0, 0.1, 0.2, 0.3],
+    [0.05, 0.1, 0.15, 0.2], // 기존 [0, 0.1, 0.2, 0.3]에서 수정
     [0, 1, 1, 0.3],
   );
-  const line0Y = useTransform(scrollYProgress, [0, 0.1], [30, 0]);
+  const line0Y = useTransform(scrollYProgress, [0.05, 0.15], [30, 0]);
 
   const line1Opacity = useTransform(
     scrollYProgress,
-    [0.2, 0.3, 0.4, 0.5],
+    [0.1, 0.15, 0.2, 0.25],
     [0, 1, 1, 0.3],
   );
   const line1Y = useTransform(scrollYProgress, [0.2, 0.3], [30, 0]);
@@ -47,7 +47,7 @@ export default function Scene2() {
   // 남은 30%의 스크롤 동안 화면에 굳건히 고정되어 절대 화면 밖으로 잘리지 않습니다.
   const line3Opacity = useTransform(
     scrollYProgress,
-    [0.3, 0.35, 0.45, 0.5],
+    [0.3, 0.35, 0.4, 0.45],
     [0, 1, 1, 1],
   );
   const line3Y = useTransform(scrollYProgress, [0.6, 0.7], [30, 0]);

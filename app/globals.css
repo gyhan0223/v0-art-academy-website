@@ -83,18 +83,24 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* app/globals.css 맨 하단 */
-
 @layer base {
   html,
   body {
-    /* 💡 Scene2의 색상 변화에 상관없이 브라우저가 인식하는 바닥 색상을 검은색으로 강제 */
     background-color: #000000 !important;
-    color: #ffffff;
+    overscroll-behavior-y: none; /* 아이폰 스크롤 튕김 방지 */
+  }
 
-    /* 아이폰 스크롤 바운스 시 파란색이 비치지 않도록 방지 */
-    overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
+  /* 💡 2. Safari 하단 바 샘플링 원천 차단 (1픽셀 해킹) */
+  body::after {
+    content: "";
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px; /* 우리 눈에는 보이지 않는 1픽셀 */
+    background-color: #000000 !important; /* 사파리가 이 검은색을 읽어가도록 유도 */
+    z-index: 999999; /* 가장 최상단에 배치 */
+    pointer-events: none; /* 클릭이나 스크롤 방해 안 함 */
   }
 
   * {

@@ -1,6 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next"; // 💡 Viewport 임포트 추가
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
+
+// 💡 1. Next.js 공식 설정으로 Safari 테마 강제 고정
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#000000" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false, // 스크롤 튕김 방지에 도움
+};
 
 export const metadata: Metadata = {
   title: "모두다른고양이 미술학원 | 생각의 구조를 설계합니다",
@@ -43,22 +55,6 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
           rel="stylesheet"
-        />
-
-        <meta
-          name="theme-color"
-          content="#000000"
-          media="(prefers-color-scheme: dark)"
-        />
-        <meta
-          name="theme-color"
-          content="#000000"
-          media="(prefers-color-scheme: light)"
-        />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta
-          name="apple-mobile-web-app-status-bar-style"
-          content="black-translucent"
         />
       </head>
       <body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">

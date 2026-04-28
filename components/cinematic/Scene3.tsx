@@ -49,8 +49,8 @@ export default function Scene3() {
   return (
     <section className="relative min-h-screen bg-[#05050a] py-32 md:py-48 px-6 overflow-hidden">
       {/* 시네마틱 배경 빛 장식 */}
-      <div className="absolute top-0 left-1/4 w-[1000px] h-[1000px] bg-purple-900/10 rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-amber-900/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-250 h-250 bg-purple-900/10 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-200 h-200amber-900/10 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
@@ -101,7 +101,7 @@ export default function Scene3() {
                       }
                     : { y: -5 }
                 } // 클릭 안되는 카드는 살짝만 올라가는 효과
-                className={`group relative p-10 md:p-14 rounded-[32px] border border-white/10 bg-white/[0.03] backdrop-blur-xl overflow-hidden h-auto flex flex-col justify-between transition-all duration-500 ease-out ${item.isClickable ? "cursor-pointer" : "cursor-default"}`}
+                className={`group relative p-10 md:p-14 rounded-4xl border border-white/10 bg-white/3 backdrop-blur-xl overflow-hidden h-auto flex flex-col justify-between transition-all duration-500 ease-out ${item.isClickable ? "cursor-pointer" : "cursor-default"}`}
               >
                 {/* 카드 상단: 아이콘 */}
                 <div className="flex items-start justify-between mb-16 relative z-10">
@@ -111,13 +111,13 @@ export default function Scene3() {
                 </div>
 
                 {/* 카드 중앙: 타이틀 & 설명 */}
-                <div className="relative z-10 flex-grow mb-12">
+                <div className="relative z-10 grow mb-12">
                   <h3
                     className={`text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight break-keep ${item.isClickable ? "group-hover:text-amber-100" : ""} transition-colors`}
                   >
                     {item.title}
                   </h3>
-                  <p className="text-white/80 leading-relaxed text-base md:text-lg tracking-wide break-keep max-w-[400px]">
+                  <p className="text-white/80 leading-relaxed text-base md:text-lg tracking-wide break-keep max-w-100">
                     {item.description}
                   </p>
                 </div>
@@ -141,7 +141,7 @@ export default function Scene3() {
                       </span>
                     )}
                   </div>
-                  <span className="text-6xl md:text-7xl font-black text-white/[0.04] pointer-events-none group-hover:text-white/[0.08] transition-colors">
+                  <span className="text-6xl md:text-7xl font-black text-white/4 pointer-events-none group-hover:text-white/8 transition-colors">
                     0{index + 1}
                   </span>
                 </div>

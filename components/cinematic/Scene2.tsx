@@ -53,12 +53,12 @@ export default function Scene2() {
       {universityCards.map((card, index) => (
         <div
           key={index}
-          className="sticky top-0 h-[100dvh] w-full flex items-center justify-center overflow-hidden"
+          className="sticky top-0 h-dvh w-full flex items-center justify-center overflow-hidden"
           style={{ backgroundColor: card.color }}
         >
           {/* 상단 그림자 효과 */}
           {index > 0 && (
-            <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/50 to-transparent pointer-events-none z-20" />
+            <div className="absolute top-0 left-0 w-full h-32 bg-linear-to-b from-black/50 to-transparent pointer-events-none z-20" />
           )}
 
           {/* 배경 로고 워터마크 */}

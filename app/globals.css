@@ -84,6 +84,16 @@
 }
 
 @layer base {
+  html,
+  body {
+    /* 💡 Scene2의 색상 변화에 상관없이 브라우저가 인식하는 바닥 색상을 검은색으로 강제 */
+    background-color: #000000 !important;
+    color: #ffffff;
+
+    /* 아이폰 스크롤 바운스 시 파란색이 비치지 않도록 방지 */
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
   * {
     @apply border-border outline-ring/50;
   }

@@ -83,6 +83,8 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* app/globals.css 맨 하단 */
+
 @layer base {
   html,
   body {
@@ -94,12 +96,8 @@
     overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
   }
+
   * {
     @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    /* 💡 아이폰 스크롤 튕김(바운스) 현상 방지 */
-    overscroll-behavior-y: none;
   }
 }

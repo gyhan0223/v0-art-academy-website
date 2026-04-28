@@ -49,13 +49,17 @@ const universityCards = [
 
 export default function Scene2() {
   return (
-    <section className="relative w-full bg-background">
+    <section className="relative w-full bg-black">
+      {" "}
       {universityCards.map((card, index) => (
         <div
           key={index}
           className="sticky top-0 h-dvh w-full flex items-center justify-center overflow-hidden"
-          style={{ backgroundColor: card.color }}
         >
+          <div
+            className="absolute left-0 w-full top-[1px] h-[calc(100dvh-2px)] -z-10"
+            style={{ backgroundColor: card.color }}
+          />
           {/* 상단 그림자 효과 */}
           {index > 0 && (
             <div className="absolute top-0 left-0 w-full h-32 bg-linear-to-b from-black/50 to-transparent pointer-events-none z-20" />

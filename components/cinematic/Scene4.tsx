@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { motion, AnimatePresence } from "framer-motion"
-import { useState, useCallback } from "react"
-import { Phone, MapPin, Clock, MessageCircle } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useCallback } from "react";
+import { Phone, MapPin, Clock, MessageCircle } from "lucide-react";
 
 interface Particle {
-  id: number
-  x: number
-  y: number
-  angle: number
-  velocity: number
-  size: number
+  id: number;
+  x: number;
+  y: number;
+  angle: number;
+  velocity: number;
+  size: number;
 }
 
 export default function Scene4() {
-  const [particles, setParticles] = useState<Particle[]>([])
-  const [isExploding, setIsExploding] = useState(false)
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [isExploding, setIsExploding] = useState(false);
 
   const handleCTAClick = useCallback(() => {
-    if (isExploding) return
+    if (isExploding) return;
 
-    setIsExploding(true)
+    setIsExploding(true);
 
     // Generate particles
     const newParticles: Particle[] = Array.from({ length: 24 }, (_, i) => ({
@@ -30,19 +30,22 @@ export default function Scene4() {
       angle: (i / 24) * 360,
       velocity: 100 + Math.random() * 150,
       size: 4 + Math.random() * 8,
-    }))
+    }));
 
-    setParticles(newParticles)
+    setParticles(newParticles);
 
-    // Open Kakao channel
-    window.open("https://pf.kakao.com/_xkxkPN", "_blank")
+    // Open Naver reservation page
+    window.open(
+      "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1",
+      "_blank",
+    );
 
     // Clear particles after animation
     setTimeout(() => {
-      setParticles([])
-      setIsExploding(false)
-    }, 1000)
-  }, [isExploding])
+      setParticles([]);
+      setIsExploding(false);
+    }, 1000);
+  }, [isExploding]);
 
   return (
     <section className="relative min-h-screen bg-background py-20 md:py-32">
@@ -88,8 +91,8 @@ export default function Scene4() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            카카오톡으로 간편하게 상담 예약하세요. 
-            개인별 맞춤 커리큘럼을 안내해 드립니다.
+            네이버 예약으로 간편하게 상담 예약하세요. 개인별 맞춤 커리큘럼을
+            안내해 드립니다.
           </motion.p>
 
           {/* CTA Button with particle effect */}
@@ -110,7 +113,7 @@ export default function Scene4() {
             >
               <span className="flex items-center gap-3">
                 <MessageCircle className="w-5 h-5" />
-                카카오톡 상담하기
+                네이버 예약하기
               </span>
             </button>
 
@@ -127,8 +130,12 @@ export default function Scene4() {
                     scale: 1,
                   }}
                   animate={{
-                    x: Math.cos((particle.angle * Math.PI) / 180) * particle.velocity,
-                    y: Math.sin((particle.angle * Math.PI) / 180) * particle.velocity,
+                    x:
+                      Math.cos((particle.angle * Math.PI) / 180) *
+                      particle.velocity,
+                    y:
+                      Math.sin((particle.angle * Math.PI) / 180) *
+                      particle.velocity,
                     opacity: 0,
                     scale: 0,
                   }}
@@ -155,19 +162,19 @@ export default function Scene4() {
           <ContactCard
             icon={<Phone className="w-5 h-5" />}
             title="전화 상담"
-            content="010-1234-5678"
-            href="tel:010-1234-5678"
+            content="0507-1311-7359"
+            href="tel:0507-1311-7359"
           />
           <ContactCard
             icon={<MapPin className="w-5 h-5" />}
             title="위치"
-            content="경기 고양시 일산동구 중앙로"
-            href="https://naver.me/example"
+            content="경기 고양시 일산동구 원중1길 56 8층"
+            href="https://naver.me/FpPBS3sw"
           />
           <ContactCard
             icon={<Clock className="w-5 h-5" />}
             title="운영 시간"
-            content="평일 14:00 - 22:00"
+            content="평일 13:00 - 22:00"
           />
         </motion.div>
 
@@ -180,7 +187,7 @@ export default function Scene4() {
           transition={{ duration: 0.6, delay: 0.5 }}
         >
           <p className="text-muted-foreground text-sm">
-            모두다른고양이 미술학원 일산점
+            모두다른고양이 미술학원
           </p>
           <p className="text-muted-foreground/60 text-xs mt-2">
             &copy; {new Date().getFullYear()} All rights reserved.
@@ -188,7 +195,7 @@ export default function Scene4() {
         </motion.footer>
       </div>
     </section>
-  )
+  );
 }
 
 function ContactCard({
@@ -197,15 +204,19 @@ function ContactCard({
   content,
   href,
 }: {
-  icon: React.ReactNode
-  title: string
-  content: string
-  href?: string
+  icon: React.ReactNode;
+  title: string;
+  content: string;
+  href?: string;
 }) {
-  const Wrapper = href ? "a" : "div"
+  const Wrapper = href ? "a" : "div";
   const wrapperProps = href
-    ? { href, target: href.startsWith("http") ? "_blank" : undefined, rel: href.startsWith("http") ? "noopener noreferrer" : undefined }
-    : {}
+    ? {
+        href,
+        target: href.startsWith("http") ? "_blank" : undefined,
+        rel: href.startsWith("http") ? "noopener noreferrer" : undefined,
+      }
+    : {};
 
   return (
     <Wrapper
@@ -224,5 +235,5 @@ function ContactCard({
         {content}
       </p>
     </Wrapper>
-  )
+  );
 }

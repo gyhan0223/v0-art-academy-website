@@ -20,8 +20,8 @@ export default function Scene1() {
   );
 
   return (
-    <section ref={containerRef} className="relative h-[100dvh] bg-background">
-      <div className="sticky top-0 h-[100dvh] flex items-center justify-center overflow-hidden">
+    <section ref={containerRef} className="relative h-dvh bg-background">
+      <div className="sticky top-0 h-dvh flex items-center justify-center overflow-hidden">
         {/* Ambient glow effect */}
         <motion.div
           className="absolute inset-0 pointer-events-none"

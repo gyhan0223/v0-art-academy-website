@@ -3,39 +3,47 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-// 1. 데이터에 logoOpacity 속성을 추가하여 개별 투명도를 설정합니다.
+// 1. 전달해주신 대학별 합격자 데이터를 구조화했습니다.
 const universityCards = [
   {
-    text: "기초가 탄탄해야",
-    highlight: true,
+    name: "서울대학교",
+    total: "252",
+    recent: "5",
     logo: "/images/logo-snu.png",
-    color: "#0F0F70",
-    logoSize: { mobile: "120vw", desktop: "70vw" },
-    logoOpacity: "opacity-10", // 굵은 로고는 10% 유지
-  },
-  {
-    text: "창의가 빛난다",
-    highlight: true,
-    logo: "/images/logo-hongik.png",
-    color: "#1833DB",
-    logoSize: { mobile: "150vw", desktop: "100vw" },
+    color: "#1D418A",
+    logoSize: { mobile: "120vw", desktop: "80vw" },
     logoOpacity: "opacity-10",
+    scale: 1,
   },
   {
-    text: "매 순간의 선택이",
-    highlight: true,
+    name: "홍익대학교",
+    total: "792",
+    recent: "28",
+    logo: "/images/logo-hongik.png",
+    color: "#9C1F22",
+    logoSize: { mobile: "150vw", desktop: "150vw" },
+    logoOpacity: "opacity-10",
+    scale: 1.6,
+  },
+  {
+    name: "국민대학교",
+    total: "438",
+    recent: "22",
     logo: "/images/logo-kookmin.png",
-    color: "#004F9E",
-    logoSize: { mobile: "110vw", desktop: "60vw" },
-    logoOpacity: "opacity-25", // 선이 얇은 로고는 20~30%로 투명도를 올림
+    color: "#0054A6",
+    logoSize: { mobile: "110vw", desktop: "70vw" },
+    logoOpacity: "opacity-25", // 가독성을 위해 투명도 상향 유지
+    scale: 1,
   },
   {
-    text: "작품이 된다",
-    highlight: true,
+    name: "이화여자대학교",
+    total: "530",
+    recent: "9",
     logo: "/images/logo-ewha.png",
-    color: "#00643E",
-    logoSize: { mobile: "130vw", desktop: "70vw" },
-    logoOpacity: "opacity-30", // 가장 디테일이 많은 로고는 더 밝게
+    color: "#004933",
+    logoSize: { mobile: "130vw", desktop: "85vw" },
+    logoOpacity: "opacity-30", // 가독성을 위해 투명도 상향 유지
+    scale: 1,
   },
 ];
 
@@ -45,64 +53,73 @@ export default function Scene2() {
       {universityCards.map((card, index) => (
         <div
           key={index}
-          // 💡 핵심: h-screen과 sticky top-0을 사용하여 스크롤 시 다음 카드가 이전 카드를 덮어씌웁니다.
           className="sticky top-0 h-[100dvh] w-full flex items-center justify-center overflow-hidden"
           style={{ backgroundColor: card.color }}
         >
-          {/* 이전 카드를 덮을 때 입체감을 주는 상단 그림자 */}
+          {/* 상단 그림자 효과 */}
           {index > 0 && (
             <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/50 to-transparent pointer-events-none z-20" />
           )}
 
           {/* 배경 로고 워터마크 */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-            {/* 2. 데이터에서 가져온 개별 사이즈를 인라인 스타일로 적용합니다. */}
             <div
-              className="relative transition-all duration-500"
+              className={`relative transition-all duration-500 ${card.logoOpacity}`}
               style={
                 {
-                  // 브라우저 너비에 따라 반응형으로 작동하도록 CSS 변수나 미디어 쿼리 대신
-                  // 단순하게 모바일/데스크탑 값을 상황에 맞춰 조절할 수 있습니다.
                   width: `var(--logo-width)`,
                   height: `var(--logo-width)`,
-                  // Tailwind의 arbitrary values나 CSS 변수를 활용해 반응형 구현
-                  "--logo-width":
-                    typeof window !== "undefined" && window.innerWidth < 768
-                      ? card.logoSize.mobile
-                      : card.logoSize.desktop,
+                  "--logo-width": "min(120vw, 80vh)", // 화면을 넘어가지 않도록 보정
+                  transform: `scale(${card.scale})`, // 💡 데이터에서 지정한 배수만큼 화면에서 확대됨
                 } as any
               }
             >
               <Image
                 src={card.logo}
-                alt={`${card.text} 배경 로고`}
+                alt={`${card.name} 배경 로고`}
                 fill
-                className="object-contain brightness-0 invert opacity-10"
+                className="object-contain brightness-0 invert"
               />
             </div>
           </div>
 
-          {/* 텍스트 레이어 (카드가 화면에 들어올 때 쓱 올라오며 등장) */}
+          {/* 텍스트 레이어: 대학명 + 합격자 정보 */}
           <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.95 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            // 뷰포트의 40% 지점에 도달했을 때 애니메이션 실행
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
             viewport={{ once: false, amount: 0.4 }}
-            className="relative z-10 text-center px-6 w-full"
+            className="relative z-10 text-center px-6 w-full flex flex-col items-center gap-6 md:gap-10"
           >
-            <h2
-              className={`text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter break-keep ${
-                card.highlight ? "text-white" : "text-white/70"
-              }`}
-              style={{
-                textShadow: card.highlight
-                  ? "0 0 40px rgba(255,255,255,0.4)"
-                  : "none",
-              }}
-            >
-              {card.text}
+            {/* 대학교 이름 */}
+            <h2 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-white drop-shadow-2xl">
+              {card.name}
             </h2>
+
+            {/* 합격 실적 데이터 */}
+            <div className="flex flex-col gap-2 md:gap-4">
+              <div className="flex flex-col items-center">
+                <span className="text-white/60 text-sm md:text-lg tracking-widest uppercase font-medium">
+                  Cumulative Total
+                </span>
+                <span className="text-3xl md:text-5xl font-bold text-white">
+                  누적 합격자{" "}
+                  <span className="text-yellow-400">{card.total}</span>명
+                </span>
+              </div>
+
+              <div className="h-px w-12 bg-white/20 mx-auto my-2" />
+
+              <div className="flex flex-col items-center">
+                <span className="text-white/60 text-sm md:text-lg tracking-widest uppercase font-medium">
+                  Class of 2026
+                </span>
+                <span className="text-2xl md:text-4xl font-semibold text-white/90">
+                  2026학년도{" "}
+                  <span className="text-yellow-400">{card.recent}</span>명 합격
+                </span>
+              </div>
+            </div>
           </motion.div>
         </div>
       ))}

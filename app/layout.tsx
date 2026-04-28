@@ -44,6 +44,13 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
           rel="stylesheet"
         />
+
+        {/* 💡 Safari 브라우저 상/하단 바 색상을 검은색으로 고정 */}
+        <meta name="theme-color" content="#000000" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
       </head>
       <body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
         {children}

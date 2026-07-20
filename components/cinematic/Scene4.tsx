@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useCallback } from "react";
-import { Phone, MapPin, Clock, MessageCircle } from "lucide-react";
+import { Phone, MapPin, MessageCircle } from "lucide-react";
 
 interface Particle {
   id: number;
@@ -113,7 +113,7 @@ export default function Scene4() {
             >
               <span className="flex items-center gap-3">
                 <MessageCircle className="w-5 h-5" />
-                네이버 예약하기
+                일산 캠퍼스 네이버 예약하기
               </span>
             </button>
 
@@ -149,6 +149,16 @@ export default function Scene4() {
               ))}
             </AnimatePresence>
           </motion.div>
+
+          <motion.p
+            className="text-muted-foreground text-sm mt-6"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+          >
+            홍대 캠퍼스는 전화로 예약 문의 부탁드립니다.
+          </motion.p>
         </div>
 
         {/* Contact Info Cards */}
@@ -162,19 +172,20 @@ export default function Scene4() {
           <ContactCard
             icon={<Phone className="w-5 h-5" />}
             title="전화 상담"
-            content="0507-1311-7359"
-            href="tel:0507-1311-7359"
+            content="031-916-8885"
+            href="tel:031-916-8885"
           />
           <ContactCard
             icon={<MapPin className="w-5 h-5" />}
-            title="위치"
-            content="경기 고양시 일산동구 원중1길 56 8층"
-            href="https://naver.me/FpPBS3sw"
+            title="홍대 캠퍼스"
+            content="서울특별시 마포구 와우산로23길 9 칼리오페 5층"
+            href="https://naver.me/5wWq5AUs"
           />
           <ContactCard
-            icon={<Clock className="w-5 h-5" />}
-            title="운영 시간"
-            content="평일 13:00 - 22:00"
+            icon={<MapPin className="w-5 h-5" />}
+            title="일산 캠퍼스"
+            content="경기 고양시 일산동구 원중1길 56 8층"
+            href="https://naver.me/FpPBS3sw"
           />
         </motion.div>
 

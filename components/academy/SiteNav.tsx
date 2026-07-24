@@ -1,22 +1,54 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, Menu } from "lucide-react";
+import { X, Menu, ChevronDown } from "lucide-react";
 
 const NAVER_BOOKING =
   "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
 
-const navItems = [
+type NavChild = {
+  label: string;
+  href: string;
+  desc?: string;
+  badge?: string;
+};
+
+type NavItem = {
+  label: string;
+  href: string;
+  badge?: string;
+  children?: NavChild[];
+};
+
+const navItems: NavItem[] = [
   { label: "홈", href: "/" },
-  { label: "홍대 미활보 가이드", href: "/guide/hongik-mihwalbo" },
+  {
+    label: "입시 정보",
+    href: "/guide",
+    children: [
+      {
+        label: "홍대 미활보 가이드",
+        href: "/guide/hongik-mihwalbo",
+        desc: "홍익대 미술활동보고서 작성 전략",
+      },
+      {
+        label: "2027학년도 미대 입시 정보",
+        href: "/guide/jungsi-2027",
+        desc: "가·나·다군 모집군·전형방법 총정리",
+      },
+    ],
+  },
   { label: "기숙학원", href: "/gisuk", badge: "3월 오픈" },
 ];
 
 export default function SiteNav() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -28,7 +60,26 @@ export default function SiteNav() {
 
   useEffect(() => {
     setIsOpen(false);
+    setOpenMenu(null);
+    setExpanded(null);
   }, [pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpenMenu(null);
+      }
+    };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenMenu(null);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
 
   return (
     <>
@@ -52,12 +103,89 @@ export default function SiteNav() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-7" aria-label="주 메뉴">
+          <nav
+            ref={menuRef}
+            className="hidden md:flex items-center gap-7"
+            aria-label="주 메뉴"
+          >
             {navItems.map((item) => {
               const active =
                 item.href === "/"
                   ? pathname === "/"
                   : pathname.startsWith(item.href);
+
+              if (item.children) {
+                const open = openMenu === item.href;
+                return (
+                  <div
+                    key={item.href}
+                    className="relative"
+                    onMouseEnter={() => setOpenMenu(item.href)}
+                    onMouseLeave={() => setOpenMenu(null)}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setOpenMenu(open ? null : item.href)}
+                      aria-expanded={open}
+                      aria-haspopup="true"
+                      className={`flex items-center gap-1 text-sm tracking-wide transition-colors ${
+                        active || open
+                          ? "text-accent"
+                          : "text-white/70 hover:text-white"
+                      }`}
+                    >
+                      {item.label}
+                      <ChevronDown
+                        size={14}
+                        strokeWidth={2}
+                        className={`transition-transform duration-200 ${
+                          open ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    <div
+                      className={`absolute left-1/2 top-full z-50 w-72 -translate-x-1/2 pt-3 transition-all duration-200 ${
+                        open
+                          ? "visible opacity-100 translate-y-0"
+                          : "invisible opacity-0 -translate-y-1"
+                      }`}
+                    >
+                      <ul className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/40">
+                        {item.children.map((child) => {
+                          const childActive = pathname.startsWith(child.href);
+                          return (
+                            <li key={child.href}>
+                              <Link
+                                href={child.href}
+                                className={`block px-4 py-3.5 transition-colors border-b border-white/5 last:border-b-0 hover:bg-white/5 ${
+                                  childActive ? "bg-white/5" : ""
+                                }`}
+                              >
+                                <span
+                                  className={`block text-sm font-medium ${
+                                    childActive
+                                      ? "text-accent"
+                                      : "text-white/90"
+                                  }`}
+                                >
+                                  {child.label}
+                                </span>
+                                {child.desc && (
+                                  <span className="mt-0.5 block text-xs text-white/40">
+                                    {child.desc}
+                                  </span>
+                                )}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={item.href}
@@ -130,24 +258,80 @@ export default function SiteNav() {
           </div>
 
           <ul className="flex flex-col py-4 flex-1">
-            {navItems.map((item, idx) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="block px-6 py-4 text-sm font-medium tracking-wide text-white/80 hover:text-white hover:bg-white/5 border-b border-white/5 transition-colors"
-                >
-                  <span className="text-accent text-xs mr-3 font-mono">
-                    0{idx + 1}
-                  </span>
-                  {item.label}
-                  {item.badge && (
-                    <span className="ml-2 text-[10px] text-accent">
-                      {item.badge}
+            {navItems.map((item, idx) => {
+              if (item.children) {
+                const open = expanded === item.href;
+                return (
+                  <li key={item.href}>
+                    <button
+                      type="button"
+                      onClick={() => setExpanded(open ? null : item.href)}
+                      aria-expanded={open}
+                      className="flex w-full items-center px-6 py-4 text-sm font-medium tracking-wide text-white/80 hover:text-white hover:bg-white/5 border-b border-white/5 transition-colors"
+                    >
+                      <span className="text-accent text-xs mr-3 font-mono">
+                        0{idx + 1}
+                      </span>
+                      {item.label}
+                      <ChevronDown
+                        size={16}
+                        strokeWidth={2}
+                        className={`ml-auto text-white/40 transition-transform duration-200 ${
+                          open ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    <div
+                      className={`grid transition-all duration-300 ${
+                        open
+                          ? "grid-rows-[1fr] opacity-100"
+                          : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <ul className="overflow-hidden bg-white/[0.03]">
+                        {item.children.map((child) => {
+                          const childActive = pathname.startsWith(child.href);
+                          return (
+                            <li key={child.href}>
+                              <Link
+                                href={child.href}
+                                className={`block py-3.5 pl-14 pr-6 text-sm border-b border-white/5 transition-colors hover:bg-white/5 ${
+                                  childActive
+                                    ? "text-accent"
+                                    : "text-white/70 hover:text-white"
+                                }`}
+                              >
+                                {child.label}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </li>
+                );
+              }
+
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="block px-6 py-4 text-sm font-medium tracking-wide text-white/80 hover:text-white hover:bg-white/5 border-b border-white/5 transition-colors"
+                  >
+                    <span className="text-accent text-xs mr-3 font-mono">
+                      0{idx + 1}
                     </span>
-                  )}
-                </Link>
-              </li>
-            ))}
+                    {item.label}
+                    {item.badge && (
+                      <span className="ml-2 text-[10px] text-accent">
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
             <li className="px-6 pt-5">
               <a
                 href={NAVER_BOOKING}

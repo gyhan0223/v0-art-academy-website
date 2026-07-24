@@ -32,11 +32,13 @@ const navItems: NavItem[] = [
         label: "홍대 미활보 가이드",
         href: "/guide/hongik-mihwalbo",
         desc: "홍익대 미술활동보고서 작성 전략",
+        badge: "준비중",
       },
       {
         label: "2027학년도 미대 입시 정보",
         href: "/guide/jungsi-2027",
         desc: "가·나·다군 모집군·전형방법 총정리",
+        badge: "준비중",
       },
     ],
   },
@@ -170,6 +172,11 @@ export default function SiteNav() {
                                   }`}
                                 >
                                   {child.label}
+                                  {child.badge && (
+                                    <span className="ml-1.5 text-[10px] font-normal text-accent align-top">
+                                      {child.badge}
+                                    </span>
+                                  )}
                                 </span>
                                 {child.desc && (
                                   <span className="mt-0.5 block text-xs text-white/40">
@@ -303,6 +310,11 @@ export default function SiteNav() {
                                 }`}
                               >
                                 {child.label}
+                                {child.badge && (
+                                  <span className="ml-2 text-[10px] text-accent">
+                                    {child.badge}
+                                  </span>
+                                )}
                               </Link>
                             </li>
                           );

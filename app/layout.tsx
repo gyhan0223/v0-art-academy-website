@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"; // 💡 Viewport 임포트 추가
 import { Analytics } from "@vercel/analytics/next";
+import SiteNav from "@/components/academy/SiteNav";
 import "./globals.css";
 
 // 💡 1. Next.js 공식 설정으로 Safari 테마 강제 고정
@@ -58,6 +59,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
+        <SiteNav />
         {children}
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>

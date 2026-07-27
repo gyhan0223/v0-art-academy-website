@@ -6,8 +6,8 @@
 // - 경쟁률은 2025학년도 정시 기준입니다.
 // - 2027학년도 최종 모집요강은 2026년 9월경 발표되며, 모집군·반영비율·실기유형이
 //   바뀔 수 있습니다. 실제 지원 전에는 반드시 각 대학 입학처 자료로 대조하세요.
-// - JSON에 포함되지 않은 대학(홍익대·한국예술종합학교·중앙대·경희대·
-//   한양대(ERICA)·단국대·가천대)은 시행계획 기준 개략 정보로 유지했습니다.
+// - JSON에 포함되지 않은 대학(홍익대·한국예술종합학교)은
+//   시행계획 기준 개략 정보로 유지했습니다.
 // - 고려대·삼육대·서경대는 2026학년도 정시 모집요강 상세로 정리했습니다.
 
 export type Gun = "가" | "나" | "다" | "별도";
@@ -100,8 +100,6 @@ export type JungsiEntry = {
   majors?: Major[];
   tags?: string[];
   note?: string;
-  /** 모집군·전형이 최근 변동돼 확정본 대조가 특히 필요한 경우 */
-  unverified?: boolean;
 };
 
 export const jungsiEntries: JungsiEntry[] = [
@@ -170,10 +168,13 @@ export const jungsiEntries: JungsiEntry[] = [
     paper: "4절(2장)",
     duration: "5시간",
     majors: [
-      { name: "시각디자인", quota: 38, quotaNote: "써피스디자인과 합산", rate: 3.95 },
-      { name: "써피스디자인", quota: null, quotaNote: "시각디자인과 합산 38명", rate: 9.32 },
+      {
+        name: "디자인학과 (시각디자인·써피스디자인 통합)",
+        quota: 38,
+        rate: null,
+      },
     ],
-    note: "시각디자인·써피스디자인을 합산 38명 모집합니다.",
+    note: "2026학년도부터 시각디자인·써피스디자인을 디자인학과로 통합해 38명 선발합니다. 통합 전형이라 지원 풀이 하나이므로 경쟁률도 하나입니다. 전공을 나눠 뽑던 2025학년도 경쟁률(참고)은 시각디자인 3.95:1, 써피스디자인 9.32:1이었습니다.",
   },
   {
     id: "uos-ga",
@@ -361,38 +362,6 @@ export const jungsiEntries: JungsiEntry[] = [
     note: "1단계 수능 100%로 4배수를 뽑습니다. 도예학과만 2단계 실기 비중이 50%입니다.",
   },
   {
-    id: "cau-design",
-    university: "중앙대학교",
-    campus: "서울",
-    units: "디자인학부(시각디자인·산업디자인·실내환경디자인)",
-    gun: "나",
-    silgi: "기초디자인",
-    method: ["수능 + 기초디자인"],
-    ratio: { suneung: 60, silgi: 40 },
-    unverified: true,
-  },
-  {
-    id: "khu-art",
-    university: "경희대학교",
-    units: "시각디자인학과, 산업디자인학과, 환경조경디자인학과",
-    gun: "나",
-    silgi: "기초디자인",
-    method: ["수능 + 기초디자인"],
-    ratio: { suneung: 60, silgi: 40 },
-    unverified: true,
-  },
-  {
-    id: "hanyang-erica-design",
-    university: "한양대학교",
-    campus: "ERICA",
-    units: "커뮤니케이션디자인학과, 주얼리·패션디자인학과",
-    gun: "나",
-    silgi: "기초디자인",
-    method: ["수능 + 기초디자인"],
-    ratio: { suneung: 60, silgi: 40 },
-    unverified: true,
-  },
-  {
     id: "sejong-na",
     university: "세종대학교",
     units: "패션디자인학과",
@@ -538,27 +507,6 @@ export const jungsiEntries: JungsiEntry[] = [
     duration: "4시간",
     majors: [{ name: "디지털콘텐츠디자인학과", quota: 8, rate: 19.25 }],
     note: "다군 소수 모집이라 경쟁률이 높게 형성됩니다.",
-  },
-  {
-    id: "dankook-design",
-    university: "단국대학교",
-    campus: "죽전",
-    units: "커뮤니케이션디자인, 패션산업디자인, 도예",
-    gun: "다",
-    silgi: "기초디자인",
-    method: ["수능 + 기초디자인"],
-    ratio: { suneung: 60, silgi: 40 },
-    unverified: true,
-  },
-  {
-    id: "gachon-design",
-    university: "가천대학교",
-    units: "시각디자인전공, 산업디자인전공, 패션디자인전공",
-    gun: "다",
-    silgi: "기초디자인",
-    method: ["수능 + 기초디자인"],
-    ratio: { suneung: 60, silgi: 40 },
-    unverified: true,
   },
 
   /* ─────────────── 군 외 ─────────────── */

@@ -206,11 +206,6 @@ function UniversityCard({
                 {entry.campus}
               </span>
             )}
-            {entry.unverified && (
-              <span className="ml-2 align-middle text-[10px] font-medium text-yellow-500/90">
-                확정 대기
-              </span>
-            )}
           </h3>
           <p className="mt-1 text-xs leading-relaxed text-white/55">
             {entry.units}

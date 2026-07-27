@@ -162,6 +162,16 @@ function MajorTable({ majors }: { majors: Major[] }) {
               <span className="mt-0.5 block font-mono text-accent/80">
                 {fmtRate(m.rate)}
               </span>
+              {m.applicants != null && (
+                <span className="mt-0.5 block font-mono text-[10px] text-white/35">
+                  지원 {m.applicants}명
+                </span>
+              )}
+              {m.rateQuota != null && m.rateQuota !== m.quota && (
+                <span className="mt-0.5 block text-[10px] text-white/35">
+                  당시 {m.rateQuota}명 모집
+                </span>
+              )}
             </span>
           </li>
         ))}

@@ -65,6 +65,10 @@ export type Major = {
   quotaNote?: string;
   /** 2025학년도 정시 경쟁률(:1). 자료 없으면 null */
   rate: number | null;
+  /** 2025학년도 지원자 수(명). 경쟁률 근거로 표기 (값이 있을 때만 노출) */
+  applicants?: number;
+  /** 2025 경쟁률 산정 당시 모집인원. 현재 모집인원과 다를 때만 표기 (모집 규모 변동 안내) */
+  rateQuota?: number;
   /** 대학 안에서 전형 구조가 갈릴 때만 표기 (예: 일괄합산 / 단계별) */
   stageTag?: string;
   /** 대학 공통값과 다를 때만 표기 */
@@ -146,9 +150,9 @@ export const jungsiEntries: JungsiEntry[] = [
     majors: [
       { name: "공업디자인", quota: 21, rate: 2.67, stageTag: "일괄합산" },
       { name: "공간디자인", quota: 24, rate: 3.18, stageTag: "일괄합산" },
-      { name: "시각디자인", quota: 9, rate: 3.5, stageTag: "단계별·사고력평가" },
-      { name: "금속공예", quota: 16, rate: 5.13, stageTag: "단계별·사고력평가" },
-      { name: "도자공예", quota: 15, rate: 5.13, stageTag: "단계별·사고력평가" },
+      { name: "시각디자인", quota: 9, rate: 3.5, rateQuota: 12, stageTag: "단계별·사고력평가" },
+      { name: "금속공예", quota: 16, rate: 5.13, applicants: 82, stageTag: "단계별·사고력평가" },
+      { name: "도자공예", quota: 15, rate: 5.13, applicants: 77, stageTag: "단계별·사고력평가" },
       { name: "의상디자인", quota: 22, rate: 3.59, stageTag: "단계별·사고력평가" },
       { name: "영상디자인", quota: 20, rate: 3.74, stageTag: "단계별·사고력평가" },
       { name: "자동차운송디자인", quota: 18, rate: 3.44, stageTag: "단계별·사고력평가" },

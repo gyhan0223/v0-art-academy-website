@@ -3,12 +3,12 @@ import JungsiExplorer from "@/components/academy/JungsiExplorer";
 import { SILGI_META } from "@/lib/jungsi-data";
 
 export const metadata: Metadata = {
-  title: "2027 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
+  title: "2026 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
   description:
     "서울대·홍익대·국민대 등 주요 21개 미술대학의 정시 모집군·전형방법(수능·실기 비율)·실기유형과 학과별 모집인원·경쟁률까지 한 페이지에 정리했습니다. 가·나·다군 지원 조합 짜기 전에 꼭 확인하세요.",
   keywords: [
     "미대 정시 가나다군",
-    "2027 미대 정시",
+    "2026 미대 정시",
     "미대 정시 전형방법",
     "미대 정시 경쟁률",
     "기초디자인 대학",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "일산 미술학원",
   ],
   openGraph: {
-    title: "2027 미대 정시 가나다군 총정리",
+    title: "2026 미대 정시 가나다군 총정리",
     description:
       "주요 미대 21곳의 모집군·전형방법·실기유형과 학과별 모집인원·경쟁률 — 지원 카드 3장을 어떻게 쓸지, 한 페이지로 끝내세요.",
     type: "article",
@@ -31,12 +31,16 @@ const NAVER_BOOKING =
 /* 히어로: "지원 카드 3장 + 보너스 1장" 시그니처 */
 function CardSlots() {
   const slots = [
-    { label: "가군", sub: "1.11 – 1.17" },
-    { label: "나군", sub: "1.18 – 1.24" },
-    { label: "다군", sub: "1.25 – 1.31" },
+    { label: "가군", sub: "1.5 – 1.12" },
+    { label: "나군", sub: "1.13 – 1.20" },
+    { label: "다군", sub: "1.21 – 1.28" },
   ];
   return (
-    <div className="mt-10 flex items-stretch justify-center gap-3">
+    <div className="mt-10 flex flex-col items-center">
+    <span className="mb-3 text-[11px] tracking-wider text-white/40">
+      전형기간 (2026학년도 기준)
+    </span>
+    <div className="flex items-stretch justify-center gap-3">
       {slots.map((slot, i) => (
         <div
           key={slot.label}
@@ -60,6 +64,7 @@ function CardSlots() {
           한예종 별도
         </span>
       </div>
+    </div>
     </div>
   );
 }
@@ -97,10 +102,13 @@ export default function Page() {
         <header className="mb-16 text-center">
           <p className="mb-4 text-xs tracking-[0.3em] text-accent">입시정보</p>
           <h1 className="text-3xl font-bold leading-snug text-white md:text-4xl">
-            2027 미대 정시
+            2026 미대 정시
             <br />
             가나다군 총정리
           </h1>
+          <p className="mt-4 text-xs leading-relaxed text-white/40">
+            2025년 9월 기준 · 2026년 11월 갱신 예정
+          </p>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground">
             정시는 군마다 1곳, 총 3장의 카드로 승부합니다.
             <br className="hidden md:block" /> 주요 미대 21곳의 모집군 ·

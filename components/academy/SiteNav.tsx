@@ -35,8 +35,8 @@ const navItems: NavItem[] = [
         badge: "준비중",
       },
       {
-        label: "2027학년도 미대 입시 정보",
-        href: "/guide/jungsi-2027",
+        label: "2026학년도 미대 입시 정보",
+        href: "/guide/jungsi-2026",
         desc: "가·나·다군 모집군·전형방법 총정리",
       },
     ],

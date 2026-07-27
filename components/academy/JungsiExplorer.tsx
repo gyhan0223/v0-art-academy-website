@@ -8,6 +8,7 @@ import {
   pendingUniversities,
   type Gun,
   type JungsiEntry,
+  type Major,
   type SilgiType,
 } from "@/lib/jungsi-data";
 
@@ -16,6 +17,7 @@ import {
 const SILGI_BADGE: Record<SilgiType, string> = {
   기초소양: "bg-accent/15 text-accent border border-accent/40",
   기초디자인: "bg-white/8 text-white/85 border border-white/20",
+  선택실기: "bg-white/5 text-white/75 border border-white/25 border-dotted",
   자체실기: "bg-transparent text-accent border border-accent/60",
   비실기: "bg-transparent text-white/70 border border-dashed border-white/35",
 };
@@ -63,6 +65,108 @@ function RatioBar({ entry }: { entry: JungsiEntry }) {
         ))}
       </div>
     </div>
+  );
+}
+
+/* ─────────────────────── 실기·모집 상세 ─────────────────────── */
+
+function fmtRate(rate: number | null) {
+  return rate == null ? "—" : `${rate.toFixed(2)} : 1`;
+}
+
+/** 카드 상단: 실기내용 · 화지 · 시간 + 모집인원/경쟁률 요약 */
+function MajorSummary({ entry }: { entry: JungsiEntry }) {
+  const majors = entry.majors ?? [];
+  if (majors.length === 0 && !entry.practical) return null;
+
+  const rates = majors
+    .map((m) => m.rate)
+    .filter((r): r is number => r != null);
+  const quotas = majors
+    .map((m) => m.quota)
+    .filter((q): q is number => q != null);
+  const totalQuota = quotas.reduce((a, b) => a + b, 0);
+  const minRate = rates.length ? Math.min(...rates) : null;
+  const maxRate = rates.length ? Math.max(...rates) : null;
+
+  const specParts = [entry.practical, entry.paper, entry.duration].filter(
+    (v): v is string => Boolean(v),
+  );
+
+  return (
+    <div className="mt-4 space-y-2">
+      {specParts.length > 0 && (
+        <p className="text-[12px] leading-relaxed text-white/55">
+          <span className="text-white/40">실기</span>{" "}
+          {specParts.join(" · ")}
+        </p>
+      )}
+      {(totalQuota > 0 || minRate != null) && (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px]">
+          {totalQuota > 0 && (
+            <span className="text-white/70">
+              <span className="text-white/40">모집 </span>
+              <span className="font-mono text-white">{totalQuota}</span>명
+            </span>
+          )}
+          {minRate != null && (
+            <span className="text-white/70">
+              <span className="text-white/40">2025 경쟁률 </span>
+              <span className="font-mono text-accent">
+                {minRate === maxRate
+                  ? fmtRate(minRate)
+                  : `${minRate.toFixed(2)}~${maxRate!.toFixed(2)} : 1`}
+              </span>
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** 접이식 학과별 표 */
+function MajorTable({ majors }: { majors: Major[] }) {
+  if (majors.length === 0) return null;
+  return (
+    <details className="group/major mt-3">
+      <summary className="flex cursor-pointer list-none items-center gap-1.5 text-[12px] font-medium text-white/55 transition-colors hover:text-accent">
+        <span className="text-accent transition-transform group-open/major:rotate-90">
+          ▸
+        </span>
+        학과별 모집 상세 · {majors.length}개 전공
+      </summary>
+      <ul className="mt-2 divide-y divide-white/5 rounded-md border border-white/10 bg-black/30">
+        {majors.map((m) => (
+          <li
+            key={m.name}
+            className="flex items-center justify-between gap-3 px-3 py-2"
+          >
+            <span className="min-w-0 text-[12px] leading-tight text-white/80">
+              {m.name}
+              {m.stageTag && (
+                <span className="ml-1.5 rounded-sm bg-white/8 px-1 py-0.5 align-middle text-[10px] text-white/45">
+                  {m.stageTag}
+                </span>
+              )}
+              {(m.practical || m.duration) && (
+                <span className="mt-0.5 block text-[10px] text-white/35">
+                  {[m.practical, m.duration].filter(Boolean).join(" · ")}
+                </span>
+              )}
+            </span>
+            <span className="shrink-0 text-right text-[11px] leading-tight text-white/50">
+              <span className="font-mono text-white/70">
+                {m.quota != null ? `${m.quota}명` : m.quotaNote ?? "—"}
+              </span>
+              <span className="mt-0.5 block font-mono text-accent/80">
+                {fmtRate(m.rate)}
+              </span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </details>
   );
 }
 
@@ -127,6 +231,12 @@ function UniversityCard({
       </ul>
 
       <RatioBar entry={entry} />
+
+      <MajorSummary entry={entry} />
+
+      {entry.majors && entry.majors.length > 1 && (
+        <MajorTable majors={entry.majors} />
+      )}
 
       {(entry.tags?.length || entry.note) && (
         <div className="mt-4 border-t border-white/5 pt-3">
@@ -345,10 +455,11 @@ function PlanTray({
 
 const SILGI_FILTERS: (SilgiType | "전체")[] = [
   "전체",
-  "기초소양",
   "기초디자인",
-  "비실기",
+  "기초소양",
+  "선택실기",
   "자체실기",
+  "비실기",
 ];
 
 export default function JungsiExplorer({

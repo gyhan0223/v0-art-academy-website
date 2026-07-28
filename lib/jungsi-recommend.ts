@@ -1,0 +1,263 @@
+import {
+  jungsiEntries,
+  type Gun,
+  type JungsiEntry,
+  type SilgiType,
+} from "./jungsi-data";
+
+/* ────────────────────────────────────────────────────────────────
+   정시 성적 → 대학별 수능 환산 백분위 → 군별 지원권 추천 (참고용)
+
+   - 반영식(어느 과목 몇 %)은 각 대학 모집요강 기준이라 계산이 정확합니다.
+   - 합격선은 2025학년도 참고치가 있는 9곳만 안정/적정/도전 뱃지를 붙입니다.
+   - 실기 성적은 반영하지 않습니다 → 최종 합불이 아니라 '수능 기준 지원권'입니다.
+   ──────────────────────────────────────────────────────────────── */
+
+export type Subject = "국어" | "수학" | "영어" | "탐구";
+
+export type StudentScore = {
+  국어: number | null; // 백분위 0~100
+  수학: number | null; // 백분위 0~100, null = 미응시
+  영어: number | null; // 등급 1~9
+  탐구: number | null; // 백분위 0~100 (2과목 평균)
+};
+
+/** 영어 등급 → 백분위 근사(참고용). 대학마다 환산표가 달라 어림값입니다. */
+const ENGLISH_PCT: Record<number, number> = {
+  1: 99, 2: 92, 3: 85, 4: 75, 5: 65, 6: 55, 7: 45, 8: 30, 9: 15,
+};
+
+type Weights = Partial<Record<Subject, number>>;
+
+type ReflectSpec =
+  | { kind: "fixed"; w: Weights; mathRequired?: boolean; tamRequired?: boolean }
+  | {
+      kind: "pickTop";
+      pool: Subject[];
+      weights: number[]; // 내림차순: 학생의 상위 과목에 큰 가중치
+      plus?: Weights;
+      mathRequired?: boolean;
+      tamRequired?: boolean;
+    }
+  | { kind: "custom"; label: string }; // 자체 환산 등 계산 제외
+
+/** 대학(entry.id)별 수능 반영식. 모집요강의 '수능 반영영역' 문구를 구조화한 것. */
+const REFLECT: Record<string, ReflectSpec> = {
+  // ── 가군 ──
+  "ewha-ga": { kind: "pickTop", pool: ["국어", "수학", "탐구"], weights: [50, 50] },
+  "kookmin-ga": { kind: "pickTop", pool: ["수학", "탐구"], weights: [33.34], plus: { 국어: 33.33, 영어: 33.33 } },
+  "kookmin-hoehwa-ga": { kind: "pickTop", pool: ["수학", "탐구"], weights: [33.34], plus: { 국어: 33.33, 영어: 33.33 } },
+  "skku-ga": { kind: "fixed", w: { 국어: 45, 탐구: 45, 영어: 10 } },
+  "skku-fine-ga": { kind: "fixed", w: { 국어: 45, 탐구: 45, 영어: 10 } },
+  "uos-ga": { kind: "fixed", w: { 국어: 50, 영어: 30, 탐구: 20 } },
+  "uos-sculpture-ga": { kind: "fixed", w: { 국어: 40, 영어: 40, 탐구: 20 } },
+  "korea-design": { kind: "fixed", w: { 국어: 55.56, 탐구: 44.44 } },
+  "korea-freemajor-ga": { kind: "fixed", w: { 국어: 35.7, 수학: 35.7, 탐구: 28.6 }, mathRequired: true },
+  "sookmyung-ga": { kind: "fixed", w: { 국어: 40, 영어: 30, 탐구: 30 } },
+  "sookmyung-fine-ga": { kind: "fixed", w: { 국어: 60, 영어: 40 } },
+  "swu-ga": { kind: "pickTop", pool: ["국어", "영어", "수학", "탐구"], weights: [40, 40, 20] },
+  "skuniv-ga": { kind: "pickTop", pool: ["국어", "수학", "탐구"], weights: [40, 40], plus: { 영어: 20 } },
+  "syu-ga": { kind: "custom", label: "삼육대 자체 등급 환산점수" },
+  "konkuk-ga": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 45, 영어: 25 } },
+  "konkuk-hyeondae-ga": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 45, 영어: 25 } },
+  "gyeonggi-ga": { kind: "pickTop", pool: ["국어", "수학", "탐구"], weights: [35, 35], plus: { 영어: 30 } },
+  "dongduk-ga": { kind: "pickTop", pool: ["국어", "수학"], weights: [35, 25], plus: { 영어: 20, 탐구: 20 } },
+  "hansung-ga": { kind: "fixed", w: { 국어: 35, 수학: 25, 영어: 20, 탐구: 20 } },
+
+  // ── 나군 ──
+  "snu-art": { kind: "custom", label: "서울대 자체·통합실기 기준" },
+  "hongik-art": { kind: "pickTop", pool: ["국어", "수학", "탐구"], weights: [40, 40], plus: { 영어: 20 } },
+  "seoultech-na": { kind: "fixed", w: { 국어: 40, 영어: 25, 탐구: 35 } },
+  "seoultech-nonsilgi-na": { kind: "fixed", w: { 국어: 30, 수학: 25, 영어: 25, 탐구: 20 }, mathRequired: true },
+  "sejong-fine-na": { kind: "fixed", w: { 국어: 70, 영어: 30 } },
+  "sejong-na": { kind: "fixed", w: { 국어: 70, 영어: 30 } },
+  "sejong-sw-na": { kind: "fixed", w: { 국어: 35, 수학: 35, 영어: 20, 탐구: 10 }, mathRequired: true },
+  "khu-na": { kind: "fixed", w: { 국어: 60, 탐구: 40 } },
+  "dgu-na": { kind: "fixed", w: { 국어: 45, 영어: 15, 탐구: 40 } },
+  "cau-na": { kind: "fixed", w: { 국어: 50, 탐구: 50 } },
+  "kookmin-na": { kind: "fixed", w: { 국어: 33.33, 영어: 33.33, 탐구: 33.34 }, tamRequired: true },
+  "konkuk-na": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 45, 영어: 25 } },
+  "konkuk-uisang-inmun-na": { kind: "fixed", w: { 국어: 40, 수학: 30, 영어: 10, 탐구: 20 }, mathRequired: true },
+  "dongduk-na": { kind: "pickTop", pool: ["국어", "수학"], weights: [33.33], plus: { 영어: 33.33, 탐구: 33.34 } },
+  "swu-na": { kind: "pickTop", pool: ["국어", "영어", "수학", "탐구"], weights: [40, 40, 20] },
+  "swu-hyeondae-na": { kind: "pickTop", pool: ["국어", "영어", "수학", "탐구"], weights: [40, 40, 20] },
+  "duksung-na": { kind: "pickTop", pool: ["국어", "영어", "수학", "탐구"], weights: [50, 50] },
+  "sangmyung-na": { kind: "pickTop", pool: ["국어", "수학", "영어"], weights: [40, 40], plus: { 탐구: 20 } },
+  "sangmyung-sw-na": { kind: "fixed", w: { 국어: 35, 수학: 25, 영어: 20, 탐구: 20 }, mathRequired: true },
+
+  // ── 다군 ──
+  "hongik-da": { kind: "fixed", w: { 국어: 25, 수학: 33, 영어: 15, 탐구: 27 }, mathRequired: true },
+  "dongduk-da": { kind: "pickTop", pool: ["국어", "수학"], weights: [33.33], plus: { 영어: 33.33, 탐구: 33.34 } },
+  "chugye-da": { kind: "fixed", w: { 국어: 50, 영어: 50 } },
+  "hansung-da": { kind: "pickTop", pool: ["국어", "수학"], weights: [40], plus: { 영어: 40, 탐구: 20 } },
+  "swu-da": { kind: "pickTop", pool: ["국어", "수학", "영어", "탐구"], weights: [35, 30, 20, 15] },
+  "sungshin-da": { kind: "pickTop", pool: ["국어", "수학", "영어", "탐구"], weights: [33.33, 33.33, 33.34] },
+  "mju-da": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 35, 영어: 35 } },
+  "mju-ai-da": { kind: "fixed", w: { 국어: 25, 수학: 35, 영어: 20, 탐구: 20 }, mathRequired: true },
+  "konkuk-da": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 45, 영어: 25 } },
+  "skuniv-mudae-da": { kind: "pickTop", pool: ["국어", "수학", "탐구"], weights: [40, 40], plus: { 영어: 20 } },
+};
+
+/** 2025학년도 참고 합격선(백분위). 있는 곳만 안정/적정/도전 판정. */
+const CUTOFFS: Record<string, { p: number; label: string }> = {
+  "gyeonggi-ga": { p: 68, label: "2025 50%컷 백분위 68" },
+  "dongduk-ga": { p: 82, label: "2025 백분위 평균 82" },
+  "seoultech-na": { p: 85, label: "2025 학과별 80.8~89.4" },
+  "seoultech-nonsilgi-na": { p: 93.8, label: "2025 비실기 93.8" },
+  "konkuk-na": { p: 78, label: "2025 학과별 68~82" },
+  "swu-na": { p: 93, label: "2025 백분위 평균 93" },
+  "swu-hyeondae-na": { p: 89, label: "2025 백분위 89.3" },
+  "duksung-na": { p: 55, label: "2025 종목별 상이(수묵 70%컷 48.5)" },
+  "swu-da": { p: 93, label: "2025 백분위 평균 93" },
+};
+
+/** 학생이 준비 중인 실기 트랙 */
+export type PrepTrack = "기초디자인" | "기초소양";
+
+/**
+ * 준비한 실기유형으로 그 대학에 지원할 수 있는지.
+ * - 같은 유형이면 당연히 가능
+ * - 선택실기: 지정 유형(기초디자인·기초소양·소묘 등) 중 골라 응시 → 준비한 유형으로 지원 가능
+ * - 비실기: 실기 자체가 없음(수능·서류) → 누구나 지원 가능
+ * - 다른 유형(기초디자인↔기초소양)·자체실기: 별도 준비가 필요 → 제외
+ */
+export function isCompatibleTrack(silgi: SilgiType, track: PrepTrack): boolean {
+  if (silgi === track) return true;
+  if (silgi === "선택실기" || silgi === "비실기") return true;
+  return false;
+}
+
+function subjectPct(s: StudentScore, subj: Subject): number | null {
+  if (subj === "영어") return s.영어 == null ? null : ENGLISH_PCT[s.영어] ?? null;
+  const v = s[subj];
+  return v == null ? null : v;
+}
+
+export type Tier = "안정" | "적정" | "도전" | "낮음";
+
+export type Ranked = {
+  entry: JungsiEntry;
+  /** 수능 환산 백분위(0~100). null이면 자체환산 등 계산 불가. */
+  converted: number | null;
+  /** 계산 불가/제외 사유 */
+  blocked?: string;
+  tier?: Tier;
+  cutoffLabel?: string;
+};
+
+function tierOf(converted: number, cutoff: number): Tier {
+  const d = converted - cutoff;
+  if (d >= 2) return "안정";
+  if (d >= -3) return "적정";
+  if (d >= -8) return "도전";
+  return "낮음";
+}
+
+/** 한 대학의 수능 환산 백분위 계산 */
+export function convertScore(
+  entryId: string,
+  s: StudentScore,
+): { value: number | null; blocked?: string } {
+  const spec = REFLECT[entryId];
+  if (!spec) return { value: null, blocked: "반영식 확인 필요" };
+  if (spec.kind === "custom") return { value: null, blocked: spec.label };
+
+  const mathRequired = spec.mathRequired;
+  const tamRequired = spec.tamRequired;
+  if (mathRequired && s.수학 == null) return { value: null, blocked: "수학 필수 (미응시)" };
+  if (tamRequired && s.탐구 == null) return { value: null, blocked: "탐구 필수 (미응시)" };
+
+  if (spec.kind === "fixed") {
+    let total = 0;
+    let wsum = 0;
+    for (const [subj, w] of Object.entries(spec.w) as [Subject, number][]) {
+      const p = subjectPct(s, subj) ?? 0; // 미응시 반영과목은 0점 처리(불리)
+      total += p * w;
+      wsum += w;
+    }
+    return { value: wsum > 0 ? total / wsum : null };
+  }
+
+  // pickTop: 학생의 상위 과목에 큰 가중치를 배정
+  const ranked = spec.pool
+    .map((subj) => ({ subj, p: subjectPct(s, subj) ?? 0 }))
+    .sort((a, b) => b.p - a.p);
+  let total = 0;
+  let wsum = 0;
+  spec.weights.forEach((w, i) => {
+    const p = ranked[i]?.p ?? 0;
+    total += p * w;
+    wsum += w;
+  });
+  if (spec.plus) {
+    for (const [subj, w] of Object.entries(spec.plus) as [Subject, number][]) {
+      const p = subjectPct(s, subj) ?? 0;
+      total += p * w;
+      wsum += w;
+    }
+  }
+  return { value: wsum > 0 ? total / wsum : null };
+}
+
+export function hasScore(s: StudentScore): boolean {
+  return [s.국어, s.영어, s.탐구].some((v) => v != null);
+}
+
+/** 군별로 학생 점수에 맞춰 정렬된 대학 목록. track을 주면 지원 가능한 실기유형만 남깁니다. */
+export function rankByGun(
+  s: StudentScore,
+  track?: PrepTrack | null,
+): Record<Gun, Ranked[]> {
+  const out: Record<Gun, Ranked[]> = { 가: [], 나: [], 다: [], 별도: [] };
+  for (const entry of jungsiEntries) {
+    if (track && !isCompatibleTrack(entry.silgi, track)) continue;
+    const { value, blocked } = convertScore(entry.id, s);
+    const cut = CUTOFFS[entry.id];
+    const r: Ranked = {
+      entry,
+      converted: value,
+      blocked,
+      tier: value != null && cut ? tierOf(value, cut.p) : undefined,
+      cutoffLabel: cut?.label,
+    };
+    (out[entry.gun] ??= []).push(r);
+  }
+  const tierRank: Record<Tier, number> = { 적정: 0, 안정: 1, 도전: 2, 낮음: 3 };
+  for (const g of Object.keys(out) as Gun[]) {
+    out[g].sort((a, b) => {
+      // 계산 가능한 대학을 위로, 그다음 환산점수 높은 순
+      if (a.converted == null && b.converted == null) return 0;
+      if (a.converted == null) return 1;
+      if (b.converted == null) return -1;
+      return b.converted - a.converted;
+    });
+    // 적정 라인이 있으면 살짝 끌어올려 추천 상단 노출(안정보다 적정 우선 노출)
+    out[g].sort((a, b) => {
+      const ta = a.tier ? tierRank[a.tier] : 1.5;
+      const tb = b.tier ? tierRank[b.tier] : 1.5;
+      if (a.converted == null || b.converted == null) return 0;
+      return ta - tb;
+    });
+  }
+  return out;
+}
+
+/** 가·나·다 각 1곳씩 추천 조합(환산 상위 + 적정/안정 우선) */
+export function recommendCombo(
+  s: StudentScore,
+  track?: PrepTrack | null,
+): Partial<Record<Gun, Ranked>> {
+  const ranked = rankByGun(s, track);
+  const combo: Partial<Record<Gun, Ranked>> = {};
+  for (const g of ["가", "나", "다"] as Gun[]) {
+    const pick = ranked[g].find((r) => r.converted != null && r.tier !== "낮음");
+    if (pick) combo[g] = pick;
+  }
+  return combo;
+}
+
+export const RECOMMEND_COVERAGE = {
+  totalEntries: jungsiEntries.length,
+  withReflect: Object.values(REFLECT).filter((r) => r.kind !== "custom").length,
+  withCutoff: Object.keys(CUTOFFS).length,
+};

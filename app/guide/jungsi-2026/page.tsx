@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import JungsiExplorer from "@/components/academy/JungsiExplorer";
+import ScoreRecommender from "@/components/academy/ScoreRecommender";
 import { SILGI_META } from "@/lib/jungsi-data";
 
 export const metadata: Metadata = {
@@ -94,6 +96,112 @@ const faqs = [
 
 const SILGI_ORDER = ["기초디자인", "기초소양", "선택실기", "자체실기", "비실기"] as const;
 
+/* 예시작 갤러리를 크게 보여주는 대표 유형.
+   public/images/silgi/ 에 실제 그림을 같은 이름으로 넣으면 그대로 노출됩니다. */
+type FeaturedType = "기초디자인" | "기초소양";
+
+const FEATURED_EXAMPLES: Record<
+  FeaturedType,
+  {
+    badge: string;
+    images: { src: string; alt: string }[];
+    caption: React.ReactNode;
+    moreUrl?: string;
+  }
+> = {
+  기초디자인: {
+    badge: "가장 많은 대학이 채택",
+    images: [
+      { src: "/images/silgi/gicho-design-1.jpg", alt: "유리구슬·부채·노끈을 얽어 화면을 구성한 기초디자인 예시작" },
+      { src: "/images/silgi/gicho-design-2.jpg", alt: "색유리 구슬과 금속판·나무를 구성한 기초디자인 예시작" },
+      { src: "/images/silgi/gicho-design-3.jpg", alt: "유리구슬과 주름 금속·부채를 역동적으로 구성한 기초디자인 예시작" },
+      { src: "/images/silgi/gicho-design-4.jpg", alt: "부채와 유리구슬을 방사형으로 구성한 기초디자인 예시작" },
+      { src: "/images/silgi/gicho-design-5.jpg", alt: "유리구슬·금속판·나무막대를 사선으로 구성한 기초디자인 예시작" },
+    ],
+    caption: (
+      <>
+        위 그림처럼 유리구슬·부채·금속 같은{" "}
+        <span className="text-white/70">사물이 주어지고</span>, 정해진 조건에 맞춰{" "}
+        <span className="text-white/70">화면을 완성도 있게 구성</span>하는 시험입니다.
+      </>
+    ),
+    moreUrl: "https://blog.naver.com/modago-/221152752551",
+  },
+  기초소양: {
+    badge: "관찰·발상 평가",
+    images: [
+      { src: "/images/silgi/gicho-soyang-1.jpg", alt: "기초소양·기초조형 예시작 1" },
+      { src: "/images/silgi/gicho-soyang-2.jpg", alt: "기초소양·기초조형 예시작 2" },
+      { src: "/images/silgi/gicho-soyang-3.jpg", alt: "기초소양·기초조형 예시작 3" },
+      { src: "/images/silgi/gicho-soyang-4.jpg", alt: "기초소양·기초조형 예시작 4" },
+      { src: "/images/silgi/gicho-soyang-5.jpg", alt: "기초소양·기초조형 예시작 5" },
+    ],
+    caption: (
+      <>
+        제시된 대상·주제를 <span className="text-white/70">관찰하고 발상</span>해, 똑같이 그리기보다{" "}
+        <span className="text-white/70">자기만의 화면으로 재구성</span>하는 시험입니다.
+      </>
+    ),
+    moreUrl: "https://blog.naver.com/modago-/221160292640",
+  },
+};
+
+/* 이미지로 함께 보여줄 나머지 유형(1장씩). src 를 채우면 카드에 예시작이 붙습니다. */
+const SILGI_EXAMPLE: Partial<Record<(typeof SILGI_ORDER)[number], { src: string; alt: string }>> = {
+  // 선택실기: { src: "/images/silgi/select-1.jpg", alt: "…" },
+  // 자체실기: { src: "/images/silgi/jache-1.jpg", alt: "…" },
+};
+
+/* 대표 유형 카드 — 라벨·배지·설명·예시작 5장·해설·(선택)더보기 링크 */
+function FeaturedTypeCard({ type }: { type: FeaturedType }) {
+  const cfg = FEATURED_EXAMPLES[type];
+  return (
+    <div className="mb-4 rounded-lg border border-white/10 bg-[#0a0a0a] p-5 md:p-6">
+      <div className="flex items-baseline justify-between gap-3">
+        <p className="text-base font-bold text-white">{SILGI_META[type].label}</p>
+        <span className="shrink-0 rounded-full border border-accent/40 bg-accent/10 px-2.5 py-0.5 text-[11px] font-medium text-accent">
+          {cfg.badge}
+        </span>
+      </div>
+      <p className="mt-2 text-[13px] leading-relaxed text-white/60">
+        {SILGI_META[type].description}
+      </p>
+      <figure className="mt-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+          {cfg.images.map((ex) => (
+            <div
+              key={ex.src}
+              className="relative aspect-[4/3] overflow-hidden rounded-md border border-white/10 bg-black"
+            >
+              <Image
+                src={ex.src}
+                alt={ex.alt}
+                fill
+                sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 170px"
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
+        <figcaption className="mt-2.5 text-[12px] leading-relaxed text-white/45">
+          {cfg.caption}
+        </figcaption>
+      </figure>
+      {cfg.moreUrl && (
+        <a
+          href={cfg.moreUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2 text-[13px] font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        >
+          {SILGI_META[type].label} 예시작 더 보기
+          <span aria-hidden>→</span>
+        </a>
+      )}
+    </div>
+  );
+}
+
 export default function Page() {
   return (
     <main className="bg-background text-foreground">
@@ -127,27 +235,85 @@ export default function Page() {
           <p className="mb-6 text-sm leading-relaxed text-white/60">
 어느 대학에 갈 수 있는지는 결국 성적이 정하지만, 어느 대학을 노려볼 수 있는지는 준비한 실기유형이 먼저 가릅니다. 유형이 다르면 준비 방식이 완전히 달라 중간에 갈아타기 어렵습니다. 아래 다섯 가지 유형부터 확인하고, 군별 대학 표를 보면 지원 전략이 훨씬 선명해집니다.
           </p>
+          {/* 대표 유형 — 예시작 갤러리 카드 */}
+          <FeaturedTypeCard type="기초디자인" />
+          <FeaturedTypeCard type="기초소양" />
+
+          {/* 나머지 유형 */}
           <div className="grid gap-4 md:grid-cols-2">
-            {SILGI_ORDER.map((type) => (
-              <div
-                key={type}
-                className="rounded-lg border border-white/10 bg-[#0a0a0a] p-5"
-              >
-                <p className="text-sm font-bold text-white">
-                  {SILGI_META[type].label}
-                </p>
-                <p className="mt-2 text-[13px] leading-relaxed text-white/60">
-                  {SILGI_META[type].description}
-                </p>
-              </div>
-            ))}
+            {SILGI_ORDER.filter(
+              (type) => type !== "기초디자인" && type !== "기초소양",
+            ).map((type) => {
+              const ex = SILGI_EXAMPLE[type];
+              return (
+                <div
+                  key={type}
+                  className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]"
+                >
+                  {ex && (
+                    <div className="relative aspect-[16/9] border-b border-white/10 bg-black">
+                      <Image
+                        src={ex.src}
+                        alt={ex.alt}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 400px"
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <p className="text-sm font-bold text-white">
+                      {SILGI_META[type].label}
+                    </p>
+                    <p className="mt-2 text-[13px] leading-relaxed text-white/60">
+                      {SILGI_META[type].description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
+
+          {/* 실기유형 섹션 CTA */}
+          <div className="mt-8 flex flex-col items-center gap-4 rounded-lg border border-accent/30 bg-accent/[0.06] p-5 text-center md:flex-row md:items-center md:justify-between md:gap-6 md:p-6 md:text-left">
+            <p className="text-sm leading-relaxed text-white/70">
+              <span className="font-bold text-white">
+                우리 아이는 어떤 유형이 맞을까요?
+              </span>
+              <br className="hidden md:block" /> 성적·성향에 맞는 실기유형과
+              지원 전략을 <span className="text-accent">무료</span>로 진단해
+              드립니다.
+            </p>
+            <a
+              href={NAVER_BOOKING}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              무료 진단 신청
+              <span aria-hidden>→</span>
+            </a>
+          </div>
+        </section>
+
+        {/* 성적 기반 추천 */}
+        <section className="mb-14" aria-label="내 성적으로 조합 찾기">
+          <h2 className="mb-2 text-xl font-bold text-white md:text-2xl">
+            <span className="mr-3 font-mono text-base text-accent">02</span>
+            내 성적으로 유리한 조합 찾기
+          </h2>
+          <p className="mb-4 text-sm leading-relaxed text-white/60">
+            미대 정시는 대학마다 반영 과목이 달라, 같은 백분위라도 유리한 학교가
+            제각각입니다. 모의고사·수능 백분위를 넣으면 각 대학 반영식으로 환산해
+            가·나·다군에서 유리한 순으로 정렬해 드립니다.
+          </p>
+          <ScoreRecommender ctaHref={NAVER_BOOKING} />
         </section>
 
         {/* 대학 탐색기 */}
         <section aria-label="대학별 정시 정보">
           <h2 className="mb-2 text-xl font-bold text-white md:text-2xl">
-            <span className="mr-3 font-mono text-base text-accent">02</span>
+            <span className="mr-3 font-mono text-base text-accent">03</span>
             군별 대학 한눈에 보기
           </h2>
           <p className="mb-4 text-sm leading-relaxed text-white/60">
@@ -163,7 +329,7 @@ export default function Page() {
         {/* FAQ */}
         <section className="mt-16" aria-label="자주 묻는 질문">
           <h2 className="mb-6 text-xl font-bold text-white md:text-2xl">
-            <span className="mr-3 font-mono text-base text-accent">03</span>
+            <span className="mr-3 font-mono text-base text-accent">04</span>
             자주 묻는 질문
           </h2>
           <div className="space-y-3">

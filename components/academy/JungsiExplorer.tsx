@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   GUN_ORDER,
   SILGI_META,
@@ -352,6 +352,7 @@ function PlanTray({
     .map((g) => byId.get(selection[g]!))
     .filter((e): e is JungsiEntry => Boolean(e));
   const filledCount = mainGuns.filter((g) => selection[g]).length;
+  const complete = filledCount === 3;
   const analysis = analyzeSelection(picked);
 
   return (
@@ -433,22 +434,32 @@ function PlanTray({
 
         <div className="mt-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <p aria-live="polite" className="text-[12px] leading-relaxed">
-            {analysis.headline && (
-              <>
-                <span className="font-medium text-accent">
-                  {analysis.headline}
-                </span>{" "}
-                <span className="text-white/55">{analysis.detail}</span>
-              </>
+            {complete ? (
+              <span className="font-bold text-accent">
+                ✓ 3장 완성! 이 조합, 지금 바로 진단받아 보세요.
+              </span>
+            ) : (
+              analysis.headline && (
+                <>
+                  <span className="font-medium text-accent">
+                    {analysis.headline}
+                  </span>{" "}
+                  <span className="text-white/55">{analysis.detail}</span>
+                </>
+              )
             )}
           </p>
           <a
             href={ctaHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 rounded-md bg-accent px-5 py-2.5 text-center text-xs font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className={
+              complete
+                ? "w-full shrink-0 rounded-md bg-accent px-6 py-3 text-center text-sm font-bold text-black shadow-[0_0_0_3px_rgba(255,255,255,0.12)] transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-auto"
+                : "shrink-0 rounded-md bg-accent px-5 py-2.5 text-center text-xs font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            }
           >
-            이 조합으로 무료 진단 받기
+            {complete ? "이 3장 조합 무료 진단 받기" : "이 조합으로 무료 진단 받기"}
           </a>
         </div>
       </div>
@@ -472,10 +483,25 @@ export default function JungsiExplorer({
 }: {
   ctaHref?: string;
 }) {
-  const [gun, setGun] = useState<Gun | "전체">("전체");
+  const [gun, setGun] = useState<Gun>("가");
   const [silgi, setSilgi] = useState<SilgiType | "전체">("전체");
   const [query, setQuery] = useState("");
   const [selection, setSelection] = useState<Selection>({});
+  const [focusId, setFocusId] = useState<string | null>(null);
+
+  // 다른 섹션(성적 추천기)에서 "이 대학으로 이동" 요청을 받으면 해당 군으로 전환
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ id: string; gun: Gun }>).detail;
+      if (!detail) return;
+      setGun(detail.gun);
+      setSilgi("전체");
+      setQuery("");
+      setFocusId(detail.id);
+    };
+    window.addEventListener("jungsi:focus", handler);
+    return () => window.removeEventListener("jungsi:focus", handler);
+  }, []);
 
   const byId = useMemo(
     () => new Map(jungsiEntries.map((e) => [e.id, e])),
@@ -492,7 +518,8 @@ export default function JungsiExplorer({
     const q = query.trim();
     return jungsiEntries.filter(
       (e) =>
-        (gun === "전체" || e.gun === gun) &&
+        // 검색어가 있으면 전체 군에서 찾고, 없으면 선택한 군만 표시
+        (q !== "" || e.gun === gun) &&
         (silgi === "전체" || e.silgi === silgi) &&
         (q === "" ||
           e.university.includes(q) ||
@@ -504,6 +531,31 @@ export default function JungsiExplorer({
   const visibleGuns = GUN_ORDER.filter((g) =>
     filtered.some((e) => e.gun === g),
   );
+
+  // 군 전환으로 카드가 렌더된 뒤, 대상 대학으로 스크롤 + 강조
+  useEffect(() => {
+    if (!focusId) return;
+    const el = document.getElementById(`uni-${focusId}`);
+    if (!el) return;
+    // scrollIntoView는 body 스크롤 컨테이너 때문에 뷰포트를 못 움직여서 window.scrollTo 사용.
+    // 스티키 헤더(64px)+군 탭바(약 110px) 아래로 오도록 오프셋 확보.
+    const top = el.getBoundingClientRect().top + window.scrollY - 176;
+    // 네이티브 smooth는 reduced-motion 환경에서 no-op이 되므로 즉시 이동으로 확실히 처리
+    window.scrollTo(0, Math.max(0, top));
+    el.classList.add("ring-2", "ring-accent", "ring-offset-2", "ring-offset-black");
+    const t = setTimeout(
+      () =>
+        el.classList.remove(
+          "ring-2",
+          "ring-accent",
+          "ring-offset-2",
+          "ring-offset-black",
+        ),
+      1800,
+    );
+    setFocusId(null);
+    return () => clearTimeout(t);
+  }, [focusId, filtered]);
 
   const toggleEntry = (entry: JungsiEntry) => {
     setSelection((prev) =>
@@ -537,7 +589,7 @@ export default function JungsiExplorer({
         className="sticky top-16 z-30 -mx-5 border-b border-white/10 bg-black/85 px-5 py-3 backdrop-blur-md"
       >
         <div className="flex gap-2 overflow-x-auto">
-          {(["전체", ...GUN_ORDER] as (Gun | "전체")[]).map((g) => {
+          {GUN_ORDER.map((g) => {
             const active = gun === g;
             return (
               <button
@@ -551,27 +603,38 @@ export default function JungsiExplorer({
                     : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
-                {g === "전체" ? "전체" : GUN_LABEL[g]}
-                {g !== "전체" && (
-                  <span
-                    className={`ml-1.5 font-mono text-[11px] ${
-                      active ? "text-black/60" : "text-white/35"
-                    }`}
-                  >
-                    {gunCounts[g]}
-                  </span>
-                )}
+                {GUN_LABEL[g]}
+                <span
+                  className={`ml-1.5 font-mono text-[11px] ${
+                    active ? "text-black/60" : "text-white/35"
+                  }`}
+                >
+                  {gunCounts[g]}
+                </span>
               </button>
             );
           })}
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="대학·학과 검색"
-            aria-label="대학 또는 학과 검색"
-            className="ml-auto w-32 shrink-0 rounded-md border border-white/15 bg-transparent px-3 py-2 text-xs text-white placeholder:text-white/30 focus:border-accent/60 focus:outline-none md:w-44"
-          />
+          <div className="relative ml-auto shrink-0">
+            <svg
+              aria-hidden
+              className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-white/50"
+              width="13"
+              height="13"
+              viewBox="0 0 14 14"
+              fill="none"
+            >
+              <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M13 13L9.6 9.6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="대학·학과 검색"
+              aria-label="대학 또는 학과 검색"
+              className="w-36 rounded-md border border-white/25 bg-white/[0.07] py-2 pl-8 pr-3 text-xs text-white placeholder:text-white/50 focus:border-accent/60 focus:bg-white/[0.1] focus:outline-none md:w-52"
+            />
+          </div>
         </div>
 
         <div className="mt-2.5 flex items-center gap-2 overflow-x-auto">
@@ -615,7 +678,7 @@ export default function JungsiExplorer({
           </p>
           <button
             onClick={() => {
-              setGun("전체");
+              setGun("가");
               setSilgi("전체");
               setQuery("");
             }}
@@ -645,14 +708,19 @@ export default function JungsiExplorer({
                   </span>
                 )}
               </div>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4">
                 {entries.map((entry) => (
-                  <UniversityCard
+                  <div
                     key={entry.id}
-                    entry={entry}
-                    selected={selection[entry.gun] === entry.id}
-                    onToggle={toggleEntry}
-                  />
+                    id={`uni-${entry.id}`}
+                    className="scroll-mt-44 rounded-lg transition-shadow"
+                  >
+                    <UniversityCard
+                      entry={entry}
+                      selected={selection[entry.gun] === entry.id}
+                      onToggle={toggleEntry}
+                    />
+                  </div>
                 ))}
               </div>
             </section>

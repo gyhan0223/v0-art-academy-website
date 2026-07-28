@@ -111,6 +111,46 @@ const CUTOFFS: Record<string, { p: number; label: string }> = {
   "swu-da": { p: 93, label: "2025 백분위 평균 93" },
 };
 
+/**
+ * 미대 정시 입결 서열(숫자가 작을수록 상위).
+ * 환산점수가 화면 표기(소수 첫째 자리) 기준으로 같을 때의 정렬 기준으로만 쓰입니다.
+ * 최근 입결·선호도를 반영한 참고용 편집 데이터 — 숫자 간격을 띄워 둬서 사이에 끼워 넣기 쉽습니다.
+ */
+const PRESTIGE: Record<string, number> = {
+  서울대학교: 10,
+  한국예술종합학교: 15,
+  홍익대학교: 20,
+  국민대학교: 30,
+  이화여자대학교: 35,
+  성균관대학교: 40,
+  고려대학교: 45,
+  중앙대학교: 50,
+  경희대학교: 55,
+  서울시립대학교: 60,
+  건국대학교: 65,
+  동국대학교: 70,
+  숙명여자대학교: 75,
+  서울과학기술대학교: 80,
+  세종대학교: 85,
+  인하대학교: 90,
+  상명대학교: 95,
+  성신여자대학교: 100,
+  덕성여자대학교: 105,
+  동덕여자대학교: 110,
+  서울여자대학교: 115,
+  한성대학교: 120,
+  명지대학교: 125,
+  경기대학교: 130,
+  서경대학교: 135,
+  삼육대학교: 140,
+  추계예술대학교: 145,
+};
+
+const prestigeOf = (e: JungsiEntry) => PRESTIGE[e.university] ?? 999;
+
+/** 화면 표기(소수 첫째 자리)와 같은 기준의 비교값 */
+const displayScore = (v: number) => Math.round(v * 10);
+
 /** 학생이 준비 중인 실기 트랙 */
 export type PrepTrack = "기초디자인" | "기초소양";
 
@@ -229,13 +269,18 @@ export function rankByGun(
       if (a.converted == null && b.converted == null) return 0;
       if (a.converted == null) return 1;
       if (b.converted == null) return -1;
+      // 화면 표기 기준 동점이면 입결 서열 높은 대학 우선
+      if (displayScore(a.converted) === displayScore(b.converted))
+        return prestigeOf(a.entry) - prestigeOf(b.entry);
       return b.converted - a.converted;
     });
     // 적정 라인이 있으면 살짝 끌어올려 추천 상단 노출(안정보다 적정 우선 노출)
     out[g].sort((a, b) => {
+      if (a.converted == null || b.converted == null) return 0;
+      // 동점끼리는 입결 순서를 유지(안정 뱃지가 입결 상위 대학을 밀어내지 않도록)
+      if (displayScore(a.converted) === displayScore(b.converted)) return 0;
       const ta = a.tier ? tierRank[a.tier] : 1.5;
       const tb = b.tier ? tierRank[b.tier] : 1.5;
-      if (a.converted == null || b.converted == null) return 0;
       return ta - tb;
     });
   }

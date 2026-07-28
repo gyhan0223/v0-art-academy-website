@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   GUN_ORDER,
   SILGI_META,
@@ -330,6 +330,254 @@ function analyzeSelection(picked: JungsiEntry[]): {
   return { headline: "", detail: "" };
 }
 
+/* ─────────────────────────── 공유 · 저장 ─────────────────────────── */
+
+const MAIN_GUNS: Gun[] = ["가", "나", "다"];
+
+function slotLine(entry: JungsiEntry) {
+  const name = entry.campus
+    ? `${entry.university} ${entry.campus}`
+    : entry.university;
+  return { name, silgi: SILGI_META[entry.silgi].label };
+}
+
+/** 상담 예약 요청사항에 붙여넣을 조합 요약 텍스트 */
+function buildDiagnosisText(
+  selection: Selection,
+  byId: Map<string, JungsiEntry>,
+  analysis: { headline: string },
+) {
+  const lines: string[] = ["[정시 원서 조합 진단 요청]"];
+  for (const g of MAIN_GUNS) {
+    const entry = selection[g] ? byId.get(selection[g]!) : undefined;
+    if (entry) {
+      const s = slotLine(entry);
+      lines.push(`${g}군: ${s.name} (${s.silgi})`);
+    } else {
+      lines.push(`${g}군: 미정`);
+    }
+  }
+  const extra = selection["별도"] ? byId.get(selection["별도"]!) : undefined;
+  if (extra) lines.push(`별도: ${extra.university}`);
+  if (analysis.headline) lines.push(`조합 유형: ${analysis.headline}`);
+  if (typeof window !== "undefined")
+    lines.push(`조합 보기: ${window.location.href}`);
+  return lines.join("\n");
+}
+
+async function copyText(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    // clipboard API가 막힌 환경(http 등) 폴백
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove();
+    return ok;
+  }
+}
+
+/** 조합을 카톡으로 보내기 좋은 세로형 카드 이미지로 렌더 */
+async function renderShareImage(
+  selection: Selection,
+  byId: Map<string, JungsiEntry>,
+  analysis: { headline: string; detail: string },
+): Promise<HTMLCanvasElement> {
+  const ACCENT = "#f58846";
+  const W = 1080;
+  const PAD = 72;
+  const FONT = '"Noto Sans KR", sans-serif';
+
+  // 페이지 폰트가 캔버스에도 적용되도록 로드 완료를 기다림
+  try {
+    await Promise.all([
+      document.fonts.load(`700 44px ${FONT}`),
+      document.fonts.load(`400 28px ${FONT}`),
+      document.fonts.ready,
+    ]);
+  } catch {
+    /* 폰트 로드 실패 시 시스템 폰트로 진행 */
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  const measure = canvas.getContext("2d")!;
+
+  const wrap = (text: string, font: string, maxWidth: number) => {
+    measure.font = font;
+    const lines: string[] = [];
+    let line = "";
+    for (const ch of text) {
+      if (measure.measureText(line + ch).width > maxWidth && line !== "") {
+        lines.push(line);
+        line = ch === " " ? "" : ch;
+      } else {
+        line += ch;
+      }
+    }
+    if (line) lines.push(line);
+    return lines;
+  };
+
+  const extra = selection["별도"] ? byId.get(selection["별도"]!) : undefined;
+  const rows: { gun: string; entry: JungsiEntry | undefined }[] = [
+    ...MAIN_GUNS.map((g) => ({
+      gun: g,
+      entry: selection[g] ? byId.get(selection[g]!) : undefined,
+    })),
+    ...(extra ? [{ gun: "+", entry: extra }] : []),
+  ];
+
+  const ROW_H = 148;
+  const ROW_GAP = 20;
+  const detailLines = analysis.detail
+    ? wrap(analysis.detail, `400 27px ${FONT}`, W - PAD * 2)
+    : [];
+  const headerH = 220;
+  const rowsH = rows.length * (ROW_H + ROW_GAP);
+  const analysisH = analysis.headline ? 90 + detailLines.length * 42 : 0;
+  const footerH = 170;
+  const H = headerH + rowsH + analysisH + footerH;
+  canvas.height = H;
+
+  const ctx = canvas.getContext("2d")!;
+  const rounded = (x: number, y: number, w: number, h: number, r: number) => {
+    ctx.beginPath();
+    if (typeof ctx.roundRect === "function") {
+      ctx.roundRect(x, y, w, h, r);
+    } else {
+      ctx.rect(x, y, w, h);
+    }
+  };
+
+  // 배경
+  ctx.fillStyle = "#060606";
+  ctx.fillRect(0, 0, W, H);
+
+  // 헤더
+  ctx.fillStyle = ACCENT;
+  ctx.font = `500 26px ${FONT}`;
+  ctx.fillText("2026 미대 정시", PAD, 108);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = `700 58px ${FONT}`;
+  ctx.fillText("내 원서 조합", PAD, 178);
+
+  // 슬롯 카드
+  let y = headerH;
+  for (const row of rows) {
+    if (row.entry) {
+      ctx.fillStyle = "#0f0f0f";
+      rounded(PAD, y, W - PAD * 2, ROW_H, 16);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(245,136,70,0.45)";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      rounded(PAD, y, W - PAD * 2, ROW_H, 16);
+      ctx.stroke();
+
+      const s = slotLine(row.entry);
+      ctx.fillStyle = ACCENT;
+      ctx.font = `700 44px ${FONT}`;
+      ctx.fillText(row.gun, PAD + 36, y + 90);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = `700 40px ${FONT}`;
+      ctx.fillText(s.name, PAD + 120, y + 66);
+      ctx.fillStyle = "rgba(255,255,255,0.55)";
+      ctx.font = `400 26px ${FONT}`;
+      ctx.fillText(s.silgi, PAD + 120, y + 112);
+    } else {
+      ctx.strokeStyle = "rgba(255,255,255,0.22)";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([10, 8]);
+      rounded(PAD, y, W - PAD * 2, ROW_H, 16);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = "rgba(255,255,255,0.35)";
+      ctx.font = `700 44px ${FONT}`;
+      ctx.fillText(row.gun, PAD + 36, y + 90);
+      ctx.font = `400 28px ${FONT}`;
+      ctx.fillText("비어 있음", PAD + 120, y + 86);
+    }
+    y += ROW_H + ROW_GAP;
+  }
+
+  // 조합 분석
+  if (analysis.headline) {
+    y += 30;
+    ctx.fillStyle = ACCENT;
+    ctx.font = `700 32px ${FONT}`;
+    ctx.fillText(analysis.headline, PAD, y);
+    y += 20;
+    ctx.fillStyle = "rgba(255,255,255,0.6)";
+    ctx.font = `400 27px ${FONT}`;
+    for (const line of detailLines) {
+      y += 42;
+      ctx.fillText(line, PAD, y);
+    }
+  }
+
+  // 푸터
+  ctx.strokeStyle = "rgba(255,255,255,0.12)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(PAD, H - 118);
+  ctx.lineTo(W - PAD, H - 118);
+  ctx.stroke();
+  ctx.fillStyle = "#ffffff";
+  ctx.font = `700 30px ${FONT}`;
+  ctx.fillText("모두다른고양이 미술학원", PAD, H - 62);
+  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  ctx.font = `400 24px ${FONT}`;
+  ctx.fillText("일산 · 031-916-8885 · 무료 진단 예약 가능", PAD, H - 24);
+
+  return canvas;
+}
+
+/** 이미지 저장 — 모바일은 공유 시트(카톡 전송), PC는 PNG 다운로드 */
+async function shareOrDownloadImage(
+  selection: Selection,
+  byId: Map<string, JungsiEntry>,
+  analysis: { headline: string; detail: string },
+) {
+  const canvas = await renderShareImage(selection, byId, analysis);
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, "image/png"),
+  );
+  if (!blob) return false;
+
+  const file = new File([blob], "정시-원서조합-모두다른고양이.png", {
+    type: "image/png",
+  });
+  if (
+    typeof navigator.canShare === "function" &&
+    navigator.canShare({ files: [file] })
+  ) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: "내 정시 원서 조합",
+      });
+      return true;
+    } catch (err) {
+      // 사용자가 공유 시트를 닫은 경우 — 다운로드로 넘어가지 않고 종료
+      if ((err as DOMException).name === "AbortError") return false;
+    }
+  }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = file.name;
+  a.click();
+  URL.revokeObjectURL(url);
+  return true;
+}
+
 /* ─────────────────────────── 원서 트레이 ─────────────────────────── */
 
 function PlanTray({
@@ -355,8 +603,66 @@ function PlanTray({
   const complete = filledCount === 3;
   const analysis = analyzeSelection(picked);
 
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 3500);
+  };
+  useEffect(
+    () => () => {
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+    },
+    [],
+  );
+
+  const handleCopyLink = async () => {
+    const ok = await copyText(window.location.href);
+    showToast(
+      ok
+        ? "링크를 복사했어요 — 카톡에 붙여넣으면 이 조합이 그대로 열립니다."
+        : "복사에 실패했어요. 주소창의 링크를 직접 복사해 주세요.",
+    );
+  };
+
+  const handleSaveImage = async () => {
+    if (saving) return;
+    setSaving(true);
+    try {
+      const done = await shareOrDownloadImage(selection, byId, analysis);
+      if (done) showToast("조합 이미지를 저장했어요 — 카톡으로 공유해 보세요.");
+    } catch {
+      showToast("이미지 저장에 실패했어요. 잠시 후 다시 시도해 주세요.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // 예약 페이지로 넘어가기 전에 조합 요약을 복사해 두면
+  // 요청사항란에 붙여넣기만 하면 됨 → 상담 리드에 조합 정보가 따라붙음
+  const handleCta = async () => {
+    const ok = await copyText(buildDiagnosisText(selection, byId, analysis));
+    if (ok)
+      showToast(
+        "조합 내용을 복사했어요 — 예약 '요청사항'란에 붙여넣어 주세요.",
+      );
+  };
+
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/90 backdrop-blur-md">
+      {toast && (
+        <div
+          role="status"
+          className="pointer-events-none absolute inset-x-0 -top-12 flex justify-center px-5"
+        >
+          <p className="rounded-full border border-accent/40 bg-black/90 px-4 py-2 text-[12px] font-medium text-accent shadow-lg backdrop-blur-md">
+            {toast}
+          </p>
+        </div>
+      )}
       <div className="mx-auto max-w-4xl px-5 py-3">
         <div className="flex items-center justify-between gap-3">
           <p className="text-[11px] tracking-wider text-white/45">
@@ -364,13 +670,36 @@ function PlanTray({
             <span className="font-mono text-accent">{filledCount}</span>
             <span className="text-white/35"> / 3장</span>
           </p>
-          <button
-            type="button"
-            onClick={onClear}
-            className="text-[11px] text-white/40 underline underline-offset-2 transition-colors hover:text-white/70"
-          >
-            비우기
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleSaveImage}
+              disabled={saving}
+              className="flex items-center gap-1 text-[11px] text-white/55 transition-colors hover:text-accent disabled:opacity-50"
+            >
+              <svg aria-hidden width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1v8m0 0L4 6.2M7 9l3-2.8M1.5 10.5V12a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {saving ? "만드는 중…" : "이미지 저장"}
+            </button>
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              className="flex items-center gap-1 text-[11px] text-white/55 transition-colors hover:text-accent"
+            >
+              <svg aria-hidden width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M5.8 8.2a2.8 2.8 0 0 0 4 0l2-2a2.83 2.83 0 0 0-4-4l-1 1M8.2 5.8a2.8 2.8 0 0 0-4 0l-2 2a2.83 2.83 0 0 0 4 4l1-1" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              링크 복사
+            </button>
+            <button
+              type="button"
+              onClick={onClear}
+              className="text-[11px] text-white/40 underline underline-offset-2 transition-colors hover:text-white/70"
+            >
+              비우기
+            </button>
+          </div>
         </div>
 
         <div className="mt-2 flex items-stretch gap-2 overflow-x-auto pb-1">
@@ -453,6 +782,7 @@ function PlanTray({
             href={ctaHref}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={handleCta}
             className={
               complete
                 ? "w-full shrink-0 rounded-md bg-accent px-6 py-3 text-center text-sm font-bold text-black shadow-[0_0_0_3px_rgba(255,255,255,0.12)] transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-auto"
@@ -507,6 +837,32 @@ export default function JungsiExplorer({
     () => new Map(jungsiEntries.map((e) => [e.id, e])),
     [],
   );
+
+  // 공유 링크(?pick=id,id,...)로 들어온 경우 조합 복원
+  const restored = useRef(false);
+  useEffect(() => {
+    const pick = new URLSearchParams(window.location.search).get("pick");
+    restored.current = true;
+    if (!pick) return;
+    const next: Selection = {};
+    for (const id of pick.split(",")) {
+      const entry = byId.get(id);
+      if (entry && !next[entry.gun]) next[entry.gun] = entry.id;
+    }
+    if (Object.keys(next).length > 0) setSelection(next);
+  }, [byId]);
+
+  // 조합이 바뀔 때마다 URL에 반영 → 링크 복사만으로 조합 공유 가능
+  useEffect(() => {
+    if (!restored.current) return;
+    const url = new URL(window.location.href);
+    const ids = GUN_ORDER.filter((g) => selection[g]).map(
+      (g) => selection[g]!,
+    );
+    if (ids.length > 0) url.searchParams.set("pick", ids.join(","));
+    else url.searchParams.delete("pick");
+    window.history.replaceState(null, "", url);
+  }, [selection]);
 
   const gunCounts = useMemo(() => {
     const counts = { 가: 0, 나: 0, 다: 0, 별도: 0 } as Record<Gun, number>;

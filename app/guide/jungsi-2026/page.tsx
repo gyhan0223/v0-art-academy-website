@@ -71,7 +71,7 @@ function CardSlots() {
   );
 }
 
-const faqs = [
+const faqs: { q: string; a: React.ReactNode }[] = [
   {
     q: "가군, 나군, 다군이 뭔가요?",
     a: "정시에서는 대학들이 시험 기간에 따라 세 그룹(군)으로 나뉘고, 학생은 군마다 1곳씩 최대 3곳에 지원할 수 있습니다. 같은 군에 두 곳을 쓸 수 없기 때문에, 어느 군에 어떤 대학이 있는지가 지원 전략의 출발점입니다. 군은 대학이 아니라 학과 단위로 정해진다는 점이 핵심입니다 — 건국대처럼 학과별로 가·나·다군에 나뉜 대학은 한 학교에 최대 3번 지원할 수도 있습니다.",
@@ -91,6 +91,28 @@ const faqs = [
   {
     q: "한예종은 어느 군인가요?",
     a: "한예종은 가나다군 어디에도 속하지 않습니다. 문화체육관광부 소속 특수학교라 자체 일정으로 따로 선발하며, 가·나·다군 3장의 카드와 별개로 지원할 수 있는 추가 기회입니다.",
+  },
+  {
+    q: "고2인데 지금 실기를 시작해도 늦지 않나요?",
+    a: (
+      <>
+        늦지 않았습니다. 기초디자인처럼 채택 대학이 많은 유형은 고2 겨울에
+        시작해 정시로 합격하는 사례가 매년 나옵니다. 다만 유형에 따라 필요한
+        준비 기간이 크게 달라서 — 서울대·이화여대의 자체·통합실기는 더 오래
+        걸립니다 — 지금 시점에는 &lsquo;언제 시작하느냐&rsquo;보다 &lsquo;남은
+        기간에 승산 있는 유형을 고르느냐&rsquo;가 관건입니다. 현재 성적과
+        성향으로 어떤 유형·대학 조합이 가능한지는{" "}
+        <a
+          href={NAVER_BOOKING}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-accent underline underline-offset-2 hover:opacity-85"
+        >
+          무료 진단 상담
+        </a>
+        에서 바로 확인해 드립니다.
+      </>
+    ),
   },
 ];
 
@@ -376,6 +398,26 @@ export default function Page() {
               정보로 실었습니다.
             </li>
           </ul>
+        </section>
+
+        {/* 만든 사람 */}
+        <section
+          className="mt-14 rounded-lg border border-white/10 bg-[#0a0a0a] p-6"
+          aria-label="이 자료를 만든 사람"
+        >
+          <p className="text-xs font-medium tracking-wide text-white/50">
+            이 자료를 만든 사람
+          </p>
+          <p className="mt-3 text-sm font-bold text-white">
+            모두다른고양이 미술학원 원장
+          </p>
+          <p className="mt-2 text-[13px] leading-relaxed text-white/60">
+            이 페이지의 26개 대학 모집요강 대조와 환산식 정리는 원장이 직접
+            했습니다. 모두다른고양이는 원장이 수업과 입시 상담을 직접 맡는
+            소수정예 학원으로, 학생마다 성적과 성향에 맞춰 실기유형과
+            가·나·다군 조합을 함께 설계합니다. 아래 무료 진단 상담도 원장이
+            직접 진행합니다.
+          </p>
         </section>
 
         {/* CTA */}

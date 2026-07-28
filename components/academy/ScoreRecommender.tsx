@@ -321,6 +321,9 @@ export default function ScoreRecommender({ ctaHref }: { ctaHref: string }) {
                           <span className="text-white/50"> {pick.entry.campus}</span>
                         ) : null}
                       </p>
+                      <p className="mt-0.5 truncate text-[11px] text-white/55">
+                        {pick.entry.units}
+                      </p>
                       <p className="mt-0.5 text-[11px] text-white/45">
                         {SILGI_META[pick.entry.silgi].short} · 환산{" "}
                         <span className="font-mono text-white/70">

@@ -148,6 +148,16 @@ const PRESTIGE: Record<string, number> = {
 
 const prestigeOf = (e: JungsiEntry) => PRESTIGE[e.university] ?? 999;
 
+/**
+ * 같은 대학 안에서 동점일 때의 우선순위 (입시 디자인 학원 관점).
+ * 디자인 계열 모집단위 우선, 자율전공은 후순위.
+ */
+const unitPriority = (e: JungsiEntry) => {
+  if (e.units.includes("디자인")) return 0;
+  if (e.units.includes("자율전공")) return 2;
+  return 1;
+};
+
 /** 화면 표기(소수 첫째 자리)와 같은 기준의 비교값 */
 const displayScore = (v: number) => Math.round(v * 10);
 
@@ -269,9 +279,13 @@ export function rankByGun(
       if (a.converted == null && b.converted == null) return 0;
       if (a.converted == null) return 1;
       if (b.converted == null) return -1;
-      // 화면 표기 기준 동점이면 입결 서열 높은 대학 우선
-      if (displayScore(a.converted) === displayScore(b.converted))
-        return prestigeOf(a.entry) - prestigeOf(b.entry);
+      // 화면 표기 기준 동점이면 입결 서열 높은 대학 우선,
+      // 같은 대학이면 디자인 계열 우선·자율전공 후순위
+      if (displayScore(a.converted) === displayScore(b.converted)) {
+        const p = prestigeOf(a.entry) - prestigeOf(b.entry);
+        if (p !== 0) return p;
+        return unitPriority(a.entry) - unitPriority(b.entry);
+      }
       return b.converted - a.converted;
     });
     // 적정 라인이 있으면 살짝 끌어올려 추천 상단 노출(안정보다 적정 우선 노출)
@@ -287,16 +301,26 @@ export function rankByGun(
   return out;
 }
 
-/** 가·나·다 각 1곳씩 추천 조합(환산 상위 + 적정/안정 우선) */
+/** 가·나·다 각 1곳씩 추천 조합(환산 상위 + 적정/안정 우선). 같은 대학은 중복 추천하지 않습니다. */
 export function recommendCombo(
   s: StudentScore,
   track?: PrepTrack | null,
 ): Partial<Record<Gun, Ranked>> {
   const ranked = rankByGun(s, track);
   const combo: Partial<Record<Gun, Ranked>> = {};
+  const usedUniversities = new Set<string>();
   for (const g of ["가", "나", "다"] as Gun[]) {
-    const pick = ranked[g].find((r) => r.converted != null && r.tier !== "낮음");
-    if (pick) combo[g] = pick;
+    const candidates = ranked[g].filter(
+      (r) => r.converted != null && r.tier !== "낮음",
+    );
+    // 이미 추천한 대학은 건너뛰되, 그 군에 다른 대학이 없으면 중복이라도 추천
+    const pick =
+      candidates.find((r) => !usedUniversities.has(r.entry.university)) ??
+      candidates[0];
+    if (pick) {
+      combo[g] = pick;
+      usedUniversities.add(pick.entry.university);
+    }
   }
   return combo;
 }

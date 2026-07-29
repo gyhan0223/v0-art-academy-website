@@ -7,7 +7,8 @@ import { X } from "lucide-react";
 import { admissionLists } from "@/lib/admissions-data";
 
 // 1. 전달해주신 대학별 합격자 데이터를 구조화했습니다.
-const universityCards = [
+// (윈터캠프 페이지의 합격 실적 섹션에서도 재사용)
+export const universityCards = [
   {
     name: "서울대학교",
     total: "252",

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useCallback } from "react";
+import Link from "next/link";
 import { Phone, MapPin, MessageCircle } from "lucide-react";
 
 interface Particle {
@@ -150,20 +151,37 @@ export default function Scene4() {
             </AnimatePresence>
           </motion.div>
 
-          <motion.p
-            className="text-muted-foreground text-sm mt-6"
+          {/* 홍대 본원 전화 버튼 — 네이버 예약은 일산 캠퍼스 전용 */}
+          <motion.div
+            className="mt-6"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.35 }}
           >
-            홍대 캠퍼스는 전화로 예약 문의 부탁드립니다.
+            <a
+              href="tel:02-338-3302"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-primary/40 text-foreground font-semibold transition-colors hover:border-primary hover:text-primary"
+            >
+              <Phone className="w-5 h-5" />
+              홍대 본원 02-338-3302
+            </a>
+          </motion.div>
+
+          <motion.p
+            className="text-muted-foreground text-sm mt-6"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            홍대 본원은 전화로 예약 문의 부탁드립니다.
           </motion.p>
         </div>
 
         {/* Contact Info Cards */}
         <motion.div
-          className="grid md:grid-cols-3 gap-4 md:gap-6"
+          className="grid md:grid-cols-2 gap-4 md:gap-6"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -171,13 +189,19 @@ export default function Scene4() {
         >
           <ContactCard
             icon={<Phone className="w-5 h-5" />}
-            title="전화 상담"
+            title="홍대 본원 전화"
+            content="02-338-3302"
+            href="tel:02-338-3302"
+          />
+          <ContactCard
+            icon={<Phone className="w-5 h-5" />}
+            title="일산 캠퍼스 전화"
             content="031-916-8885"
             href="tel:031-916-8885"
           />
           <ContactCard
             icon={<MapPin className="w-5 h-5" />}
-            title="홍대 캠퍼스"
+            title="홍대 본원"
             content="서울특별시 마포구 와우산로23길 9 칼리오페 5층"
             href="https://naver.me/5wWq5AUs"
           />
@@ -199,6 +223,15 @@ export default function Scene4() {
         >
           <p className="text-muted-foreground text-sm">
             모두다른고양이 미술학원
+          </p>
+          <p className="text-muted-foreground/60 text-xs mt-2">
+            학원등록번호 제02201000109호 ·{" "}
+            <Link
+              href="/tuition"
+              className="underline underline-offset-2 hover:text-muted-foreground transition-colors"
+            >
+              교습비 고지
+            </Link>
           </p>
           <p className="text-muted-foreground/60 text-xs mt-2">
             &copy; {new Date().getFullYear()} All rights reserved.

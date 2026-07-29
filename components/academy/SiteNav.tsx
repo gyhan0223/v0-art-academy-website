@@ -4,6 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, Menu, ChevronDown } from "lucide-react";
+import { SHOW_ANNOUNCEMENT } from "@/lib/winter-camp";
+
+const ANNOUNCEMENT_TEXT =
+  "2027 모다고 윈터캠프 사전 접수 · 홍대 본원 기숙 · 정원 14명";
+const ANNOUNCEMENT_KEY = "modago-winter-announcement-closed";
+
+const PHONE_HONGDAE = { label: "홍대 본원", number: "02-338-3302" };
+const PHONE_ILSAN = { label: "일산 캠퍼스", number: "031-916-8885" };
 
 const NAVER_BOOKING =
   "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
@@ -41,16 +49,48 @@ const navItems: NavItem[] = [
       },
     ],
   },
-  { label: "기숙학원", href: "/gisuk", badge: "3월 오픈" },
+  {
+    label: "기숙 과정",
+    href: "/winter",
+    children: [
+      {
+        label: "윈터캠프 (홍대 · 1·2월)",
+        href: "/winter",
+        desc: "홍대 본원 8주 기숙 윈터스쿨",
+        badge: "모집중",
+      },
+      {
+        label: "기숙학원 (파주 · 3월 오픈)",
+        href: "/gisuk",
+        desc: "파주 기숙학원 재수 정규 과정",
+      },
+    ],
+  },
 ];
 
 export default function SiteNav() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+
+  // 알림 띠: sessionStorage로 닫힘 상태 유지 (hydration 불일치 방지를 위해 mount 후 판단)
+  useEffect(() => {
+    if (
+      SHOW_ANNOUNCEMENT &&
+      sessionStorage.getItem(ANNOUNCEMENT_KEY) !== "1"
+    ) {
+      setShowAnnouncement(true);
+    }
+  }, []);
+
+  const closeAnnouncement = () => {
+    sessionStorage.setItem(ANNOUNCEMENT_KEY, "1");
+    setShowAnnouncement(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -91,6 +131,26 @@ export default function SiteNav() {
             : "bg-transparent"
         }`}
       >
+        {/* 사이트 최상단 알림 띠 */}
+        {showAnnouncement && (
+          <div className="relative bg-accent text-black">
+            <Link
+              href="/winter"
+              className="block px-10 py-2 text-center text-xs md:text-sm font-semibold tracking-wide"
+            >
+              {ANNOUNCEMENT_TEXT}
+            </Link>
+            <button
+              type="button"
+              onClick={closeAnnouncement}
+              aria-label="알림 닫기"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-black/60 transition-colors hover:text-black"
+            >
+              <X size={15} strokeWidth={2.5} />
+            </button>
+          </div>
+        )}
+
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
           <Link
             href="/"
@@ -110,8 +170,9 @@ export default function SiteNav() {
             aria-label="주 메뉴"
           >
             {navItems.map((item) => {
-              const active =
-                item.href === "/"
+              const active = item.children
+                ? item.children.some((c) => pathname.startsWith(c.href))
+                : item.href === "/"
                   ? pathname === "/"
                   : pathname.startsWith(item.href);
 
@@ -211,6 +272,21 @@ export default function SiteNav() {
                 </Link>
               );
             })}
+            {/* 두 캠퍼스 전화번호 */}
+            <div className="hidden lg:flex flex-col items-end gap-1 leading-none">
+              <a
+                href={`tel:${PHONE_HONGDAE.number}`}
+                className="text-[11px] tracking-wide text-white/55 transition-colors hover:text-white"
+              >
+                {PHONE_HONGDAE.label} {PHONE_HONGDAE.number}
+              </a>
+              <a
+                href={`tel:${PHONE_ILSAN.number}`}
+                className="text-[11px] tracking-wide text-white/55 transition-colors hover:text-white"
+              >
+                {PHONE_ILSAN.label} {PHONE_ILSAN.number}
+              </a>
+            </div>
             <a
               href={NAVER_BOOKING}
               target="_blank"
@@ -355,14 +431,23 @@ export default function SiteNav() {
             </li>
           </ul>
 
-          <div className="px-6 py-6 border-t border-white/10">
-            <a
-              href="tel:031-916-8885"
-              className="block text-white/50 text-xs tracking-widest mb-1"
-            >
-              031-916-8885
+          <div className="px-6 py-6 border-t border-white/10 space-y-3">
+            <a href={`tel:${PHONE_HONGDAE.number}`} className="block">
+              <span className="block text-white/50 text-xs tracking-widest">
+                {PHONE_HONGDAE.number}
+              </span>
+              <span className="block text-white/30 text-xs mt-0.5">
+                {PHONE_HONGDAE.label}
+              </span>
             </a>
-            <p className="text-white/30 text-xs">일산점 · 평일 13:00–19:00</p>
+            <a href={`tel:${PHONE_ILSAN.number}`} className="block">
+              <span className="block text-white/50 text-xs tracking-widest">
+                {PHONE_ILSAN.number}
+              </span>
+              <span className="block text-white/30 text-xs mt-0.5">
+                {PHONE_ILSAN.label} · 평일 13:00–19:00
+              </span>
+            </a>
           </div>
         </nav>
       </div>

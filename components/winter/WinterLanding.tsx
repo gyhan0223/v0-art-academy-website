@@ -1,0 +1,1104 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Phone,
+  MapPin,
+  ChevronDown,
+  X,
+  Users,
+  Moon,
+  Utensils,
+  BookOpen,
+  ShieldCheck,
+  Stethoscope,
+  FileText,
+  BedDouble,
+  ArrowRight,
+  CalendarDays,
+  ImageIcon,
+} from "lucide-react";
+import { CAMP_INFO } from "@/lib/winter-camp";
+import { universityCards } from "@/components/cinematic/Scene2";
+
+/* ---------------------------------- 공통 ---------------------------------- */
+
+const fadeUp = {
+  initial: { opacity: 0, y: 30 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 0.7, ease: "easeOut" as const },
+};
+
+function SectionHead({
+  en,
+  ko,
+  sub,
+}: {
+  en: string;
+  ko: React.ReactNode;
+  sub?: React.ReactNode;
+}) {
+  return (
+    <motion.div {...fadeUp} className="mb-12 md:mb-16 text-center">
+      <p className="text-accent text-xs md:text-sm tracking-[0.3em] uppercase mb-4">
+        {en}
+      </p>
+      <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-snug break-keep">
+        {ko}
+      </h2>
+      {sub && (
+        <p className="mt-4 text-white/60 text-sm md:text-base leading-relaxed break-keep">
+          {sub}
+        </p>
+      )}
+    </motion.div>
+  );
+}
+
+/* --------------------------------- 데이터 ---------------------------------- */
+
+type ScheduleType = "silgi" | "hakgwa" | "life";
+
+type ScheduleRow = { time: string; label: string; type: ScheduleType };
+
+// 2027학년도 시간표 기준
+const WEEKDAY_SCHEDULE: ScheduleRow[] = [
+  { time: "06:00", label: "기상 · 아침식사 · 0교시 자기주도", type: "life" },
+  {
+    time: "09:00",
+    label: "학과 수업 — 국어 · 영어 · 탐구 (요일별)",
+    type: "hakgwa",
+  },
+  { time: "12:50", label: "점심 시간", type: "life" },
+  {
+    time: "13:35",
+    label: "학과 클리닉 — 국어 · 영어 클리닉 / 탐구",
+    type: "hakgwa",
+  },
+  {
+    time: "15:50",
+    label: "자기주도 학습 (화 영어 · 금 국어 모의고사)",
+    type: "hakgwa",
+  },
+  { time: "17:25", label: "저녁 시간", type: "life" },
+  { time: "18:10", label: "자기주도 또는 실기 수업", type: "silgi" },
+  { time: "22:20", label: "영어 100단어 시험", type: "hakgwa" },
+  { time: "22:40", label: "취침", type: "life" },
+];
+
+const WEEKEND_SCHEDULE: ScheduleRow[] = [
+  { time: "09:00", label: "대학교 유형 미술실기", type: "silgi" },
+  { time: "12:50", label: "점심 시간", type: "life" },
+  { time: "13:35", label: "대학교 유형 미술실기", type: "silgi" },
+  { time: "17:25", label: "저녁 시간", type: "life" },
+  { time: "18:10", label: "대학교 유형 미술실기", type: "silgi" },
+  { time: "22:30", label: "취침", type: "life" },
+];
+
+const SCHEDULE_STYLE: Record<
+  ScheduleType,
+  { dot: string; text: string; label: string }
+> = {
+  silgi: { dot: "bg-accent", text: "text-accent", label: "실기" },
+  hakgwa: { dot: "bg-sky-400", text: "text-sky-400", label: "학과" },
+  life: { dot: "bg-white/30", text: "text-white/50", label: "생활" },
+};
+
+const MANAGEMENT_CARDS = [
+  {
+    number: "30",
+    unit: "찬",
+    title: "뷔페식 30찬",
+    desc: "아침 · 점심 · 저녁 · 야식",
+    icon: Utensils,
+  },
+  {
+    number: "100",
+    unit: "개",
+    title: "매일 영단어 100개",
+    desc: "8주간 총 5,000단어",
+    icon: BookOpen,
+  },
+  {
+    number: "OFF",
+    unit: "",
+    title: "핸드폰 제출",
+    desc: "정해진 취침 · 기상 시간",
+    icon: Moon,
+  },
+  {
+    number: "14",
+    unit: "명",
+    title: "정원 14명",
+    desc: "여 8 · 남 6 소수정예",
+    icon: Users,
+  },
+];
+
+const GALLERY_IMAGES = [
+  { src: "/images/winter/dining-buffet.jpg", caption: "매 끼 30찬 뷔페식" },
+  { src: "/images/winter/dorm-female.jpg", caption: "여학생 생활관" },
+  { src: "/images/winter/dorm-male.jpg", caption: "남학생 생활관" },
+  { src: "/images/winter/studio-practice.jpg", caption: "실기실" },
+  { src: "/images/winter/classroom.jpg", caption: "학과 강의실" },
+  { src: "/images/winter/exterior.jpg", caption: "홍대 본원 전경" },
+];
+
+const SAFETY_CARDS = [
+  {
+    title: "남녀 생활관 분리",
+    desc: "남학생과 여학생의 생활 공간을 분리하여 운영합니다.",
+    icon: BedDouble,
+  },
+  {
+    title: "야간 관리 인력 상주",
+    desc: "야간에도 관리 인력이 상주합니다.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "건강 이상 시 병원 동행",
+    desc: "학생의 건강에 이상이 있을 경우 병원 동행이 가능합니다.",
+    icon: Stethoscope,
+  },
+  {
+    title: "월간 학부모 리포트",
+    desc: "학습과 생활 상황을 월간 리포트로 학부모님께 전달합니다.",
+    icon: FileText,
+  },
+];
+
+const CURRICULUM_TABS = [
+  {
+    key: "실기",
+    goal: "[기초 소묘·발상과 표현 등 실기 기초를 8주간 집중적으로 다집니다.]" /* TODO: 원장님 확인 */,
+    method: "[레벨 테스트 후 수준별 분반, 담당 강사 개별 피드백 진행]" /* TODO: 원장님 확인 */,
+  },
+  {
+    key: "국어",
+    goal: "[문학·독서 기본 개념을 정리하고 기출 지문 독해 훈련을 진행합니다.]" /* TODO: 원장님 확인 */,
+    method: "[매일 지문 학습 + 주간 점검 테스트]" /* TODO: 원장님 확인 */,
+  },
+  {
+    key: "영어",
+    goal: "[매일 영단어 100개 암기와 구문 독해로 기본기를 확보합니다.]" /* TODO: 원장님 확인 */,
+    method: "[매일 단어 테스트 + 구문 강의 + 오답 관리]" /* TODO: 원장님 확인 */,
+  },
+  {
+    key: "사회탐구",
+    goal: "[선택 과목 개념 1회독을 목표로 기본 개념을 정리합니다.]" /* TODO: 원장님 확인 */,
+    method: "[개념 강의 + 단원별 문제 풀이]" /* TODO: 원장님 확인 */,
+  },
+  {
+    key: "수학",
+    goal: "[취약 단원 진단 후 기본 개념과 유형 연습을 진행합니다.]" /* TODO: 원장님 확인 */,
+    method: "[진단 테스트 기반 개별 커리큘럼]" /* TODO: 원장님 확인 */,
+  },
+];
+
+const FAQ_ITEMS = [
+  {
+    q: "미술을 처음 시작하는데 참여할 수 있나요?",
+    a: "[네, 참여 가능합니다. 입소 전 레벨 테스트를 통해 수준에 맞는 반에서 시작합니다.]" /* TODO: 원장님 확인 */,
+  },
+  {
+    q: "학과 수업 수준은 학생마다 어떻게 맞춰지나요?",
+    a: "[입소 시 진단 테스트를 통해 과목별 수준을 파악하고, 수준별 분반과 개별 과제로 운영합니다.]" /* TODO: 원장님 확인 */,
+  },
+  {
+    q: "핸드폰은 아예 사용할 수 없나요?",
+    a: "[정해진 시간에 제출하고 필요 시 지정된 시간에 사용할 수 있습니다. 학부모님과의 연락은 언제든 가능합니다.]" /* TODO: 원장님 확인 */,
+  },
+  {
+    q: "주말 귀가나 외박이 가능한가요?",
+    a: "[주말 귀가 및 외박 규정은 상담 시 안내드립니다.]" /* TODO: 원장님 확인 */,
+  },
+  {
+    q: "아프거나 응급 상황이 생기면 어떻게 되나요?",
+    a: "학생의 건강에 이상이 있을 경우 관리 인력이 병원에 동행합니다. 야간에도 관리 인력이 상주하고 있으며, 상황 발생 시 학부모님께 즉시 연락드립니다.",
+  },
+  {
+    q: "아이가 어떻게 지내는지 어떻게 알 수 있나요?",
+    a: "학습과 생활 상황을 정리한 월간 리포트를 학부모님께 발송해 드립니다. 그 외에도 필요하신 경우 언제든 홍대 본원(02-338-3302)으로 문의하실 수 있습니다.",
+  },
+  {
+    q: "준비물은 무엇인가요?",
+    a: "[개인 세면도구와 의류 등 기본 생활용품을 준비하시면 됩니다. 실기 재료는 학원에서 제공합니다. 상세 목록은 등록 후 안내드립니다.]" /* TODO: 원장님 확인 */,
+  },
+  {
+    q: "중도 퇴소 시 환불은 어떻게 되나요?",
+    a: "교육청 환불규정(제18조 제3호)에 따라 반환합니다. 총 교습시간의 1/3 경과 전에는 납부한 교습비의 2/3, 1/2 경과 전에는 1/2을 환불하며, 1/2 경과 후에는 반환되지 않습니다. 할인을 받은 경우 환불 시 할인이 취소되며 차액 기준으로 정산됩니다. 상세 내용은 수강료 및 접수의 환불 규정을 확인해 주세요.",
+  },
+];
+
+/* ------------------------------- 하위 컴포넌트 ------------------------------- */
+
+function DdayBadge() {
+  const [dday, setDday] = useState<number | null>(null);
+
+  useEffect(() => {
+    const deadline = new Date(`${CAMP_INFO.deadlineISO}T23:59:59+09:00`);
+    setDday(Math.ceil((deadline.getTime() - Date.now()) / 86_400_000));
+  }, []);
+
+  if (dday === null) return null;
+
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-sm font-semibold text-accent">
+      <CalendarDays size={14} />
+      {dday > 0
+        ? `접수 마감까지 D-${dday}`
+        : dday === 0
+          ? "오늘 접수 마감"
+          : "접수가 마감되었습니다"}
+    </span>
+  );
+}
+
+function ScheduleTable({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: ScheduleRow[];
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/10">
+      <p className="border-b border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-bold text-white">
+        {title}
+      </p>
+      <table className="w-full text-sm md:text-[15px]">
+        <tbody>
+          {rows.map((row) => {
+            const style = SCHEDULE_STYLE[row.type];
+            return (
+              <tr
+                key={row.time}
+                className="border-b border-white/5 last:border-b-0"
+              >
+                <td className="w-20 px-4 py-3.5 align-top font-mono text-white/40">
+                  {row.time}
+                </td>
+                <td className="px-2 py-3.5 pr-4">
+                  <span className="flex items-start gap-2.5">
+                    <span
+                      className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${style.dot}`}
+                    />
+                    <span
+                      className={`break-keep ${
+                        row.type === "life"
+                          ? "text-white/50"
+                          : "font-medium text-white"
+                      }`}
+                    >
+                      {row.label}
+                    </span>
+                  </span>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function GalleryImage({
+  src,
+  caption,
+  onOpen,
+}: {
+  src: string;
+  caption: string;
+  onOpen: () => void;
+}) {
+  const [failed, setFailed] = useState(false);
+
+  return (
+    <figure>
+      <button
+        type="button"
+        onClick={onOpen}
+        aria-label={`${caption} 확대 보기`}
+        className="group relative block w-full aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-[#0d0d12]"
+      >
+        {failed ? (
+          <span className="flex h-full w-full flex-col items-center justify-center gap-2 text-white/25">
+            <ImageIcon size={28} strokeWidth={1.5} />
+            <span className="text-xs">이미지 준비 중</span>
+          </span>
+        ) : (
+          <Image
+            src={src}
+            alt={caption}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={() => setFailed(true)}
+          />
+        )}
+      </button>
+      <figcaption className="mt-2 text-center text-xs md:text-sm text-white/50">
+        {caption}
+      </figcaption>
+    </figure>
+  );
+}
+
+function Lightbox({
+  item,
+  onClose,
+}: {
+  item: { src: string; caption: string } | null;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    if (!item) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [item, onClose]);
+
+  return (
+    <AnimatePresence>
+      {item && (
+        <motion.div
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${item.caption} 확대 이미지`}
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="닫기"
+            className="absolute top-5 right-5 rounded-full p-2 text-white/70 hover:bg-white/10 hover:text-white"
+          >
+            <X size={26} />
+          </button>
+          <motion.figure
+            initial={{ scale: 0.94, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.94, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="w-full max-w-4xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative w-full aspect-[4/3] overflow-hidden rounded-xl bg-[#0d0d12]">
+              <Image
+                src={item.src}
+                alt={item.caption}
+                fill
+                className="object-contain"
+              />
+            </div>
+            <figcaption className="mt-3 text-center text-sm text-white/70">
+              {item.caption}
+            </figcaption>
+          </motion.figure>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function AccordionItem({
+  q,
+  a,
+  defaultOpen = false,
+}: {
+  q: string;
+  a: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <div className="border-b border-white/10">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-4 py-5 text-left"
+      >
+        <span className="text-sm md:text-base font-medium text-white/90 break-keep">
+          {q}
+        </span>
+        <ChevronDown
+          size={18}
+          className={`shrink-0 text-white/40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      <div
+        className={`grid transition-all duration-300 ${
+          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="pb-5 text-sm leading-relaxed text-white/60 break-keep">
+            {a}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* --------------------------------- 페이지 ---------------------------------- */
+
+export default function WinterLanding() {
+  const [lightbox, setLightbox] = useState<{
+    src: string;
+    caption: string;
+  } | null>(null);
+  const [activeTab, setActiveTab] = useState(CURRICULUM_TABS[0].key);
+
+  const tab = CURRICULUM_TABS.find((t) => t.key === activeTab)!;
+
+  return (
+    <main className="bg-background text-foreground pb-20 md:pb-0">
+      {/* ============ [1] 히어로 ============ */}
+      <section className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6 pt-32 pb-16">
+        {/* 배경 이미지 + 어두운 오버레이 */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url(/images/winter/studio-practice.jpg)" }}
+          aria-hidden
+        />
+        <div className="absolute inset-0 bg-black/75" aria-hidden />
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-background"
+          aria-hidden
+        />
+
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center text-center">
+          <p className="mb-5 text-xs md:text-sm tracking-[0.3em] text-accent uppercase">
+            2028학년도 대비 · 홍대 본원 기숙
+          </p>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-tight text-white break-keep">
+            실기만으로는
+            <br />
+            부족합니다
+          </h1>
+          <p className="mt-6 text-base md:text-xl text-white/70 break-keep">
+            학과 + 실기 + 숙식 + 생활관리, 8주간 한 곳에서
+          </p>
+          <p className="mt-2 text-sm text-white/40">{CAMP_INFO.name} · {CAMP_INFO.venueName}</p>
+
+          <div className="mt-8">
+            <DdayBadge />
+          </div>
+
+          {/* 핵심 정보 4개 */}
+          <div className="mt-10 grid w-full grid-cols-2 gap-3 md:grid-cols-4">
+            {[
+              { label: "기간", value: CAMP_INFO.period },
+              { label: "대상", value: CAMP_INFO.target },
+              {
+                label: "정원",
+                value: `${CAMP_INFO.capacity} ${CAMP_INFO.capacityNote}`,
+              },
+              { label: "접수마감", value: CAMP_INFO.deadline },
+            ].map((info) => (
+              <div
+                key={info.label}
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-4 backdrop-blur-sm"
+              >
+                <p className="text-[11px] tracking-widest text-white/40 uppercase">
+                  {info.label}
+                </p>
+                <p className="mt-1.5 text-sm font-semibold text-white break-keep">
+                  {info.value}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div className="mt-10 flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <a
+              href="#contact"
+              className="w-full rounded-full bg-accent px-8 py-4 text-center text-base font-bold text-black transition-opacity hover:opacity-85 sm:w-auto"
+            >
+              상담 예약하기
+            </a>
+            <a
+              href={CAMP_INFO.phoneTel}
+              className="flex w-full items-center justify-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-medium text-white transition-colors hover:border-white/50 sm:w-auto"
+            >
+              <Phone size={17} />
+              전화 문의 {CAMP_INFO.phone}
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ [2] 모집 대상 — 2개 트랙 ============ */}
+      <section className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="Who It's For"
+            ko={
+              <>
+                두 개의 트랙,
+                <br className="md:hidden" /> 하나의 겨울
+              </>
+            }
+            sub="윈터캠프는 홍대 본원에서 진행되며, 현역과 재수생이 서로 다른 목표로 참여합니다."
+          />
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* 카드 A — 현역 */}
+            <motion.div
+              {...fadeUp}
+              className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10"
+            >
+              <p className="text-[11px] tracking-[0.25em] text-white/40 uppercase">
+                Track A
+              </p>
+              <h3 className="mt-3 text-2xl md:text-3xl font-bold text-white">
+                현역 — 예비 고2·고3
+              </h3>
+              <ul className="mt-6 space-y-3 text-sm md:text-base leading-relaxed text-white/70">
+                <li className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                  8주간 실기 기초와 학과를 동시에 다지는 과정입니다.
+                </li>
+                <li className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                  캠프 종료 후에는 각자의 학교 생활로 복귀합니다.
+                </li>
+                <li className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                  겨울방학 8주로 완결되는, 홍대 본원에서 진행하는 독립된
+                  과정입니다.
+                </li>
+              </ul>
+            </motion.div>
+
+            {/* 카드 B — 재수생 선행반 */}
+            <motion.div
+              {...fadeUp}
+              className="rounded-2xl border border-accent/25 bg-accent/[0.04] p-8 md:p-10"
+            >
+              <p className="text-[11px] tracking-[0.25em] text-accent/70 uppercase">
+                Track B
+              </p>
+              <h3 className="mt-3 text-2xl md:text-3xl font-bold text-white">
+                재수생 — 선행반
+              </h3>
+              <ul className="mt-6 space-y-3 text-sm md:text-base leading-relaxed text-white/70">
+                <li className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                  3월 정규 기숙 과정 이전의 선행 학습 과정입니다.
+                </li>
+                <li className="flex gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                  1~2월 홍대 본원에서 먼저 시작하고, 3월부터는 파주
+                  기숙학원에서 정규 과정이 이어집니다.
+                </li>
+              </ul>
+              <Link
+                href="/gisuk"
+                className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
+              >
+                파주 기숙학원 정규 과정 안내
+                <ArrowRight size={15} />
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ [3] Why — 왜 학과인가 ============ */}
+      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="Why Academics"
+            ko={
+              <>
+                겨울방학, 학과가
+                <br className="md:hidden" /> 멈추는 시간
+              </>
+            }
+          />
+
+          <motion.div {...fadeUp} className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10">
+              <p className="text-[11px] tracking-[0.25em] text-white/35 uppercase">
+                일반 미술학원
+              </p>
+              <p className="mt-4 text-xl md:text-2xl font-bold text-white/60 leading-snug break-keep">
+                실기 특강 13:00~22:00,
+                <br />
+                학과는 각자 알아서
+              </p>
+            </div>
+            <div className="rounded-2xl border border-accent/30 bg-accent/[0.05] p-8 md:p-10">
+              <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
+                모다고 윈터캠프
+              </p>
+              <p className="mt-4 text-xl md:text-2xl font-bold text-white leading-snug break-keep">
+                실기 + 학과 + 생활관리
+                <br />
+                통합
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.p
+            {...fadeUp}
+            className="mx-auto mt-12 max-w-2xl text-center text-sm md:text-base leading-relaxed text-white/60 break-keep"
+          >
+            미대 입시는 실기만으로 끝나지 않습니다. 그러나 실기 특강이 시작되면
+            하루의 대부분이 그림에 쓰이고, 학과 공부는 흐름이 끊기기 쉽습니다.
+            모다고 윈터캠프는 하루 일과 안에 실기와 학과 시간을 함께 설계하여
+            8주간의 학과 학습량을 확보합니다. 생활 리듬까지 관리 인력이 함께
+            잡아주기 때문에, 학생은 공부와 그림에만 집중할 수 있습니다.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* ============ [4] 하루 일과표 ============ */}
+      <section className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-4xl">
+          <SectionHead
+            en="Daily Routine"
+            ko="캠프의 하루"
+            sub="평일은 학과와 실기를 함께, 주말은 대학교 유형 미술실기에 집중합니다."
+          />
+
+          {/* 범례 */}
+          <motion.div
+            {...fadeUp}
+            className="mb-6 flex items-center justify-center gap-6"
+          >
+            {(Object.keys(SCHEDULE_STYLE) as ScheduleType[]).map((key) => (
+              <span
+                key={key}
+                className="flex items-center gap-2 text-xs md:text-sm text-white/60"
+              >
+                <span
+                  className={`h-2.5 w-2.5 rounded-full ${SCHEDULE_STYLE[key].dot}`}
+                />
+                {SCHEDULE_STYLE[key].label}
+              </span>
+            ))}
+          </motion.div>
+
+          <motion.div {...fadeUp} className="grid gap-6 md:grid-cols-2">
+            <ScheduleTable title="평일 (월–금)" rows={WEEKDAY_SCHEDULE} />
+            <ScheduleTable title="주말 (토·일)" rows={WEEKEND_SCHEDULE} />
+          </motion.div>
+
+          <motion.p
+            {...fadeUp}
+            className="mt-5 text-center text-xs text-white/35"
+          >
+            ※ 수업시간은 효율에 따라 변경될 수 있습니다.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* ============ [5] 관리 시스템 ============ */}
+      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="The System"
+            ko="숫자로 보는 관리"
+            sub="8주를 지탱하는 것은 의지가 아니라 시스템입니다."
+          />
+
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {MANAGEMENT_CARDS.map((card, i) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-8 text-center"
+              >
+                <card.icon
+                  size={20}
+                  strokeWidth={1.5}
+                  className="mx-auto text-accent/70"
+                />
+                <p className="mt-4 text-4xl md:text-5xl font-black text-white tracking-tight">
+                  {card.number}
+                  {card.unit && (
+                    <span className="text-lg md:text-xl font-bold text-white/50">
+                      {card.unit}
+                    </span>
+                  )}
+                </p>
+                <p className="mt-3 text-sm md:text-base font-semibold text-white/90">
+                  {card.title}
+                </p>
+                <p className="mt-1 text-xs md:text-sm text-white/45">
+                  {card.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ [6] 생활 환경 — 갤러리 ============ */}
+      <section className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="Living Environment"
+            ko="8주를 보낼 공간"
+            sub="홍대 본원의 실기실·강의실·생활관을 확인하세요. 사진을 누르면 크게 볼 수 있습니다."
+          />
+
+          <motion.div
+            {...fadeUp}
+            className="grid grid-cols-2 gap-4 md:grid-cols-3"
+          >
+            {GALLERY_IMAGES.map((img) => (
+              <GalleryImage
+                key={img.src}
+                src={img.src}
+                caption={img.caption}
+                onOpen={() => setLightbox(img)}
+              />
+            ))}
+          </motion.div>
+        </div>
+        <Lightbox item={lightbox} onClose={() => setLightbox(null)} />
+      </section>
+
+      {/* ============ [7] 안전 및 학부모 소통 ============ */}
+      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="Safety & Communication"
+            ko={
+              <>
+                맡기신 8주,
+                <br className="md:hidden" /> 이렇게 지킵니다
+              </>
+            }
+          />
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {SAFETY_CARDS.map((card, i) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.6, delay: i * 0.08 }}
+                className="flex gap-5 rounded-2xl border border-white/10 bg-white/[0.03] p-7 md:p-8"
+              >
+                <card.icon
+                  size={26}
+                  strokeWidth={1.5}
+                  className="mt-0.5 shrink-0 text-accent"
+                />
+                <div>
+                  <h3 className="text-base md:text-lg font-bold text-white">
+                    {card.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-white/60 break-keep">
+                    {card.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ [8] 합격 실적 ============ */}
+      <section className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="Since 1989 · 37년"
+            ko="숫자가 증명하는 시간"
+            sub="모두다른고양이 미술학원의 누적 합격 실적입니다."
+          />
+
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {universityCards.map((card, i) => (
+              <motion.div
+                key={card.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="relative overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8 text-center"
+                style={{ backgroundColor: card.color }}
+              >
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10">
+                  <Image
+                    src={card.logo}
+                    alt=""
+                    width={200}
+                    height={200}
+                    className="object-contain brightness-0 invert"
+                  />
+                </div>
+                <div className="relative z-10">
+                  <p className="text-sm md:text-base font-semibold text-white/80">
+                    {card.name}
+                  </p>
+                  <p className="mt-3 text-4xl md:text-5xl font-black text-white">
+                    {card.total}
+                    <span className="text-lg font-bold text-white/60">명</span>
+                  </p>
+                  <p className="mt-1 text-[11px] tracking-widest text-white/50 uppercase">
+                    누적 합격
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ [9] 커리큘럼 ============ */}
+      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-3xl">
+          <SectionHead en="The Curriculum" ko="8주의 설계" />
+
+          <motion.div {...fadeUp}>
+            {/* 탭 */}
+            <div
+              role="tablist"
+              aria-label="커리큘럼 과목"
+              className="flex flex-wrap justify-center gap-2"
+            >
+              {CURRICULUM_TABS.map((t) => (
+                <button
+                  key={t.key}
+                  role="tab"
+                  aria-selected={activeTab === t.key}
+                  onClick={() => setActiveTab(t.key)}
+                  className={`rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${
+                    activeTab === t.key
+                      ? "bg-accent text-black"
+                      : "border border-white/15 text-white/60 hover:border-white/40 hover:text-white"
+                  }`}
+                >
+                  {t.key}
+                </button>
+              ))}
+            </div>
+
+            {/* 탭 내용 */}
+            <div
+              role="tabpanel"
+              className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10"
+            >
+              <div>
+                <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
+                  목표
+                </p>
+                <p className="mt-2 text-sm md:text-base leading-relaxed text-white/80 break-keep">
+                  {tab.goal}
+                </p>
+              </div>
+              <div className="mt-7">
+                <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
+                  진행 방식
+                </p>
+                <p className="mt-2 text-sm md:text-base leading-relaxed text-white/80 break-keep">
+                  {tab.method}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============ [10] 수강료 및 접수 ============ */}
+      <section className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-3xl">
+          <SectionHead en="Tuition" ko="수강료 및 접수" />
+
+          <motion.div
+            {...fadeUp}
+            className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10 text-center"
+          >
+            <p className="text-[11px] tracking-[0.25em] text-white/40 uppercase">
+              8주 전 과정
+            </p>
+            <p className="mt-4 text-3xl md:text-4xl font-black text-white">
+              {CAMP_INFO.tuition}
+            </p>
+            <p className="mt-3 text-sm md:text-base text-white/60 break-keep">
+              {CAMP_INFO.tuitionIncludes}
+            </p>
+            <p className="mt-2 text-sm text-white/45 break-keep">
+              수강료는 학생별 과정 구성에 따라 달라져, 상담을 통해 정확히
+              안내드립니다.
+            </p>
+            <a
+              href={CAMP_INFO.phoneTel}
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-bold text-black transition-opacity hover:opacity-85"
+            >
+              <Phone size={15} />
+              수강료 상담 {CAMP_INFO.phone}
+            </a>
+
+            {/* 일괄 등록 할인 (얼리버드) */}
+            <div className="mt-8 rounded-xl border border-accent/30 bg-accent/[0.06] px-6 py-5">
+              <p className="text-xs tracking-[0.25em] text-accent uppercase">
+                Early Bird
+              </p>
+              <p className="mt-2 text-base md:text-lg font-bold text-white break-keep">
+                {CAMP_INFO.earlyBird}
+              </p>
+            </div>
+
+            <p className="mt-6 text-xs text-white/40">
+              접수 마감 {CAMP_INFO.deadline} · 정원 {CAMP_INFO.capacity} (
+              {CAMP_INFO.capacityNote})
+            </p>
+            <Link
+              href="/tuition"
+              className="mt-3 inline-block text-xs text-white/40 underline underline-offset-4 transition-colors hover:text-white/70"
+            >
+              교육청 등록 교습비 고지 보기 (학원등록번호 제02201000109호)
+            </Link>
+          </motion.div>
+
+          {/* 환불 규정 — 교육청 환불규정 제18조 제3호 */}
+          <motion.div {...fadeUp} className="mt-8">
+            <AccordionItem
+              q="환불 규정 안내"
+              a={
+                <div className="space-y-4">
+                  <p>
+                    중도 퇴원(퇴소) 시 교육청 환불규정(제18조 제3호)에 따라
+                    수강료를 반환합니다.
+                  </p>
+                  <div className="overflow-hidden rounded-lg border border-white/10">
+                    <table className="w-full text-sm">
+                      <tbody>
+                        {[
+                          ["총 교습시간의 1/3 경과 전", "납부한 교습비의 2/3 환불"],
+                          ["총 교습시간의 1/2 경과 전", "납부한 교습비의 1/2 환불"],
+                          ["총 교습시간의 1/2 경과 후", "반환하지 않음"],
+                        ].map(([when, amount]) => (
+                          <tr
+                            key={when}
+                            className="border-b border-white/5 last:border-b-0"
+                          >
+                            <td className="px-4 py-3 text-white/70">{when}</td>
+                            <td className="px-4 py-3 text-white/90 font-medium">
+                              {amount}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <ul className="list-disc space-y-1.5 pl-5 text-white/55">
+                    <li>
+                      개인 사정으로 인한 지각·결석은 수강료 반환 사유에서
+                      제외됩니다.
+                    </li>
+                    <li>
+                      할인을 받은 학생이 환불을 요청할 경우 할인이 취소되며,
+                      할인받은 금액을 제외한 차액을 환불합니다.
+                    </li>
+                  </ul>
+                </div>
+              }
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============ [11] FAQ ============ */}
+      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-3xl">
+          <SectionHead en="FAQ" ko="자주 묻는 질문" />
+
+          <motion.div {...fadeUp} className="border-t border-white/10">
+            {FAQ_ITEMS.map((item) => (
+              <AccordionItem key={item.q} q={item.q} a={item.a} />
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============ [12] 상담 및 오시는 길 ============ */}
+      <section id="contact" className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-3xl text-center">
+          <SectionHead
+            en="Contact"
+            ko="상담 및 오시는 길"
+            sub="생활기록부를 지참하시면 수시/정시 전략 상담이 가능합니다."
+          />
+
+          <motion.div {...fadeUp}>
+            {/* 전화 — 가장 크게 */}
+            <a
+              href={CAMP_INFO.phoneTel}
+              className="group inline-block"
+              aria-label={`홍대 본원 전화 ${CAMP_INFO.phone}`}
+            >
+              <p className="text-xs tracking-[0.3em] text-white/40 uppercase">
+                홍대 본원
+              </p>
+              <p className="mt-2 text-5xl md:text-7xl font-black tracking-tight text-white transition-colors group-hover:text-accent">
+                {CAMP_INFO.phone}
+              </p>
+            </a>
+
+            <div className="mx-auto mt-10 max-w-md rounded-2xl border border-white/10 bg-white/[0.03] p-7">
+              <p className="flex items-center justify-center gap-2 text-sm font-medium text-white/80">
+                <MapPin size={15} className="text-accent" />
+                {CAMP_INFO.venueName}
+              </p>
+              <p className="mt-2 text-sm text-white/55">{CAMP_INFO.address}</p>
+              <a
+                href={CAMP_INFO.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm text-accent hover:underline"
+              >
+                네이버 지도로 보기
+                <ArrowRight size={14} />
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============ 모바일 하단 고정 CTA ============ */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex gap-2 border-t border-white/10 bg-black/90 px-4 py-3 backdrop-blur-md md:hidden">
+        <a
+          href={CAMP_INFO.phoneTel}
+          aria-label={`전화 문의 ${CAMP_INFO.phone}`}
+          className="flex items-center justify-center rounded-full border border-white/25 px-5 py-3.5 text-white"
+        >
+          <Phone size={18} />
+        </a>
+        <a
+          href="#contact"
+          className="flex-1 rounded-full bg-accent py-3.5 text-center text-sm font-bold text-black"
+        >
+          상담 예약하기
+        </a>
+      </div>
+    </main>
+  );
+}

@@ -47,6 +47,12 @@ const navItems: NavItem[] = [
         href: "/guide/jungsi-2026",
         desc: "가·나·다군 모집군·전형방법 총정리",
       },
+      {
+        label: "실기 모의고사 (주말)",
+        href: "/mock",
+        desc: "대학 실기고사와 동일한 4시간 · 성적표 제공",
+        badge: "접수중",
+      },
     ],
   },
   {

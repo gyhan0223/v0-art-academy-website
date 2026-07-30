@@ -42,6 +42,11 @@ export const metadata: Metadata = {
     description:
       "서울대 252명, 홍익대 792명 누적 합격. 2027 미대 기숙 윈터캠프 모집 중.",
   },
+  verification: {
+    other: {
+      "naver-site-verification": "1f8cf936e99f06be87d0e109d53c43539a6ebc8c",
+    },
+  },
   twitter: {
     card: "summary_large_image",
     title: "모두다른고양이 미술학원(모다고) | 홍대 · 일산 미대입시",

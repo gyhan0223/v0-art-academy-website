@@ -20,8 +20,13 @@ import {
   ArrowRight,
   CalendarDays,
   ImageIcon,
+  MessageSquare,
+  MessageCircle,
+  Loader2,
+  CheckCircle2,
+  PenLine,
 } from "lucide-react";
-import { CAMP_INFO } from "@/lib/winter-camp";
+import { CAMP_INFO, SMS_HREF, KAKAO_CHANNEL_URL } from "@/lib/winter-camp";
 import { universityCards } from "@/components/cinematic/Scene2";
 
 /* ---------------------------------- 공통 ---------------------------------- */
@@ -85,7 +90,7 @@ const WEEKDAY_SCHEDULE: ScheduleRow[] = [
     type: "hakgwa",
   },
   { time: "17:25", label: "저녁 시간", type: "life" },
-  { time: "18:10", label: "자기주도 또는 실기 수업", type: "silgi" },
+  { time: "18:10", label: "자기주도 학습", type: "hakgwa" },
   { time: "22:20", label: "영어 100단어 시험", type: "hakgwa" },
   { time: "22:40", label: "취침", type: "life" },
 ];
@@ -456,6 +461,338 @@ function AccordionItem({
   );
 }
 
+function scrollToConsult(e?: React.MouseEvent) {
+  e?.preventDefault();
+  document
+    .getElementById("consult-form")
+    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function KakaoTalkButton() {
+  // TODO: 2026년 9월 카카오톡 채널 개설 후 lib/winter-camp.ts의 KAKAO_CHANNEL_URL만 채우면 노출됨
+  if (!KAKAO_CHANNEL_URL) return null;
+
+  return (
+    <a
+      href={KAKAO_CHANNEL_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 rounded-full bg-[#FEE500] px-7 py-3.5 text-sm font-bold text-black transition-opacity hover:opacity-85"
+    >
+      <MessageCircle size={15} />
+      카카오톡 문의
+    </a>
+  );
+}
+
+/** 010-1234-5678 형태로 자동 하이픈 */
+function formatPhone(value: string) {
+  const d = value.replace(/\D/g, "").slice(0, 11);
+  if (d.length < 4) return d;
+  if (d.length < 8) return `${d.slice(0, 3)}-${d.slice(3)}`;
+  if (d.length < 11) return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`;
+  return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
+}
+
+const GRADE_OPTIONS = ["예비 고2", "예비 고3", "재수생"] as const;
+
+const INPUT_CLASS =
+  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3.5 text-sm text-white placeholder:text-white/30 outline-none transition-colors focus:border-accent";
+
+function ConsultForm() {
+  const [name, setName] = useState("");
+  const [grade, setGrade] = useState("");
+  const [phone, setPhone] = useState("");
+  const [university, setUniversity] = useState("");
+  const [agreed, setAgreed] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "done" | "error"
+  >("idle");
+
+  const canSubmit =
+    name.trim().length > 0 &&
+    grade !== "" &&
+    phone.replace(/\D/g, "").length >= 10 &&
+    agreed &&
+    status !== "submitting";
+
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
+    setStatus("submitting");
+    try {
+      const res = await fetch("/api/consult", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          grade,
+          phone,
+          university: university.trim(),
+        }),
+      });
+      if (!res.ok) throw new Error("consult request failed");
+      setStatus("done");
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (status === "done") {
+    return (
+      <div
+        id="consult-form"
+        className="scroll-mt-24 rounded-2xl border border-accent/30 bg-accent/[0.05] px-8 py-14 text-center"
+      >
+        <CheckCircle2 size={40} className="mx-auto text-accent" />
+        <p className="mt-5 text-xl md:text-2xl font-bold text-white">
+          접수되었습니다.
+        </p>
+        <p className="mt-2 text-sm md:text-base text-white/60">
+          곧 연락드리겠습니다.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      id="consult-form"
+      className="scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.03] p-7 md:p-10 text-left"
+    >
+      <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
+        Consult
+      </p>
+      <h3 className="mt-2 text-xl md:text-2xl font-bold text-white">
+        상담 신청
+      </h3>
+
+      <div className="mt-7 space-y-5">
+        {/* 학생 이름 */}
+        <div>
+          <label
+            htmlFor="consult-name"
+            className="mb-2 block text-sm font-medium text-white/70"
+          >
+            학생 이름 <span className="text-accent">*</span>
+          </label>
+          <input
+            id="consult-name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="이름을 입력해 주세요"
+            className={INPUT_CLASS}
+          />
+        </div>
+
+        {/* 학년 */}
+        <div>
+          <p className="mb-2 text-sm font-medium text-white/70">
+            학년 <span className="text-accent">*</span>
+          </p>
+          <div
+            role="radiogroup"
+            aria-label="학년 선택"
+            className="grid grid-cols-3 gap-2"
+          >
+            {GRADE_OPTIONS.map((g) => (
+              <button
+                key={g}
+                type="button"
+                role="radio"
+                aria-checked={grade === g}
+                onClick={() => setGrade(g)}
+                className={`rounded-xl border py-3.5 text-sm font-medium transition-colors ${
+                  grade === g
+                    ? "border-accent bg-accent/10 text-accent"
+                    : "border-white/15 text-white/60 hover:border-white/40 hover:text-white"
+                }`}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 연락처 */}
+        <div>
+          <label
+            htmlFor="consult-phone"
+            className="mb-2 block text-sm font-medium text-white/70"
+          >
+            연락처 <span className="text-accent">*</span>
+          </label>
+          <input
+            id="consult-phone"
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel"
+            value={phone}
+            onChange={(e) => setPhone(formatPhone(e.target.value))}
+            placeholder="010-0000-0000"
+            className={INPUT_CLASS}
+          />
+        </div>
+
+        {/* 희망 대학 (선택) */}
+        <div>
+          <label
+            htmlFor="consult-univ"
+            className="mb-2 block text-sm font-medium text-white/70"
+          >
+            희망 대학{" "}
+            <span className="text-xs font-normal text-white/40">(선택)</span>
+          </label>
+          <input
+            id="consult-univ"
+            type="text"
+            value={university}
+            onChange={(e) => setUniversity(e.target.value)}
+            placeholder="예: 홍익대, 국민대"
+            className={INPUT_CLASS}
+          />
+        </div>
+
+        {/* 개인정보 동의 */}
+        <div>
+          <div className="flex items-start gap-2.5">
+            <input
+              id="consult-agree"
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-accent"
+            />
+            <label
+              htmlFor="consult-agree"
+              className="cursor-pointer text-sm text-white/70 break-keep"
+            >
+              개인정보 수집·이용에 동의합니다{" "}
+              <span className="text-accent">(필수)</span>
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowPrivacy(!showPrivacy)}
+              aria-expanded={showPrivacy}
+              className="shrink-0 text-xs text-white/40 underline underline-offset-2 hover:text-white/70"
+            >
+              {showPrivacy ? "접기" : "자세히"}
+            </button>
+          </div>
+          {showPrivacy && (
+            <div className="mt-3 space-y-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3.5 text-xs leading-relaxed text-white/50">
+              <p>· 수집 항목: 학생 이름, 학년, 연락처, 희망 대학(선택)</p>
+              <p>
+                · 이용 목적: 윈터캠프 상담 회신 (그 외 목적으로 사용하지
+                않습니다)
+              </p>
+              <p>
+                · 보유 기간: [상담 완료 후 지체 없이 파기]
+                {/* TODO: 원장님 확인 */}
+              </p>
+              <p>
+                · 동의를 거부할 수 있으나, 거부 시 상담 신청이 제한됩니다.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* 제출 */}
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={!canSubmit}
+          className="w-full rounded-full bg-accent py-4 text-base font-bold text-black transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {status === "submitting" ? (
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 size={17} className="animate-spin" />
+              접수 중...
+            </span>
+          ) : (
+            "상담 신청하기"
+          )}
+        </button>
+
+        {status === "error" && (
+          <p className="text-center text-sm text-red-400 break-keep">
+            일시적인 오류로 접수하지 못했습니다. 잠시 후 다시 시도하시거나
+            전화({CAMP_INFO.phone})로 연락해 주세요.
+          </p>
+        )}
+
+        <p className="text-center text-xs text-white/40 break-keep">
+          밤에 남겨주셔도 괜찮습니다. 다음 날 연락드립니다.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/** 모바일 전용 하단 고정 바 — 첫 화면을 지나 스크롤하면 나타남. 데스크톱에서는 렌더링하지 않음 */
+function MobileActionBar() {
+  const [isMobile, setIsMobile] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () =>
+      setVisible(window.scrollY > window.innerHeight * 0.8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  if (!isMobile) return null;
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          exit={{ y: 100 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-3 gap-2 border-t border-white/10 bg-black/90 px-4 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2.5 backdrop-blur-md md:hidden"
+        >
+          <a
+            href={CAMP_INFO.phoneTel}
+            aria-label={`전화 문의 ${CAMP_INFO.phone}`}
+            className="flex flex-col items-center gap-1 rounded-xl border border-white/15 py-2 text-white"
+          >
+            <Phone size={17} />
+            <span className="text-[11px] font-medium">전화</span>
+          </a>
+          <a
+            href={SMS_HREF}
+            aria-label="문자 문의"
+            className="flex flex-col items-center gap-1 rounded-xl border border-white/15 py-2 text-white"
+          >
+            <MessageSquare size={17} />
+            <span className="text-[11px] font-medium">문자</span>
+          </a>
+          <button
+            type="button"
+            onClick={() => scrollToConsult()}
+            className="flex flex-col items-center gap-1 rounded-xl bg-accent py-2 text-black"
+          >
+            <PenLine size={17} />
+            <span className="text-[11px] font-bold">상담 신청</span>
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 /* --------------------------------- 페이지 ---------------------------------- */
 
 export default function WinterLanding() {
@@ -529,7 +866,8 @@ export default function WinterLanding() {
           {/* CTA */}
           <div className="mt-10 flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <a
-              href="#contact"
+              href="#consult-form"
+              onClick={scrollToConsult}
               className="w-full rounded-full bg-accent px-8 py-4 text-center text-base font-bold text-black transition-opacity hover:opacity-85 sm:w-auto"
             >
               상담 예약하기
@@ -677,7 +1015,7 @@ export default function WinterLanding() {
           <SectionHead
             en="Daily Routine"
             ko="캠프의 하루"
-            sub="평일은 학과와 실기를 함께, 주말은 대학교 유형 미술실기에 집중합니다."
+            sub="평일은 학과에만, 주말은 대학교 유형 미술실기에 집중합니다."
           />
 
           {/* 범례 */}
@@ -948,13 +1286,49 @@ export default function WinterLanding() {
               수강료는 학생별 과정 구성에 따라 달라져, 상담을 통해 정확히
               안내드립니다.
             </p>
-            <a
-              href={CAMP_INFO.phoneTel}
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-bold text-black transition-opacity hover:opacity-85"
-            >
-              <Phone size={15} />
-              수강료 상담 {CAMP_INFO.phone}
-            </a>
+
+            {/* WHY MODAGO — 학과 중심 설계 이유 */}
+            <div className="mt-8 rounded-xl border border-accent/40 bg-accent/[0.06] px-6 py-7 md:px-8 md:py-8">
+              <p className="text-xs tracking-[0.25em] text-accent uppercase">
+                Why Modago
+              </p>
+              <p className="mt-3 text-xl md:text-2xl font-bold text-white break-keep">
+                미대는 성적순입니다.
+              </p>
+              <div className="mt-4 space-y-3 text-sm md:text-base leading-[1.9] text-white/70 break-keep">
+                <p>
+                  실기는 수능이 끝난 뒤에 시작해도 늦지 않습니다.
+                  <br className="hidden md:block" />
+                  성적은 그렇지 않습니다.
+                </p>
+                <p>
+                  미대는 서울대를 제외하면 수학을 반영하지 않습니다.
+                  <br className="hidden md:block" />
+                  일반 기숙학원이 수학에 쓰는 8주를,
+                  <br className="hidden md:block" />
+                  저희는 국어·영어·탐구에 전부 씁니다.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href={CAMP_INFO.phoneTel}
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-bold text-black transition-opacity hover:opacity-85"
+              >
+                <Phone size={15} />
+                수강료 상담 {CAMP_INFO.phone}
+              </a>
+              {/* 문자 문의 — 데스크톱은 문자 앱이 없어 모바일에서만 노출 */}
+              <a
+                href={SMS_HREF}
+                className="inline-flex items-center gap-2 rounded-full border border-white/25 px-7 py-3.5 text-sm font-bold text-white transition-colors hover:border-white/50 md:hidden"
+              >
+                <MessageSquare size={15} />
+                문자 문의
+              </a>
+              <KakaoTalkButton />
+            </div>
 
             {/* 일괄 등록 할인 (얼리버드) */}
             <div className="mt-8 rounded-xl border border-accent/30 bg-accent/[0.06] px-6 py-5">
@@ -976,6 +1350,11 @@ export default function WinterLanding() {
             >
               교육청 등록 교습비 고지 보기 (학원등록번호 제02201000109호)
             </Link>
+          </motion.div>
+
+          {/* 상담 신청 폼 */}
+          <motion.div {...fadeUp} className="mt-8">
+            <ConsultForm />
           </motion.div>
 
           {/* 환불 규정 — 교육청 환불규정 제18조 제3호 */}
@@ -1084,21 +1463,7 @@ export default function WinterLanding() {
       </section>
 
       {/* ============ 모바일 하단 고정 CTA ============ */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex gap-2 border-t border-white/10 bg-black/90 px-4 py-3 backdrop-blur-md md:hidden">
-        <a
-          href={CAMP_INFO.phoneTel}
-          aria-label={`전화 문의 ${CAMP_INFO.phone}`}
-          className="flex items-center justify-center rounded-full border border-white/25 px-5 py-3.5 text-white"
-        >
-          <Phone size={18} />
-        </a>
-        <a
-          href="#contact"
-          className="flex-1 rounded-full bg-accent py-3.5 text-center text-sm font-bold text-black"
-        >
-          상담 예약하기
-        </a>
-      </div>
+      <MobileActionBar />
     </main>
   );
 }

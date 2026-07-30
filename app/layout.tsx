@@ -14,9 +14,40 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "모두다른고양이 미술학원 | 생각의 구조를 설계합니다",
+  metadataBase: new URL("https://www.modago.me"),
+  // title에 template을 쓰지 않음 — 하위 페이지들이 이미 " | 모두다른고양이 미술학원"을 직접 포함
+  title: "모두다른고양이 미술학원(모다고) | 홍대 본원 · 일산 캠퍼스 미대입시",
   description:
-    "단순한 기술 훈련이 아닌, 창의적 사고의 본질을 탐구합니다. 서울대, 홍익대 등 최상위권 미대 합격을 위한 맞춤형 미술 교육.",
+    "모다고 모두다른고양이 미술학원 — 서울대 252명, 홍익대 792명 누적 합격. 홍대 본원 · 일산 캠퍼스 미대입시 전문. 2027 미대 기숙 윈터캠프 모집 중.",
+  keywords: [
+    "모다고",
+    "모두다른고양이",
+    "모두다른고양이미술학원",
+    "모다고미술학원",
+    "홍대미술학원",
+    "일산미술학원",
+    "미대입시",
+    "미대입시학원",
+    "미대기숙학원",
+    "미대정시",
+  ],
+  // alternates.canonical을 루트에 두지 않음 — 자체 canonical이 없는 모든 하위 페이지에
+  // 상속되어 canonical이 홈으로 찍히는 중복 문서 문제가 생김 (도메인 정규화는 308 리다이렉트가 담당)
+  openGraph: {
+    type: "website",
+    url: "https://www.modago.me",
+    siteName: "모두다른고양이 미술학원",
+    locale: "ko_KR",
+    title: "모두다른고양이 미술학원(모다고) | 홍대 · 일산 미대입시",
+    description:
+      "서울대 252명, 홍익대 792명 누적 합격. 2027 미대 기숙 윈터캠프 모집 중.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "모두다른고양이 미술학원(모다고) | 홍대 · 일산 미대입시",
+    description:
+      "서울대 252명, 홍익대 792명 누적 합격. 2027 미대 기숙 윈터캠프 모집 중.",
+  },
   icons: {
     icon: [
       {

@@ -400,8 +400,8 @@ export default function ScoreRecommender({ ctaHref }: { ctaHref: string }) {
 
       {/* 유의 */}
       <p className="mt-4 border-t border-white/10 pt-3 text-[11px] leading-relaxed text-white/35">
-        참고용입니다. 반영식은 각 대학 모집요강 기준이지만, 합격선은 2025학년도
-        참고치가 있는 {RECOMMEND_COVERAGE.withCutoff}곳만 안정/적정/도전을 표시하며
+        참고용입니다. 반영식은 각 대학 모집요강 기준이지만, 합격선은 2026학년도
+        입시결과가 공개된 {RECOMMEND_COVERAGE.withCutoff}곳만 안정/적정/도전을 표시하며
         실기 성적은 반영하지 않습니다. 영어·한국사 등급 환산은 대학마다 달라
         어림값입니다. 서울대·삼육대 등 자체 환산 대학은 계산에서 제외됩니다.
       </p>

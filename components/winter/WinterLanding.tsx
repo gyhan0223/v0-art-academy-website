@@ -1,5 +1,24 @@
 "use client";
 
+/**
+ * 윈터캠프 랜딩 — 전환율(상담 신청) 최우선 구조.
+ *
+ * 섹션 흐름 (설득 순서):
+ *  1. 히어로: 문제 제기 + 즉시 CTA + 긴급성(D-day·정원)
+ *  2. 왜 학과인가: 핵심 차별 논리 ("미대는 성적순")
+ *  3. 왜 모다고인가: 37년 누적 합격 실적
+ *  → CTA
+ *  4. 윈터캠프 소개: 기간·대상·정원 + 두 트랙
+ *  5. 생활관리: 학부모 걱정 6문 6답 (FAQ보다 먼저 불안 해소)
+ *  → CTA
+ *  6. 학과관리 / 7. 실기관리 / 8. 하루 일과
+ *  9. 시설 / 10. 후기(학생·학부모·합격)
+ *  → CTA
+ * 11. FAQ / 12. 신청하기(수강료·폼·오시는길)
+ *
+ * 상세 근거: docs/winter-cro-redesign.md
+ */
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +35,6 @@ import {
   ShieldCheck,
   Stethoscope,
   FileText,
-  BedDouble,
   ArrowRight,
   CalendarDays,
   ImageIcon,
@@ -25,17 +43,20 @@ import {
   Loader2,
   CheckCircle2,
   PenLine,
+  Palette,
 } from "lucide-react";
 import { CAMP_INFO, SMS_HREF, KAKAO_CHANNEL_URL } from "@/lib/winter-camp";
 import { universityCards } from "@/components/cinematic/Scene2";
+import CtaBand from "@/components/winter/CtaBand";
+import Testimonials from "@/components/winter/Testimonials";
 
 /* ---------------------------------- 공통 ---------------------------------- */
 
 const fadeUp = {
-  initial: { opacity: 0, y: 30 },
+  initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.7, ease: "easeOut" as const },
+  transition: { duration: 0.6, ease: "easeOut" as const },
 };
 
 function SectionHead({
@@ -113,75 +134,42 @@ const SCHEDULE_STYLE: Record<
   life: { dot: "bg-white/30", text: "text-white/50", label: "생활" },
 };
 
-const MANAGEMENT_CARDS = [
+/** 학부모가 상담 전 가장 많이 묻는 질문 — FAQ보다 먼저 본문에서 해소한다 */
+const PARENT_CONCERNS = [
   {
-    number: "30",
-    unit: "찬",
-    title: "뷔페식 30찬",
-    desc: "아침 · 점심 · 저녁 · 야식",
-    icon: Utensils,
-  },
-  {
-    number: "100",
-    unit: "개",
-    title: "매일 영단어 100개",
-    desc: "8주간 총 5,000단어",
-    icon: BookOpen,
-  },
-  {
-    number: "OFF",
-    unit: "",
-    title: "핸드폰 제출",
-    desc: "정해진 취침 · 기상 시간",
+    q: "휴대폰은 어떻게 하나요?",
+    a: "정해진 시간에 제출합니다. 취침·기상 시간이 고정되어 있어 생활 리듬이 무너지지 않습니다. 학부모님과의 연락은 언제든 가능합니다.",
     icon: Moon,
   },
   {
-    number: "14",
-    unit: "명",
-    title: "정원 14명",
-    desc: "여 8 · 남 6 소수정예",
-    icon: Users,
-  },
-];
-
-const GALLERY_IMAGES = [
-  { src: "/images/winter/dining-buffet.jpg", caption: "매 끼 30찬 뷔페식" },
-  { src: "/images/winter/dorm-female.jpg", caption: "여학생 생활관" },
-  { src: "/images/winter/dorm-male.jpg", caption: "남학생 생활관" },
-  { src: "/images/winter/studio-practice.jpg", caption: "실기실" },
-  { src: "/images/winter/classroom.jpg", caption: "학과 강의실" },
-  { src: "/images/winter/exterior.jpg", caption: "홍대 본원 전경" },
-];
-
-const SAFETY_CARDS = [
-  {
-    title: "남녀 생활관 분리",
-    desc: "남학생과 여학생의 생활 공간을 분리하여 운영합니다.",
-    icon: BedDouble,
+    q: "식사는 잘 챙겨 먹을까요?",
+    a: "매 끼 30찬 뷔페식으로 아침·점심·저녁·야식까지 제공합니다. 한창 클 나이의 8주, 식사만큼은 부족함 없이 챙깁니다.",
+    icon: Utensils,
   },
   {
-    title: "야간 관리 인력 상주",
-    desc: "야간에도 관리 인력이 상주합니다.",
+    q: "생활은 안전한가요?",
+    a: "남학생과 여학생의 생활관을 분리해 운영하고, 야간에도 관리 인력이 상주합니다.",
     icon: ShieldCheck,
   },
   {
-    title: "건강 이상 시 병원 동행",
-    desc: "학생의 건강에 이상이 있을 경우 병원 동행이 가능합니다.",
+    q: "아프면 어떻게 하나요?",
+    a: "건강에 이상이 있으면 관리 인력이 병원에 동행하고, 상황 발생 시 학부모님께 즉시 연락드립니다.",
     icon: Stethoscope,
   },
   {
-    title: "월간 학부모 리포트",
-    desc: "학습과 생활 상황을 월간 리포트로 학부모님께 전달합니다.",
+    q: "공부는 제대로 하나요?",
+    a: "매일 밤 영단어 100개 시험(8주간 5,000단어), 주간 국어·영어 모의고사로 매일의 학습을 숫자로 확인합니다.",
+    icon: BookOpen,
+  },
+  {
+    q: "아이 소식은 어떻게 듣나요?",
+    a: "학습과 생활 상황을 정리한 월간 리포트를 학부모님께 보내드립니다. 궁금하실 땐 언제든 본원으로 전화 주세요.",
     icon: FileText,
   },
 ];
 
-const CURRICULUM_TABS = [
-  {
-    key: "실기",
-    goal: "[기초 소묘·발상과 표현 등 실기 기초를 8주간 집중적으로 다집니다.]" /* TODO: 원장님 확인 */,
-    method: "[레벨 테스트 후 수준별 분반, 담당 강사 개별 피드백 진행]" /* TODO: 원장님 확인 */,
-  },
+/** 학과 커리큘럼 — 학과가 먼저, 실기는 별도 섹션 */
+const HAKGWA_TABS = [
   {
     key: "국어",
     goal: "[문학·독서 기본 개념을 정리하고 기출 지문 독해 훈련을 진행합니다.]" /* TODO: 원장님 확인 */,
@@ -204,6 +192,30 @@ const CURRICULUM_TABS = [
   },
 ];
 
+const SILGI_POINTS = [
+  {
+    title: "대학교 유형 실기",
+    desc: "목표 대학의 출제 유형에 맞춘 실기 훈련을 주말에 집중 진행합니다.",
+  },
+  {
+    title: "레벨 테스트 후 수준별 분반",
+    desc: "[기초 소묘·발상과 표현 등 실기 기초를 8주간 집중적으로 다집니다. 레벨 테스트 후 수준별 분반, 담당 강사 개별 피드백 진행]" /* TODO: 원장님 확인 */,
+  },
+  {
+    title: "실기는 끊기지 않을 만큼",
+    desc: "겨울은 학과의 골든타임입니다. 실기는 감을 잃지 않도록 주말 집중 방식으로 유지하고, 평일은 학과에 전부 씁니다.",
+  },
+];
+
+const GALLERY_IMAGES = [
+  { src: "/images/winter/dining-buffet.jpg", caption: "매 끼 30찬 뷔페식" },
+  { src: "/images/winter/dorm-female.jpg", caption: "여학생 생활관" },
+  { src: "/images/winter/dorm-male.jpg", caption: "남학생 생활관" },
+  { src: "/images/winter/studio-practice.jpg", caption: "실기실" },
+  { src: "/images/winter/classroom.jpg", caption: "학과 강의실" },
+  { src: "/images/winter/exterior.jpg", caption: "홍대 본원 전경" },
+];
+
 const FAQ_ITEMS = [
   {
     q: "미술을 처음 시작하는데 참여할 수 있나요?",
@@ -220,14 +232,6 @@ const FAQ_ITEMS = [
   {
     q: "주말 귀가나 외박이 가능한가요?",
     a: "[주말 귀가 및 외박 규정은 상담 시 안내드립니다.]" /* TODO: 원장님 확인 */,
-  },
-  {
-    q: "아프거나 응급 상황이 생기면 어떻게 되나요?",
-    a: "학생의 건강에 이상이 있을 경우 관리 인력이 병원에 동행합니다. 야간에도 관리 인력이 상주하고 있으며, 상황 발생 시 학부모님께 즉시 연락드립니다.",
-  },
-  {
-    q: "아이가 어떻게 지내는지 어떻게 알 수 있나요?",
-    a: "학습과 생활 상황을 정리한 월간 리포트를 학부모님께 발송해 드립니다. 그 외에도 필요하신 경우 언제든 홍대 본원(02-338-3302)으로 문의하실 수 있습니다.",
   },
   {
     q: "준비물은 무엇인가요?",
@@ -558,7 +562,7 @@ function ConsultForm() {
   return (
     <div
       id="consult-form"
-      className="scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.03] p-7 md:p-10 text-left"
+      className="scroll-mt-24 rounded-2xl border border-accent/40 bg-white/[0.03] p-7 md:p-10 text-left"
     >
       <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
         Consult
@@ -566,6 +570,10 @@ function ConsultForm() {
       <h3 className="mt-2 text-xl md:text-2xl font-bold text-white">
         상담 신청
       </h3>
+      <p className="mt-2 text-sm text-white/50 break-keep">
+        정원 {CAMP_INFO.capacityTotal}명 {CAMP_INFO.capacityNote} · 남겨주시면
+        순서대로 연락드립니다.
+      </p>
 
       <div className="mt-7 space-y-5">
         {/* 학생 이름 */}
@@ -730,7 +738,7 @@ function ConsultForm() {
   );
 }
 
-/** 모바일 전용 하단 고정 바 — 첫 화면을 지나 스크롤하면 나타남. 데스크톱에서는 렌더링하지 않음 */
+/** 모바일 전용 하단 고정 바 — 히어로 절반만 지나도 나타나 신청 동선을 항상 유지 */
 function MobileActionBar() {
   const [isMobile, setIsMobile] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -745,7 +753,7 @@ function MobileActionBar() {
 
   useEffect(() => {
     const onScroll = () =>
-      setVisible(window.scrollY > window.innerHeight * 0.8);
+      setVisible(window.scrollY > window.innerHeight * 0.5);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -800,14 +808,14 @@ export default function WinterLanding() {
     src: string;
     caption: string;
   } | null>(null);
-  const [activeTab, setActiveTab] = useState(CURRICULUM_TABS[0].key);
+  const [activeTab, setActiveTab] = useState(HAKGWA_TABS[0].key);
 
-  const tab = CURRICULUM_TABS.find((t) => t.key === activeTab)!;
+  const tab = HAKGWA_TABS.find((t) => t.key === activeTab)!;
 
   return (
     <main className="bg-background text-foreground pb-20 md:pb-0">
-      {/* ============ [1] 히어로 ============ */}
-      <section className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6 pt-32 pb-16">
+      {/* ============ [1] 히어로 — 문제 제기 + 즉시 CTA ============ */}
+      <section className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6 pt-24 pb-12">
         {/* 배경 이미지 + 어두운 오버레이 */}
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -821,25 +829,216 @@ export default function WinterLanding() {
         />
 
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center text-center">
-          <p className="mb-5 text-xs md:text-sm tracking-[0.3em] text-accent uppercase">
-            2028학년도 대비 · 홍대 본원 기숙
+          <p className="mb-4 text-xs md:text-sm tracking-[0.3em] text-accent uppercase">
+            {CAMP_INFO.name} · 홍대 본원 기숙
           </p>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-tight text-white break-keep">
-            실기만으로는
+            실기만 잘해서는
             <br />
-            부족합니다
+            합격할 수 없습니다
           </h1>
-          <p className="mt-6 text-base md:text-xl text-white/70 break-keep">
-            학과 + 실기 + 숙식 + 생활관리, 8주간 한 곳에서
+          <p className="mt-5 text-base md:text-xl text-white/75 break-keep">
+            합격하는 학생은 학과도 준비합니다.
+            <br className="md:hidden" /> 수능·내신·생활까지 관리하는 8주 기숙
+            과정.
           </p>
-          <p className="mt-2 text-sm text-white/40">{CAMP_INFO.name} · {CAMP_INFO.venueName}</p>
 
-          <div className="mt-8">
+          {/* 긴급성 — D-day + 정원 */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
             <DdayBadge />
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-sm font-semibold text-white">
+              <Users size={14} className="text-accent" />
+              정원 {CAMP_INFO.capacityTotal}명 · {CAMP_INFO.capacityNote}{" "}
+              조기마감
+            </span>
           </div>
 
-          {/* 핵심 정보 4개 */}
-          <div className="mt-10 grid w-full grid-cols-2 gap-3 md:grid-cols-4">
+          {/* CTA — 모바일 첫 화면 안에 반드시 노출 */}
+          <div className="mt-7 flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <a
+              href="#consult-form"
+              onClick={scrollToConsult}
+              className="w-full rounded-full bg-accent px-8 py-4 text-center text-base font-bold text-black transition-opacity hover:opacity-85 sm:w-auto"
+            >
+              상담 신청하기
+            </a>
+            <a
+              href={CAMP_INFO.phoneTel}
+              className="flex w-full items-center justify-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-medium text-white transition-colors hover:border-white/50 sm:w-auto"
+            >
+              <Phone size={17} />
+              전화 문의 {CAMP_INFO.phone}
+            </a>
+          </div>
+          <p className="mt-3 text-xs text-white/45">
+            신청은 1분 · 밤에 남겨주셔도 다음 날 연락드립니다
+          </p>
+
+          {/* 핵심 키워드 칩 — 카드 4개 대신 가볍게, 상세 정보는 [4] 소개 섹션에서 */}
+          <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs md:text-sm text-white/60">
+            {["홍대 본원", "8주 집중관리", "학과관리", "실기관리", "생활관리", "기숙"].map(
+              (chip) => (
+                <li
+                  key={chip}
+                  className="rounded-full border border-white/15 px-3.5 py-1.5"
+                >
+                  {chip}
+                </li>
+              ),
+            )}
+          </ul>
+        </div>
+      </section>
+
+      {/* ============ [2] 왜 학과인가 — 핵심 차별 논리 ============ */}
+      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="Why Academics"
+            ko={
+              <>
+                실기를 한 장 더 그리는 것보다
+                <br />
+                수능 한 문제가 합격에 가깝습니다
+              </>
+            }
+          />
+
+          {/* 핵심 논리 — 기존 수강료 섹션에 묻혀 있던 차별점을 최상단으로 */}
+          <motion.div
+            {...fadeUp}
+            className="mx-auto max-w-3xl rounded-2xl border border-accent/40 bg-accent/[0.06] px-7 py-9 md:px-12 md:py-12 text-center"
+          >
+            <p className="text-xs tracking-[0.25em] text-accent uppercase">
+              Why Modago
+            </p>
+            <p className="mt-4 text-2xl md:text-3xl font-black text-white break-keep">
+              미대는 성적순입니다.
+            </p>
+            <div className="mt-5 space-y-4 text-sm md:text-lg leading-[1.9] text-white/75 break-keep">
+              <p>
+                실기는 수능이 끝난 뒤에 시작해도 늦지 않습니다.
+                <br className="hidden md:block" />
+                성적은 그렇지 않습니다.
+              </p>
+              <p>
+                미대는 서울대를 제외하면 수학을 반영하지 않습니다.
+                <br className="hidden md:block" />
+                일반 기숙학원이 수학에 쓰는 8주를,
+                <br className="hidden md:block" />
+                저희는 국어·영어·탐구에 전부 씁니다.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* 비교 카드 */}
+          <motion.div {...fadeUp} className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10">
+              <p className="text-[11px] tracking-[0.25em] text-white/35 uppercase">
+                일반 미술학원의 겨울
+              </p>
+              <p className="mt-4 text-xl md:text-2xl font-bold text-white/60 leading-snug break-keep">
+                실기 특강 13:00~22:00,
+                <br />
+                학과는 각자 알아서
+              </p>
+            </div>
+            <div className="rounded-2xl border border-accent/30 bg-accent/[0.05] p-8 md:p-10">
+              <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
+                모다고 윈터캠프
+              </p>
+              <p className="mt-4 text-xl md:text-2xl font-bold text-white leading-snug break-keep">
+                평일은 학과에 전부,
+                <br />
+                주말은 실기에 집중
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.p
+            {...fadeUp}
+            className="mx-auto mt-10 max-w-2xl text-center text-sm md:text-base leading-relaxed text-white/60 break-keep"
+          >
+            실기 특강이 시작되면 하루의 대부분이 그림에 쓰이고, 학과 공부는
+            흐름이 끊기기 쉽습니다. 모다고 윈터캠프는 하루 일과 안에 실기와
+            학과를 함께 설계해 8주간의 학과 학습량을 확보합니다. 생활 리듬까지
+            관리 인력이 잡아주기 때문에, 학생은 공부와 그림에만 집중합니다.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* ============ [3] 왜 모다고인가 — 37년 합격 실적 ============ */}
+      <section className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="Since 1989 · 37년"
+            ko="말이 아니라 숫자로 증명합니다"
+            sub="모두다른고양이 미술학원의 누적 합격 실적입니다."
+          />
+
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {universityCards.map((card, i) => (
+              <motion.div
+                key={card.name}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: i * 0.06 }}
+                className="relative overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8 text-center"
+                style={{ backgroundColor: card.color }}
+              >
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10">
+                  <Image
+                    src={card.logo}
+                    alt=""
+                    width={200}
+                    height={200}
+                    className="object-contain brightness-0 invert"
+                  />
+                </div>
+                <div className="relative z-10">
+                  <p className="text-sm md:text-base font-semibold text-white/80">
+                    {card.name}
+                  </p>
+                  <p className="mt-3 text-4xl md:text-5xl font-black text-white">
+                    {card.total}
+                    <span className="text-lg font-bold text-white/60">명</span>
+                  </p>
+                  <p className="mt-1 text-[11px] tracking-widest text-white/50 uppercase">
+                    누적 합격
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ CTA #1 — 차별점·실적을 본 직후 ============ */}
+      <CtaBand
+        headline={
+          <>
+            학과까지 관리하는 미술학원은
+            <br className="md:hidden" /> 흔치 않습니다
+          </>
+        }
+        sub="우리 아이에게 맞는 과정인지, 상담으로 확인해 보세요."
+      />
+
+      {/* ============ [4] 윈터캠프 소개 ============ */}
+      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="The Camp"
+            ko="2027 모다고 윈터캠프"
+            sub="홍대 본원에서 진행하는 8주 기숙 과정. 학과·실기·숙식·생활관리를 한 곳에서 해결합니다."
+          />
+
+          {/* 핵심 정보 — 히어로에서 내려온 4카드 */}
+          <motion.div
+            {...fadeUp}
+            className="grid w-full grid-cols-2 gap-3 md:grid-cols-4"
+          >
             {[
               { label: "기간", value: CAMP_INFO.period },
               { label: "대상", value: CAMP_INFO.target },
@@ -851,7 +1050,7 @@ export default function WinterLanding() {
             ].map((info) => (
               <div
                 key={info.label}
-                className="rounded-xl border border-white/10 bg-white/5 px-4 py-4 backdrop-blur-sm"
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-4"
               >
                 <p className="text-[11px] tracking-widest text-white/40 uppercase">
                   {info.label}
@@ -861,43 +1060,10 @@ export default function WinterLanding() {
                 </p>
               </div>
             ))}
-          </div>
+          </motion.div>
 
-          {/* CTA */}
-          <div className="mt-10 flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <a
-              href="#consult-form"
-              onClick={scrollToConsult}
-              className="w-full rounded-full bg-accent px-8 py-4 text-center text-base font-bold text-black transition-opacity hover:opacity-85 sm:w-auto"
-            >
-              상담 예약하기
-            </a>
-            <a
-              href={CAMP_INFO.phoneTel}
-              className="flex w-full items-center justify-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-medium text-white transition-colors hover:border-white/50 sm:w-auto"
-            >
-              <Phone size={17} />
-              전화 문의 {CAMP_INFO.phone}
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ [2] 모집 대상 — 2개 트랙 ============ */}
-      <section className="px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-5xl">
-          <SectionHead
-            en="Who It's For"
-            ko={
-              <>
-                두 개의 트랙,
-                <br className="md:hidden" /> 하나의 겨울
-              </>
-            }
-            sub="윈터캠프는 홍대 본원에서 진행되며, 현역과 재수생이 서로 다른 목표로 참여합니다."
-          />
-
-          <div className="grid gap-6 md:grid-cols-2">
+          {/* 두 트랙 */}
+          <div className="mt-10 grid gap-6 md:grid-cols-2">
             {/* 카드 A — 현역 */}
             <motion.div
               {...fadeUp}
@@ -960,133 +1126,40 @@ export default function WinterLanding() {
         </div>
       </section>
 
-      {/* ============ [3] Why — 왜 학과인가 ============ */}
-      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+      {/* ============ [5] 생활관리 — 학부모 걱정 6문 6답 ============ */}
+      <section className="px-6 py-24 md:py-32">
         <div className="mx-auto max-w-5xl">
           <SectionHead
-            en="Why Academics"
+            en="Life Management"
             ko={
               <>
-                겨울방학, 학과가
-                <br className="md:hidden" /> 멈추는 시간
+                부모님이 가장 먼저
+                <br className="md:hidden" /> 물으시는 것들
               </>
             }
+            sub="8주를 지탱하는 것은 아이의 의지가 아니라 시스템입니다. 상담 전에 미리 답해 드립니다."
           />
 
-          <motion.div {...fadeUp} className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10">
-              <p className="text-[11px] tracking-[0.25em] text-white/35 uppercase">
-                일반 미술학원
-              </p>
-              <p className="mt-4 text-xl md:text-2xl font-bold text-white/60 leading-snug break-keep">
-                실기 특강 13:00~22:00,
-                <br />
-                학과는 각자 알아서
-              </p>
-            </div>
-            <div className="rounded-2xl border border-accent/30 bg-accent/[0.05] p-8 md:p-10">
-              <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
-                모다고 윈터캠프
-              </p>
-              <p className="mt-4 text-xl md:text-2xl font-bold text-white leading-snug break-keep">
-                실기 + 학과 + 생활관리
-                <br />
-                통합
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.p
-            {...fadeUp}
-            className="mx-auto mt-12 max-w-2xl text-center text-sm md:text-base leading-relaxed text-white/60 break-keep"
-          >
-            미대 입시는 실기만으로 끝나지 않습니다. 그러나 실기 특강이 시작되면
-            하루의 대부분이 그림에 쓰이고, 학과 공부는 흐름이 끊기기 쉽습니다.
-            모다고 윈터캠프는 하루 일과 안에 실기와 학과 시간을 함께 설계하여
-            8주간의 학과 학습량을 확보합니다. 생활 리듬까지 관리 인력이 함께
-            잡아주기 때문에, 학생은 공부와 그림에만 집중할 수 있습니다.
-          </motion.p>
-        </div>
-      </section>
-
-      {/* ============ [4] 하루 일과표 ============ */}
-      <section className="px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-4xl">
-          <SectionHead
-            en="Daily Routine"
-            ko="캠프의 하루"
-            sub="평일은 학과에만, 주말은 대학교 유형 미술실기에 집중합니다."
-          />
-
-          {/* 범례 */}
-          <motion.div
-            {...fadeUp}
-            className="mb-6 flex items-center justify-center gap-6"
-          >
-            {(Object.keys(SCHEDULE_STYLE) as ScheduleType[]).map((key) => (
-              <span
-                key={key}
-                className="flex items-center gap-2 text-xs md:text-sm text-white/60"
-              >
-                <span
-                  className={`h-2.5 w-2.5 rounded-full ${SCHEDULE_STYLE[key].dot}`}
-                />
-                {SCHEDULE_STYLE[key].label}
-              </span>
-            ))}
-          </motion.div>
-
-          <motion.div {...fadeUp} className="grid gap-6 md:grid-cols-2">
-            <ScheduleTable title="평일 (월–금)" rows={WEEKDAY_SCHEDULE} />
-            <ScheduleTable title="주말 (토·일)" rows={WEEKEND_SCHEDULE} />
-          </motion.div>
-
-          <motion.p
-            {...fadeUp}
-            className="mt-5 text-center text-xs text-white/35"
-          >
-            ※ 수업시간은 효율에 따라 변경될 수 있습니다.
-          </motion.p>
-        </div>
-      </section>
-
-      {/* ============ [5] 관리 시스템 ============ */}
-      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-5xl">
-          <SectionHead
-            en="The System"
-            ko="숫자로 보는 관리"
-            sub="8주를 지탱하는 것은 의지가 아니라 시스템입니다."
-          />
-
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {MANAGEMENT_CARDS.map((card, i) => (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {PARENT_CONCERNS.map((item, i) => (
               <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 30 }}
+                key={item.q}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-8 text-center"
+                transition={{ duration: 0.5, delay: i * 0.05 }}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] p-7"
               >
-                <card.icon
-                  size={20}
+                <item.icon
+                  size={22}
                   strokeWidth={1.5}
-                  className="mx-auto text-accent/70"
+                  className="text-accent"
                 />
-                <p className="mt-4 text-4xl md:text-5xl font-black text-white tracking-tight">
-                  {card.number}
-                  {card.unit && (
-                    <span className="text-lg md:text-xl font-bold text-white/50">
-                      {card.unit}
-                    </span>
-                  )}
-                </p>
-                <p className="mt-3 text-sm md:text-base font-semibold text-white/90">
-                  {card.title}
-                </p>
-                <p className="mt-1 text-xs md:text-sm text-white/45">
-                  {card.desc}
+                <h3 className="mt-4 text-base md:text-lg font-bold text-white break-keep">
+                  {item.q}
+                </h3>
+                <p className="mt-2.5 text-sm leading-relaxed text-white/60 break-keep">
+                  {item.a}
                 </p>
               </motion.div>
             ))}
@@ -1094,134 +1167,34 @@ export default function WinterLanding() {
         </div>
       </section>
 
-      {/* ============ [6] 생활 환경 — 갤러리 ============ */}
-      <section className="px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-5xl">
-          <SectionHead
-            en="Living Environment"
-            ko="8주를 보낼 공간"
-            sub="홍대 본원의 실기실·강의실·생활관을 확인하세요. 사진을 누르면 크게 볼 수 있습니다."
-          />
+      {/* ============ CTA #2 — 학부모 불안 해소 직후 ============ */}
+      <CtaBand
+        headline={
+          <>
+            궁금한 점은 상담에서
+            <br className="md:hidden" /> 전부 답해 드립니다
+          </>
+        }
+        sub="생활기록부를 지참하시면 수시·정시 전략 상담까지 가능합니다."
+      />
 
-          <motion.div
-            {...fadeUp}
-            className="grid grid-cols-2 gap-4 md:grid-cols-3"
-          >
-            {GALLERY_IMAGES.map((img) => (
-              <GalleryImage
-                key={img.src}
-                src={img.src}
-                caption={img.caption}
-                onOpen={() => setLightbox(img)}
-              />
-            ))}
-          </motion.div>
-        </div>
-        <Lightbox item={lightbox} onClose={() => setLightbox(null)} />
-      </section>
-
-      {/* ============ [7] 안전 및 학부모 소통 ============ */}
-      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-5xl">
-          <SectionHead
-            en="Safety & Communication"
-            ko={
-              <>
-                맡기신 8주,
-                <br className="md:hidden" /> 이렇게 지킵니다
-              </>
-            }
-          />
-
-          <div className="grid gap-4 md:grid-cols-2">
-            {SAFETY_CARDS.map((card, i) => (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.6, delay: i * 0.08 }}
-                className="flex gap-5 rounded-2xl border border-white/10 bg-white/[0.03] p-7 md:p-8"
-              >
-                <card.icon
-                  size={26}
-                  strokeWidth={1.5}
-                  className="mt-0.5 shrink-0 text-accent"
-                />
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-white">
-                    {card.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-white/60 break-keep">
-                    {card.desc}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ [8] 합격 실적 ============ */}
-      <section className="px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-5xl">
-          <SectionHead
-            en="Since 1989 · 37년"
-            ko="숫자가 증명하는 시간"
-            sub="모두다른고양이 미술학원의 누적 합격 실적입니다."
-          />
-
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {universityCards.map((card, i) => (
-              <motion.div
-                key={card.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="relative overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8 text-center"
-                style={{ backgroundColor: card.color }}
-              >
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10">
-                  <Image
-                    src={card.logo}
-                    alt=""
-                    width={200}
-                    height={200}
-                    className="object-contain brightness-0 invert"
-                  />
-                </div>
-                <div className="relative z-10">
-                  <p className="text-sm md:text-base font-semibold text-white/80">
-                    {card.name}
-                  </p>
-                  <p className="mt-3 text-4xl md:text-5xl font-black text-white">
-                    {card.total}
-                    <span className="text-lg font-bold text-white/60">명</span>
-                  </p>
-                  <p className="mt-1 text-[11px] tracking-widest text-white/50 uppercase">
-                    누적 합격
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ [9] 커리큘럼 ============ */}
+      {/* ============ [6] 학과관리 ============ */}
       <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
         <div className="mx-auto max-w-3xl">
-          <SectionHead en="The Curriculum" ko="8주의 설계" />
+          <SectionHead
+            en="Academics"
+            ko="학과관리 — 평일 전부"
+            sub="평일 하루를 국어·영어·탐구에 전부 씁니다. 매일 시험으로 학습량을 숫자로 확인합니다."
+          />
 
           <motion.div {...fadeUp}>
             {/* 탭 */}
             <div
               role="tablist"
-              aria-label="커리큘럼 과목"
+              aria-label="학과 과목"
               className="flex flex-wrap justify-center gap-2"
             >
-              {CURRICULUM_TABS.map((t) => (
+              {HAKGWA_TABS.map((t) => (
                 <button
                   key={t.key}
                   role="tab"
@@ -1264,17 +1237,173 @@ export default function WinterLanding() {
         </div>
       </section>
 
-      {/* ============ [10] 수강료 및 접수 ============ */}
+      {/* ============ [7] 실기관리 ============ */}
       <section className="px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-3xl">
-          <SectionHead en="Tuition" ko="수강료 및 접수" />
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="Art Practice"
+            ko="실기관리 — 주말 집중"
+            sub="주말 이틀을 대학교 유형 실기에 온전히 씁니다."
+          />
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {SILGI_POINTS.map((item, i) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: i * 0.05 }}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] p-7 md:p-8"
+              >
+                <Palette
+                  size={22}
+                  strokeWidth={1.5}
+                  className="text-accent"
+                />
+                <h3 className="mt-4 text-base md:text-lg font-bold text-white break-keep">
+                  {item.title}
+                </h3>
+                <p className="mt-2.5 text-sm leading-relaxed text-white/60 break-keep">
+                  {item.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ [8] 하루 일과표 ============ */}
+      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-4xl">
+          <SectionHead
+            en="Daily Routine"
+            ko="캠프의 하루"
+            sub="평일은 학과에만, 주말은 대학교 유형 미술실기에 집중합니다."
+          />
+
+          {/* 범례 */}
+          <motion.div
+            {...fadeUp}
+            className="mb-6 flex items-center justify-center gap-6"
+          >
+            {(Object.keys(SCHEDULE_STYLE) as ScheduleType[]).map((key) => (
+              <span
+                key={key}
+                className="flex items-center gap-2 text-xs md:text-sm text-white/60"
+              >
+                <span
+                  className={`h-2.5 w-2.5 rounded-full ${SCHEDULE_STYLE[key].dot}`}
+                />
+                {SCHEDULE_STYLE[key].label}
+              </span>
+            ))}
+          </motion.div>
+
+          <motion.div {...fadeUp} className="grid gap-6 md:grid-cols-2">
+            <ScheduleTable title="평일 (월–금)" rows={WEEKDAY_SCHEDULE} />
+            <ScheduleTable title="주말 (토·일)" rows={WEEKEND_SCHEDULE} />
+          </motion.div>
+
+          <motion.p
+            {...fadeUp}
+            className="mt-5 text-center text-xs text-white/35"
+          >
+            ※ 수업시간은 효율에 따라 변경될 수 있습니다.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* ============ [9] 시설 — 갤러리 ============ */}
+      <section className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="Living Environment"
+            ko="8주를 보낼 공간"
+            sub="홍대 본원의 실기실·강의실·생활관을 확인하세요. 사진을 누르면 크게 볼 수 있습니다."
+          />
 
           <motion.div
             {...fadeUp}
-            className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10 text-center"
+            className="grid grid-cols-2 gap-4 md:grid-cols-3"
+          >
+            {GALLERY_IMAGES.map((img) => (
+              <GalleryImage
+                key={img.src}
+                src={img.src}
+                caption={img.caption}
+                onOpen={() => setLightbox(img)}
+              />
+            ))}
+          </motion.div>
+        </div>
+        <Lightbox item={lightbox} onClose={() => setLightbox(null)} />
+      </section>
+
+      {/* ============ [10] 후기 — 학생·학부모·합격 ============ */}
+      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl">
+          <SectionHead
+            en="Reviews"
+            ko="먼저 보낸 부모님들의 이야기"
+            sub="캠프를 경험한 학생과 학부모님의 목소리입니다."
+          />
+          <motion.div {...fadeUp}>
+            <Testimonials />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============ CTA #3 — 후기(사회적 증거) 직후 ============ */}
+      <CtaBand
+        headline={
+          <>
+            다음 겨울이 아니라,
+            <br className="md:hidden" /> 이번 겨울이어야 합니다
+          </>
+        }
+        sub="8주 뒤, 아이의 겨울이 달라져 있습니다."
+      />
+
+      {/* ============ [11] FAQ ============ */}
+      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-3xl">
+          <SectionHead en="FAQ" ko="자주 묻는 질문" />
+
+          <motion.div {...fadeUp} className="border-t border-white/10">
+            {FAQ_ITEMS.map((item) => (
+              <AccordionItem key={item.q} q={item.q} a={item.a} />
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============ [12] 신청하기 — 수강료·폼·오시는 길 ============ */}
+      <section id="contact" className="px-6 py-24 md:py-32">
+        <div className="mx-auto max-w-3xl">
+          <SectionHead
+            en="Apply"
+            ko="신청하기"
+            sub={
+              <>
+                접수 마감 {CAMP_INFO.deadline} · 정원 {CAMP_INFO.capacity} (
+                {CAMP_INFO.capacityNote})
+              </>
+            }
+          />
+
+          {/* 상담 신청 폼 — 신청 섹션의 첫 번째 요소로 배치 */}
+          <motion.div {...fadeUp}>
+            <ConsultForm />
+          </motion.div>
+
+          {/* 수강료 안내 */}
+          <motion.div
+            {...fadeUp}
+            className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10 text-center"
           >
             <p className="text-[11px] tracking-[0.25em] text-white/40 uppercase">
-              8주 전 과정
+              8주 전 과정 수강료
             </p>
             <p className="mt-4 text-3xl md:text-4xl font-black text-white">
               {CAMP_INFO.tuition}
@@ -1287,28 +1416,14 @@ export default function WinterLanding() {
               안내드립니다.
             </p>
 
-            {/* WHY MODAGO — 학과 중심 설계 이유 */}
-            <div className="mt-8 rounded-xl border border-accent/40 bg-accent/[0.06] px-6 py-7 md:px-8 md:py-8">
+            {/* 일괄 등록 할인 (얼리버드) */}
+            <div className="mt-7 rounded-xl border border-accent/30 bg-accent/[0.06] px-6 py-5">
               <p className="text-xs tracking-[0.25em] text-accent uppercase">
-                Why Modago
+                Early Bird
               </p>
-              <p className="mt-3 text-xl md:text-2xl font-bold text-white break-keep">
-                미대는 성적순입니다.
+              <p className="mt-2 text-base md:text-lg font-bold text-white break-keep">
+                {CAMP_INFO.earlyBird}
               </p>
-              <div className="mt-4 space-y-3 text-sm md:text-base leading-[1.9] text-white/70 break-keep">
-                <p>
-                  실기는 수능이 끝난 뒤에 시작해도 늦지 않습니다.
-                  <br className="hidden md:block" />
-                  성적은 그렇지 않습니다.
-                </p>
-                <p>
-                  미대는 서울대를 제외하면 수학을 반영하지 않습니다.
-                  <br className="hidden md:block" />
-                  일반 기숙학원이 수학에 쓰는 8주를,
-                  <br className="hidden md:block" />
-                  저희는 국어·영어·탐구에 전부 씁니다.
-                </p>
-              </div>
             </div>
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -1330,31 +1445,12 @@ export default function WinterLanding() {
               <KakaoTalkButton />
             </div>
 
-            {/* 일괄 등록 할인 (얼리버드) */}
-            <div className="mt-8 rounded-xl border border-accent/30 bg-accent/[0.06] px-6 py-5">
-              <p className="text-xs tracking-[0.25em] text-accent uppercase">
-                Early Bird
-              </p>
-              <p className="mt-2 text-base md:text-lg font-bold text-white break-keep">
-                {CAMP_INFO.earlyBird}
-              </p>
-            </div>
-
-            <p className="mt-6 text-xs text-white/40">
-              접수 마감 {CAMP_INFO.deadline} · 정원 {CAMP_INFO.capacity} (
-              {CAMP_INFO.capacityNote})
-            </p>
             <Link
               href="/tuition"
-              className="mt-3 inline-block text-xs text-white/40 underline underline-offset-4 transition-colors hover:text-white/70"
+              className="mt-6 inline-block text-xs text-white/40 underline underline-offset-4 transition-colors hover:text-white/70"
             >
               교육청 등록 교습비 고지 보기 (학원등록번호 제02201000109호)
             </Link>
-          </motion.div>
-
-          {/* 상담 신청 폼 */}
-          <motion.div {...fadeUp} className="mt-8">
-            <ConsultForm />
           </motion.div>
 
           {/* 환불 규정 — 교육청 환불규정 제18조 제3호 */}
@@ -1402,33 +1498,9 @@ export default function WinterLanding() {
               }
             />
           </motion.div>
-        </div>
-      </section>
 
-      {/* ============ [11] FAQ ============ */}
-      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-3xl">
-          <SectionHead en="FAQ" ko="자주 묻는 질문" />
-
-          <motion.div {...fadeUp} className="border-t border-white/10">
-            {FAQ_ITEMS.map((item) => (
-              <AccordionItem key={item.q} q={item.q} a={item.a} />
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ============ [12] 상담 및 오시는 길 ============ */}
-      <section id="contact" className="px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-3xl text-center">
-          <SectionHead
-            en="Contact"
-            ko="상담 및 오시는 길"
-            sub="생활기록부를 지참하시면 수시/정시 전략 상담이 가능합니다."
-          />
-
-          <motion.div {...fadeUp}>
-            {/* 전화 — 가장 크게 */}
+          {/* 오시는 길 */}
+          <motion.div {...fadeUp} className="mt-14 text-center">
             <a
               href={CAMP_INFO.phoneTel}
               className="group inline-block"
@@ -1437,12 +1509,12 @@ export default function WinterLanding() {
               <p className="text-xs tracking-[0.3em] text-white/40 uppercase">
                 홍대 본원
               </p>
-              <p className="mt-2 text-5xl md:text-7xl font-black tracking-tight text-white transition-colors group-hover:text-accent">
+              <p className="mt-2 text-4xl md:text-6xl font-black tracking-tight text-white transition-colors group-hover:text-accent">
                 {CAMP_INFO.phone}
               </p>
             </a>
 
-            <div className="mx-auto mt-10 max-w-md rounded-2xl border border-white/10 bg-white/[0.03] p-7">
+            <div className="mx-auto mt-8 max-w-md rounded-2xl border border-white/10 bg-white/[0.03] p-7">
               <p className="flex items-center justify-center gap-2 text-sm font-medium text-white/80">
                 <MapPin size={15} className="text-accent" />
                 {CAMP_INFO.venueName}

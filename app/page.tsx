@@ -8,8 +8,8 @@ export default function Page() {
   return (
     <main className="bg-background text-foreground">
       <Scene1 />
-      <Scene2 />
       <WinterBanner />
+      <Scene2 />
       <Scene3 />
       <Scene4 />
     </main>

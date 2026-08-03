@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "파주 미대 기숙학원 | 모두다른고양이 미술학원",
@@ -15,27 +13,6 @@ export default function Page() {
   return (
     <main className="bg-background text-foreground flex min-h-dvh flex-col items-center justify-center px-6 pt-28 pb-16">
       <div className="w-full max-w-md">
-        {/* 윈터캠프(선행반) 안내 박스 */}
-        <Link
-          href="/winter"
-          className="group mb-12 block rounded-xl border border-accent/30 bg-accent/[0.06] p-5 transition-colors hover:border-accent/60"
-        >
-          <p className="text-accent text-[11px] tracking-[0.25em] uppercase">
-            Winter Camp · 선행반
-          </p>
-          <p className="mt-2 text-sm leading-relaxed text-white/80 break-keep">
-            3월 정규 과정 이전, 홍대 본원에서 진행되는 1~2월
-            윈터캠프(선행반)로 먼저 시작하실 수 있습니다.
-          </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
-            윈터캠프 자세히 보기
-            <ArrowRight
-              size={14}
-              className="transition-transform group-hover:translate-x-1"
-            />
-          </span>
-        </Link>
-
         <div className="text-center">
           <p className="text-accent text-xs tracking-[0.3em] mb-4">
             COMING SOON

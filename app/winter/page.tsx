@@ -5,11 +5,11 @@ import { CAMP_INFO } from "@/lib/winter-camp";
 export const metadata: Metadata = {
   title: "2027 모다고 윈터캠프 | 홍대 본원 미대입시 기숙 윈터스쿨",
   description:
-    "[예비 고2·고3 대상 8주 기숙 과정. 실기+학과+숙식+생활관리 통합. 홍대 본원. 정원 14명.]", // TODO: 원장님 확인
+    "예비 고3 대상 8주 기숙 직강 과정. 학과(국어·영어·탐구)는 강사 직강, 실기는 주말 집중. 홍대 본원. 정원 14명.",
   openGraph: {
     title: "2027 모다고 윈터캠프 | 홍대 본원 미대입시 기숙 윈터스쿨",
     description:
-      "[예비 고2·고3 대상 8주 기숙 과정. 실기+학과+숙식+생활관리 통합. 홍대 본원. 정원 14명.]", // TODO: 원장님 확인
+      "예비 고3 대상 8주 기숙 직강 과정. 학과(국어·영어·탐구)는 강사 직강, 실기는 주말 집중. 홍대 본원. 정원 14명.",
     images: [{ url: "/images/og-winter.jpg", width: 1200, height: 630 }],
   },
 };
@@ -18,7 +18,7 @@ const courseJsonLd = {
   "@context": "https://schema.org",
   "@type": "Course",
   name: CAMP_INFO.name,
-  description: `${CAMP_INFO.subtitle}. 8주 기숙 과정으로 실기·학과·숙식·생활관리를 통합 운영합니다.`,
+  description: `${CAMP_INFO.subtitle}. 8주 기숙 과정으로 학과는 강사 직강, 실기는 주말 집중 방식으로 운영합니다.`,
   provider: {
     "@type": "Organization",
     name: "모두다른고양이 미술학원",

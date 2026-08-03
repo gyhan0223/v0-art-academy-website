@@ -56,21 +56,14 @@ const navItems: NavItem[] = [
   //   badge: "접수중",
   // },
   {
-    label: "기숙 과정",
+    label: "윈터캠프",
     href: "/winter",
-    children: [
-      {
-        label: "윈터캠프 (홍대 · 1·2월)",
-        href: "/winter",
-        desc: "홍대 본원 8주 기숙 윈터스쿨",
-        badge: "모집중",
-      },
-      {
-        label: "기숙학원 (파주 · 3월 오픈)",
-        href: "/gisuk",
-        desc: "파주 기숙학원 재수 정규 과정",
-      },
-    ],
+    badge: "모집중",
+  },
+  {
+    label: "파주 기숙학원",
+    href: "/gisuk",
+    badge: "3월 오픈",
   },
 ];
 

@@ -839,8 +839,8 @@ export default function WinterLanding() {
           </h1>
           <p className="mt-5 text-base md:text-xl text-white/75 break-keep">
             합격하는 학생은 학과도 준비합니다.
-            <br className="md:hidden" /> 수능·내신·생활까지 관리하는 8주 기숙
-            과정.
+            <br className="md:hidden" /> 학과는 강사 직강, 실기는 주말 집중,
+            8주 기숙 과정.
           </p>
 
           {/* 긴급성 — D-day + 정원 */}
@@ -876,7 +876,7 @@ export default function WinterLanding() {
 
           {/* 핵심 키워드 칩 — 카드 4개 대신 가볍게, 상세 정보는 [4] 소개 섹션에서 */}
           <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs md:text-sm text-white/60">
-            {["홍대 본원", "8주 집중관리", "학과관리", "실기관리", "생활관리", "기숙"].map(
+            {["홍대 본원", "학과 직강", "실기 주말 집중", "기숙"].map(
               (chip) => (
                 <li
                   key={chip}
@@ -961,8 +961,9 @@ export default function WinterLanding() {
           >
             실기 특강이 시작되면 하루의 대부분이 그림에 쓰이고, 학과 공부는
             흐름이 끊기기 쉽습니다. 모다고 윈터캠프는 하루 일과 안에 실기와
-            학과를 함께 설계해 8주간의 학과 학습량을 확보합니다. 생활 리듬까지
-            관리 인력이 잡아주기 때문에, 학생은 공부와 그림에만 집중합니다.
+            학과를 함께 설계해 8주간의 학과 학습량을 확보합니다. 학과는
+            강사가 직접 가르치고, 취침·기상 등 생활 리듬도 정해진 일과로
+            운영되어 학생은 공부와 그림에만 집중합니다.
           </motion.p>
         </div>
       </section>
@@ -1018,7 +1019,7 @@ export default function WinterLanding() {
       <CtaBand
         headline={
           <>
-            학과까지 관리하는 미술학원은
+            학과까지 직강하는 미술학원은
             <br className="md:hidden" /> 흔치 않습니다
           </>
         }
@@ -1031,7 +1032,7 @@ export default function WinterLanding() {
           <SectionHead
             en="The Camp"
             ko="2027 모다고 윈터캠프"
-            sub="홍대 본원에서 진행하는 8주 기숙 과정. 학과·실기·숙식·생활관리를 한 곳에서 해결합니다."
+            sub="홍대 본원에서 진행하는 8주 기숙 직강 과정. 학과·실기·숙식을 한 곳에서 해결합니다."
           />
 
           {/* 핵심 정보 — 히어로에서 내려온 4카드 */}
@@ -1062,67 +1063,30 @@ export default function WinterLanding() {
             ))}
           </motion.div>
 
-          {/* 두 트랙 */}
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            {/* 카드 A — 현역 */}
-            <motion.div
-              {...fadeUp}
-              className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10"
-            >
-              <p className="text-[11px] tracking-[0.25em] text-white/40 uppercase">
-                Track A
-              </p>
-              <h3 className="mt-3 text-2xl md:text-3xl font-bold text-white">
-                현역 — 예비 고2·고3
-              </h3>
-              <ul className="mt-6 space-y-3 text-sm md:text-base leading-relaxed text-white/70">
-                <li className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                  8주간 실기 기초와 학과를 동시에 다지는 과정입니다.
-                </li>
-                <li className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                  캠프 종료 후에는 각자의 학교 생활로 복귀합니다.
-                </li>
-                <li className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                  겨울방학 8주로 완결되는, 홍대 본원에서 진행하는 독립된
-                  과정입니다.
-                </li>
-              </ul>
-            </motion.div>
-
-            {/* 카드 B — 재수생 선행반 */}
-            <motion.div
-              {...fadeUp}
-              className="rounded-2xl border border-accent/25 bg-accent/[0.04] p-8 md:p-10"
-            >
-              <p className="text-[11px] tracking-[0.25em] text-accent/70 uppercase">
-                Track B
-              </p>
-              <h3 className="mt-3 text-2xl md:text-3xl font-bold text-white">
-                재수생 — 선행반
-              </h3>
-              <ul className="mt-6 space-y-3 text-sm md:text-base leading-relaxed text-white/70">
-                <li className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                  3월 정규 기숙 과정 이전의 선행 학습 과정입니다.
-                </li>
-                <li className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                  1~2월 홍대 본원에서 먼저 시작하고, 3월부터는 파주
-                  기숙학원에서 정규 과정이 이어집니다.
-                </li>
-              </ul>
-              <Link
-                href="/gisuk"
-                className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
-              >
-                파주 기숙학원 정규 과정 안내
-                <ArrowRight size={15} />
-              </Link>
-            </motion.div>
-          </div>
+          {/* 대상 안내 카드 — 예비 고3 단일 트랙 (재수생은 별도 파주 기숙학원에서 모집) */}
+          <motion.div
+            {...fadeUp}
+            className="mt-10 rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10"
+          >
+            <h3 className="text-2xl md:text-3xl font-bold text-white">
+              예비 고3 대상 (예비 고2 가능)
+            </h3>
+            <ul className="mt-6 space-y-3 text-sm md:text-base leading-relaxed text-white/70">
+              <li className="flex gap-3">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                8주간 실기 기초와 학과를 동시에 다지는 과정입니다.
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                캠프 종료 후에는 각자의 학교 생활로 복귀합니다.
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                겨울방학 8주로 완결되는, 홍대 본원에서 진행하는 독립된
+                과정입니다.
+              </li>
+            </ul>
+          </motion.div>
         </div>
       </section>
 
@@ -1183,7 +1147,7 @@ export default function WinterLanding() {
         <div className="mx-auto max-w-3xl">
           <SectionHead
             en="Academics"
-            ko="학과관리 — 평일 전부"
+            ko="학과 직강 — 평일 전부"
             sub="평일 하루를 국어·영어·탐구에 전부 씁니다. 매일 시험으로 학습량을 숫자로 확인합니다."
           />
 
@@ -1242,7 +1206,7 @@ export default function WinterLanding() {
         <div className="mx-auto max-w-5xl">
           <SectionHead
             en="Art Practice"
-            ko="실기관리 — 주말 집중"
+            ko="실기 집중 — 주말"
             sub="주말 이틀을 대학교 유형 실기에 온전히 씁니다."
           />
 

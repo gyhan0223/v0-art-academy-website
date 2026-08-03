@@ -9,7 +9,7 @@ export const SHOW_ANNOUNCEMENT = true;
 
 export const CAMP_INFO = {
   name: "2027 모다고 윈터캠프",
-  subtitle: "2028학년도 미대입시 대비 · 홍대 본원 기숙 윈터스쿨",
+  subtitle: "2028학년도 미대입시 대비 · 홍대 본원 기숙 직강 윈터스쿨",
 
   // 장소 — 윈터캠프는 홍대 본원에서만 진행 (파주 기숙학원과 무관)
   venueName: "모두다른고양이 미술학원 홍대 본원",
@@ -19,7 +19,7 @@ export const CAMP_INFO = {
   phoneTel: "tel:02-338-3302",
 
   period: "2027년 1월 4일 ~ 2027년 2월 26일 (약 8주)",
-  target: "예비 고2·고3 / 재수생 선행반",
+  target: "예비 고3 (예비 고2 가능)",
   capacity: "여 8명 · 남 6명",
   capacityTotal: 14,
   capacityNote: "선착순",

@@ -34,7 +34,7 @@ export default function WinterBanner() {
                 {CAMP_INFO.name}
               </h3>
               <p className="mt-3 text-sm md:text-base text-white/60 break-keep">
-                홍대 본원 8주 기숙 · 실기 + 학과 + 숙식 + 생활관리 · 정원{" "}
+                홍대 본원 8주 기숙 · 학과 직강 + 실기 주말집중 + 숙식 · 정원{" "}
                 {CAMP_INFO.capacityTotal}명
               </p>
             </div>

@@ -4,10 +4,17 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, Menu, ChevronDown } from "lucide-react";
-import { SHOW_ANNOUNCEMENT } from "@/lib/winter-camp";
+import {
+  SHOW_ANNOUNCEMENT,
+  getRemainingLabel,
+  getRemainingTotal,
+} from "@/lib/winter-camp";
 
+const remainingTotal = getRemainingTotal();
 const ANNOUNCEMENT_TEXT =
-  "2027 모다고 윈터캠프 사전 접수 · 홍대 본원 기숙 · 정원 14명";
+  remainingTotal <= 0
+    ? "2027 모다고 윈터캠프 · 마감"
+    : `2027 모다고 윈터캠프 · ${getRemainingLabel()} · 홍대 본원 기숙`;
 const ANNOUNCEMENT_KEY = "modago-winter-announcement-closed";
 
 const PHONE_HONGDAE = { label: "홍대 본원", number: "02-338-3302" };
@@ -78,10 +85,7 @@ export default function SiteNav() {
 
   // 알림 띠: sessionStorage로 닫힘 상태 유지 (hydration 불일치 방지를 위해 mount 후 판단)
   useEffect(() => {
-    if (
-      SHOW_ANNOUNCEMENT &&
-      sessionStorage.getItem(ANNOUNCEMENT_KEY) !== "1"
-    ) {
+    if (SHOW_ANNOUNCEMENT && sessionStorage.getItem(ANNOUNCEMENT_KEY) !== "1") {
       setShowAnnouncement(true);
     }
   }, []);
@@ -257,9 +261,7 @@ export default function SiteNav() {
                   key={item.href}
                   href={item.href}
                   className={`text-sm tracking-wide transition-colors ${
-                    active
-                      ? "text-accent"
-                      : "text-white/70 hover:text-white"
+                    active ? "text-accent" : "text-white/70 hover:text-white"
                   }`}
                 >
                   {item.label}

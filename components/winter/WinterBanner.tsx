@@ -3,10 +3,18 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Snowflake } from "lucide-react";
-import { CAMP_INFO } from "@/lib/winter-camp";
+import {
+  CAMP_INFO,
+  getRemainingLabel,
+  getRemainingTotal,
+} from "@/lib/winter-camp";
 
 /** 홈 — 합격실적(Scene2)과 커리큘럼(Scene3) 사이에 배치되는 윈터캠프 와이드 배너 */
 export default function WinterBanner() {
+  const remainingTotal = getRemainingTotal();
+  const statusLabel =
+    remainingTotal <= 0 ? "마감" : `Winter Camp · ${getRemainingLabel()}`;
+
   return (
     <section className="bg-black px-6 py-16 md:py-24">
       <motion.div
@@ -28,7 +36,7 @@ export default function WinterBanner() {
           <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-xs tracking-[0.3em] text-accent uppercase">
-                Winter Camp · 모집중
+                {statusLabel}
               </p>
               <h3 className="mt-3 text-2xl md:text-4xl font-black tracking-tight text-white break-keep">
                 {CAMP_INFO.name}
@@ -36,10 +44,17 @@ export default function WinterBanner() {
               <p className="mt-3 text-sm md:text-base text-white/60 break-keep">
                 홍대 본원 8주 기숙 · 학과 직강 + 실기 주말집중 + 숙식 · 정원{" "}
                 {CAMP_INFO.capacityTotal}명
+                {remainingTotal > 0 &&
+                  remainingTotal < CAMP_INFO.capacityTotal && (
+                    <span className="text-accent">
+                      {" "}
+                      · {getRemainingLabel()}
+                    </span>
+                  )}
               </p>
             </div>
             <span className="inline-flex shrink-0 items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-black transition-transform group-hover:translate-x-1">
-              자세히 보기
+              {remainingTotal <= 0 ? "대기 신청" : "자세히 보기"}
               <ArrowRight size={16} />
             </span>
           </div>

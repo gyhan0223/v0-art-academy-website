@@ -2,7 +2,11 @@
 
 import { motion } from "framer-motion";
 import { Phone, PenLine } from "lucide-react";
-import { CAMP_INFO } from "@/lib/winter-camp";
+import {
+  CAMP_INFO,
+  getRemainingLabel,
+  getRemainingTotal,
+} from "@/lib/winter-camp";
 
 /** 섹션 사이에 반복 배치하는 전환용 CTA 밴드.
  *  읽다가 마음이 움직인 시점마다 신청 동선을 제공한다. */
@@ -13,6 +17,12 @@ export default function CtaBand({
   headline: React.ReactNode;
   sub?: React.ReactNode;
 }) {
+  const remainingTotal = getRemainingTotal();
+  const seatLabel =
+    remainingTotal <= 0
+      ? "마감"
+      : `정원 ${CAMP_INFO.capacityTotal}명 · ${getRemainingLabel()} · ${CAMP_INFO.capacityNote}`;
+
   const scrollToConsult = (e: React.MouseEvent) => {
     e.preventDefault();
     document
@@ -38,7 +48,7 @@ export default function CtaBand({
           </p>
         )}
         <p className="mt-4 text-xs font-semibold tracking-wide text-accent">
-          정원 {CAMP_INFO.capacityTotal}명 · {CAMP_INFO.capacityNote} 조기마감
+          {seatLabel}
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a

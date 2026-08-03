@@ -24,6 +24,10 @@ export const CAMP_INFO = {
   capacityTotal: 14,
   capacityNote: "선착순",
 
+  /** 남은 자리 — 확정 등록 기준으로 직접 수정하세요. 0이 되면 마감 표시됩니다. */
+  remainingFemale: 8,
+  remainingMale: 6,
+
   deadline: "2027년 1월 3일",
   /** D-day 자동 계산용 실제 마감일 (KST 기준) */
   deadlineISO: "2027-01-03",
@@ -35,6 +39,25 @@ export const CAMP_INFO = {
   earlyBird:
     "8주 일괄 등록 시 뒤 4주 35% 할인 적용 (월별 개별 납부 시 할인 적용 불가)",
 } as const;
+
+/** 남은 자리 표시 문구 (여/남 분리). 둘 다 0이면 "마감" */
+export function getRemainingLabel(): string {
+  const f = CAMP_INFO.remainingFemale;
+  const m = CAMP_INFO.remainingMale;
+  if (f <= 0 && m <= 0) return "마감";
+  const parts: string[] = [];
+  if (f > 0) parts.push(`여 ${f}명`);
+  if (m > 0) parts.push(`남 ${m}명`);
+  return `${parts.join(" · ")} 남음`;
+}
+
+/** 총 남은 자리 수 */
+export function getRemainingTotal(): number {
+  return (
+    Math.max(0, CAMP_INFO.remainingFemale) +
+    Math.max(0, CAMP_INFO.remainingMale)
+  );
+}
 
 /* -------------------------------- 상담 채널 -------------------------------- */
 

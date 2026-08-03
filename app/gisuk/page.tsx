@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "파주 미대 기숙학원 | 모두다른고양이 미술학원",
   description:
     "경기 파주 소재 미대 재수 기숙학원이 2027년 3월 문을 엽니다. 모두다른고양이 미술학원의 정규 기숙 과정, 사전 상담 예약을 받고 있습니다.",
+  alternates: { canonical: "/gisuk" },
 };
 
 const NAVER_BOOKING =

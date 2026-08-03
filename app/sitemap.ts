@@ -29,16 +29,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/guide/hongik-mihwalbo`,
+      url: `${baseUrl}/mock`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.5,
+      priority: 0.7,
     },
-    {
-      url: `${baseUrl}/tuition`,
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
+    // /tuition, /guide/hongik-mihwalbo는 noindex 페이지라 사이트맵에서 제외
   ];
 }

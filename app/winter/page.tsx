@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "2027 모다고 윈터캠프 | 홍대 본원 미대입시 기숙 윈터스쿨",
   description:
     "예비 고3 대상 8주 기숙 직강 과정. 학과(국어·영어·탐구)는 강사 직강, 실기는 주말 집중. 홍대 본원. 정원 14명.",
+  alternates: { canonical: "/winter" },
   openGraph: {
     title: "2027 모다고 윈터캠프 | 홍대 본원 미대입시 기숙 윈터스쿨",
     description:

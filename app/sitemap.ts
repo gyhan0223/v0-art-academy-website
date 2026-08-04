@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { IS_PLACEHOLDER as GRADE_CASES_PLACEHOLDER } from "@/lib/grade-cases";
+import { IS_PLACEHOLDER as TEACHERS_PLACEHOLDER } from "@/lib/teachers";
 
 const baseUrl = "https://www.modago.me";
 
@@ -35,6 +36,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    // 강사진 — 초안(headline·상주 여부 확인 전) 상태에서는 noindex라 사이트맵에서도 제외
+    ...(TEACHERS_PLACEHOLDER
+      ? []
+      : [
+          {
+            url: `${baseUrl}/teachers`,
+            lastModified: new Date(),
+            changeFrequency: "monthly" as const,
+            priority: 0.8,
+          },
+        ]),
     // 성적 향상 사례 — 자리표시자 상태에서는 noindex라 사이트맵에서도 제외
     ...(GRADE_CASES_PLACEHOLDER
       ? []

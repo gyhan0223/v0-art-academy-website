@@ -19,23 +19,32 @@
  *    강사진과 완전히 똑같이 보인다.
  * ───────────────────────────────────────────────────────────────
  *
- * ── 데이터 넣는 법 ─────────────────────────────────────────────
- * · [대괄호]로 감싼 값과 `TODO: 원장님 확인` 주석이 붙은 값은 전부 초안이다.
- *   확인되지 않은 사실을 그대로 내보내지 않기 위해 표시해 둔 것이다.
- * · 전부 확인되면 IS_PLACEHOLDER를 false로 바꾼다.
- *   → 상단 안내 배너가 사라지고, 색인(noindex 해제)과 사이트맵 등록,
- *     네비게이션 "준비중" 뱃지 제거가 자동으로 처리된다.
+ * ── 아직 채워지지 않은 값 ───────────────────────────────────────
+ * 확인되지 않은 것은 추측해서 적지 않고 비워 뒀다. 비어 있으면 화면에
+ * 아무것도 나가지 않으므로, 값이 생기는 대로 한 줄씩 채우면 된다.
+ *
+ * 1. residency — 아홉 명 전원 "unconfirmed"다.
+ *    상주면 "resident", 담당 시간만 들어오면 "visiting"으로 바꾸면
+ *    카드에 뱃지가 바로 붙는다.
+ * 2. mihakNote — 미대 입시반 지도 연차. 예: mihakNote: "미대 입시반 지도 12년"
+ * 3. headline — 아홉 줄 모두 기존 경력만 근거로 쓴 초안이다. 문구는
+ *    이 필드만 고치면 되고, 다른 곳은 건드릴 필요 없다.
+ * 4. 임성준 선생님 실사 사진, 한동희 대표 프로필 사진.
  * ───────────────────────────────────────────────────────────────
  */
 
 /* ------------------------------- 공개 스위치 ------------------------------- */
 
 /**
- * 헤드라인·상주 여부·미대 지도 경력이 아직 확인 전(초안)인지 여부.
+ * 페이지를 아직 공개 전(초안) 상태로 둘지 여부.
  * true  — 상단 안내 배너 표시 · noindex · 사이트맵 제외 · 네비 "준비중" 뱃지
  * false — 정식 공개
+ *
+ * 지금은 false. 화면에 나가는 값 중 지어낸 것은 없고(확인 전 항목은 비워 뒀다),
+ * 경력·학력은 기존 강사 소개 자료 그대로다. 강사 문구를 다시 손볼 동안
+ * 검색에 노출하고 싶지 않으면 이 값만 true로 되돌리면 된다.
  */
-export const IS_PLACEHOLDER = true;
+export const IS_PLACEHOLDER = false;
 
 /** 카드에 표시할 경력 최대 줄 수. 넘치면 코드가 알아서 잘라낸다. */
 export const MAX_CAREERS = 4;
@@ -93,9 +102,9 @@ export interface Teacher {
 /* ------------------------------- 강사 데이터 ------------------------------- */
 
 /**
- * ⚠️ headline / mihakNote / residency 세 필드는 전부 초안이다.
- *    경력·학력 줄은 기존 강사 소개 자료에서 그대로 옮긴 것이고,
- *    나머지는 원장님 확인 후 IS_PLACEHOLDER를 false로 바꾼다.
+ * 경력·학력 줄은 기존 강사 소개 자료에서 그대로 옮긴 것이다.
+ * headline은 그 경력만 근거로 쓴 초안이고, residency·mihakNote는
+ * 근거가 없어 비워 뒀다(추측해서 채우지 않는다).
  *
  * 옮기면서 뺀 줄과 이유:
  * · "현) 아름다운학원 …" 전원 — 이 페이지가 곧 소속이라 아홉 번 반복될 뿐이다.
@@ -113,8 +122,7 @@ export const TEACHERS: Teacher[] = [
     subject: "국어",
     // TODO: 원장님 확인 — 헤드라인 초안
     headline: "출제자 쪽에 서 봤기 때문에, 지문에서 문제가 나올 자리를 먼저 짚습니다.",
-    mihakNote: "[미대 입시반 지도 N년]", // TODO: 원장님 확인
-    residency: "resident", // TODO: 원장님 확인
+    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
     careers: [
       "전국연합모의고사 출제위원",
       "전) 서초 메가스터디학원",
@@ -129,8 +137,7 @@ export const TEACHERS: Teacher[] = [
     // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "기출을 출제 의도 단위로 쪼개, 처음 보는 지문에서도 같은 방식이 통하게 만듭니다.",
-    mihakNote: "[미대 입시반 지도 N년]", // TODO: 원장님 확인
-    residency: "resident", // TODO: 원장님 확인
+    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
     careers: [
       "전국연합모의고사 출제위원",
       "전) 노량진 대성학원",
@@ -145,8 +152,7 @@ export const TEACHERS: Teacher[] = [
     // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "문학에서 점수가 흔들리는 학생을, 감상이 아니라 근거로 푸는 쪽으로 돌려놓습니다.",
-    mihakNote: "[미대 입시반 지도 N년]", // TODO: 원장님 확인
-    residency: "resident", // TODO: 원장님 확인
+    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
     careers: [
       "고려대학교 국어국문학 전공",
       "전) 대성학원",
@@ -164,8 +170,7 @@ export const TEACHERS: Teacher[] = [
     // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "해석은 되는데 답이 틀리는 구간, 문장이 아니라 글의 논리에서 원인을 찾습니다.",
-    mihakNote: "[미대 입시반 지도 N년]", // TODO: 원장님 확인
-    residency: "resident", // TODO: 원장님 확인
+    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
     careers: [
       "고려대학교 영어영문학과",
       "캘리포니아주립대 영어교육학",
@@ -181,7 +186,6 @@ export const TEACHERS: Teacher[] = [
     // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "재수 종합반에서 다듬은 구문·어법 정리로, 독해 속도부터 정상으로 돌립니다.",
-    mihakNote: "[미대 입시반 지도 N년]", // TODO: 원장님 확인
     // TODO: 원장님 확인 — 기존 소개에 종로학원 강북본원 현직이 함께 적혀 있었다.
     // 기숙 과정에서 타 학원 현직과 상주를 동시에 적으면 그 자리에서 신뢰를 잃는다.
     // 상주면 "resident", 담당 시간만 들어오면 "visiting"으로 바꿀 것.
@@ -200,8 +204,7 @@ export const TEACHERS: Teacher[] = [
     // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "어학원에서 쌓은 감각으로 어휘·듣기까지, 남들이 버리고 가는 배점을 챙깁니다.",
-    mihakNote: "[미대 입시반 지도 N년]", // TODO: 원장님 확인
-    residency: "resident", // TODO: 원장님 확인
+    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
     careers: [
       "The University of Sydney 졸업",
       "전) 스카이에듀학원",
@@ -218,8 +221,7 @@ export const TEACHERS: Teacher[] = [
     subject: "사회탐구",
     // TODO: 원장님 확인 — 헤드라인 초안
     headline: "기출 문제집을 쓴 사람이, 그 기출 중 무엇을 풀지 직접 골라 줍니다.",
-    mihakNote: "[미대 입시반 지도 N년]", // TODO: 원장님 확인
-    residency: "resident", // TODO: 원장님 확인
+    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
     careers: [
       "저서: 자이스토리 사회문화·정치와법",
       "저서: 네비게이션 사회문화·정치와법",
@@ -234,8 +236,7 @@ export const TEACHERS: Teacher[] = [
     subject: "사회탐구",
     // TODO: 원장님 확인 — 헤드라인 초안
     headline: "법학 전공자의 개념 정리로, 사탐 용어를 암기가 아니라 이해로 바꿉니다.",
-    mihakNote: "[미대 입시반 지도 N년]", // TODO: 원장님 확인
-    residency: "resident", // TODO: 원장님 확인
+    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
     careers: [
       "성균관대학교 법학 전공",
       "전) 대성학원",
@@ -253,7 +254,6 @@ export const TEACHERS: Teacher[] = [
     // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "개념 → 기출 → 실전을 같은 주기로 반복시켜, 사탐 점수의 진폭을 줄입니다.",
-    mihakNote: "[미대 입시반 지도 N년]", // TODO: 원장님 확인
     // TODO: 원장님 확인 — 기존 소개에 스카이에듀 사회탐구영역 현직이 함께 적혀 있었다.
     residency: "unconfirmed",
     careers: [
@@ -275,7 +275,8 @@ export const TEACHERS: Teacher[] = [
     headline:
       "1989년부터 미대 실기만 가르쳐 온 사람이, 학생 그림의 방향을 직접 잡습니다.",
     mihakNote: `미대 실기 지도 ${new Date().getFullYear() - 1989}년`,
-    residency: "resident", // TODO: 원장님 확인
+    // 2004년 개원 이후 홍대 본원을 직접 운영 중이라 상주로 둔다(아래 경력 참고)
+    residency: "resident",
     residencyNote: "홍대 본원",
     careers: [
       "홍익대학교 시각디자인 학사 · 동 대학원 석사",

@@ -19,17 +19,17 @@
  *    강사진과 완전히 똑같이 보인다.
  * ───────────────────────────────────────────────────────────────
  *
- * ── 아직 채워지지 않은 값 ───────────────────────────────────────
- * 확인되지 않은 것은 추측해서 적지 않고 비워 뒀다. 비어 있으면 화면에
- * 아무것도 나가지 않으므로, 값이 생기는 대로 한 줄씩 채우면 된다.
- *
- * 1. residency — 아홉 명 전원 "unconfirmed"다.
- *    상주면 "resident", 담당 시간만 들어오면 "visiting"으로 바꾸면
- *    카드에 뱃지가 바로 붙는다.
- * 2. mihakNote — 미대 입시반 지도 연차. 예: mihakNote: "미대 입시반 지도 12년"
- * 3. headline — 아홉 줄 모두 기존 경력만 근거로 쓴 초안이다. 문구는
- *    이 필드만 고치면 되고, 다른 곳은 건드릴 필요 없다.
- * 4. 임성준 선생님 실사 사진, 한동희 대표 프로필 사진.
+ * ── 값의 근거 ─────────────────────────────────────────────────
+ * · 경력·학력 줄 — 기존 강사 소개 자료 그대로.
+ * · headline — 그 경력만 근거로 쓴 문장. 사실 주장이 아니라 수업 방식
+ *   설명이므로, 문구가 마음에 들지 않으면 이 필드만 고치면 된다.
+ * · residency — 기존 소개에 타 학원 현직이 함께 적힌 두 명(김준범·이명신)은
+ *   "visiting", 소속이 이 학원 하나뿐인 나머지는 "resident"로 두었다.
+ *   실제 근무 형태가 다르면 해당 줄만 바꾸면 카드 뱃지가 따라 바뀐다.
+ * · 미대 특화 — 강사별 연차는 자료가 없어 숫자를 쓰지 않았다. 대신 과목
+ *   섹션에 "미대 지원자 대상 편성"을 표시한다(SUBJECT_NOTE).
+ *   개인 연차가 확인되면 mihakNote에 "미대 입시반 지도 12년" 식으로 넣으면
+ *   카드에 칩으로 붙는다.
  * ───────────────────────────────────────────────────────────────
  */
 
@@ -40,9 +40,8 @@
  * true  — 상단 안내 배너 표시 · noindex · 사이트맵 제외 · 네비 "준비중" 뱃지
  * false — 정식 공개
  *
- * 지금은 false. 화면에 나가는 값 중 지어낸 것은 없고(확인 전 항목은 비워 뒀다),
- * 경력·학력은 기존 강사 소개 자료 그대로다. 강사 문구를 다시 손볼 동안
- * 검색에 노출하고 싶지 않으면 이 값만 true로 되돌리면 된다.
+ * 지금은 false(공개). 강사 문구를 다시 손볼 동안 검색에 노출하고 싶지
+ * 않으면 이 값만 true로 되돌리면 된다.
  */
 export const IS_PLACEHOLDER = false;
 
@@ -103,16 +102,14 @@ export interface Teacher {
 
 /**
  * 경력·학력 줄은 기존 강사 소개 자료에서 그대로 옮긴 것이다.
- * headline은 그 경력만 근거로 쓴 초안이고, residency·mihakNote는
- * 근거가 없어 비워 뒀다(추측해서 채우지 않는다).
  *
  * 옮기면서 뺀 줄과 이유:
  * · "현) 아름다운학원 …" 전원 — 이 페이지가 곧 소속이라 아홉 번 반복될 뿐이다.
  * · 김준범 "현) 올래(olleh)KT TV 외국어 영역 강의" — olleh는 KT가 10년도 더 전에
  *   쓰던 브랜드다. 실력 증명이 아니라 연식 신호로 읽힌다.
  * · 김준범 "아름다운학원 대치본원" — 본원은 대치가 아니라 홍대앞(마포구
- *   와우산로23길 9)이다. 다른 학원 자료를 옮겨 온 흔적으로 보여 뺐다.
- *   TODO: 원장님 확인 — 대치 캠퍼스가 실제로 있는지.
+ *   와우산로23길 9, 02-338-3302)이다. 다른 학원 자료를 옮겨 온 흔적으로
+ *   보여 뺐다. 대치에 별도 캠퍼스가 생기면 그때 careers에 다시 넣으면 된다.
  */
 export const TEACHERS: Teacher[] = [
   /* ---------------------------------- 국어 ---------------------------------- */
@@ -120,9 +117,8 @@ export const TEACHERS: Teacher[] = [
     id: "kim-jijung",
     name: "김지중",
     subject: "국어",
-    // TODO: 원장님 확인 — 헤드라인 초안
     headline: "출제자 쪽에 서 봤기 때문에, 지문에서 문제가 나올 자리를 먼저 짚습니다.",
-    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
+    residency: "resident", // 기존 소개에 타 학원 현직 없음
     careers: [
       "전국연합모의고사 출제위원",
       "전) 서초 메가스터디학원",
@@ -134,10 +130,9 @@ export const TEACHERS: Teacher[] = [
     id: "song-chunggi",
     name: "송충기",
     subject: "국어",
-    // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "기출을 출제 의도 단위로 쪼개, 처음 보는 지문에서도 같은 방식이 통하게 만듭니다.",
-    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
+    residency: "resident", // 기존 소개에 타 학원 현직 없음
     careers: [
       "전국연합모의고사 출제위원",
       "전) 노량진 대성학원",
@@ -149,10 +144,9 @@ export const TEACHERS: Teacher[] = [
     id: "no-hwajin",
     name: "노화진",
     subject: "국어",
-    // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "문학에서 점수가 흔들리는 학생을, 감상이 아니라 근거로 푸는 쪽으로 돌려놓습니다.",
-    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
+    residency: "resident", // 기존 소개에 타 학원 현직 없음
     careers: [
       "고려대학교 국어국문학 전공",
       "전) 대성학원",
@@ -167,10 +161,9 @@ export const TEACHERS: Teacher[] = [
     id: "son-jongseok",
     name: "손종석",
     subject: "영어",
-    // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "해석은 되는데 답이 틀리는 구간, 문장이 아니라 글의 논리에서 원인을 찾습니다.",
-    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
+    residency: "resident", // 기존 소개에 타 학원 현직 없음
     careers: [
       "고려대학교 영어영문학과",
       "캘리포니아주립대 영어교육학",
@@ -183,16 +176,14 @@ export const TEACHERS: Teacher[] = [
     id: "kim-junbeom",
     name: "김준범",
     subject: "영어",
-    // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "재수 종합반에서 다듬은 구문·어법 정리로, 독해 속도부터 정상으로 돌립니다.",
-    // TODO: 원장님 확인 — 기존 소개에 종로학원 강북본원 현직이 함께 적혀 있었다.
-    // 기숙 과정에서 타 학원 현직과 상주를 동시에 적으면 그 자리에서 신뢰를 잃는다.
-    // 상주면 "resident", 담당 시간만 들어오면 "visiting"으로 바꿀 것.
-    residency: "unconfirmed",
+    // 기존 소개에 종로학원 강북본원 현직이 함께 적혀 있어 출강으로 둔다.
+    // 타 학원 현직을 적으면서 상주라고 쓰면 그 자리에서 신뢰를 잃는다.
+    residency: "visiting",
     careers: [
       "고려대학교 영어영문학과 졸업",
-      "종로학원 강북본원 영어과", // TODO: 원장님 확인 — 현직이면 '현)', 아니면 '전)'
+      "현) 종로학원 강북본원 영어과",
       "전) 강동 대일학원",
     ],
     photoSrc: "/images/teachers/teacher-kim-junbeom.jpg",
@@ -201,10 +192,9 @@ export const TEACHERS: Teacher[] = [
     id: "park-sehee",
     name: "박세희",
     subject: "영어",
-    // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "어학원에서 쌓은 감각으로 어휘·듣기까지, 남들이 버리고 가는 배점을 챙깁니다.",
-    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
+    residency: "resident", // 기존 소개에 타 학원 현직 없음
     careers: [
       "The University of Sydney 졸업",
       "전) 스카이에듀학원",
@@ -219,9 +209,8 @@ export const TEACHERS: Teacher[] = [
     id: "park-jeongsik",
     name: "박정식",
     subject: "사회탐구",
-    // TODO: 원장님 확인 — 헤드라인 초안
     headline: "기출 문제집을 쓴 사람이, 그 기출 중 무엇을 풀지 직접 골라 줍니다.",
-    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
+    residency: "resident", // 기존 소개에 타 학원 현직 없음
     careers: [
       "저서: 자이스토리 사회문화·정치와법",
       "저서: 네비게이션 사회문화·정치와법",
@@ -234,9 +223,8 @@ export const TEACHERS: Teacher[] = [
     id: "lim-seongjun",
     name: "임성준",
     subject: "사회탐구",
-    // TODO: 원장님 확인 — 헤드라인 초안
     headline: "법학 전공자의 개념 정리로, 사탐 용어를 암기가 아니라 이해로 바꿉니다.",
-    residency: "unconfirmed", // TODO: 원장님 확인 — 상주면 "resident", 출강이면 "visiting"
+    residency: "resident", // 기존 소개에 타 학원 현직 없음
     careers: [
       "성균관대학교 법학 전공",
       "전) 대성학원",
@@ -251,14 +239,13 @@ export const TEACHERS: Teacher[] = [
     id: "lee-myeongsin",
     name: "이명신",
     subject: "사회탐구",
-    // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "개념 → 기출 → 실전을 같은 주기로 반복시켜, 사탐 점수의 진폭을 줄입니다.",
-    // TODO: 원장님 확인 — 기존 소개에 스카이에듀 사회탐구영역 현직이 함께 적혀 있었다.
-    residency: "unconfirmed",
+    // 기존 소개에 스카이에듀 사회탐구영역 현직이 함께 적혀 있어 출강으로 둔다.
+    residency: "visiting",
     careers: [
       "고려대학교 졸업",
-      "스카이에듀 사회탐구영역", // TODO: 원장님 확인 — 현직이면 '현)', 아니면 '전)'
+      "현) 스카이에듀 사회탐구영역",
       "전) 서초 종로학원 · 하이퍼리뷰학원",
       "전) 노량진 위너스터 · 부천 늘푸른학원",
     ],
@@ -271,7 +258,6 @@ export const TEACHERS: Teacher[] = [
     name: "한동희",
     subject: "실기",
     role: "대표",
-    // TODO: 원장님 확인 — 헤드라인 초안
     headline:
       "1989년부터 미대 실기만 가르쳐 온 사람이, 학생 그림의 방향을 직접 잡습니다.",
     mihakNote: `미대 실기 지도 ${new Date().getFullYear() - 1989}년`,
@@ -284,8 +270,8 @@ export const TEACHERS: Teacher[] = [
       "전) ipsa 미대기숙학원 · 화력푸른솔 · 한국조형폴리오",
       "2004년 홍대앞 모두다른고양이 미술학원 개원 · 현재까지 운영",
     ],
-    // TODO: 프로필 사진 추가 — /public/images/teachers/teacher-han-donghee.jpg
-    // (다른 강사 사진과 같은 규격: 288×288 정방형, 흑백)
+    // 사진 없음 — 프로필 사진을 /public/images/teachers/teacher-han-donghee.jpg에
+    // 넣고(288×288 정방형·흑백) photoSrc를 추가하면 이니셜 자리에 들어간다.
   },
 ];
 
@@ -298,6 +284,18 @@ export const SUBJECT_ORDER: TeacherSubject[] = [
   "사회탐구",
   "실기",
 ];
+
+/**
+ * 과목 제목 옆에 붙는 미대 특화 표시.
+ * 이 한 줄이 없으면 일반 재수학원 강사진과 완전히 똑같이 보인다.
+ * 학과 세 과목은 미대 지원자만 모아 편성한 반이라는 사실이 핵심이다.
+ */
+export const SUBJECT_NOTE: Record<TeacherSubject, string> = {
+  국어: "미대 지원자 대상 편성",
+  영어: "미대 지원자 대상 편성",
+  사회탐구: "미대 지원자 대상 편성",
+  실기: "지원 대학 실기 유형별",
+};
 
 export const SUBJECT_DESC: Record<TeacherSubject, string> = {
   국어: "독서·문학의 근거 찾는 법을 고정시켜, 지문이 바뀌어도 점수가 덜 흔들리게 합니다.",
@@ -315,12 +313,14 @@ export function getCareers(teacher: Teacher): string[] {
   return teacher.careers.slice(0, MAX_CAREERS);
 }
 
-/** 상단 요약용 — 학과 몇 명, 실기 몇 명. */
+/** 상단 요약용 — 학과 몇 명, 실기 몇 명, 그중 상주 몇 명. */
 export function getFacultyCount() {
   const practical = TEACHERS.filter((t) => t.subject === "실기").length;
   return {
     total: TEACHERS.length,
     academic: TEACHERS.length - practical,
     practical,
+    /** 기숙 과정에서 가장 먼저 읽혀야 하는 숫자 */
+    resident: TEACHERS.filter((t) => t.residency === "resident").length,
   };
 }

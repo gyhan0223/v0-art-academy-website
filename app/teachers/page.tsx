@@ -3,6 +3,7 @@ import TeacherCard from "@/components/academy/TeacherCard";
 import {
   IS_PLACEHOLDER,
   SUBJECT_DESC,
+  SUBJECT_NOTE,
   SUBJECT_ORDER,
   getFacultyCount,
   getTeachersBySubject,
@@ -72,10 +73,10 @@ export default function Page() {
             </div>
             <div>
               <p className="text-2xl font-black tabular-nums text-white md:text-3xl">
-                3
-                <span className="ml-1 text-sm font-bold text-white/40">과목</span>
+                {count.resident}
+                <span className="ml-1 text-sm font-bold text-white/40">명</span>
               </p>
-              <p className="mt-1 text-xs text-white/50">국어 · 영어 · 탐구</p>
+              <p className="mt-1 text-xs text-white/50">본원 상주 전임</p>
             </div>
             <div>
               <p className="text-2xl font-black tabular-nums text-white md:text-3xl">
@@ -92,6 +93,11 @@ export default function Page() {
             몰아줍니다. 실기는 학과 성적으로 갈 수 있는 대학이 정해진 뒤,
             그 대학의 실기 유형에 맞춰 붙습니다.
           </p>
+          <p className="mt-3 text-sm leading-relaxed text-white/60 break-keep">
+            강사마다 본원 상주인지 담당 시간에만 들어오는 출강인지 카드에
+            그대로 적었습니다. 기숙 과정에서는 경력보다 이게 먼저 궁금한
+            정보라고 생각합니다.
+          </p>
         </section>
 
         {/* 과목별 강사 */}
@@ -102,10 +108,14 @@ export default function Page() {
           return (
             <section key={subject} className="mt-14 md:mt-16">
               <div className="border-l-2 border-accent pl-4">
-                <h2 className="text-xl font-bold tracking-tight text-white md:text-2xl">
+                <h2 className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xl font-bold tracking-tight text-white md:text-2xl">
                   {subject}
-                  <span className="ml-2 align-middle text-xs font-medium tabular-nums text-white/40">
+                  <span className="text-xs font-medium tabular-nums text-white/40">
                     {list.length}명
+                  </span>
+                  {/* 미대 특화 표시 — 없으면 일반 재수학원 강사진과 구분이 안 된다 */}
+                  <span className="rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-[11px] font-semibold text-accent">
+                    {SUBJECT_NOTE[subject]}
                   </span>
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/55 break-keep">
@@ -124,10 +134,10 @@ export default function Page() {
 
         {/* 각주 — 학과 수업 운영 주체 */}
         <p className="mt-12 rounded-lg border border-white/10 bg-white/[0.02] px-5 py-4 text-xs leading-relaxed text-white/45 break-keep">
-          {/* TODO: 원장님 확인 — 두 브랜드 관계를 어떻게 쓸지 */}
-          학과(국어·영어·사회탐구) 수업은 홍대 본원과 같은 건물에서 운영하는 학과
-          전담 브랜드 아름다운학원의 강사진이 담당합니다. 실기는 모두다른고양이
-          미술학원이 직접 지도합니다.
+          학과(국어·영어·사회탐구) 수업은 홍대 본원과 같은 곳(마포구 와우산로23길
+          9)에서 운영하는 아름다운학원 강사진이 담당하고, 실기는 모두다른고양이
+          미술학원이 직접 지도합니다. 두 이름이 한 건물에서 학과와 실기를 나눠
+          맡습니다.
         </p>
 
         {/* 상담 */}

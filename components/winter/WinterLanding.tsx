@@ -276,21 +276,21 @@ export default function WinterLanding() {
             </p>
             <div className="mt-5 space-y-4 text-sm md:text-lg leading-[1.9] text-white/75 break-keep">
               <p>
-                실기도 학과도 놓을 수 없습니다.
+                실기도 학과도 놓을 수 없습니다.{" "}
                 <br className="hidden md:block" />
                 이 겨울에 무엇을 더 많이 두느냐가 다를 뿐입니다.
               </p>
               <p>
-                두 달을 실기로만 채우면 그림은 늘지만
+                두 달을 실기로만 채우면 그림은 늘지만{" "}
                 <br className="hidden md:block" />
-                학과 성적은 그 자리에 멈춥니다.
+                학과 성적은 그 자리에 멈춥니다.{" "}
                 <br className="hidden md:block" />
                 저희는 평일을 학과에 두고, 주말마다 실기를 이어 갑니다.
               </p>
               <p>
-                미대 정시는 대부분 수학을 반영하지 않습니다.
+                미대 정시는 대부분 수학을 반영하지 않습니다.{" "}
                 <br className="hidden md:block" />
-                일반 기숙학원이 수학에 쓰는 8주를,
+                일반 기숙학원이 수학에 쓰는 8주를,{" "}
                 <br className="hidden md:block" />
                 저희는 국어·영어·탐구에 전부 씁니다.
               </p>

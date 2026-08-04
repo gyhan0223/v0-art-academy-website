@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { X, Menu, ChevronDown } from "lucide-react";
 import {
   SHOW_ANNOUNCEMENT,
+  WINTER_PAGES,
   getRemainingLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
@@ -73,6 +74,21 @@ const navItems: NavItem[] = [
     label: "윈터캠프",
     href: "/winter",
     badge: "모집중",
+    children: [
+      {
+        label: "윈터캠프 (개요)",
+        href: "/winter",
+        desc: "대상·정원·기간과 8주 운영 방식",
+        badge: "모집중",
+      },
+      // 하위 페이지는 lib/winter-camp.ts의 WINTER_PAGES 하나만 고치면 여기와
+      // /winter 하단 카드가 함께 바뀐다
+      ...WINTER_PAGES.map((page) => ({
+        label: page.label,
+        href: page.href,
+        desc: page.desc,
+      })),
+    ],
   },
   {
     label: "파주 기숙학원",
@@ -80,6 +96,15 @@ const navItems: NavItem[] = [
     badge: "3월 오픈",
   },
 ];
+
+/**
+ * 하위 항목 활성 판정.
+ * "/winter"(개요)가 "/winter/schedule"에서도 켜지지 않도록 정확히 일치하거나
+ * 한 단계 아래 경로일 때만 활성으로 본다.
+ */
+function isChildActive(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export default function SiteNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -225,7 +250,7 @@ export default function SiteNav() {
                     >
                       <ul className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/40">
                         {item.children.map((child) => {
-                          const childActive = pathname.startsWith(child.href);
+                          const childActive = isChildActive(pathname, child.href);
                           return (
                             <li key={child.href}>
                               <Link
@@ -381,7 +406,7 @@ export default function SiteNav() {
                     >
                       <ul className="overflow-hidden bg-white/[0.03]">
                         {item.children.map((child) => {
-                          const childActive = pathname.startsWith(child.href);
+                          const childActive = isChildActive(pathname, child.href);
                           return (
                             <li key={child.href}>
                               <Link

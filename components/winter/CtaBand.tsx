@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Phone, PenLine } from "lucide-react";
 import {
@@ -7,6 +8,7 @@ import {
   getRemainingLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
+import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 
 /** 섹션 사이에 반복 배치하는 전환용 CTA 밴드.
  *  읽다가 마음이 움직인 시점마다 신청 동선을 제공한다. */
@@ -22,13 +24,6 @@ export default function CtaBand({
     remainingTotal <= 0
       ? "마감"
       : `정원 ${CAMP_INFO.capacityTotal}명 · ${getRemainingLabel()} · ${CAMP_INFO.capacityNote}`;
-
-  const scrollToConsult = (e: React.MouseEvent) => {
-    e.preventDefault();
-    document
-      .getElementById("consult-form")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
 
   return (
     <section className="px-6 py-14 md:py-16">
@@ -51,14 +46,15 @@ export default function CtaBand({
           {seatLabel}
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <a
-            href="#consult-form"
-            onClick={scrollToConsult}
+          {/* 상담 폼이 같은 페이지에 있으면 스크롤, 하위 페이지에서는 /winter로 이동 */}
+          <Link
+            href={CONSULT_HREF}
+            onClick={goToConsult}
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-black transition-opacity hover:opacity-85 sm:w-auto"
           >
             <PenLine size={16} />
             상담 신청하기
-          </a>
+          </Link>
           <a
             href={CAMP_INFO.phoneTel}
             className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-medium text-white transition-colors hover:border-white/50 sm:w-auto"

@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 import { IS_PLACEHOLDER as GRADE_CASES_PLACEHOLDER } from "@/lib/grade-cases";
+import { IS_PLACEHOLDER as TEACHERS_PLACEHOLDER } from "@/lib/winter-teachers";
+import { IS_PLACEHOLDER as WINTER_RESULTS_PLACEHOLDER } from "@/lib/winter-results";
 
 const baseUrl = "https://www.modago.me";
 
@@ -17,6 +19,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/winter/schedule`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/winter/gallery`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    // 강사진·성적 향상 사례 — 자리표시자 상태에서는 noindex라 사이트맵에서도 제외
+    ...(TEACHERS_PLACEHOLDER
+      ? []
+      : [
+          {
+            url: `${baseUrl}/winter/teachers`,
+            lastModified: new Date(),
+            changeFrequency: "monthly" as const,
+            priority: 0.7,
+          },
+        ]),
+    ...(WINTER_RESULTS_PLACEHOLDER
+      ? []
+      : [
+          {
+            url: `${baseUrl}/winter/results`,
+            lastModified: new Date(),
+            changeFrequency: "monthly" as const,
+            priority: 0.8,
+          },
+        ]),
     {
       url: `${baseUrl}/guide/jungsi-2026`,
       lastModified: new Date(),

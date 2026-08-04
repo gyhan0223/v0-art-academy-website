@@ -59,6 +59,46 @@ export function getRemainingTotal(): number {
   );
 }
 
+/* ------------------------------- 하위 페이지 ------------------------------- */
+
+/**
+ * 윈터캠프 하위 페이지 — 네비게이션 드롭다운과 /winter 하단 카드가
+ * 전부 이 배열 하나를 참조한다. 페이지를 늘리면 여기에만 추가하면 된다.
+ */
+export const WINTER_PAGES = [
+  {
+    href: "/winter/schedule",
+    label: "하루 일과표",
+    en: "Daily Routine",
+    desc: "기상부터 취침까지 · 평일은 학과, 주말은 실기",
+  },
+  {
+    href: "/winter/teachers",
+    label: "강사진",
+    en: "Teachers",
+    desc: "국어·영어·탐구 학과 강사와 실기 강사",
+  },
+  {
+    href: "/winter/gallery",
+    label: "캠프 사진",
+    en: "Gallery",
+    desc: "기숙사 · 강의실 · 실기실 · 식사",
+  },
+  {
+    href: "/winter/results",
+    label: "성적 향상 사례",
+    en: "Results",
+    desc: "1주차 진단 → 8주차 재측정",
+  },
+] as const;
+
+/** 격주 리포트 샘플 이미지 — 파일이 없으면 화면에 "이미지 준비 중"으로 표시된다 */
+// TODO: 원장님 확인 — 실제 리포트 1장을 이름·점수 가린 뒤 이 경로에 올려 주세요.
+export const REPORT_SAMPLE = {
+  src: "/images/winter/report-sample.jpg",
+  caption: "격주 리포트 샘플 — 학생 이름과 개인정보는 가렸습니다",
+} as const;
+
 /* -------------------------------- 상담 채널 -------------------------------- */
 
 /** 문자 문의 수신 번호 (하이픈 없음) */

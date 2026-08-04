@@ -9,6 +9,7 @@ import {
   getRemainingLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
+import { IS_PLACEHOLDER as GRADE_CASES_PLACEHOLDER } from "@/lib/grade-cases";
 
 const remainingTotal = getRemainingTotal();
 const ANNOUNCEMENT_TEXT =
@@ -62,6 +63,12 @@ const navItems: NavItem[] = [
   //   href: "/mock",
   //   badge: "접수중",
   // },
+  {
+    label: "성적 향상 사례",
+    href: "/grade-up",
+    // 실제 사례가 채워지면(lib/grade-cases.ts의 IS_PLACEHOLDER = false) 뱃지가 사라짐
+    badge: GRADE_CASES_PLACEHOLDER ? "준비중" : undefined,
+  },
   {
     label: "윈터캠프",
     href: "/winter",

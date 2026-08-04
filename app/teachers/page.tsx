@@ -90,8 +90,8 @@ export default function Page() {
           <p className="mt-6 border-t border-white/10 pt-5 text-sm leading-relaxed text-white/60 break-keep">
             수학 강사가 없는 것은 빠진 것이 아니라 뺀 것입니다. 미대 정시는
             대부분 수학을 반영하지 않기 때문에, 국어·영어·탐구 세 과목에 시간을
-            몰아줍니다. 실기는 학과 성적으로 갈 수 있는 대학이 정해진 뒤,
-            그 대학의 실기 유형에 맞춰 붙습니다.
+            몰아줍니다. 실기는 주말마다 이어 가되, 학과 성적으로 지원할 대학이
+            좁혀지면 그 대학의 실기 유형에 맞춰 붙습니다.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-white/60 break-keep">
             강사마다 본원 상주인지 담당 시간에만 들어오는 출강인지 카드에

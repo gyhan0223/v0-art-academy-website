@@ -1,25 +1,30 @@
 "use client";
 
 /**
- * /winter/teachers — 강사진.
- * 카드 형식은 하나로 고정한다: 상주 배지 · 담당 · 이름 · 한 줄 헤드라인 · 경력 4줄.
- * 강사 데이터는 lib/winter-teachers.ts에만 있다.
+ * /winter/teachers — 윈터캠프 문맥에서 본 강사진.
+ *
+ * 강사 데이터와 카드는 /teachers와 같은 것을 쓴다(lib/teachers.ts,
+ * components/academy/TeacherCard.tsx). 여기서만 다른 것은 "8주 동안 이 강사들이
+ * 무엇을 하는가" — 과목별 운영과 수업 FAQ다. 강사가 바뀌면 lib/teachers.ts만
+ * 고치면 두 페이지가 함께 바뀐다.
+ *
+ * 같은 강사진을 두 URL로 보여주므로 이 페이지의 canonical은 /teachers다
+ * (app/winter/teachers/page.tsx 참고).
  */
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import Image from "next/image";
-import { BadgeCheck, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import {
-  TEACHERS,
-  TEACHER_TRACKS,
   IS_PLACEHOLDER,
-  MAX_CAREER_LINES,
-  getCareers,
-  getTeachersByTrack,
-  getResidentLabel,
-  type Teacher,
-  type TeacherTrack,
-} from "@/lib/winter-teachers";
+  SUBJECT_DESC,
+  SUBJECT_NOTE,
+  SUBJECT_ORDER,
+  MAX_CAREERS,
+  getFacultyCount,
+  getTeachersBySubject,
+} from "@/lib/teachers";
+import TeacherCard from "@/components/academy/TeacherCard";
 import CtaBand from "@/components/winter/CtaBand";
 import MobileActionBar from "@/components/winter/MobileActionBar";
 import {
@@ -31,7 +36,7 @@ import {
   PlaceholderNotice,
 } from "@/components/winter/shared";
 
-/** 과목별로 8주 동안 무엇을 하는지 — 강사 소개와 같은 페이지에 둔다 */
+/** 과목별로 8주 동안 무엇을 하는지 — 이 페이지에만 있는 윈터캠프 내용 */
 const SUBJECT_PLANS = [
   {
     subject: "국어",
@@ -44,7 +49,7 @@ const SUBJECT_PLANS = [
     method: "[매일 단어 테스트 + 구문 강의 + 오답 관리]" /* TODO: 원장님 확인 */,
   },
   {
-    subject: "탐구",
+    subject: "사회탐구",
     goal: "[선택 과목 개념 1회독을 목표로 기본 개념을 정리합니다.]" /* TODO: 원장님 확인 */,
     method: "[개념 강의 + 단원별 문제 풀이]" /* TODO: 원장님 확인 */,
   },
@@ -62,73 +67,15 @@ const CLASS_FAQ = [
   },
 ];
 
-const TRACK_DESC: Record<TeacherTrack, string> = {
-  학과: "평일 국어·영어·탐구를 직접 가르치는 강사입니다.",
-  실기: "주말 대학교 유형 실기를 맡는 강사입니다.",
-};
-
-function TeacherCard({ teacher }: { teacher: Teacher }) {
-  const careers = getCareers(teacher);
-
-  return (
-    <div className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-7">
-      {/* 담당 + 상주 여부 배지 */}
-      <div className="flex items-center justify-between gap-3">
-        <span className="rounded-full border border-white/15 px-3 py-1 text-[11px] font-medium text-white/70">
-          {teacher.subject}
-        </span>
-        <span
-          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold ${
-            teacher.resident
-              ? "border border-accent/40 bg-accent/10 text-accent"
-              : "border border-white/15 text-white/50"
-          }`}
-        >
-          {teacher.resident ? <BadgeCheck size={12} /> : <Clock size={12} />}
-          {getResidentLabel(teacher)}
-        </span>
-      </div>
-
-      {/* 이름 */}
-      <div className="mt-5 flex items-center gap-3">
-        {teacher.photo ? (
-          <Image
-            src={teacher.photo}
-            alt={teacher.name}
-            width={48}
-            height={48}
-            className="h-12 w-12 rounded-full object-cover"
-          />
-        ) : (
-          <span
-            aria-hidden
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 text-sm font-bold text-white/50"
-          >
-            {teacher.subject.slice(0, 2)}
-          </span>
-        )}
-        <p className="text-lg font-bold text-white break-keep">{teacher.name}</p>
-      </div>
-
-      {/* 한 줄 헤드라인 — 이 카드에서 가장 먼저 읽혀야 하는 문장 */}
-      <p className="mt-4 text-base md:text-lg font-semibold leading-snug text-white break-keep">
-        {teacher.headline}
-      </p>
-
-      {/* 경력 — 4줄 컷 */}
-      <ul className="mt-5 space-y-2 border-t border-white/10 pt-5 text-sm text-white/55">
-        {careers.map((line) => (
-          <li key={line} className="flex gap-2.5 break-keep">
-            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-white/30" />
-            {line}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 export default function WinterTeachersPage() {
+  const count = getFacultyCount();
+
+  const stats = [
+    { value: count.academic, unit: "명", label: "학과 (국어·영어·사탐)" },
+    { value: count.practical, unit: "명", label: "실기" },
+    { value: count.resident, unit: "명", label: "본원 상주 전임" },
+  ];
+
   return (
     <main className="bg-background text-foreground pb-20 md:pb-0">
       <section className="px-5 pt-28 md:px-6 md:pt-32">
@@ -136,13 +83,14 @@ export default function WinterTeachersPage() {
           <SubPageHeader
             en="Teachers"
             title="강사진"
-            sub="학과(국어·영어·탐구)는 강사가 직접 가르치고, 주말 실기는 유형별 담당 강사가 맡습니다."
+            sub="윈터캠프 학과(국어·영어·사회탐구)는 강사가 직접 가르치고, 주말 실기는 지원 대학 유형에 맞춰 붙습니다. 강사마다 한 줄로 먼저 밝히고, 경력은 네 줄까지만 적었습니다."
           />
 
           {IS_PLACEHOLDER && (
             <div className="mt-8">
               <PlaceholderNotice>
-                강사진 정보는 준비 중입니다. 확정된 강사만 순차적으로 공개합니다.
+                강사별 한 줄 소개와 상주 여부는 확인 중인 초안입니다. 확정되면 이
+                안내가 사라집니다.
               </PlaceholderNotice>
             </div>
           )}
@@ -150,54 +98,102 @@ export default function WinterTeachersPage() {
           <div className="mt-8">
             <SubPageTabs />
           </div>
+
+          {/* 구성 — 기숙 과정에서 가장 먼저 읽혀야 하는 숫자는 "상주 몇 명"이다 */}
+          <motion.section
+            {...fadeUp}
+            className="mt-10 rounded-xl border border-white/10 bg-white/[0.03] p-6 md:p-7"
+          >
+            <h2 className="sr-only">강사진 구성</h2>
+            <div className="grid grid-cols-3 gap-5">
+              {stats.map((stat) => (
+                <div key={stat.label}>
+                  <p className="text-2xl font-black tabular-nums text-white md:text-3xl">
+                    {stat.value}
+                    <span className="ml-1 text-sm font-bold text-white/40">
+                      {stat.unit}
+                    </span>
+                  </p>
+                  <p className="mt-1 text-xs text-white/50 break-keep">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-6 border-t border-white/10 pt-5 text-sm leading-relaxed text-white/60 break-keep">
+              수학 강사가 없는 것은 빠진 것이 아니라 뺀 것입니다. 미대 정시는
+              대부분 수학을 반영하지 않기 때문에, 겨울 8주를 국어·영어·탐구 세
+              과목에 몰아줍니다. 상주인지 담당 시간에만 들어오는 출강인지는 카드에
+              그대로 적었습니다.
+            </p>
+          </motion.section>
         </div>
       </section>
 
-      {/* ---- 트랙별 강사 ---- */}
-      {TEACHER_TRACKS.map((track, idx) => {
-        const teachers = getTeachersByTrack(track);
-        if (teachers.length === 0) return null;
+      {/* ---- 과목별 강사 ---- */}
+      <section className="px-5 py-16 md:px-6 md:py-20">
+        <div className="mx-auto max-w-5xl">
+          {SUBJECT_ORDER.map((subject) => {
+            const list = getTeachersBySubject(subject);
+            if (list.length === 0) return null;
 
-        return (
-          <section
-            key={track}
-            className={`px-5 py-16 md:px-6 md:py-24 ${
-              idx % 2 === 0
-                ? ""
-                : "border-y border-white/5 bg-[#05050a]"
-            }`}
-          >
-            <div className="mx-auto max-w-5xl">
-              <SectionHead
-                en={track === "학과" ? "Academics" : "Art Practice"}
-                ko={`${track} 강사`}
-                sub={TRACK_DESC[track]}
-              />
+            return (
+              <div key={subject} className="mt-14 first:mt-0 md:mt-16">
+                <motion.div {...fadeUp} className="border-l-2 border-accent pl-4">
+                  <h2 className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xl font-bold tracking-tight text-white md:text-2xl">
+                    {subject}
+                    <span className="text-xs font-medium tabular-nums text-white/40">
+                      {list.length}명
+                    </span>
+                    <span className="rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-[11px] font-semibold text-accent">
+                      {SUBJECT_NOTE[subject]}
+                    </span>
+                  </h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/55 break-keep">
+                    {SUBJECT_DESC[subject]}
+                  </p>
+                </motion.div>
 
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {teachers.map((teacher, i) => (
-                  <motion.div
-                    key={teacher.id}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.5, delay: i * 0.05 }}
-                  >
-                    <TeacherCard teacher={teacher} />
-                  </motion.div>
-                ))}
+                <div className="mt-6 space-y-4">
+                  {list.map((teacher, i) => (
+                    <motion.div
+                      key={teacher.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      transition={{ duration: 0.45, delay: i * 0.04 }}
+                    >
+                      <TeacherCard teacher={teacher} />
+                    </motion.div>
+                  ))}
+                </div>
               </div>
+            );
+          })}
 
-              {track === "학과" && (
-                <p className="mt-6 text-center text-xs text-white/35 break-keep">
-                  ※ 경력은 각 강사당 {MAX_CAREER_LINES}줄까지만 표기합니다.
-                  상주 배지는 캠프 기간 중 상주 여부를 뜻합니다.
-                </p>
-              )}
-            </div>
-          </section>
-        );
-      })}
+          <p className="mt-8 text-center text-xs text-white/35 break-keep">
+            ※ 경력은 강사당 {MAX_CAREERS}줄까지만 표기합니다.
+          </p>
+
+          {/* 학과 수업 운영 주체 — /teachers와 같은 사실을 여기서도 밝힌다 */}
+          <p className="mt-8 rounded-lg border border-white/10 bg-white/[0.02] px-5 py-4 text-xs leading-relaxed text-white/45 break-keep">
+            학과(국어·영어·사회탐구) 수업은 홍대 본원과 같은 곳(마포구 와우산로23길
+            9)에서 운영하는 아름다운학원 강사진이 담당하고, 실기는 모두다른고양이
+            미술학원이 직접 지도합니다. 두 이름이 한 건물에서 학과와 실기를 나눠
+            맡습니다.
+          </p>
+
+          <p className="mt-6 text-center text-sm">
+            <Link
+              href="/teachers"
+              className="inline-flex items-center gap-1.5 text-accent hover:underline"
+            >
+              학원 전체 강사진 페이지 보기
+              <ArrowRight size={15} />
+            </Link>
+          </p>
+        </div>
+      </section>
 
       {/* ---- 과목별 8주 운영 ---- */}
       <section className="border-y border-white/5 bg-[#05050a] px-5 py-20 md:px-6 md:py-28">
@@ -256,11 +252,11 @@ export default function WinterTeachersPage() {
       <CtaBand
         headline={
           <>
-            어떤 강사에게 배우는지
-            <br className="md:hidden" /> 상담에서 알려드립니다
+            어떤 선생님과 시작할지
+            <br className="md:hidden" /> 상담에서 정해 드립니다
           </>
         }
-        sub="아이의 현재 등급에 맞춰 어느 반에서 시작할지 함께 잡아드립니다."
+        sub="현재 성적과 목표 대학을 보고 어느 반에서 시작할지 함께 잡아드립니다."
       />
 
       <MobileActionBar />

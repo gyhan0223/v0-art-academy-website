@@ -323,6 +323,17 @@ export default function WinterLanding() {
               하루 일과표 보기
             </Link>
           </motion.p>
+
+          {/* "강사 직강"이라고만 쓰면 확인할 방법이 없다 — 강사진 페이지로 보낸다 */}
+          <motion.div {...fadeUp} className="mt-6 text-center">
+            <Link
+              href="/winter/teachers"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-opacity hover:opacity-75"
+            >
+              누가 가르치는지 보기
+              <ArrowRight size={15} />
+            </Link>
+          </motion.div>
         </div>
       </section>
 

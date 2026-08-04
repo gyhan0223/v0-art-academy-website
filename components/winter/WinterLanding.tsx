@@ -288,11 +288,16 @@ export default function WinterLanding() {
                 저희는 평일을 학과에 두고, 주말마다 실기를 이어 갑니다.
               </p>
               <p>
-                미대는 서울대를 제외하면 수학을 반영하지 않습니다.{" "}
+                미대 정시는 대부분 수학을 반영하지 않습니다.{" "}
                 <br className="hidden md:block" />
                 일반 기숙학원이 수학에 쓰는 8주를,{" "}
                 <br className="hidden md:block" />
                 저희는 국어·영어·탐구에 전부 씁니다.
+              </p>
+              <p className="text-xs md:text-sm leading-relaxed text-white/45">
+                수학이 필수인 곳은 서울대 디자인과처럼 일부이고, 이화여대·홍익대처럼
+                반영하는 대학도 국·수·탐 중 택2라 수학 없이 지원할 수 있습니다.
+                지망 대학에 수학이 필요하다면 상담 때 함께 확인합니다.
               </p>
             </div>
           </motion.div>

@@ -46,7 +46,12 @@ import {
   Palette,
 } from "lucide-react";
 import { CAMP_INFO, SMS_HREF, KAKAO_CHANNEL_URL } from "@/lib/winter-camp";
-import { universityCards } from "@/components/cinematic/Scene2";
+import {
+  universityCards,
+  RECENT_YEAR,
+  type UniversityCard,
+} from "@/lib/admissions-data";
+import AdmissionListModal from "@/components/AdmissionListModal";
 import CtaBand from "@/components/winter/CtaBand";
 import Testimonials from "@/components/winter/Testimonials";
 
@@ -168,7 +173,11 @@ const PARENT_CONCERNS = [
   },
 ];
 
-/** 학과 커리큘럼 — 학과가 먼저, 실기는 별도 섹션 */
+/**
+ * 학과 커리큘럼 — 학과가 먼저, 실기는 별도 섹션.
+ * 수학은 다루지 않는다: 미대는 서울대를 제외하면 수학을 반영하지 않아
+ * 8주를 국어·영어·탐구에 전부 쓰는 것이 이 캠프의 핵심 논리다.
+ */
 const HAKGWA_TABS = [
   {
     key: "국어",
@@ -184,11 +193,6 @@ const HAKGWA_TABS = [
     key: "사회탐구",
     goal: "[선택 과목 개념 1회독을 목표로 기본 개념을 정리합니다.]" /* TODO: 원장님 확인 */,
     method: "[개념 강의 + 단원별 문제 풀이]" /* TODO: 원장님 확인 */,
-  },
-  {
-    key: "수학",
-    goal: "[취약 단원 진단 후 기본 개념과 유형 연습을 진행합니다.]" /* TODO: 원장님 확인 */,
-    method: "[진단 테스트 기반 개별 커리큘럼]" /* TODO: 원장님 확인 */,
   },
 ];
 
@@ -498,6 +502,21 @@ function formatPhone(value: string) {
   return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
 }
 
+/**
+ * 휴대폰 번호 자릿수 검증.
+ * 010은 11자리, 그 외 이동통신 국번(011·016·017·018·019)은 10~11자리.
+ */
+const PHONE_PATTERN = /^(010\d{8}|01[16789]\d{7,8})$/;
+
+function phoneError(value: string): string | null {
+  const d = value.replace(/\D/g, "");
+  if (d.length === 0) return null; // 입력 전에는 오류를 띄우지 않는다
+  if (!d.startsWith("01")) return "휴대폰 번호를 010으로 시작해 입력해 주세요.";
+  if (!PHONE_PATTERN.test(d))
+    return `번호 자릿수가 맞지 않습니다. (현재 ${d.length}자리 · 010-0000-0000 형식)`;
+  return null;
+}
+
 const GRADE_OPTIONS = ["예비 고2", "예비 고3", "재수생"] as const;
 
 const INPUT_CLASS =
@@ -507,6 +526,7 @@ function ConsultForm() {
   const [name, setName] = useState("");
   const [grade, setGrade] = useState("");
   const [phone, setPhone] = useState("");
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [university, setUniversity] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
@@ -514,10 +534,15 @@ function ConsultForm() {
     "idle" | "submitting" | "done" | "error"
   >("idle");
 
+  const phoneMessage = phoneError(phone);
+  const phoneValid = phone !== "" && phoneMessage === null;
+  /** 입력 중에는 방해하지 않고, 포커스를 벗어난 뒤부터 오류를 보여준다 */
+  const showPhoneError = phoneTouched && phoneMessage !== null;
+
   const canSubmit =
     name.trim().length > 0 &&
     grade !== "" &&
-    phone.replace(/\D/g, "").length >= 10 &&
+    phoneValid &&
     agreed &&
     status !== "submitting";
 
@@ -638,9 +663,23 @@ function ConsultForm() {
             autoComplete="tel"
             value={phone}
             onChange={(e) => setPhone(formatPhone(e.target.value))}
+            onBlur={() => setPhoneTouched(true)}
             placeholder="010-0000-0000"
-            className={INPUT_CLASS}
+            aria-invalid={showPhoneError}
+            aria-describedby={showPhoneError ? "consult-phone-error" : undefined}
+            className={`${INPUT_CLASS} ${
+              showPhoneError ? "border-red-400/70 focus:border-red-400" : ""
+            }`}
           />
+          {showPhoneError && (
+            <p
+              id="consult-phone-error"
+              role="alert"
+              className="mt-2 text-xs text-red-400 break-keep"
+            >
+              {phoneMessage}
+            </p>
+          )}
         </div>
 
         {/* 희망 대학 (선택) */}
@@ -803,11 +842,15 @@ function MobileActionBar() {
 
 /* --------------------------------- 페이지 ---------------------------------- */
 
+/** 대학 카드가 홀수 개면 2열 그리드에서 마지막 한 장이 혼자 남는다 */
+const hasOrphanCard = universityCards.length % 2 === 1;
+
 export default function WinterLanding() {
   const [lightbox, setLightbox] = useState<{
     src: string;
     caption: string;
   } | null>(null);
+  const [selectedUniv, setSelectedUniv] = useState<UniversityCard | null>(null);
   const [activeTab, setActiveTab] = useState(HAKGWA_TABS[0].key);
 
   const tab = HAKGWA_TABS.find((t) => t.key === activeTab)!;
@@ -829,7 +872,10 @@ export default function WinterLanding() {
         />
 
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center text-center">
-          <p className="mb-4 text-xs md:text-sm tracking-[0.3em] text-accent uppercase">
+          <p className="mb-2.5 text-xs md:text-sm tracking-[0.3em] text-accent uppercase">
+            최상위권 미대 전문
+          </p>
+          <p className="mb-4 text-[11px] md:text-sm tracking-[0.2em] text-white/50">
             {CAMP_INFO.name} · 홍대 본원 기숙
           </p>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-tight text-white break-keep">
@@ -974,45 +1020,82 @@ export default function WinterLanding() {
           <SectionHead
             en="Since 1989 · 37년"
             ko="말이 아니라 숫자로 증명합니다"
-            sub="모두다른고양이 미술학원의 누적 합격 실적입니다."
+            sub={
+              <>
+                최상위권 미대 전문 학원의 {RECENT_YEAR} 합격 실적과 37년 누적
+                실적입니다.
+                <br className="hidden md:block" />
+                대학을 누르면 합격자 명단을 확인하실 수 있습니다.
+              </>
+            }
           />
 
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
             {universityCards.map((card, i) => (
-              <motion.div
+              <motion.button
                 key={card.name}
+                type="button"
+                onClick={() => setSelectedUniv(card)}
+                aria-label={`${card.name} 합격자 명단 보기`}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.5, delay: i * 0.06 }}
-                className="relative overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8 text-center"
+                className={`group relative overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8 lg:px-4 lg:py-7 text-center transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98] ${
+                  // 2열에서 홀수 개면 마지막 카드가 혼자 남으므로 가로로 채운다
+                  hasOrphanCard && i === universityCards.length - 1
+                    ? "col-span-2 lg:col-span-1"
+                    : ""
+                }`}
                 style={{ backgroundColor: card.color }}
               >
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10">
-                  <Image
-                    src={card.logo}
-                    alt=""
-                    width={200}
-                    height={200}
-                    className="object-contain brightness-0 invert"
-                  />
-                </div>
+                {card.logo && (
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10">
+                    <Image
+                      src={card.logo}
+                      alt=""
+                      width={200}
+                      height={200}
+                      className="object-contain brightness-0 invert"
+                    />
+                  </div>
+                )}
                 <div className="relative z-10">
                   <p className="text-sm md:text-base font-semibold text-white/80">
                     {card.name}
                   </p>
+
+                  {/* 작년(최근) 합격자 — 주 지표 */}
                   <p className="mt-3 text-4xl md:text-5xl font-black text-white">
-                    {card.total}
+                    {card.recent}
                     <span className="text-lg font-bold text-white/60">명</span>
                   </p>
-                  <p className="mt-1 text-[11px] tracking-widest text-white/50 uppercase">
-                    누적 합격
+                  <p className="mt-1 text-[11px] tracking-widest text-white/60 uppercase">
+                    {RECENT_YEAR} 합격
                   </p>
+
+                  {/* 누적 합격자 — 보조 지표 */}
+                  <div className="mx-auto mt-4 mb-3 h-px w-10 bg-white/25" />
+                  <p className="text-sm font-bold text-white/85">
+                    누적 {card.total}
+                    <span className="text-xs font-semibold text-white/60">
+                      명
+                    </span>
+                  </p>
+
+                  <span className="mt-3 inline-block text-[11px] text-white/55 underline underline-offset-4 transition-colors group-hover:text-white">
+                    합격자 명단 보기
+                  </span>
                 </div>
-              </motion.div>
+              </motion.button>
             ))}
           </div>
         </div>
+
+        <AdmissionListModal
+          card={selectedUniv}
+          onClose={() => setSelectedUniv(null)}
+        />
       </section>
 
       {/* ============ CTA #1 — 차별점·실적을 본 직후 ============ */}
@@ -1417,50 +1500,51 @@ export default function WinterLanding() {
             </Link>
           </motion.div>
 
-          {/* 환불 규정 — 교육청 환불규정 제18조 제3호 */}
-          <motion.div {...fadeUp} className="mt-8">
-            <AccordionItem
-              q="환불 규정 안내"
-              a={
-                <div className="space-y-4">
-                  <p>
-                    중도 퇴원(퇴소) 시 교육청 환불규정(제18조 제3호)에 따라
-                    수강료를 반환합니다.
-                  </p>
-                  <div className="overflow-hidden rounded-lg border border-white/10">
-                    <table className="w-full text-sm">
-                      <tbody>
-                        {[
-                          ["총 교습시간의 1/3 경과 전", "납부한 교습비의 2/3 환불"],
-                          ["총 교습시간의 1/2 경과 전", "납부한 교습비의 1/2 환불"],
-                          ["총 교습시간의 1/2 경과 후", "반환하지 않음"],
-                        ].map(([when, amount]) => (
-                          <tr
-                            key={when}
-                            className="border-b border-white/5 last:border-b-0"
-                          >
-                            <td className="px-4 py-3 text-white/70">{when}</td>
-                            <td className="px-4 py-3 text-white/90 font-medium">
-                              {amount}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <ul className="list-disc space-y-1.5 pl-5 text-white/55">
-                    <li>
-                      개인 사정으로 인한 지각·결석은 수강료 반환 사유에서
-                      제외됩니다.
-                    </li>
-                    <li>
-                      할인을 받은 학생이 환불을 요청할 경우 할인이 취소되며,
-                      할인받은 금액을 제외한 차액을 환불합니다.
-                    </li>
-                  </ul>
-                </div>
-              }
-            />
+          {/* 환불 규정 — 교육청 환불규정 제18조 제3호 (접지 않고 항상 펼쳐 노출) */}
+          <motion.div
+            {...fadeUp}
+            className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-7 md:p-9"
+          >
+            <h3 className="text-base md:text-lg font-bold text-white">
+              환불 규정 안내
+            </h3>
+            <div className="mt-4 space-y-4 text-sm leading-relaxed text-white/60 break-keep">
+              <p>
+                중도 퇴원(퇴소) 시 교육청 환불규정(제18조 제3호)에 따라
+                수강료를 반환합니다.
+              </p>
+              <div className="overflow-hidden rounded-lg border border-white/10">
+                <table className="w-full text-sm">
+                  <tbody>
+                    {[
+                      ["총 교습시간의 1/3 경과 전", "납부한 교습비의 2/3 환불"],
+                      ["총 교습시간의 1/2 경과 전", "납부한 교습비의 1/2 환불"],
+                      ["총 교습시간의 1/2 경과 후", "반환하지 않음"],
+                    ].map(([when, amount]) => (
+                      <tr
+                        key={when}
+                        className="border-b border-white/5 last:border-b-0"
+                      >
+                        <td className="px-4 py-3 text-white/70">{when}</td>
+                        <td className="px-4 py-3 text-white/90 font-medium">
+                          {amount}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <ul className="list-disc space-y-1.5 pl-5 text-white/55">
+                <li>
+                  개인 사정으로 인한 지각·결석은 수강료 반환 사유에서
+                  제외됩니다.
+                </li>
+                <li>
+                  할인을 받은 학생이 환불을 요청할 경우 할인이 취소되며,
+                  할인받은 금액을 제외한 차액을 환불합니다.
+                </li>
+              </ul>
+            </div>
           </motion.div>
 
           {/* 오시는 길 */}

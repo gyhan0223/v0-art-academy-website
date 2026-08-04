@@ -11,6 +11,9 @@ import { NextResponse } from "next/server";
  *  - CONSULT_WEBHOOK_URL   : Apps Script 웹 앱 배포 URL
  *  - CONSULT_WEBHOOK_TOKEN : Apps Script 코드의 TOKEN과 동일한 임의 문자열
  */
+/** 휴대폰 번호 자릿수 검증 — 010은 11자리, 그 외 이동통신 국번은 10~11자리 */
+const PHONE_PATTERN = /^(010\d{8}|01[16789]\d{7,8})$/;
+
 export async function POST(request: Request) {
   const data = await request.json();
 
@@ -18,6 +21,14 @@ export async function POST(request: Request) {
   if (!name || !grade || !phone) {
     return NextResponse.json(
       { ok: false, error: "필수 항목이 누락되었습니다." },
+      { status: 400 },
+    );
+  }
+
+  // 클라이언트 검증을 우회한 잘못된 번호가 시트에 쌓이지 않도록 서버에서도 확인한다.
+  if (!PHONE_PATTERN.test(String(phone).replace(/\D/g, ""))) {
+    return NextResponse.json(
+      { ok: false, error: "연락처 형식이 올바르지 않습니다." },
       { status: 400 },
     );
   }

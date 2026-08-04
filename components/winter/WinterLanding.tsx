@@ -1011,6 +1011,17 @@ export default function WinterLanding() {
             강사가 직접 가르치고, 취침·기상 등 생활 리듬도 정해진 일과로
             운영되어 학생은 공부와 그림에만 집중합니다.
           </motion.p>
+
+          {/* "강사 직강"이라고만 쓰면 확인할 방법이 없다 — 강사진 페이지로 보낸다 */}
+          <motion.div {...fadeUp} className="mt-6 text-center">
+            <Link
+              href="/teachers"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-opacity hover:opacity-75"
+            >
+              누가 가르치는지 보기
+              <ArrowRight size={15} />
+            </Link>
+          </motion.div>
         </div>
       </section>
 

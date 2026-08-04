@@ -10,6 +10,7 @@ import {
   getRemainingTotal,
 } from "@/lib/winter-camp";
 import { IS_PLACEHOLDER as GRADE_CASES_PLACEHOLDER } from "@/lib/grade-cases";
+import { IS_PLACEHOLDER as TEACHERS_PLACEHOLDER } from "@/lib/teachers";
 
 const remainingTotal = getRemainingTotal();
 const ANNOUNCEMENT_TEXT =
@@ -63,6 +64,12 @@ const navItems: NavItem[] = [
   //   href: "/mock",
   //   badge: "접수중",
   // },
+  {
+    label: "강사진",
+    href: "/teachers",
+    // 헤드라인·상주 여부가 확정되면(lib/teachers.ts의 IS_PLACEHOLDER = false) 뱃지가 사라짐
+    badge: TEACHERS_PLACEHOLDER ? "준비중" : undefined,
+  },
   {
     label: "성적 향상 사례",
     href: "/grade-up",
@@ -161,10 +168,12 @@ export default function SiteNav() {
           </div>
         )}
 
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+        {/* 네비 항목이 늘어나 xl부터는 헤더 폭을 본문(max-w-5xl)보다 넓게 잡는다 —
+            좁으면 로고와 메뉴가 서로 밀려 두 줄로 접힌다. */}
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4 xl:max-w-6xl">
           <Link
             href="/"
-            className="font-black text-base tracking-tight leading-tight text-white"
+            className="shrink-0 font-black text-base tracking-tight leading-tight text-white whitespace-nowrap"
             aria-label="모두다른고양이 홈으로"
           >
             <span className="block text-[10px] font-light tracking-[0.25em] text-white/50 mb-0.5">
@@ -176,7 +185,7 @@ export default function SiteNav() {
           {/* Desktop nav */}
           <nav
             ref={menuRef}
-            className="hidden md:flex items-center gap-7"
+            className="hidden md:flex items-center gap-4 lg:gap-6"
             aria-label="주 메뉴"
           >
             {navItems.map((item) => {
@@ -200,7 +209,7 @@ export default function SiteNav() {
                       onClick={() => setOpenMenu(open ? null : item.href)}
                       aria-expanded={open}
                       aria-haspopup="true"
-                      className={`flex items-center gap-1 text-sm tracking-wide transition-colors ${
+                      className={`flex items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
                         active || open
                           ? "text-accent"
                           : "text-white/70 hover:text-white"
@@ -267,7 +276,7 @@ export default function SiteNav() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-sm tracking-wide transition-colors ${
+                  className={`whitespace-nowrap text-sm tracking-wide transition-colors ${
                     active ? "text-accent" : "text-white/70 hover:text-white"
                   }`}
                 >
@@ -281,7 +290,7 @@ export default function SiteNav() {
               );
             })}
             {/* 두 캠퍼스 전화번호 */}
-            <div className="hidden lg:flex flex-col items-end gap-1 leading-none">
+            <div className="hidden xl:flex flex-col items-end gap-1 leading-none">
               <a
                 href={`tel:${PHONE_HONGDAE.number}`}
                 className="text-[11px] tracking-wide text-white/55 transition-colors hover:text-white"

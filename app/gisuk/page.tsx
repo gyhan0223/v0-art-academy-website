@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "파주 미대 기숙학원 | 모두다른고양이 미술학원",
@@ -38,6 +39,16 @@ export default function Page() {
           >
             사전 상담 신청
           </a>
+
+          {/* 기숙 과정에서 학부모가 가장 먼저 확인하는 것 — 누가 가르치는가 */}
+          <p className="mt-6">
+            <Link
+              href="/teachers"
+              className="text-sm text-white/50 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
+            >
+              학과 · 실기 강사진 먼저 보기
+            </Link>
+          </p>
         </div>
       </div>
     </main>

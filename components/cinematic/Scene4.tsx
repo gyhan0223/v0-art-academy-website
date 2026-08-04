@@ -5,6 +5,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import { Phone, MapPin, MessageCircle } from "lucide-react";
 import { NAVER_TALK_URL } from "@/lib/contact";
+import BlogLinks from "@/components/academy/BlogLinks";
 
 interface Particle {
   id: number;
@@ -233,7 +234,11 @@ export default function Scene4() {
           <p className="text-muted-foreground text-sm">
             모두다른고양이 미술학원
           </p>
-          <p className="text-muted-foreground/60 text-xs mt-2">
+
+          {/* 지점 블로그 — 외부로 나가는 링크라 헤더가 아닌 푸터에 둔다 */}
+          <BlogLinks className="mt-5" />
+
+          <p className="text-muted-foreground/60 text-xs mt-6">
             학원등록번호 제02201000109호 ·{" "}
             <Link
               href="/tuition"

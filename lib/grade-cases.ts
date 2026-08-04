@@ -1,72 +1,124 @@
 /**
  * 성적 향상 사례 데이터 단일 소스.
  * 페이지(/grade-up)·네비게이션·사이트맵이 전부 이 파일만 참조한다.
+ * 매년 사례를 추가할 때 컴포넌트는 건드리지 않고 이 파일만 고치면 된다.
  *
  * ── 데이터 넣는 법 ──────────────────────────────────────────────
- * 1. 아래 GRADE_CASES 배열에 사례를 추가한다. (형식은 파일 하단 EXAMPLE_CASE 참고)
- * 2. 실제 사례를 다 넣었으면 IS_PLACEHOLDER를 false로 바꾼다.
- *    → 그때부터 네비게이션 "준비중" 뱃지가 사라지고, 검색엔진 색인(noindex 해제)과
+ * 1. COHORT — 집계 결과(분모/분자)를 먼저 채운다. 페이지 최상단 문장이 된다.
+ * 2. GRADE_CASES — 개별 사례를 추가한다. (형식은 파일 하단 EXAMPLE_CASE 참고)
+ * 3. 다 넣었으면 IS_PLACEHOLDER를 false로 바꾼다.
+ *    → 네비게이션 "준비중" 뱃지가 사라지고, 색인(noindex 해제)과
  *      사이트맵 등록이 자동으로 켜진다.
- * 3. 미확정 문구는 저장소 관례대로 대괄호 [ ]로 표기해 둔다.
+ * ───────────────────────────────────────────────────────────────
+ *
+ * ── 반드시 지킬 것 ──────────────────────────────────────────────
+ * · 분모를 숨기지 않는다. 오른 학생만 세지 말고 집계 대상 전원을 COHORT.total에 넣는다.
+ *   숫자가 기대에 못 미쳐도 그대로 쓴다. 아무도 100%를 믿지 않는다.
+ * · 과목은 국어·영어·탐구만 쓴다. 미대가 반영하지 않는 수학은 타입에서 막아 두었다.
+ * · 개인정보 — 이름은 이니셜(김○○), 학교는 지역만("일산 소재 고교"),
+ *   성적표 이미지는 이름·수험번호를 가린 뒤 올린다.
+ * · 서면 동의 없는 사례는 올리지 않는다. consent: false인 사례는
+ *   코드에서 자동으로 걸러져 화면에 나가지 않는다.
  * ───────────────────────────────────────────────────────────────
  */
 
 /* ------------------------------- 공개 스위치 ------------------------------- */
 
 /**
- * 아래 GRADE_CASES가 아직 자리표시자(샘플)인 상태인지 여부.
+ * 아래 데이터가 아직 자리표시자(샘플)인 상태인지 여부.
  * true  — 페이지 상단에 "샘플" 안내 표시 · noindex · 사이트맵 제외 · 네비 "준비중" 뱃지
- * false — 실제 사례로 정식 공개
+ * false — 실제 데이터로 정식 공개
  */
 export const IS_PLACEHOLDER = true;
 
+/* ------------------------------- 집계(분모) ------------------------------- */
+
+export interface Cohort {
+  /** 학년도 — 예: "2026학년도" */
+  year: string;
+  /** 분모: 집계 대상 전체 인원. 오른 학생만 세지 말 것. */
+  total: number;
+  /** 분자: 1등급 이상 오른 인원 */
+  improved: number;
+  /** 집계 범위 — 누구를 셌는지. 예: "홍대 본원·일산 캠퍼스 재원생 전원" */
+  scope: string;
+  /** 집계 기준 — 무엇과 무엇을 비교했는지. 예: "3월 학력평가 → 수능" */
+  basis: string;
+  /** 제외 인원과 사유 — 숨기지 말고 밝힌다. 예: "중도 퇴원 3명 제외" */
+  excluded?: string;
+}
+
+// TODO: 원장님 확인 — 실제 집계 결과로 교체.
+export const COHORT: Cohort = {
+  year: "[2026학년도]",
+  total: 24,
+  improved: 21,
+  scope: "[홍대 본원 · 일산 캠퍼스 정규반 재원생 전원]",
+  basis: "[3월 학력평가 → 수능]",
+  excluded: "[중도 퇴원 3명 제외]",
+};
+
 /* --------------------------------- 타입 --------------------------------- */
 
-/** 향상 유형 — 필터 탭 기준 */
-export type CaseTrack = "academic" | "practical" | "both";
+/**
+ * 미대 반영 3과목.
+ * 수학은 대부분의 미대가 반영하지 않으므로 타입에서 아예 막는다.
+ */
+export type Subject = "국어" | "영어" | "탐구";
+
+export const SUBJECTS: Subject[] = ["국어", "영어", "탐구"];
+
+/** 미대 반영 과목임을 카드에 표기하는 문구 */
+export const SUBJECT_NOTE = "미대 반영 3과목";
 
 export type CaseCampus = "홍대 본원" | "일산 캠퍼스" | "파주 기숙";
 
 /** 과목 하나의 등급 변화. 등급은 1(최상)~9 사이 정수. */
 export interface ScoreChange {
-  /** 과목명 — 예: "국어", "영어", "탐구", "수학" */
-  subject: string;
+  subject: Subject;
   /** 시작 등급 */
   before: number;
   /** 향상 후 등급 */
   after: number;
-  /** 기준 설명 — 예: "3월 학평 → 수능" */
-  basis?: string;
 }
 
 export interface GradeCase {
-  /** 고유 키 — 아무 문자열이나 가능. 예: "2026-kim-01" */
+  /** 고유 키 — 예: "2026-kim-01" */
   id: string;
-  /** 표기명 — 실명 대신 "김○○" 형태 권장 */
+  /** 표기명 — 반드시 이니셜. 예: "김○○" */
   name: string;
   /** 학년/신분 — 예: "고3", "고2", "재수" */
   grade: string;
+  /** 학교 — 실명 금지, 지역만. 예: "일산 소재 고교" */
+  school?: string;
   campus?: CaseCampus;
   /** 수강 과정 — 예: "정규반", "2026 윈터캠프" */
   program?: string;
   /** 기간 — 예: "2026.03 ~ 2026.11 (9개월)" */
   period?: string;
-  track: CaseTrack;
-  /** 카드 제목으로 쓰이는 한 줄 요약 — 예: "국어 5등급 → 2등급" */
-  headline: string;
-  /** 학과 등급 변화. 실기만 있는 사례는 빈 배열로 둔다. */
+  /** 등급 비교 기준 — 예: "3월 학평 → 수능" */
+  basis?: string;
+  /** 학과 등급 변화. 실기만 있는 사례는 빈 배열. */
   changes: ScoreChange[];
-  /** 실기 향상 서술 — 예: "기초디자인 교내 15위 → 3위" */
+  /** 실기 향상 서술 — 예: "기초디자인 교내 평가 15위 → 3위" */
   practical?: string;
   /** 최종 결과 — 예: "홍익대학교 미술대학 합격" */
   result?: string;
   /** 학생·학부모 한마디 */
   quote?: string;
+  /**
+   * 학생·학부모 서면 동의 여부.
+   * false면 화면에 나가지 않는다. 동의서를 받기 전에는 true로 바꾸지 말 것.
+   */
+  consent: boolean;
   /** 상단에 먼저 노출할 대표 사례 */
   featured?: boolean;
 }
 
 /* --------------------------------- 필터 --------------------------------- */
+
+/** 향상 유형 — 입력값이 아니라 데이터에서 자동으로 판정한다. */
+export type CaseTrack = "academic" | "practical" | "both";
 
 export const TRACK_LABELS: Record<CaseTrack, string> = {
   academic: "학과",
@@ -81,6 +133,14 @@ export const TRACK_TABS: { key: CaseTrack | "all"; label: string }[] = [
   { key: "both", label: "학과 + 실기" },
 ];
 
+/** 등급 변화와 실기 서술의 유무로 유형을 판정 */
+export function getTrack(item: GradeCase): CaseTrack {
+  const hasAcademic = item.changes.length > 0;
+  const hasPractical = Boolean(item.practical);
+  if (hasAcademic && hasPractical) return "both";
+  return hasAcademic ? "academic" : "practical";
+}
+
 /* -------------------------------- 사례 데이터 ------------------------------- */
 
 // TODO: 원장님 확인 — 아래는 전부 자리표시자. 실제 사례로 교체한 뒤
@@ -90,35 +150,37 @@ export const GRADE_CASES: GradeCase[] = [
     id: "sample-01",
     name: "[김○○]",
     grade: "[고3]",
+    school: "[마포구 소재 고교]",
     campus: "홍대 본원",
     program: "[정규반]",
     period: "[2026.03 ~ 2026.11]",
-    track: "both",
-    headline: "[국어 5등급 → 2등급, 기초디자인 상위권 진입]",
+    basis: "[3월 학평 → 수능]",
     changes: [
-      { subject: "국어", before: 5, after: 2, basis: "[3월 학평 → 수능]" },
-      { subject: "영어", before: 4, after: 2, basis: "[3월 학평 → 수능]" },
-      { subject: "탐구", before: 4, after: 3, basis: "[3월 학평 → 수능]" },
+      { subject: "국어", before: 5, after: 2 },
+      { subject: "영어", before: 4, after: 2 },
+      { subject: "탐구", before: 4, after: 3 },
     ],
     practical: "[기초디자인 교내 평가 15위 → 3위]",
     result: "[홍익대학교 미술대학 합격]",
     quote: "[학과가 발목을 잡을 줄 알았는데, 겨울에 잡아둔 게 끝까지 갔습니다.]",
+    consent: true,
     featured: true,
   },
   {
     id: "sample-02",
     name: "[이○○]",
     grade: "[고2]",
+    school: "[일산 소재 고교]",
     campus: "일산 캠퍼스",
     program: "[2026 윈터캠프]",
     period: "[2026.01 ~ 2026.02 (8주)]",
-    track: "academic",
-    headline: "[영어 4등급 → 2등급]",
+    basis: "[11월 학평 → 3월 학평]",
     changes: [
-      { subject: "영어", before: 4, after: 2, basis: "[11월 학평 → 3월 학평]" },
-      { subject: "국어", before: 4, after: 3, basis: "[11월 학평 → 3월 학평]" },
+      { subject: "영어", before: 4, after: 2 },
+      { subject: "국어", before: 4, after: 3 },
     ],
     quote: "[매일 영단어 100개가 처음엔 힘들었는데, 8주 뒤에 등급이 올랐어요.]",
+    consent: true,
   },
   {
     id: "sample-03",
@@ -127,51 +189,56 @@ export const GRADE_CASES: GradeCase[] = [
     campus: "홍대 본원",
     program: "[정규반]",
     period: "[2026.03 ~ 2026.11]",
-    track: "practical",
-    headline: "[사고의전환 기본반 → 최상위반]",
     changes: [],
     practical: "[사고의전환 기본반 시작 → 9월 최상위반 배정]",
     result: "[국민대학교 조형대학 합격]",
+    consent: true,
   },
 ];
 
-/* --------------------------------- 통계 --------------------------------- */
+/* --------------------------------- 파생값 -------------------------------- */
 
-export interface CaseStats {
-  /** 전체 사례 수 */
-  total: number;
-  /** 등급이 오른 과목 수 */
-  subjectCount: number;
-  /** 평균 상승 등급 (소수 첫째 자리) — 등급 변화가 없으면 0 */
-  averageRise: number;
-  /** 한 과목 기준 최대 상승 폭 */
-  maxRise: number;
+/** 서면 동의를 받은 사례만. 화면에 나가는 것은 항상 이 결과만 쓴다. */
+export function getPublishableCases(
+  cases: GradeCase[] = GRADE_CASES,
+): GradeCase[] {
+  return cases
+    .filter((c) => c.consent)
+    .sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
 }
 
-/** 사례 배열에서 요약 지표를 계산한다. 데이터가 비어 있어도 안전하다. */
-export function getCaseStats(cases: GradeCase[] = GRADE_CASES): CaseStats {
-  const rises = cases
-    .flatMap((c) => c.changes)
-    .map((s) => s.before - s.after)
-    .filter((rise) => rise > 0);
-
-  const sum = rises.reduce((acc, rise) => acc + rise, 0);
-
-  return {
-    total: cases.length,
-    subjectCount: rises.length,
-    averageRise: rises.length
-      ? Math.round((sum / rises.length) * 10) / 10
-      : 0,
-    maxRise: rises.length ? Math.max(...rises) : 0,
-  };
-}
-
-/** 대표 사례를 앞으로 보낸 정렬본 */
-export function getSortedCases(cases: GradeCase[] = GRADE_CASES): GradeCase[] {
-  return [...cases].sort(
-    (a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)),
+/** 상승 폭이 가장 큰 과목 — 카드에서 가장 크게 보여줄 변화 */
+export function getPrimaryChange(item: GradeCase): ScoreChange | null {
+  if (item.changes.length === 0) return null;
+  return item.changes.reduce((best, c) =>
+    c.before - c.after > best.before - best.after ? c : best,
   );
+}
+
+/** 대표 변화를 뺀 나머지 과목 */
+export function getSecondaryChanges(item: GradeCase): ScoreChange[] {
+  const primary = getPrimaryChange(item);
+  return primary ? item.changes.filter((c) => c !== primary) : [];
+}
+
+export interface CohortSummary {
+  /** 1등급 이상 오른 비율 (%) — 소수 첫째 자리, .0이면 정수로 표기 */
+  rate: string;
+  /** 집계 수치가 유효한지 — 분모가 0이거나 분자가 분모보다 크면 false */
+  isValid: boolean;
+}
+
+/** 집계 문장에 쓸 비율을 계산한다. */
+export function getCohortSummary(cohort: Cohort = COHORT): CohortSummary {
+  const { total, improved } = cohort;
+  const isValid = total > 0 && improved >= 0 && improved <= total;
+  if (!isValid) return { rate: "—", isValid: false };
+
+  const pct = Math.round((improved / total) * 1000) / 10;
+  return {
+    rate: `${pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1)}%`,
+    isValid,
+  };
 }
 
 /* -------------------------------- 작성 예시 -------------------------------- */
@@ -184,17 +251,18 @@ export const EXAMPLE_CASE: GradeCase = {
   id: "2027-choi-01",
   name: "최○○",
   grade: "고3",
+  school: "마포구 소재 고교",
   campus: "홍대 본원",
   program: "정규반",
   period: "2027.03 ~ 2027.11 (9개월)",
-  track: "both",
-  headline: "국어 6등급 → 3등급, 기초디자인 최상위반 진입",
+  basis: "3월 학평 → 수능",
   changes: [
-    { subject: "국어", before: 6, after: 3, basis: "3월 학평 → 수능" },
-    { subject: "탐구", before: 5, after: 2, basis: "3월 학평 → 수능" },
+    { subject: "국어", before: 6, after: 3 },
+    { subject: "탐구", before: 5, after: 2 },
   ],
   practical: "기초디자인 중위반 → 최상위반",
   result: "서울대학교 디자인학부 합격",
   quote: "실기와 학과를 한 곳에서 끝낸 게 가장 컸습니다.",
+  consent: true,
   featured: false,
 };

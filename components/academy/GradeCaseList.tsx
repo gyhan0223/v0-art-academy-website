@@ -5,76 +5,88 @@ import { motion } from "framer-motion";
 import { ArrowRight, TrendingUp } from "lucide-react";
 import {
   GRADE_CASES,
+  SUBJECT_NOTE,
   TRACK_TABS,
   TRACK_LABELS,
-  getSortedCases,
+  getPublishableCases,
+  getPrimaryChange,
+  getSecondaryChanges,
+  getTrack,
   type CaseTrack,
   type GradeCase,
   type ScoreChange,
 } from "@/lib/grade-cases";
 
-/** 등급(1~9)을 막대 길이로 환산 — 1등급이 가장 길다. */
-function gradeRatio(grade: number) {
-  const clamped = Math.min(9, Math.max(1, grade));
-  return ((9 - clamped + 1) / 9) * 100;
-}
-
-function ScoreRow({ change }: { change: ScoreChange }) {
+/** 한 카드에서 가장 크게 읽혀야 하는 것 — 상승 폭이 가장 큰 과목의 등급 변화. */
+function PrimaryChange({ change }: { change: ScoreChange }) {
   const rise = change.before - change.after;
-  const beforeRatio = gradeRatio(change.before);
-  const afterRatio = gradeRatio(change.after);
-  // 등급이 떨어진(=드문) 경우에도 막대가 뒤집히지 않도록 항상 작은 값을 기준으로 잡는다
-  const base = Math.min(beforeRatio, afterRatio);
-  const gain = Math.abs(afterRatio - beforeRatio);
 
   return (
-    <li className="py-3 first:pt-0 last:pb-0">
-      <div className="flex items-center gap-3">
-        <span className="w-12 shrink-0 text-sm font-medium text-white/80">
+    <div className="mt-4 flex items-end gap-3 border-t border-white/10 pt-5">
+      <div>
+        <p className="text-xs font-medium tracking-wide text-white/50">
           {change.subject}
-        </span>
-
-        <div className="flex flex-1 items-center gap-2">
-          <span className="w-11 shrink-0 text-right text-sm tabular-nums text-white/45">
-            {change.before}등급
+        </p>
+        <p
+          className="mt-1.5 flex items-center gap-2.5 font-black leading-none tabular-nums"
+          aria-label={`${change.subject} ${change.before}등급에서 ${change.after}등급으로 ${rise}등급 상승`}
+        >
+          <span className="text-5xl text-white/40 md:text-6xl">
+            {change.before}
           </span>
-          <div
-            className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-white/10"
-            role="img"
-            aria-label={`${change.subject} ${change.before}등급에서 ${change.after}등급으로 변화`}
-          >
-            {/* 시작 등급까지는 흰 막대, 올라간 만큼만 accent로 강조 */}
-            <div
-              className="absolute inset-y-0 left-0 rounded-full bg-white/25"
-              style={{ width: `${base}%` }}
-            />
-            {rise > 0 && (
-              <div
-                className="absolute inset-y-0 rounded-full bg-accent"
-                style={{ left: `${base}%`, width: `${gain}%` }}
-              />
-            )}
-          </div>
-          <span className="w-11 shrink-0 text-sm font-semibold tabular-nums text-white">
-            {change.after}등급
+          <ArrowRight
+            size={24}
+            strokeWidth={2.5}
+            className="text-white/30"
+            aria-hidden
+          />
+          <span className="text-5xl text-accent md:text-6xl">
+            {change.after}
           </span>
-        </div>
-
-        {rise > 0 && (
-          <span className="shrink-0 rounded-full bg-accent/15 px-2 py-0.5 text-[11px] font-semibold text-accent tabular-nums">
-            ▲{rise}
+          <span className="self-end pb-1 text-base font-bold text-white/50">
+            등급
           </span>
-        )}
+        </p>
       </div>
 
-      {change.basis && (
-        <p className="mt-1 pl-15 text-[11px] text-white/35">{change.basis}</p>
+      {rise > 0 && (
+        <span className="ml-auto rounded-full bg-accent/15 px-2.5 py-1 text-xs font-bold tabular-nums text-accent">
+          ▲{rise}등급
+        </span>
+      )}
+    </div>
+  );
+}
+
+/** 대표 과목 외 나머지 — 훑고 지나갈 수 있도록 한 줄씩 작게. */
+function SecondaryChange({ change }: { change: ScoreChange }) {
+  const rise = change.before - change.after;
+
+  return (
+    <li className="flex items-center gap-2 py-1.5 text-sm">
+      <span className="w-10 shrink-0 text-white/50">{change.subject}</span>
+      <span className="tabular-nums text-white/55">{change.before}</span>
+      <ArrowRight size={13} className="text-white/35" aria-hidden />
+      <span className="font-semibold tabular-nums text-white">
+        {change.after}
+      </span>
+      <span className="text-white/40">등급</span>
+      {rise > 0 && (
+        <span className="ml-auto text-xs font-semibold tabular-nums text-accent">
+          ▲{rise}
+        </span>
       )}
     </li>
   );
 }
 
 function CaseCard({ item, index }: { item: GradeCase; index: number }) {
+  const primary = getPrimaryChange(item);
+  const secondary = getSecondaryChanges(item);
+  const meta = [item.school, item.campus, item.program, item.period].filter(
+    Boolean,
+  );
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -84,35 +96,41 @@ function CaseCard({ item, index }: { item: GradeCase; index: number }) {
         item.featured ? "border-accent/35" : "border-white/10"
       }`}
     >
+      {/* 누구인지 — 작게, 맨 위에 */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-base font-bold text-white">{item.name}</span>
+        <span className="text-sm font-bold text-white">{item.name}</span>
         <span className="text-sm text-white/50">{item.grade}</span>
         <span className="ml-auto rounded-full border border-white/15 px-2.5 py-0.5 text-[11px] text-white/55">
-          {TRACK_LABELS[item.track]}
+          {TRACK_LABELS[getTrack(item)]}
         </span>
       </div>
 
-      <p className="mt-3 text-lg font-bold leading-snug text-white break-keep">
-        {item.headline}
-      </p>
-
-      {(item.campus || item.program || item.period) && (
-        <p className="mt-2 text-xs text-white/40">
-          {[item.campus, item.program, item.period]
-            .filter(Boolean)
-            .join(" · ")}
-        </p>
+      {/* 무엇이 얼마나 올랐는지 — 카드에서 가장 큰 글씨 */}
+      {primary ? (
+        <>
+          <PrimaryChange change={primary} />
+          {secondary.length > 0 && (
+            <ul className="mt-4 divide-y divide-white/5 border-t border-white/5 pt-1">
+              {secondary.map((change) => (
+                <SecondaryChange key={change.subject} change={change} />
+              ))}
+            </ul>
+          )}
+          <p className="mt-3 text-[11px] text-white/35">
+            {SUBJECT_NOTE}
+            {item.basis && ` · ${item.basis}`}
+          </p>
+        </>
+      ) : (
+        item.practical && (
+          <p className="mt-4 border-t border-white/10 pt-5 text-xl font-bold leading-snug text-white break-keep">
+            {item.practical}
+          </p>
+        )
       )}
 
-      {item.changes.length > 0 && (
-        <ul className="mt-5 divide-y divide-white/5 border-t border-white/10 pt-4">
-          {item.changes.map((change, i) => (
-            <ScoreRow key={`${change.subject}-${i}`} change={change} />
-          ))}
-        </ul>
-      )}
-
-      {item.practical && (
+      {/* 실기 — 등급 변화가 있는 카드에서는 보조 정보 */}
+      {primary && item.practical && (
         <p className="mt-4 flex items-start gap-2 rounded-lg bg-white/[0.04] px-3.5 py-3 text-sm leading-relaxed text-white/70 break-keep">
           <TrendingUp
             size={15}
@@ -129,8 +147,12 @@ function CaseCard({ item, index }: { item: GradeCase; index: number }) {
         </blockquote>
       )}
 
+      {meta.length > 0 && (
+        <p className="mt-4 text-xs text-white/35">{meta.join(" · ")}</p>
+      )}
+
       {item.result && (
-        <p className="mt-5 flex items-center gap-1.5 border-t border-white/10 pt-4 text-sm font-semibold text-accent break-keep">
+        <p className="mt-auto flex items-center gap-1.5 pt-5 text-sm font-semibold text-accent break-keep">
           <ArrowRight size={15} aria-hidden />
           {item.result}
         </p>
@@ -143,21 +165,24 @@ function CaseCard({ item, index }: { item: GradeCase; index: number }) {
 export default function GradeCaseList() {
   const [active, setActive] = useState<CaseTrack | "all">("all");
 
-  const sorted = useMemo(() => getSortedCases(GRADE_CASES), []);
+  // 서면 동의를 받은 사례만 화면에 올린다.
+  const cases = useMemo(() => getPublishableCases(GRADE_CASES), []);
   const items = useMemo(
     () =>
-      active === "all" ? sorted : sorted.filter((c) => c.track === active),
-    [sorted, active],
+      active === "all"
+        ? cases
+        : cases.filter((item) => getTrack(item) === active),
+    [cases, active],
   );
 
-  if (sorted.length === 0) {
+  if (cases.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-white/15 px-6 py-16 text-center">
         <p className="text-base font-semibold text-white">
           사례를 정리하고 있습니다
         </p>
         <p className="mt-2 text-sm leading-relaxed text-white/50 break-keep">
-          학생·학부모 동의를 받은 사례만 순차적으로 공개하고 있습니다.
+          학생·학부모의 서면 동의를 받은 사례만 순차적으로 공개하고 있습니다.
           <br />
           궁금한 점은 상담으로 먼저 안내드리겠습니다.
         </p>
@@ -175,8 +200,8 @@ export default function GradeCaseList() {
         {TRACK_TABS.map((tab) => {
           const count =
             tab.key === "all"
-              ? sorted.length
-              : sorted.filter((c) => c.track === tab.key).length;
+              ? cases.length
+              : cases.filter((item) => getTrack(item) === tab.key).length;
 
           return (
             <button

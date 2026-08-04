@@ -47,6 +47,7 @@ import {
 import CtaBand from "@/components/winter/CtaBand";
 import ConsultForm from "@/components/winter/ConsultForm";
 import MobileActionBar from "@/components/winter/MobileActionBar";
+import { NaverTalkButton } from "@/components/academy/NaverTalk";
 import {
   fadeUp,
   SectionHead,
@@ -188,6 +189,8 @@ export default function WinterLanding() {
               <Phone size={17} />
               전화 문의 {CAMP_INFO.phone}
             </a>
+            {/* 전화도 신청도 아직인 분들 — 톡톡으로 먼저 묻게 열어 둔다 */}
+            <NaverTalkButton className="w-full px-8 py-4 text-base sm:w-auto" />
           </div>
           <p className="mt-3 text-xs text-white/45">
             신청은 1분 · 밤에 남겨주셔도 다음 날 연락드립니다
@@ -540,6 +543,8 @@ export default function WinterLanding() {
                 <MessageSquare size={15} />
                 문자 문의
               </a>
+              {/* 금액이 걸린 자리 — "식비는 포함인가요" 같은 질문을 받아 줄 창구 */}
+              <NaverTalkButton className="px-7 py-3.5 text-sm" />
               <KakaoTalkButton />
             </div>
 

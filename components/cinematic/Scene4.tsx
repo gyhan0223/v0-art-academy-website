@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useCallback } from "react";
 import Link from "next/link";
 import { Phone, MapPin, MessageCircle } from "lucide-react";
+import { NAVER_TALK_URL } from "@/lib/contact";
 
 interface Particle {
   id: number;
@@ -199,6 +200,14 @@ export default function Scene4() {
             content="031-916-8885"
             href="tel:031-916-8885"
           />
+          {/* 전화가 부담스러운 시간대에도 남길 수 있는 창구 */}
+          <ContactCard
+            icon={<MessageCircle className="w-5 h-5" />}
+            title="네이버 톡톡"
+            content="메시지로 간편 문의"
+            href={NAVER_TALK_URL}
+            className="md:col-span-2"
+          />
           <ContactCard
             icon={<MapPin className="w-5 h-5" />}
             title="홍대 본원"
@@ -247,11 +256,13 @@ function ContactCard({
   title,
   content,
   href,
+  className = "",
 }: {
   icon: React.ReactNode;
   title: string;
   content: string;
   href?: string;
+  className?: string;
 }) {
   const Wrapper = href ? "a" : "div";
   const wrapperProps = href
@@ -265,7 +276,7 @@ function ContactCard({
   return (
     <Wrapper
       {...wrapperProps}
-      className="block p-6 rounded-xl border transition-all duration-300 hover:border-primary/30 group"
+      className={`block p-6 rounded-xl border transition-all duration-300 hover:border-primary/30 group ${className}`}
       style={{
         backgroundColor: "var(--glass-bg)",
         borderColor: "var(--glass-border)",

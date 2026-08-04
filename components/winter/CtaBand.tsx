@@ -9,6 +9,7 @@ import {
   getRemainingTotal,
 } from "@/lib/winter-camp";
 import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
+import { NaverTalkButton } from "@/components/academy/NaverTalk";
 
 /** 섹션 사이에 반복 배치하는 전환용 CTA 밴드.
  *  읽다가 마음이 움직인 시점마다 신청 동선을 제공한다. */
@@ -62,6 +63,8 @@ export default function CtaBand({
             <Phone size={16} />
             {CAMP_INFO.phone}
           </a>
+          {/* 아직 신청까지는 아닌 분들 — 톡톡으로 먼저 물을 수 있게 */}
+          <NaverTalkButton className="w-full px-8 py-4 text-base sm:w-auto" />
         </div>
         <p className="mt-4 text-xs text-white/40">
           신청은 1분이면 충분합니다 · 밤에 남겨주셔도 다음 날 연락드립니다

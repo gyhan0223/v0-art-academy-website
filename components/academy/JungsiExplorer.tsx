@@ -11,6 +11,7 @@ import {
   type Major,
   type SilgiType,
 } from "@/lib/jungsi-data";
+import { useReportBottomBar } from "@/components/academy/NaverTalk";
 
 /* ─────────────────────────── 배지 · 비율 바 ─────────────────────────── */
 
@@ -607,6 +608,10 @@ function PlanTray({
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // 트레이가 떠 있는 동안 톡톡 플로팅 버튼을 그 위로 밀어 올린다
+  const trayRef = useRef<HTMLDivElement>(null);
+  useReportBottomBar(trayRef);
+
   const showToast = (msg: string) => {
     setToast(msg);
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -652,7 +657,10 @@ function PlanTray({
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/90 backdrop-blur-md">
+    <div
+      ref={trayRef}
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/90 backdrop-blur-md"
+    >
       {toast && (
         <div
           role="status"

@@ -9,8 +9,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, MessageSquare, PenLine } from "lucide-react";
+import { Phone, MessageSquare, MessageCircle, PenLine } from "lucide-react";
 import { CAMP_INFO, SMS_HREF } from "@/lib/winter-camp";
+import { NAVER_TALK_URL } from "@/lib/contact";
 import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 
 export default function MobileActionBar() {
@@ -43,7 +44,7 @@ export default function MobileActionBar() {
           animate={{ y: 0 }}
           exit={{ y: 100 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-3 gap-2 border-t border-white/10 bg-black/90 px-4 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2.5 backdrop-blur-md md:hidden"
+          className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-4 gap-2 border-t border-white/10 bg-black/90 px-4 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2.5 backdrop-blur-md md:hidden"
         >
           <a
             href={CAMP_INFO.phoneTel}
@@ -60,6 +61,17 @@ export default function MobileActionBar() {
           >
             <MessageSquare size={17} />
             <span className="text-[11px] font-medium">문자</span>
+          </a>
+          {/* 이 바가 떠 있는 동안은 톡톡 플로팅 버튼이 숨는다(components/academy/NaverTalk.tsx) */}
+          <a
+            href={NAVER_TALK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="네이버 톡톡으로 문의하기"
+            className="flex flex-col items-center gap-1 rounded-xl border border-[#03C75A]/50 py-2 text-[#03C75A]"
+          >
+            <MessageCircle size={17} />
+            <span className="text-[11px] font-medium">톡톡</span>
           </a>
           <Link
             href={CONSULT_HREF}

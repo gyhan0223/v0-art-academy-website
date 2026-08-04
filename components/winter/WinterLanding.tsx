@@ -6,7 +6,7 @@
  * 섹션 흐름:
  *  1. 히어로: 헤드라인 + 즉시 CTA + 긴급성(D-day·정원)
  *  2. 대상 · 정원 · 기간
- *  3. 왜 학과가 먼저인가 (미대는 성적순)
+ *  3. 겨울 8주의 비중 배분 (평일 학과 · 주말 실기)
  *  4. 1주차 진단 → 8주차 재측정
  *  5. 격주 리포트 샘플 1장
  *  → CTA
@@ -45,6 +45,7 @@ import {
   getRemainingLabel,
 } from "@/lib/winter-camp";
 import CtaBand from "@/components/winter/CtaBand";
+import GradeSlopeChart from "@/components/winter/GradeSlopeChart";
 import ConsultForm from "@/components/winter/ConsultForm";
 import MobileActionBar from "@/components/winter/MobileActionBar";
 import { NaverTalkButton } from "@/components/academy/NaverTalk";
@@ -253,12 +254,12 @@ export default function WinterLanding() {
       <section className="px-6 py-24 md:py-32">
         <div className="mx-auto max-w-5xl">
           <SectionHead
-            en="Why Academics"
+            en="Why Balance"
             ko={
               <>
-                실기를 한 장 더 그리는 것보다
+                실기는 그대로 가져가고,
                 <br />
-                수능 한 문제가 합격에 가깝습니다
+                학과를 끌어올리는 8주
               </>
             }
           />
@@ -271,13 +272,20 @@ export default function WinterLanding() {
               Why Modago
             </p>
             <p className="mt-4 text-2xl md:text-3xl font-black text-white break-keep">
-              미대는 성적순입니다.
+              겨울 8주는 비중의 문제입니다.
             </p>
             <div className="mt-5 space-y-4 text-sm md:text-lg leading-[1.9] text-white/75 break-keep">
               <p>
-                실기는 수능이 끝난 뒤에 시작해도 늦지 않습니다.{" "}
+                실기도 학과도 놓을 수 없습니다.{" "}
                 <br className="hidden md:block" />
-                성적은 그렇지 않습니다.
+                이 겨울에 무엇을 더 많이 두느냐가 다를 뿐입니다.
+              </p>
+              <p>
+                두 달을 실기로만 채우면 그림은 늘지만{" "}
+                <br className="hidden md:block" />
+                학과 성적은 그 자리에 멈춥니다.{" "}
+                <br className="hidden md:block" />
+                저희는 평일을 학과에 두고, 주말마다 실기를 이어 갑니다.
               </p>
               <p>
                 미대는 서울대를 제외하면 수학을 반영하지 않습니다.{" "}
@@ -295,9 +303,13 @@ export default function WinterLanding() {
                 일반 미술학원의 겨울
               </p>
               <p className="mt-4 text-xl md:text-2xl font-bold text-white/60 leading-snug break-keep">
-                실기 특강 13:00~22:00,
+                두 달 내내 실기 특강,
                 <br />
                 학과는 각자 알아서
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-white/40 break-keep">
+                13:00~22:00을 그림에 씁니다. 그림은 늘지만 학과는 겨울 전보다
+                내려앉은 채 3월을 맞습니다.
               </p>
             </div>
             <div className="rounded-2xl border border-accent/30 bg-accent/[0.05] p-8 md:p-10">
@@ -309,15 +321,24 @@ export default function WinterLanding() {
                 <br />
                 주말은 실기에 집중
               </p>
+              <p className="mt-3 text-sm leading-relaxed text-white/55 break-keep">
+                주말 이틀로 손과 감각은 8주 내내 이어 갑니다. 늘어난 평일
+                시간은 국어·영어·탐구에 씁니다.
+              </p>
             </div>
           </motion.div>
+
+          {/* 두 카드의 차이를 숫자로 — 같은 등급에서 갈라지는 8주 */}
+          <GradeSlopeChart />
 
           <motion.p
             {...fadeUp}
             className="mx-auto mt-8 max-w-2xl text-center text-sm md:text-base leading-relaxed text-white/60 break-keep"
           >
-            실기 특강이 시작되면 하루의 대부분이 그림에 쓰이고, 학과 공부는
-            흐름이 끊기기 쉽습니다. 학과는 강사가 직접 가르치고, 취침·기상까지
+            겨울을 실기 특강으로만 채우면 하루의 대부분이 그림에 쓰여 학과
+            공부는 흐름이 끊깁니다. 반대로 실기를 두 달 놓아 버리면 3월에 손을
+            되찾는 데만 몇 주가 듭니다. 그래서 주말 실기는 8주 내내 그대로 두고,
+            평일을 학과에 씁니다. 학과는 강사가 직접 가르치고, 취침·기상까지
             정해진 일과로 운영되어 학생은 공부와 그림에만 집중합니다.{" "}
             <Link
               href="/winter/schedule"

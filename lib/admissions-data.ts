@@ -73,12 +73,10 @@ export const universityCards: UniversityCard[] = [
     name: "건국대학교",
     total: "402",
     recent: "16",
-    // TODO: public/images/logo-konkuk.png 추가 후 아래 주석을 해제하면
-    //       다른 대학처럼 배경 로고 워터마크가 함께 노출됩니다.
-    // logo: "/images/logo-konkuk.png",
+    logo: "/images/logo-konkuk.png",
     color: "#007346",
     logoSize: { mobile: "120vw", desktop: "80vw" },
-    logoOpacity: "opacity-15",
+    logoOpacity: "opacity-25", // 가는 선으로 된 인장이라 투명도 상향
     scale: 1,
   },
 ];

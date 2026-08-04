@@ -15,6 +15,7 @@
  * · 분모를 숨기지 않는다. 오른 학생만 세지 말고 집계 대상 전원을 COHORT.total에 넣는다.
  *   숫자가 기대에 못 미쳐도 그대로 쓴다. 아무도 100%를 믿지 않는다.
  * · 과목은 국어·영어·탐구만 쓴다. 미대가 반영하지 않는 수학은 타입에서 막아 두었다.
+ * · 등급은 평가원 시험(6월·9월 모의평가, 수능)만 센다. 교육청 학력평가는 쓰지 않는다.
  * · 개인정보 — 이름은 이니셜(김○○), 학교는 지역만("일산 소재 고교"),
  *   성적표 이미지는 이름·수험번호를 가린 뒤 올린다.
  * · 서면 동의 없는 사례는 올리지 않는다. consent: false인 사례는
@@ -38,12 +39,20 @@ export interface Cohort {
   year: string;
   /** 분모: 집계 대상 전체 인원. 오른 학생만 세지 말 것. */
   total: number;
-  /** 분자: 1등급 이상 오른 인원 */
+  /** 분자: 상승 판정 기준을 넘긴 인원 */
   improved: number;
+  /**
+   * 상승 판정 기준 — 최상단 문장에 그대로 들어간다.
+   * 예: "평균 1등급 이상" → "재원생 24명 중 21명이 평균 1등급 이상 올랐습니다"
+   */
+  criterion: string;
+  /**
+   * 어떤 시험을 비교했는지. 교육청 학력평가가 아니라 평가원 시험만 센다.
+   * 예: "평가원 모의고사 기준"
+   */
+  basis: string;
   /** 집계 범위 — 누구를 셌는지. 예: "홍대 본원·일산 캠퍼스 재원생 전원" */
   scope: string;
-  /** 집계 기준 — 무엇과 무엇을 비교했는지. 예: "3월 학력평가 → 수능" */
-  basis: string;
   /** 제외 인원과 사유 — 숨기지 말고 밝힌다. 예: "중도 퇴원 3명 제외" */
   excluded?: string;
 }
@@ -53,8 +62,9 @@ export const COHORT: Cohort = {
   year: "[2026학년도]",
   total: 24,
   improved: 21,
+  criterion: "국어·영어·탐구 평균 1등급 이상",
+  basis: "평가원 모의고사 기준",
   scope: "[홍대 본원 · 일산 캠퍼스 정규반 재원생 전원]",
-  basis: "[3월 학력평가 → 수능]",
   excluded: "[중도 퇴원 3명 제외]",
 };
 
@@ -96,7 +106,7 @@ export interface GradeCase {
   program?: string;
   /** 기간 — 예: "2026.03 ~ 2026.11 (9개월)" */
   period?: string;
-  /** 등급 비교 기준 — 예: "3월 학평 → 수능" */
+  /** 등급 비교 기준 — 평가원 시험만. 예: "6월 모평 → 수능" */
   basis?: string;
   /** 학과 등급 변화. 실기만 있는 사례는 빈 배열. */
   changes: ScoreChange[];
@@ -154,7 +164,7 @@ export const GRADE_CASES: GradeCase[] = [
     campus: "홍대 본원",
     program: "[정규반]",
     period: "[2026.03 ~ 2026.11]",
-    basis: "[3월 학평 → 수능]",
+    basis: "[6월 모평 → 수능]",
     changes: [
       { subject: "국어", before: 5, after: 2 },
       { subject: "영어", before: 4, after: 2 },
@@ -174,7 +184,7 @@ export const GRADE_CASES: GradeCase[] = [
     campus: "일산 캠퍼스",
     program: "[2026 윈터캠프]",
     period: "[2026.01 ~ 2026.02 (8주)]",
-    basis: "[11월 학평 → 3월 학평]",
+    basis: "[전년 수능 → 6월 모평]",
     changes: [
       { subject: "영어", before: 4, after: 2 },
       { subject: "국어", before: 4, after: 3 },
@@ -255,7 +265,7 @@ export const EXAMPLE_CASE: GradeCase = {
   campus: "홍대 본원",
   program: "정규반",
   period: "2027.03 ~ 2027.11 (9개월)",
-  basis: "3월 학평 → 수능",
+  basis: "6월 모평 → 수능",
   changes: [
     { subject: "국어", before: 6, after: 3 },
     { subject: "탐구", before: 5, after: 2 },

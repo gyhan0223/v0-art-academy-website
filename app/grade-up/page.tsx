@@ -29,7 +29,6 @@ export default function Page() {
 
   const facts: { label: string; value: string }[] = [
     { label: "집계 범위", value: COHORT.scope },
-    { label: "집계 기준", value: COHORT.basis },
     ...(COHORT.excluded ? [{ label: "제외", value: COHORT.excluded }] : []),
   ];
 
@@ -77,9 +76,11 @@ export default function Page() {
                   <span className="tabular-nums text-accent">
                     {COHORT.improved}명
                   </span>
-                  이<br className="hidden sm:block" /> 1등급 이상
+                  이<br className="hidden sm:block" /> {COHORT.criterion}{" "}
                   올랐습니다
                 </p>
+                {/* 어떤 시험을 비교한 숫자인지 — 주장 바로 아래에 붙인다 */}
+                <p className="mt-3 text-sm text-white/50">{COHORT.basis}</p>
               </div>
 
               <p className="text-5xl md:text-6xl font-black leading-none tabular-nums text-accent">
@@ -121,7 +122,8 @@ export default function Page() {
         <p className="mt-10 text-center text-xs leading-relaxed text-white/35 break-keep">
           모든 사례는 학생 및 학부모의 서면 동의를 받아 게시하며, 이름은
           이니셜로, 학교는 지역만 표기합니다. 등급은 미대 반영 3과목(국어·영어·
-          탐구) 기준이며, 성적 향상 정도는 개인에 따라 다를 수 있습니다.
+          탐구)의 평가원 시험(모의평가·수능) 성적 기준이며, 성적 향상 정도는
+          개인에 따라 다를 수 있습니다.
         </p>
 
         {/* CTA */}

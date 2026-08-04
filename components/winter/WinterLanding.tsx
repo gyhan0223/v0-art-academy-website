@@ -275,14 +275,14 @@ export default function WinterLanding() {
             </p>
             <div className="mt-5 space-y-4 text-sm md:text-lg leading-[1.9] text-white/75 break-keep">
               <p>
-                실기는 수능이 끝난 뒤에 시작해도 늦지 않습니다.
+                실기는 수능이 끝난 뒤에 시작해도 늦지 않습니다.{" "}
                 <br className="hidden md:block" />
                 성적은 그렇지 않습니다.
               </p>
               <p>
-                미대는 서울대를 제외하면 수학을 반영하지 않습니다.
+                미대는 서울대를 제외하면 수학을 반영하지 않습니다.{" "}
                 <br className="hidden md:block" />
-                일반 기숙학원이 수학에 쓰는 8주를,
+                일반 기숙학원이 수학에 쓰는 8주를,{" "}
                 <br className="hidden md:block" />
                 저희는 국어·영어·탐구에 전부 씁니다.
               </p>

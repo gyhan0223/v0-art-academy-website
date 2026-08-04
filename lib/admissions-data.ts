@@ -10,6 +10,79 @@ export type AdmissionList = {
   admittees: Admittee[];
 };
 
+/** 가장 최근에 마감된 입시 연도 — "작년 합격자" 표기의 단일 기준 */
+export const RECENT_YEAR = "2026학년도";
+
+/** 대학별 합격 실적 카드. 메인(Scene2)·윈터캠프 실적 섹션이 함께 사용한다. */
+export type UniversityCard = {
+  name: string;
+  /** 누적 합격자 수 */
+  total: string;
+  /** RECENT_YEAR 합격자 수 */
+  recent: string;
+  logo: string;
+  color: string;
+  logoSize: { mobile: string; desktop: string };
+  logoOpacity: string;
+  scale: number;
+};
+
+export const universityCards: UniversityCard[] = [
+  {
+    name: "서울대학교",
+    total: "252",
+    recent: "5",
+    logo: "/images/logo-snu.png",
+    color: "#1D418A",
+    logoSize: { mobile: "120vw", desktop: "80vw" },
+    logoOpacity: "opacity-10",
+    scale: 1,
+  },
+  {
+    name: "홍익대학교",
+    total: "792",
+    recent: "28",
+    logo: "/images/logo-hongik.png",
+    color: "#9C1F22",
+    logoSize: { mobile: "150vw", desktop: "150vw" },
+    logoOpacity: "opacity-10",
+    scale: 1.6,
+  },
+  {
+    name: "국민대학교",
+    total: "438",
+    recent: "22",
+    logo: "/images/logo-kookmin.png",
+    color: "#0054A6",
+    logoSize: { mobile: "110vw", desktop: "70vw" },
+    logoOpacity: "opacity-25", // 가독성을 위해 투명도 상향 유지
+    scale: 1,
+  },
+  {
+    name: "이화여자대학교",
+    total: "530",
+    recent: "9",
+    logo: "/images/logo-ewha.png",
+    color: "#004933",
+    logoSize: { mobile: "130vw", desktop: "85vw" },
+    logoOpacity: "opacity-30", // 가독성을 위해 투명도 상향 유지
+    scale: 1,
+  },
+  // TODO: 건국대학교 추가 대기 — 누적/2026학년도 합격자 수와 로고 이미지
+  //       (public/images/logo-konkuk.png)가 확보되면 아래 형태로 추가하고
+  //       admissionLists에 합격자 명단을 넣으면 메인·윈터 양쪽에 함께 노출됩니다.
+  // {
+  //   name: "건국대학교",
+  //   total: "[누적]",
+  //   recent: "[2026학년도]",
+  //   logo: "/images/logo-konkuk.png",
+  //   color: "#036B3F",
+  //   logoSize: { mobile: "120vw", desktop: "80vw" },
+  //   logoOpacity: "opacity-15",
+  //   scale: 1,
+  // },
+];
+
 export const admissionLists: Record<string, AdmissionList> = {
   서울대학교: {
     year: "2026학년도",

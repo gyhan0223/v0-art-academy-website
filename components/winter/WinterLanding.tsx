@@ -45,6 +45,7 @@ import {
   getRemainingLabel,
 } from "@/lib/winter-camp";
 import CtaBand from "@/components/winter/CtaBand";
+import GradeSlopeChart from "@/components/winter/GradeSlopeChart";
 import ConsultForm from "@/components/winter/ConsultForm";
 import MobileActionBar from "@/components/winter/MobileActionBar";
 import { NaverTalkButton } from "@/components/academy/NaverTalk";
@@ -326,6 +327,9 @@ export default function WinterLanding() {
               </p>
             </div>
           </motion.div>
+
+          {/* 두 카드의 차이를 숫자로 — 같은 등급에서 갈라지는 8주 */}
+          <GradeSlopeChart />
 
           <motion.p
             {...fadeUp}

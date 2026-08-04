@@ -11,7 +11,6 @@ import {
   getRemainingTotal,
 } from "@/lib/winter-camp";
 import { IS_PLACEHOLDER as GRADE_CASES_PLACEHOLDER } from "@/lib/grade-cases";
-import { IS_PLACEHOLDER as TEACHERS_PLACEHOLDER } from "@/lib/teachers";
 
 const remainingTotal = getRemainingTotal();
 const ANNOUNCEMENT_TEXT =
@@ -65,12 +64,9 @@ const navItems: NavItem[] = [
   //   href: "/mock",
   //   badge: "접수중",
   // },
-  {
-    label: "강사진",
-    href: "/teachers",
-    // 헤드라인·상주 여부가 확정되면(lib/teachers.ts의 IS_PLACEHOLDER = false) 뱃지가 사라짐
-    badge: TEACHERS_PLACEHOLDER ? "준비중" : undefined,
-  },
+  // 강사진은 상단에서 빼고 윈터캠프 드롭다운 안에만 둔다(/winter/teachers).
+  // 학원 전체 강사진 페이지(/teachers)는 그대로 살아 있고 파주 기숙학원 페이지와
+  // 윈터캠프 강사진 페이지 하단에서 연결된다.
   {
     label: "성적 향상 사례",
     href: "/grade-up",

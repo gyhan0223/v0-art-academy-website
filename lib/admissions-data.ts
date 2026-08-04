@@ -20,7 +20,8 @@ export type UniversityCard = {
   total: string;
   /** RECENT_YEAR 합격자 수 */
   recent: string;
-  logo: string;
+  /** 배경 워터마크 로고. 이미지가 준비되지 않은 대학은 생략한다. */
+  logo?: string;
   color: string;
   logoSize: { mobile: string; desktop: string };
   logoOpacity: string;
@@ -68,19 +69,18 @@ export const universityCards: UniversityCard[] = [
     logoOpacity: "opacity-30", // 가독성을 위해 투명도 상향 유지
     scale: 1,
   },
-  // TODO: 건국대학교 추가 대기 — 누적/2026학년도 합격자 수와 로고 이미지
-  //       (public/images/logo-konkuk.png)가 확보되면 아래 형태로 추가하고
-  //       admissionLists에 합격자 명단을 넣으면 메인·윈터 양쪽에 함께 노출됩니다.
-  // {
-  //   name: "건국대학교",
-  //   total: "[누적]",
-  //   recent: "[2026학년도]",
-  //   logo: "/images/logo-konkuk.png",
-  //   color: "#036B3F",
-  //   logoSize: { mobile: "120vw", desktop: "80vw" },
-  //   logoOpacity: "opacity-15",
-  //   scale: 1,
-  // },
+  {
+    name: "건국대학교",
+    total: "402",
+    recent: "16",
+    // TODO: public/images/logo-konkuk.png 추가 후 아래 주석을 해제하면
+    //       다른 대학처럼 배경 로고 워터마크가 함께 노출됩니다.
+    // logo: "/images/logo-konkuk.png",
+    color: "#007346",
+    logoSize: { mobile: "120vw", desktop: "80vw" },
+    logoOpacity: "opacity-15",
+    scale: 1,
+  },
 ];
 
 export const admissionLists: Record<string, AdmissionList> = {
@@ -166,6 +166,27 @@ export const admissionLists: Record<string, AdmissionList> = {
       { major: "패션디자인전공", name: "김00" },
       { major: "패션디자인전공", name: "이00" },
       { major: "패션디자인전공", name: "조00" },
+    ],
+  },
+  건국대학교: {
+    year: "2026학년도",
+    admittees: [
+      { major: "커뮤니케이션디자인", name: "김00" },
+      { major: "커뮤니케이션디자인", name: "이00" },
+      { major: "산업디자인", name: "김00" },
+      { major: "산업디자인", name: "조00" },
+      { major: "산업디자인", name: "박00" },
+      { major: "리빙디자인", name: "조00" },
+      { major: "리빙디자인", name: "이00" },
+      { major: "패션디자인", name: "윤0" },
+      { major: "패션디자인", name: "김00" },
+      { major: "의상디자인", name: "이00" },
+      { major: "의상디자인", name: "정00" },
+      { major: "의상디자인", name: "강00" },
+      { major: "조형예술", name: "박00" },
+      { major: "조형예술", name: "김00" },
+      { major: "영상디자인", name: "유0" },
+      { major: "시각영상디자인", name: "이00" },
     ],
   },
 };

@@ -30,27 +30,29 @@ export default function Scene2() {
             <div className="absolute top-0 left-0 w-full h-32 bg-linear-to-b from-black/50 to-transparent pointer-events-none z-20" />
           )}
 
-          {/* 배경 로고 워터마크 */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-            <div
-              className={`relative transition-all duration-500 ${card.logoOpacity}`}
-              style={
-                {
-                  width: `var(--logo-width)`,
-                  height: `var(--logo-width)`,
-                  "--logo-width": "min(120vw, 80vh)", // 화면을 넘어가지 않도록 보정
-                  transform: `scale(${card.scale})`, // 💡 데이터에서 지정한 배수만큼 화면에서 확대됨
-                } as any
-              }
-            >
-              <Image
-                src={card.logo}
-                alt={`${card.name} 배경 로고`}
-                fill
-                className="object-contain brightness-0 invert"
-              />
+          {/* 배경 로고 워터마크 — 로고 이미지가 있는 대학만 */}
+          {card.logo && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+              <div
+                className={`relative transition-all duration-500 ${card.logoOpacity}`}
+                style={
+                  {
+                    width: `var(--logo-width)`,
+                    height: `var(--logo-width)`,
+                    "--logo-width": "min(120vw, 80vh)", // 화면을 넘어가지 않도록 보정
+                    transform: `scale(${card.scale})`, // 💡 데이터에서 지정한 배수만큼 화면에서 확대됨
+                  } as any
+                }
+              >
+                <Image
+                  src={card.logo}
+                  alt={`${card.name} 배경 로고`}
+                  fill
+                  className="object-contain brightness-0 invert"
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           {/* 텍스트 레이어: 대학명 + 합격자 정보 */}
           <motion.div

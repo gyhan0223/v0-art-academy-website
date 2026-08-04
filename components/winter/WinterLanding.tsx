@@ -842,6 +842,9 @@ function MobileActionBar() {
 
 /* --------------------------------- 페이지 ---------------------------------- */
 
+/** 대학 카드가 홀수 개면 2열 그리드에서 마지막 한 장이 혼자 남는다 */
+const hasOrphanCard = universityCards.length % 2 === 1;
+
 export default function WinterLanding() {
   const [lightbox, setLightbox] = useState<{
     src: string;
@@ -1027,7 +1030,7 @@ export default function WinterLanding() {
             }
           />
 
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
             {universityCards.map((card, i) => (
               <motion.button
                 key={card.name}
@@ -1038,18 +1041,25 @@ export default function WinterLanding() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.5, delay: i * 0.06 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8 text-center transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98]"
+                className={`group relative overflow-hidden rounded-2xl border border-white/10 p-6 md:p-8 lg:px-4 lg:py-7 text-center transition-transform duration-300 hover:scale-[1.03] active:scale-[0.98] ${
+                  // 2열에서 홀수 개면 마지막 카드가 혼자 남으므로 가로로 채운다
+                  hasOrphanCard && i === universityCards.length - 1
+                    ? "col-span-2 lg:col-span-1"
+                    : ""
+                }`}
                 style={{ backgroundColor: card.color }}
               >
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10">
-                  <Image
-                    src={card.logo}
-                    alt=""
-                    width={200}
-                    height={200}
-                    className="object-contain brightness-0 invert"
-                  />
-                </div>
+                {card.logo && (
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10">
+                    <Image
+                      src={card.logo}
+                      alt=""
+                      width={200}
+                      height={200}
+                      className="object-contain brightness-0 invert"
+                    />
+                  </div>
+                )}
                 <div className="relative z-10">
                   <p className="text-sm md:text-base font-semibold text-white/80">
                     {card.name}

@@ -1,16 +1,16 @@
 /**
  * 윈터스쿨 후기 데이터 단일 소스.
- * 학생 / 학부모 / 합격 후기를 구분해 관리한다.
+ * 학생 / 학부모 후기를 구분해 관리한다.
  * 미확정(실제 후기 수집 전) 문구는 대괄호 [ ]로 표기 — 게시 전 반드시 실제 후기로 교체할 것.
  */
 
-export type TestimonialCategory = "student" | "parent" | "result";
+export type TestimonialCategory = "student" | "parent";
 
 export interface Testimonial {
   category: TestimonialCategory;
   /** 후기 본문 */
   quote: string;
-  /** 표기명 — 예: "김○○ (예비 고3)", "홍익대 합격생 학부모" */
+  /** 표기명 — 예: "김○○ (예비 고3)", "예비 고3 학부모" */
   author: string;
   /** 부가 정보 — 예: "2026 윈터스쿨 수료", "국민대 시각디자인 합격" */
   meta?: string;
@@ -19,7 +19,6 @@ export interface Testimonial {
 export const TESTIMONIAL_TABS: { key: TestimonialCategory; label: string }[] = [
   { key: "parent", label: "학부모 후기" },
   { key: "student", label: "학생 후기" },
-  { key: "result", label: "합격 후기" },
 ];
 
 // TODO: 원장님 확인 — 아래는 전부 자리표시자. 실제 수집된 후기로 교체 필요.
@@ -51,20 +50,6 @@ export const TESTIMONIALS: Testimonial[] = [
       "[매일 영단어 100개가 처음엔 힘들었는데, 8주 뒤에 모의고사 영어 등급이 올랐습니다.]",
     author: "[이○○ · 예비 고2]",
     meta: "[2026 윈터스쿨 수료]",
-  },
-  {
-    category: "result",
-    quote:
-      "[겨울에 잡아둔 국어·탐구 덕분에 수능 최저를 맞췄고, 실기는 윈터스쿨에서 배운 유형 그대로 나왔습니다.]",
-    author: "[박○○]",
-    meta: "[홍익대학교 합격]",
-  },
-  {
-    category: "result",
-    quote:
-      "[성적이 안 되면 실기가 아무리 좋아도 소용없다는 말을 윈터스쿨에서 처음 실감했습니다.]",
-    author: "[최○○]",
-    meta: "[국민대학교 합격]",
   },
 ];
 

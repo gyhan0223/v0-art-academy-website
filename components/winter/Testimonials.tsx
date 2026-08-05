@@ -10,7 +10,7 @@ import {
   type TestimonialCategory,
 } from "@/lib/winter-testimonials";
 
-/** 학생 / 학부모 / 합격 후기를 탭으로 구분해 보여주는 사회적 증거 섹션.
+/** 학생 / 학부모 후기를 탭으로 구분해 보여주는 사회적 증거 섹션.
  *  기본 탭은 '학부모' — 이 페이지의 최종 결정권자가 학부모이기 때문. */
 export default function Testimonials() {
   const [active, setActive] = useState<TestimonialCategory>(

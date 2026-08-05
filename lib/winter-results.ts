@@ -29,7 +29,7 @@ export const SUBJECT_ORDER: Subject[] = SUBJECTS;
  * true  — 페이지 상단에 "샘플" 안내 표시 · noindex · 사이트맵 제외
  * false — 실제 집계 결과로 정식 공개
  */
-export const IS_PLACEHOLDER = true;
+export const IS_PLACEHOLDER = false;
 
 /* ------------------------------- 집계(분모) ------------------------------- */
 
@@ -50,15 +50,15 @@ export interface WinterCohort {
   excluded?: string;
 }
 
-// TODO: 원장님 확인 — 실제 집계 결과로 교체.
+// 2026 윈터스쿨 집계 — 여 12명 · 남 3명, 중도 퇴소 없음, 전원 재측정 응시.
 export const WINTER_COHORT: WinterCohort = {
-  term: "[2027 윈터스쿨]",
-  total: 14,
-  measured: 13,
-  improved: 10,
+  term: "2026 윈터스쿨",
+  total: 15,
+  measured: 15,
+  improved: 13,
   criterion: "국어·영어·탐구 중 1과목 이상 1등급 상승",
   basis: "1주차 진단고사 → 8주차 재측정 (평가원 기출 동일 난이도 기준)",
-  excluded: "[중도 퇴소 1명 제외]",
+  excluded: "중도 퇴소 없음 (전원 8주 수료 · 전원 재측정 응시)",
 };
 
 /* --------------------------------- 사례 --------------------------------- */
@@ -91,43 +91,39 @@ export interface WinterResultCase {
   featured?: boolean;
 }
 
-// TODO: 원장님 확인 — 아래는 전부 자리표시자.
-//       실제 사례로 교체한 뒤 위의 IS_PLACEHOLDER를 false로 바꿔 주세요.
+// 2026 윈터스쿨 15명 중 서면 동의를 받아 공개하는 3건.
 export const WINTER_RESULT_CASES: WinterResultCase[] = [
   {
-    id: "sample-01",
-    name: "[김○○]",
-    grade: "[예비 고3]",
-    school: "[마포구 소재 고교]",
+    id: "2026-choi-01",
+    name: "최○○",
+    grade: "예비 고3",
     results: [
-      { subject: "국어", diagnostic: 5, retest: 3 },
+      { subject: "국어", diagnostic: 5, retest: 4 },
       { subject: "영어", diagnostic: 4, retest: 2 },
-      { subject: "탐구", diagnostic: 4, retest: 3 },
+      { subject: "탐구", diagnostic: 5, retest: 2 },
     ],
-    quote: "[겨울에 잡아둔 게 3월 모의고사까지 그대로 갔습니다.]",
     consent: true,
     featured: true,
   },
   {
-    id: "sample-02",
-    name: "[이○○]",
-    grade: "[예비 고3]",
-    school: "[일산 소재 고교]",
+    id: "2026-hwang-02",
+    name: "황○○",
+    grade: "예비 고3",
     results: [
-      { subject: "국어", diagnostic: 4, retest: 4 },
-      { subject: "영어", diagnostic: 4, retest: 2 },
-      { subject: "탐구", diagnostic: 5, retest: 3 },
+      { subject: "국어", diagnostic: 2, retest: 2 },
+      { subject: "영어", diagnostic: 2, retest: 2 },
+      { subject: "탐구", diagnostic: 5, retest: 2 },
     ],
     consent: true,
   },
   {
-    id: "sample-03",
-    name: "[박○○]",
-    grade: "[예비 고2]",
+    id: "2026-yun-03",
+    name: "윤○○",
+    grade: "예비 고2",
     results: [
-      { subject: "국어", diagnostic: 6, retest: 5 },
+      { subject: "국어", diagnostic: 6, retest: 3 },
       { subject: "영어", diagnostic: 5, retest: 4 },
-      { subject: "탐구", diagnostic: 6, retest: 4 },
+      { subject: "탐구", diagnostic: 6, retest: 3 },
     ],
     consent: true,
   },

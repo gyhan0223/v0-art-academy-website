@@ -38,21 +38,21 @@ import {
 } from "lucide-react";
 import {
   CAMP_INFO,
-  REPORT_SAMPLE,
   WINTER_PAGES,
   SMS_HREF,
   KAKAO_CHANNEL_URL,
   getRemainingLabel,
 } from "@/lib/winter-camp";
+import { REPORT_SAMPLE } from "@/lib/winter-report";
 import CtaBand from "@/components/winter/CtaBand";
 import GradeSlopeChart from "@/components/winter/GradeSlopeChart";
 import ConsultForm from "@/components/winter/ConsultForm";
 import MobileActionBar from "@/components/winter/MobileActionBar";
+import ReportSample from "@/components/winter/ReportSample";
 import { NaverTalkButton } from "@/components/academy/NaverTalk";
 import {
   fadeUp,
   SectionHead,
-  SafeImage,
   CONSULT_HREF,
   goToConsult,
 } from "@/components/winter/shared";
@@ -404,20 +404,9 @@ export default function WinterLanding() {
           {/* ---- 격주 리포트 샘플 1장 ---- */}
           <motion.div
             {...fadeUp}
-            className="mt-12 grid items-center gap-8 rounded-2xl border border-white/10 bg-white/[0.03] p-7 md:grid-cols-2 md:p-10"
+            className="mt-12 rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-10"
           >
-            <figure>
-              <SafeImage
-                src={REPORT_SAMPLE.src}
-                alt={REPORT_SAMPLE.caption}
-                aspectClass="aspect-[3/4]"
-              />
-              <figcaption className="mt-3 text-center text-xs text-white/40 break-keep">
-                {REPORT_SAMPLE.caption}
-              </figcaption>
-            </figure>
-
-            <div>
+            <div className="mx-auto max-w-2xl text-center">
               <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
                 Report
               </p>
@@ -429,9 +418,19 @@ export default function WinterLanding() {
                 정리해 격주로 학부모님께 발송합니다. 8주가 끝난 뒤에 결과를
                 받아보는 것이 아니라, 진행되는 동안 계속 확인하실 수 있습니다.
               </p>
+            </div>
+
+            <figure className="mt-8">
+              <ReportSample />
+              <figcaption className="mt-3 text-center text-xs text-white/40 break-keep">
+                {REPORT_SAMPLE.caption}
+              </figcaption>
+            </figure>
+
+            <div className="mt-8 text-center">
               <Link
                 href="/winter/results"
-                className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
               >
                 실제 성적 향상 사례 보기
                 <ArrowRight size={15} />

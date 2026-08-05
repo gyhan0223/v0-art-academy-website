@@ -92,12 +92,7 @@ export const WINTER_PAGES = [
   },
 ] as const;
 
-/** 격주 리포트 샘플 이미지 — 파일이 없으면 화면에 "이미지 준비 중"으로 표시된다 */
-// TODO: 원장님 확인 — 실제 리포트 1장을 이름·점수 가린 뒤 이 경로에 올려 주세요.
-export const REPORT_SAMPLE = {
-  src: "/images/winter/report-sample.jpg",
-  caption: "격주 리포트 샘플 — 학생 이름과 개인정보는 가렸습니다",
-} as const;
+/** 격주 리포트 샘플은 이미지가 아니라 문서로 그린다 → lib/winter-report.ts */
 
 /* ---------------------------- 전/후 등급 비교 ------------------------------ */
 

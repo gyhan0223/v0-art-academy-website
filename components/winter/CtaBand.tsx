@@ -3,11 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Phone, PenLine } from "lucide-react";
-import {
-  CAMP_INFO,
-  getRemainingLabel,
-  getRemainingTotal,
-} from "@/lib/winter-camp";
+import { CAMP_INFO, getCapacityLabel } from "@/lib/winter-camp";
 import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 import { NaverTalkButton } from "@/components/academy/NaverTalk";
 
@@ -20,11 +16,7 @@ export default function CtaBand({
   headline: React.ReactNode;
   sub?: React.ReactNode;
 }) {
-  const remainingTotal = getRemainingTotal();
-  const seatLabel =
-    remainingTotal <= 0
-      ? "마감"
-      : `정원 ${CAMP_INFO.capacityTotal}명 · ${getRemainingLabel()} · ${CAMP_INFO.capacityNote}`;
+  const seatLabel = getCapacityLabel();
 
   return (
     <section className="px-6 py-14 md:py-16">

@@ -252,7 +252,7 @@ export const WEEKLY_FIXTURES: { label: string; detail: string }[] = [
   },
   {
     label: "매일 06:00 / 22:00",
-    detail: "기상·취침 시각 고정 — 8주 내내 하루 8시간 수면을 보장한다",
+    detail: "기상·취침 시각 고정 — 8주 내내 하루 8시간 수면 확보",
   },
   {
     label: "격주",
@@ -268,7 +268,7 @@ export const WEEKEND_POINTS: { title: string; desc: string }[] = [
   },
   {
     title: "레벨 테스트 후 수준별 분반",
-    desc: "[기초 소묘·발상과 표현 등 실기 기초를 8주간 집중적으로 다집니다. 레벨 테스트 후 수준별 분반, 담당 강사 개별 피드백 진행]" /* TODO: 원장님 확인 */,
+    desc: "입소 전 레벨 테스트로 실기 수준을 확인해 반을 나눕니다. 기초가 필요한 학생은 소묘·발상과 표현부터 8주간 다지고, 담당 강사가 개별 피드백을 붙입니다.",
   },
   {
     title: "실기는 끊기지 않을 만큼",

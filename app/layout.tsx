@@ -42,17 +42,22 @@ export const metadata: Metadata = {
     title: "모두다른고양이 미술학원(모다고) | 홍대 · 일산 미대입시",
     description:
       "서울대 252명, 홍익대 792명 누적 합격. 2027 미대 기숙 윈터스쿨 모집 중.",
+    // 자체 openGraph가 없는 페이지(/teachers·/gisuk·/tuition 등)가 이 그림을 물려받는다.
+    // openGraph를 직접 정의하는 페이지는 통째로 갈아끼우므로 그쪽에도 각자 넣어야 한다.
+    images: [{ url: "/images/og-home.jpg", width: 1200, height: 630 }],
   },
   verification: {
     other: {
       "naver-site-verification": "1f8cf936e99f06be87d0e109d53c43539a6ebc8c",
     },
   },
+  // 카드 종류만 루트에서 정하고 제목·설명은 두지 않는다.
+  // 하위 페이지는 openGraph만 정의하는데, Next는 openGraph는 페이지 값으로
+  // 갈아끼우면서 twitter는 루트 값을 그대로 물려준다. 여기에 제목을 적어 두면
+  // 모든 하위 페이지의 공유 카드가 학원 일반 소개로 고정된다.
+  // 비워 두면 각 소비자가 그 페이지의 og:title·og:description으로 대체한다.
   twitter: {
     card: "summary_large_image",
-    title: "모두다른고양이 미술학원(모다고) | 홍대 · 일산 미대입시",
-    description:
-      "서울대 252명, 홍익대 792명 누적 합격. 2027 미대 기숙 윈터스쿨 모집 중.",
   },
   icons: {
     icon: [

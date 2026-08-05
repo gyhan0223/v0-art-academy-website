@@ -41,7 +41,7 @@ import {
   WINTER_PAGES,
   SMS_HREF,
   KAKAO_CHANNEL_URL,
-  getRemainingLabel,
+  getCapacityLabel,
 } from "@/lib/winter-camp";
 import { REPORT_SAMPLE } from "@/lib/winter-report";
 import CtaBand from "@/components/winter/CtaBand";
@@ -161,13 +161,13 @@ export default function WinterLanding() {
             {CAMP_INFO.name} · 홍대 본원 기숙
           </p>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-tight text-white break-keep">
-            고3 1년을
+            1년을 시작할 상태로
             <br />
-            시작할 상태로 돌려보냅니다
+            돌려보냅니다
           </h1>
           <p className="mt-5 text-base md:text-xl text-white/75 break-keep">
-            예비 고3의 겨울 8주. 평일은 학과 직강,
-            <br className="md:hidden" /> 주말은 대학교 유형 실기.
+            예비 고2·고3과 재수생 선행반의 겨울 8주.
+            <br className="md:hidden" /> 평일은 학과 직강, 주말은 대학교 유형 실기.
           </p>
 
           {/* 긴급성 — D-day + 정원 */}
@@ -175,7 +175,7 @@ export default function WinterLanding() {
             <DdayBadge />
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-sm font-semibold text-white">
               <Users size={14} className="text-accent" />
-              정원 {CAMP_INFO.capacityTotal}명 · {getRemainingLabel()}
+              {getCapacityLabel()}
             </span>
           </div>
 
@@ -249,9 +249,36 @@ export default function WinterLanding() {
             {...fadeUp}
             className="mt-6 text-center text-sm text-white/50 break-keep"
           >
-            {CAMP_INFO.venueName}에서 진행하는 8주 기숙 과정입니다. 윈터스쿨이 끝나면
-            각자의 학교 생활로 복귀합니다.
+            {CAMP_INFO.venueName}에서 진행하는 8주 기숙 과정입니다. 2월 말
+            윈터스쿨이 끝나면 예비 고2·고3은 학교로 돌아가고, 재수생은 3월 문을
+            여는 파주 기숙학원으로 그대로 이어집니다.
           </motion.p>
+
+          {/* 재수생 학부모가 가장 먼저 묻는 것 — "2월 말에 끝나면 그다음은" */}
+          <motion.div {...fadeUp} className="mt-8">
+            <Link
+              href="/gisuk"
+              className="group flex flex-col gap-3 rounded-2xl border border-accent/30 bg-accent/[0.06] px-6 py-6 transition-colors hover:border-accent/60 sm:flex-row sm:items-center sm:justify-between md:px-8"
+            >
+              <div>
+                <p className="text-xs font-semibold tracking-[0.2em] text-accent uppercase">
+                  재수생
+                </p>
+                <p className="mt-2 text-base font-bold text-white break-keep md:text-lg">
+                  1~2월에 미리 시작해, 3월에 끊기지 않고 이어갑니다
+                </p>
+                <p className="mt-1.5 text-sm text-white/55 break-keep">
+                  겨울 8주 동안 국어·영어·탐구를 먼저 올려두고, 3월 문을 여는
+                  파주 기숙학원 정규 과정으로 그대로 넘어갑니다. 재수 첫 달을
+                  적응하는 데 쓰지 않아도 됩니다.
+                </p>
+              </div>
+              <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-accent transition-transform group-hover:translate-x-1">
+                파주 기숙학원 보기
+                <ArrowRight size={15} />
+              </span>
+            </Link>
+          </motion.div>
         </div>
       </section>
 

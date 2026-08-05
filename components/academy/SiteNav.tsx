@@ -7,7 +7,7 @@ import { X, Menu, ChevronDown } from "lucide-react";
 import {
   SHOW_ANNOUNCEMENT,
   WINTER_PAGES,
-  getRemainingLabel,
+  getCapacityLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
 
@@ -15,7 +15,7 @@ const remainingTotal = getRemainingTotal();
 const ANNOUNCEMENT_TEXT =
   remainingTotal <= 0
     ? "2027 모다고 윈터스쿨 · 마감"
-    : `2027 모다고 윈터스쿨 · ${getRemainingLabel()} · 홍대 본원 기숙`;
+    : `2027 모다고 윈터스쿨 · ${getCapacityLabel({ short: true })} · 홍대 본원 기숙`;
 const ANNOUNCEMENT_KEY = "modago-winter-announcement-closed";
 
 const PHONE_HONGDAE = { label: "홍대 본원", number: "02-338-3302" };
@@ -44,12 +44,14 @@ const navItems: NavItem[] = [
     label: "입시 정보",
     href: "/guide",
     children: [
-      {
-        label: "홍대 미활보 가이드",
-        href: "/guide/hongik-mihwalbo",
-        desc: "홍익대 미술활동보고서 작성 전략",
-        badge: "준비중",
-      },
+      // 홍대 미활보 가이드는 본문이 준비될 때까지 네비게이션에서 숨긴다 —
+      // 광고로 들어온 사람에게 "준비중" 페이지를 물리면 첫인상이 그걸로 끝난다.
+      // 초안은 page.draft.tsx에 있고, 완성되면 아래 주석을 풀면 된다.
+      // {
+      //   label: "홍대 미활보 가이드",
+      //   href: "/guide/hongik-mihwalbo",
+      //   desc: "홍익대 미술활동보고서 작성 전략",
+      // },
       {
         label: "2026학년도 미대 입시 정보",
         href: "/guide/jungsi-2026",

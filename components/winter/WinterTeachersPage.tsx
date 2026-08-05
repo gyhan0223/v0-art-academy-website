@@ -123,8 +123,8 @@ export default function WinterTeachersPage() {
             <p className="mt-6 border-t border-white/10 pt-5 text-sm leading-relaxed text-white/60 break-keep">
               수학 강사가 없는 것은 빠진 것이 아니라 뺀 것입니다. 미대 정시는
               대부분 수학을 반영하지 않기 때문에, 겨울 8주를 국어·영어·탐구 세
-              과목에 몰아줍니다. 상주인지 담당 시간에만 들어오는 출강인지는 카드에
-              그대로 적었습니다.
+              과목에 몰아줍니다. 본원에 상주하는 사람은 실기를 직접 지도하는 대표
+              한 명이고, 학과 강사는 전원 담당 수업 시간에 들어오는 출강입니다.
             </p>
           </motion.section>
         </div>

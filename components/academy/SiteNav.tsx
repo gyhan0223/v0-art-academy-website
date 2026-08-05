@@ -10,6 +10,7 @@ import {
   getCapacityLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
+import { CAMPUSES } from "@/lib/contact";
 
 const remainingTotal = getRemainingTotal();
 const ANNOUNCEMENT_TEXT =
@@ -18,11 +19,8 @@ const ANNOUNCEMENT_TEXT =
     : `2027 모다고 윈터스쿨 · ${getCapacityLabel({ short: true })} · 홍대 본원 기숙`;
 const ANNOUNCEMENT_KEY = "modago-winter-announcement-closed";
 
-const PHONE_HONGDAE = { label: "홍대 본원", number: "02-338-3302" };
-const PHONE_ILSAN = { label: "일산 캠퍼스", number: "031-916-8885" };
-
-const NAVER_BOOKING =
-  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
+// 전화번호·상담 예약 주소는 lib/contact.ts의 CAMPUSES 하나만 고치면 된다.
+const [CAMPUS_HONGDAE, CAMPUS_ILSAN] = CAMPUSES;
 
 type NavChild = {
   label: string;
@@ -113,6 +111,7 @@ export default function SiteNav() {
   const [scrolled, setScrolled] = useState(false);
   const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [consultOpen, setConsultOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -139,6 +138,7 @@ export default function SiteNav() {
   useEffect(() => {
     setIsOpen(false);
     setOpenMenu(null);
+    setConsultOpen(false);
     setExpanded(null);
   }, [pathname]);
 
@@ -146,10 +146,14 @@ export default function SiteNav() {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpenMenu(null);
+        setConsultOpen(false);
       }
     };
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpenMenu(null);
+      if (e.key === "Escape") {
+        setOpenMenu(null);
+        setConsultOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEscape);
@@ -311,27 +315,70 @@ export default function SiteNav() {
             })}
             {/* 두 캠퍼스 전화번호 */}
             <div className="hidden xl:flex flex-col items-end gap-1 leading-none">
-              <a
-                href={`tel:${PHONE_HONGDAE.number}`}
-                className="text-[11px] tracking-wide text-white/55 transition-colors hover:text-white"
-              >
-                {PHONE_HONGDAE.label} {PHONE_HONGDAE.number}
-              </a>
-              <a
-                href={`tel:${PHONE_ILSAN.number}`}
-                className="text-[11px] tracking-wide text-white/55 transition-colors hover:text-white"
-              >
-                {PHONE_ILSAN.label} {PHONE_ILSAN.number}
-              </a>
+              {CAMPUSES.map((campus) => (
+                <a
+                  key={campus.label}
+                  href={`tel:${campus.phone}`}
+                  className="text-[11px] tracking-wide text-white/55 transition-colors hover:text-white"
+                >
+                  {campus.label} {campus.phone}
+                </a>
+              ))}
             </div>
-            <a
-              href={NAVER_BOOKING}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
+
+            {/* 상담 예약이 캠퍼스마다 다른 네이버 예약 상품이라 버튼 하나로는
+                엉뚱한 캠퍼스로 접수된다 — 눌렀을 때 캠퍼스를 먼저 고르게 한다.
+                버튼 두 개를 나란히 두면 헤더가 좁아져 메뉴가 두 줄로 접힌다. */}
+            <div
+              className="relative"
+              onMouseEnter={() => setConsultOpen(true)}
+              onMouseLeave={() => setConsultOpen(false)}
             >
-              상담 신청
-            </a>
+              <button
+                type="button"
+                onClick={() => setConsultOpen(!consultOpen)}
+                aria-expanded={consultOpen}
+                aria-haspopup="true"
+                className="flex items-center gap-1 whitespace-nowrap rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
+              >
+                상담 신청
+                <ChevronDown
+                  size={14}
+                  strokeWidth={2.5}
+                  className={`transition-transform duration-200 ${
+                    consultOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              <div
+                className={`absolute right-0 top-full z-50 w-64 pt-3 transition-all duration-200 ${
+                  consultOpen
+                    ? "visible opacity-100 translate-y-0"
+                    : "invisible opacity-0 -translate-y-1"
+                }`}
+              >
+                <ul className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/40">
+                  {CAMPUSES.map((campus) => (
+                    <li key={campus.label}>
+                      <a
+                        href={campus.bookingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block border-b border-white/5 px-4 py-3.5 transition-colors last:border-b-0 hover:bg-white/5"
+                      >
+                        <span className="block text-sm font-medium text-white/90">
+                          {campus.label} 상담 신청
+                        </span>
+                        <span className="mt-0.5 block text-xs text-white/40">
+                          네이버 예약 · {campus.phone}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </nav>
 
           {/* Mobile hamburger */}
@@ -456,33 +503,37 @@ export default function SiteNav() {
                 </li>
               );
             })}
-            <li className="px-6 pt-5">
-              <a
-                href={NAVER_BOOKING}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded-md bg-accent px-4 py-3 text-center text-sm font-medium text-black"
-              >
-                상담 신청
-              </a>
+            {/* 모바일은 폭이 넉넉하니 고르는 단계 없이 캠퍼스별 버튼을 바로 둔다 */}
+            <li className="space-y-2 px-6 pt-5">
+              {CAMPUSES.map((campus) => (
+                <a
+                  key={campus.label}
+                  href={campus.bookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-md bg-accent px-4 py-3 text-center text-sm font-medium text-black"
+                >
+                  {campus.label} 상담 신청
+                </a>
+              ))}
             </li>
           </ul>
 
           <div className="px-6 py-6 border-t border-white/10 space-y-3">
-            <a href={`tel:${PHONE_HONGDAE.number}`} className="block">
+            <a href={`tel:${CAMPUS_HONGDAE.phone}`} className="block">
               <span className="block text-white/50 text-xs tracking-widest">
-                {PHONE_HONGDAE.number}
+                {CAMPUS_HONGDAE.phone}
               </span>
               <span className="block text-white/30 text-xs mt-0.5">
-                {PHONE_HONGDAE.label}
+                {CAMPUS_HONGDAE.label}
               </span>
             </a>
-            <a href={`tel:${PHONE_ILSAN.number}`} className="block">
+            <a href={`tel:${CAMPUS_ILSAN.phone}`} className="block">
               <span className="block text-white/50 text-xs tracking-widest">
-                {PHONE_ILSAN.number}
+                {CAMPUS_ILSAN.phone}
               </span>
               <span className="block text-white/30 text-xs mt-0.5">
-                {PHONE_ILSAN.label} · 평일 13:00–19:00
+                {CAMPUS_ILSAN.label} · 평일 13:00–19:00
               </span>
             </a>
           </div>

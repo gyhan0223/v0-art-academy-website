@@ -19,6 +19,28 @@ export const NAVER_GREEN = "#03C75A";
 export const NAVER_BOOKING_URL =
   "https://booking.naver.com/booking/5/bizes/770673/items/4636302";
 
+/** 네이버 예약 — 일산 캠퍼스 상담 예약 (예약 상품이 달라 biz/item 번호가 다르다) */
+export const NAVER_BOOKING_URL_ILSAN =
+  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
+
+/**
+ * 캠퍼스별 연락 창구 — 전화와 상담 예약이 캠퍼스마다 다르다.
+ * 헤더의 전화번호 줄과 "상담 신청" 버튼이 모두 이 배열을 쓰므로,
+ * 순서를 바꾸면 둘이 함께 바뀐다(두 곳의 순서가 어긋나면 안 된다).
+ */
+export const CAMPUSES = [
+  {
+    label: "홍대 본원",
+    phone: "02-338-3302",
+    bookingUrl: NAVER_BOOKING_URL,
+  },
+  {
+    label: "일산 캠퍼스",
+    phone: "031-916-8885",
+    bookingUrl: NAVER_BOOKING_URL_ILSAN,
+  },
+] as const;
+
 /**
  * 지점별 네이버 블로그.
  * 두 개가 나란히 놓이므로 label에 지점 이름을 반드시 포함한다 —

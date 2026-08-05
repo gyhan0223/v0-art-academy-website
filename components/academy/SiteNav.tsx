@@ -10,7 +10,6 @@ import {
   getRemainingLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
-import { IS_PLACEHOLDER as GRADE_CASES_PLACEHOLDER } from "@/lib/grade-cases";
 
 const remainingTotal = getRemainingTotal();
 const ANNOUNCEMENT_TEXT =
@@ -67,12 +66,10 @@ const navItems: NavItem[] = [
   // 강사진은 상단에서 빼고 윈터스쿨 드롭다운 안에만 둔다(/winter/teachers).
   // 학원 전체 강사진 페이지(/teachers)는 그대로 살아 있고 파주 기숙학원 페이지와
   // 윈터스쿨 강사진 페이지 하단에서 연결된다.
-  {
-    label: "성적 향상 사례",
-    href: "/grade-up",
-    // 실제 사례가 채워지면(lib/grade-cases.ts의 IS_PLACEHOLDER = false) 뱃지가 사라짐
-    badge: GRADE_CASES_PLACEHOLDER ? "준비중" : undefined,
-  },
+  // 성적 향상 사례는 윈터스쿨 드롭다운 안(/winter/results)에만 둔다 — 상단에도
+  // 같은 이름으로 걸려 있어 메뉴가 중복돼 보였다. 학원 전체 사례 페이지
+  // (/grade-up)는 그대로 살아 있고 /winter/results 하단 링크와 사이트맵에서
+  // 연결된다.
   {
     label: "윈터스쿨",
     href: "/winter",

@@ -50,6 +50,7 @@ import ConsultForm from "@/components/winter/ConsultForm";
 import MobileActionBar from "@/components/winter/MobileActionBar";
 import ReportSample from "@/components/winter/ReportSample";
 import { NaverTalkButton } from "@/components/academy/NaverTalk";
+import { NaverBookingButton } from "@/components/academy/NaverBooking";
 import {
   fadeUp,
   SectionHead,
@@ -180,7 +181,7 @@ export default function WinterLanding() {
           </div>
 
           {/* CTA — 모바일 첫 화면 안에 반드시 노출 */}
-          <div className="mt-7 flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <div className="mt-7 flex w-full flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
             <Link
               href={CONSULT_HREF}
               onClick={goToConsult}
@@ -188,18 +189,24 @@ export default function WinterLanding() {
             >
               상담 신청하기
             </Link>
-            <a
-              href={CAMP_INFO.phoneTel}
-              className="flex w-full items-center justify-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-medium text-white transition-colors hover:border-white/50 sm:w-auto"
-            >
-              <Phone size={17} />
-              전화 문의 {CAMP_INFO.phone}
-            </a>
-            {/* 전화도 신청도 아직인 분들 — 톡톡으로 먼저 묻게 열어 둔다 */}
-            <NaverTalkButton className="w-full px-8 py-4 text-base sm:w-auto" />
+            {/* 연락을 기다리지 않고 방문 날짜까지 바로 잡고 싶은 분들 */}
+            <NaverBookingButton className="w-full px-8 py-4 text-base sm:w-auto" />
+            {/* 전화·톡톡은 보조 동선 — 모바일에서는 두 칸으로 붙여 첫 화면을 덜 밀어낸다 */}
+            <div className="grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto sm:gap-3">
+              <a
+                href={CAMP_INFO.phoneTel}
+                className="flex w-full items-center justify-center gap-2 rounded-full border border-white/25 px-4 py-4 text-base font-medium text-white transition-colors hover:border-white/50 sm:w-auto sm:px-8"
+              >
+                <Phone size={17} />
+                전화 문의
+                <span className="hidden sm:inline">{CAMP_INFO.phone}</span>
+              </a>
+              {/* 전화도 신청도 아직인 분들 — 톡톡으로 먼저 묻게 열어 둔다 */}
+              <NaverTalkButton className="w-full px-4 py-4 text-base sm:w-auto sm:px-8" />
+            </div>
           </div>
           <p className="mt-3 text-xs text-white/45">
-            신청은 1분 · 밤에 남겨주셔도 다음 날 연락드립니다
+            신청은 1분 · 네이버 예약은 원하는 날짜·시간을 직접 고르실 수 있습니다
           </p>
 
           <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs md:text-sm text-white/60">
@@ -592,6 +599,11 @@ export default function WinterLanding() {
                 <Phone size={15} />
                 수강료 상담 {CAMP_INFO.phone}
               </a>
+              {/* 수강료는 상담에서만 안내한다 → 방문 날짜를 바로 잡을 수 있게 */}
+              <NaverBookingButton
+                className="px-7 py-3.5 text-sm"
+                label="네이버 예약"
+              />
               {/* 문자 문의 — 데스크톱은 문자 앱이 없어 모바일에서만 노출 */}
               <a
                 href={SMS_HREF}

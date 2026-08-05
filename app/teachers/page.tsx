@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import TeacherCard from "@/components/academy/TeacherCard";
+import ConsultCampusLinks from "@/components/academy/ConsultCampusLinks";
 import {
   IS_PLACEHOLDER,
   SUBJECT_DESC,
@@ -18,9 +19,6 @@ export const metadata: Metadata = {
   // lib/teachers.ts의 IS_PLACEHOLDER를 false로 바꾸면 자동으로 색인이 열린다.
   ...(IS_PLACEHOLDER ? { robots: { index: false, follow: true } } : {}),
 };
-
-const NAVER_BOOKING =
-  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
 
 const PHONE_HONGDAE = "02-338-3302";
 
@@ -151,14 +149,10 @@ export default function Page() {
             정해 드립니다.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href={NAVER_BOOKING}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-opacity hover:opacity-85 sm:w-auto"
-            >
-              상담 신청
-            </a>
+            <ConsultCampusLinks
+              action="상담 신청"
+              className="w-full rounded-md bg-accent px-6 py-3 text-center text-sm font-semibold text-black transition-opacity hover:opacity-85 sm:w-auto"
+            />
             <a
               href={`tel:${PHONE_HONGDAE}`}
               className="w-full rounded-md border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/40 hover:text-white sm:w-auto"

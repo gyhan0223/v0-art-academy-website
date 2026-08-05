@@ -10,12 +10,13 @@ import {
   X,
   ImageIcon,
 } from "lucide-react";
+import { NAVER_BOOKING_URL } from "@/lib/contact";
 
 /* ---------------------------------- 공통 ---------------------------------- */
 
-// /winter 페이지에서 사용하는 네이버 예약 링크 그대로 사용
-const NAVER_BOOKING =
-  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
+// 모의고사는 홍대 본원 실기실에서만 치른다 — 캠퍼스를 고르게 하면 안 된다.
+// 일산 캠퍼스 예약으로 보내면 응시 자체가 성립하지 않는다.
+const NAVER_BOOKING = NAVER_BOOKING_URL;
 
 const PHONE = "02-338-3302";
 const PHONE_TEL = "tel:02-338-3302";

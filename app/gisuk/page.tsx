@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ConsultCampusLinks from "@/components/academy/ConsultCampusLinks";
 
 export const metadata: Metadata = {
   title: "파주 미대 기숙학원 | 모두다른고양이 미술학원",
@@ -7,9 +8,6 @@ export const metadata: Metadata = {
     "경기 파주 소재 미대 재수 기숙학원이 2027년 3월 문을 엽니다. 1~2월 홍대 본원 윈터스쿨에서 먼저 시작해 3월 정규 과정으로 이어갈 수 있으며, 사전 상담 예약을 받고 있습니다.",
   alternates: { canonical: "/gisuk" },
 };
-
-const NAVER_BOOKING =
-  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
 
 export default function Page() {
   return (
@@ -31,14 +29,13 @@ export default function Page() {
             <br />
             자세한 안내는 준비 중이며, 사전 상담은 지금도 가능합니다.
           </p>
-          <a
-            href={NAVER_BOOKING}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-block rounded-md bg-accent px-6 py-3 text-sm font-medium text-black transition-opacity hover:opacity-85"
-          >
-            사전 상담 신청
-          </a>
+          {/* 파주는 아직 상담 창구가 없어 두 캠퍼스 중 가까운 곳에서 받는다 */}
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <ConsultCampusLinks
+              action="사전 상담 신청"
+              className="w-full rounded-md bg-accent px-6 py-3 text-center text-sm font-medium text-black transition-opacity hover:opacity-85 sm:w-auto"
+            />
+          </div>
 
           {/* 3월까지 기다릴 필요가 없다는 것을 여기서 먼저 알린다 */}
           <div className="mt-10 rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-6 text-left">

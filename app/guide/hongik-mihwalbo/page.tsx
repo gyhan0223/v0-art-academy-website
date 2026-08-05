@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ConsultCampusLinks from "@/components/academy/ConsultCampusLinks";
 
 export const metadata: Metadata = {
   title: "홍대 미활보 가이드 준비중 | 모두다른고양이 미술학원",
@@ -7,9 +8,6 @@ export const metadata: Metadata = {
     "홍익대 미술활동보고서 가이드를 준비하고 있습니다. 공개 전까지 궁금한 점은 상담으로 문의해 주세요.",
   robots: { index: false, follow: false },
 };
-
-const NAVER_BOOKING =
-  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
 
 export default function Page() {
   return (
@@ -27,14 +25,10 @@ export default function Page() {
           공개 전까지 궁금한 점은 상담으로 문의해 주세요.
         </p>
         <div className="mt-8 flex flex-col items-center gap-3">
-          <a
-            href={NAVER_BOOKING}
-            target="_blank"
-            rel="noopener noreferrer"
+          <ConsultCampusLinks
+            action="상담 신청"
             className="inline-block rounded-md bg-accent px-6 py-3 text-sm font-medium text-black transition-opacity hover:opacity-85"
-          >
-            상담 신청
-          </a>
+          />
           <Link
             href="/"
             className="text-xs text-muted-foreground transition-colors hover:text-white"

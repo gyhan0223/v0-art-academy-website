@@ -13,6 +13,7 @@ import {
   type StudentScore,
   type Tier,
 } from "@/lib/jungsi-recommend";
+import ConsultCampusLinks from "@/components/academy/ConsultCampusLinks";
 
 const TRACK_OPTIONS: { value: PrepTrack | "전체"; label: string }[] = [
   { value: "전체", label: "전체 보기" },
@@ -175,7 +176,7 @@ function RankRow({ r }: { r: Ranked }) {
   );
 }
 
-export default function ScoreRecommender({ ctaHref }: { ctaHref: string }) {
+export default function ScoreRecommender() {
   const [국어, set국어] = useState("");
   const [수학, set수학] = useState("");
   const [수학미응시, set수학미응시] = useState(false);
@@ -385,15 +386,12 @@ export default function ScoreRecommender({ ctaHref }: { ctaHref: string }) {
               <span className="font-bold text-white">여기까지는 수능 점수 기준입니다.</span>{" "}
               실기 실력·지망 학과까지 넣은 정확한 조합은 상담에서 잡아 드립니다.
             </p>
-            <a
-              href={ctaHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-            >
-              내 조합 무료 진단
-              <span aria-hidden>→</span>
-            </a>
+            <div className="flex w-full shrink-0 flex-col gap-2.5 sm:flex-row md:w-auto">
+              <ConsultCampusLinks
+                action="무료 진단"
+                className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              />
+            </div>
           </div>
         </div>
       )}

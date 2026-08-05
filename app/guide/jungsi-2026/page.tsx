@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import JungsiExplorer from "@/components/academy/JungsiExplorer";
 import ScoreRecommender from "@/components/academy/ScoreRecommender";
+import ConsultCampusLinks from "@/components/academy/ConsultCampusLinks";
 import { SILGI_META } from "@/lib/jungsi-data";
+import { CAMPUSES } from "@/lib/contact";
 
 export const metadata: Metadata = {
   title: "2026 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
@@ -28,9 +30,6 @@ export const metadata: Metadata = {
     images: [{ url: "/images/og-home.jpg", width: 1200, height: 630 }],
   },
 };
-
-const NAVER_BOOKING =
-  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
 
 /* 히어로: "지원 카드 3장 + 보너스 1장" 시그니처 */
 function CardSlots() {
@@ -103,16 +102,14 @@ const faqs: { q: string; a: React.ReactNode }[] = [
         준비 기간이 크게 달라서 — 서울대·이화여대의 자체·통합실기는 더 오래
         걸립니다 — 지금 시점에는 &lsquo;언제 시작하느냐&rsquo;보다 &lsquo;남은
         기간에 승산 있는 유형을 고르느냐&rsquo;가 관건입니다. 현재 성적과
-        성향으로 어떤 유형·대학 조합이 가능한지는{" "}
-        <a
-          href={NAVER_BOOKING}
-          target="_blank"
-          rel="noopener noreferrer"
+        성향으로 어떤 유형·대학 조합이 가능한지는 무료 진단 상담에서 바로
+        확인해 드립니다 —{" "}
+        <ConsultCampusLinks
+          action=""
+          separator=" · "
           className="font-medium text-accent underline underline-offset-2 hover:opacity-85"
-        >
-          무료 진단 상담
-        </a>
-        에서 바로 확인해 드립니다.
+        />
+        에서 예약하실 수 있습니다.
       </>
     ),
   },
@@ -308,15 +305,12 @@ export default function Page() {
               지원 전략을 <span className="text-accent">무료</span>로 진단해
               드립니다.
             </p>
-            <a
-              href={NAVER_BOOKING}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-            >
-              무료 진단 신청
-              <span aria-hidden>→</span>
-            </a>
+            <div className="flex w-full shrink-0 flex-col gap-2.5 sm:flex-row md:w-auto">
+              <ConsultCampusLinks
+                action="무료 진단 신청"
+                className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              />
+            </div>
           </div>
         </section>
 
@@ -331,7 +325,7 @@ export default function Page() {
             제각각입니다. 모의고사·수능 백분위를 넣으면 각 대학 반영식으로 환산해
             가·나·다군에서 유리한 순으로 정렬해 드립니다.
           </p>
-          <ScoreRecommender ctaHref={NAVER_BOOKING} />
+          <ScoreRecommender />
         </section>
 
         {/* 대학 탐색기 */}
@@ -347,7 +341,7 @@ export default function Page() {
             모집 상세</span>를 펼치면 전공별 모집인원과 경쟁률까지 볼 수
             있습니다. 비율 바는 실기 반영 단계 기준입니다.
           </p>
-          <JungsiExplorer ctaHref={NAVER_BOOKING} />
+          <JungsiExplorer />
         </section>
 
         {/* FAQ */}
@@ -434,16 +428,17 @@ export default function Page() {
             성적대와 실기 스타일에 따라 최적의 가·나·다군 조합은 전부 다릅니다.
             현재 성적 기준으로 지원 가능한 조합을 무료로 진단해 드립니다.
           </p>
-          <a
-            href={NAVER_BOOKING}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-block rounded-md bg-accent px-8 py-3.5 text-sm font-medium text-black transition-opacity hover:opacity-85"
-          >
-            정시 조합 무료 진단 신청
-          </a>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <ConsultCampusLinks
+              action="무료 진단 신청"
+              className="w-full rounded-md bg-accent px-8 py-3.5 text-center text-sm font-medium text-black transition-opacity hover:opacity-85 sm:w-auto"
+            />
+          </div>
           <p className="mt-3 text-xs text-white/35">
-            네이버 예약으로 연결됩니다 · 031-916-8885
+            네이버 예약으로 연결됩니다 ·{" "}
+            {CAMPUSES.map((campus) => `${campus.label} ${campus.phone}`).join(
+              " · ",
+            )}
           </p>
         </section>
       </article>

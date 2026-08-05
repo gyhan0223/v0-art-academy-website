@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import GradeCaseList from "@/components/academy/GradeCaseList";
+import ConsultCampusLinks from "@/components/academy/ConsultCampusLinks";
 import {
   COHORT,
   GRADE_CASES,
@@ -17,9 +18,6 @@ export const metadata: Metadata = {
   // lib/grade-cases.ts의 IS_PLACEHOLDER를 false로 바꾸면 자동으로 색인이 열린다.
   ...(IS_PLACEHOLDER ? { robots: { index: false, follow: true } } : {}),
 };
-
-const NAVER_BOOKING =
-  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
 
 const PHONE_HONGDAE = "02-338-3302";
 
@@ -136,19 +134,16 @@ export default function Page() {
             상담에서 구체적으로 잡아드립니다.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href={NAVER_BOOKING}
-              target="_blank"
-              rel="noopener noreferrer"
+            <ConsultCampusLinks
+              action="상담 신청"
               className="inline-flex w-full items-center justify-center rounded-full bg-accent px-8 py-4 text-base font-bold text-black transition-opacity hover:opacity-85 sm:w-auto"
-            >
-              상담 신청하기
-            </a>
+            />
+            {/* 예약이 부담스러운 분들을 위해 전화도 남겨 둔다 */}
             <a
               href={`tel:${PHONE_HONGDAE}`}
               className="inline-flex w-full items-center justify-center rounded-full border border-white/25 px-8 py-4 text-base font-medium text-white transition-colors hover:border-white/50 sm:w-auto"
             >
-              {PHONE_HONGDAE}
+              홍대 본원 {PHONE_HONGDAE}
             </a>
           </div>
         </section>

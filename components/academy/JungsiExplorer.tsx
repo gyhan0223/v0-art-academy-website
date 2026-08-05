@@ -12,6 +12,8 @@ import {
   type SilgiType,
 } from "@/lib/jungsi-data";
 import { useReportBottomBar } from "@/components/academy/NaverTalk";
+import ConsultCampusMenu from "@/components/academy/ConsultCampusMenu";
+import { CAMPUSES } from "@/lib/contact";
 
 /* ─────────────────────────── 배지 · 비율 바 ─────────────────────────── */
 
@@ -535,7 +537,12 @@ async function renderShareImage(
   ctx.fillText("모두다른고양이 미술학원", PAD, H - 62);
   ctx.fillStyle = "rgba(255,255,255,0.5)";
   ctx.font = `400 24px ${FONT}`;
-  ctx.fillText("일산 · 031-916-8885 · 무료 진단 예약 가능", PAD, H - 24);
+  // 이미지로 저장돼 밖으로 돌아다니는 성적표라 두 캠퍼스를 모두 적는다
+  ctx.fillText(
+    `${CAMPUSES.map((c) => `${c.label} ${c.phone}`).join(" · ")} · 무료 진단 예약 가능`,
+    PAD,
+    H - 24,
+  );
 
   return canvas;
 }
@@ -587,14 +594,12 @@ function PlanTray({
   onRemove,
   onGoGun,
   onClear,
-  ctaHref,
 }: {
   selection: Selection;
   byId: Map<string, JungsiEntry>;
   onRemove: (gun: Gun) => void;
   onGoGun: (gun: Gun) => void;
   onClear: () => void;
-  ctaHref: string;
 }) {
   const mainGuns: Gun[] = ["가", "나", "다"];
   const picked = (Object.keys(selection) as Gun[])
@@ -786,19 +791,22 @@ function PlanTray({
               )
             )}
           </p>
-          <a
-            href={ctaHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handleCta}
+          {/* 화면 아래 고정 트레이라 버튼을 둘로 늘릴 자리가 없다 —
+              눌렀을 때 캠퍼스를 고르게 하고 목록은 위로 편다. */}
+          <ConsultCampusMenu
+            label={
+              complete ? "이 3장 조합 무료 진단 받기" : "이 조합으로 무료 진단 받기"
+            }
+            onSelect={handleCta}
+            direction="up"
+            align="right"
+            wrapperClassName={complete ? "w-full shrink-0 md:w-auto" : "shrink-0"}
             className={
               complete
-                ? "w-full shrink-0 rounded-md bg-accent px-6 py-3 text-center text-sm font-bold text-black shadow-[0_0_0_3px_rgba(255,255,255,0.12)] transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-auto"
-                : "shrink-0 rounded-md bg-accent px-5 py-2.5 text-center text-xs font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                ? "flex w-full items-center justify-center gap-1.5 rounded-md bg-accent px-6 py-3 text-center text-sm font-bold text-black shadow-[0_0_0_3px_rgba(255,255,255,0.12)] transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                : "flex w-full items-center justify-center gap-1.5 rounded-md bg-accent px-5 py-2.5 text-center text-xs font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             }
-          >
-            {complete ? "이 3장 조합 무료 진단 받기" : "이 조합으로 무료 진단 받기"}
-          </a>
+          />
         </div>
       </div>
     </div>
@@ -816,11 +824,7 @@ const SILGI_FILTERS: (SilgiType | "전체")[] = [
   "비실기",
 ];
 
-export default function JungsiExplorer({
-  ctaHref = "#",
-}: {
-  ctaHref?: string;
-}) {
+export default function JungsiExplorer() {
   const [gun, setGun] = useState<Gun>("가");
   const [silgi, setSilgi] = useState<SilgiType | "전체">("전체");
   const [query, setQuery] = useState("");
@@ -1123,7 +1127,6 @@ export default function JungsiExplorer({
           onRemove={removeGun}
           onGoGun={goGun}
           onClear={() => setSelection({})}
-          ctaHref={ctaHref}
         />
       )}
     </div>

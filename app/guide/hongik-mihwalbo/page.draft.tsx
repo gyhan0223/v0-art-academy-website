@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ConsultCampusLinks from "@/components/academy/ConsultCampusLinks";
 
 export const metadata: Metadata = {
   title: "홍익대 미술활동보고서 완전 가이드 | 모두다른고양이 미술학원",
@@ -19,9 +20,6 @@ export const metadata: Metadata = {
     type: "article",
   },
 };
-
-const NAVER_BOOKING =
-  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
 
 const toc = [
   { id: "why", label: "미활보가 왜 홍대 입시의 전부인가" },
@@ -404,14 +402,12 @@ export default function Page() {
                 지금까지의 활동으로 어떤 미활보를 만들 수 있을지 궁금하다면,
                 무료 진단 상담에서 원장이 직접 함께 봐드립니다.
               </p>
-              <a
-                href={NAVER_BOOKING}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block rounded-md bg-accent px-6 py-3 text-sm font-medium text-black transition-opacity hover:opacity-85"
-              >
-                무료 진단 상담 신청
-              </a>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <ConsultCampusLinks
+                  action="무료 진단 상담"
+                  className="rounded-md bg-accent px-6 py-3 text-center text-sm font-medium text-black transition-opacity hover:opacity-85"
+                />
+              </div>
             </div>
           </section>
         </div>

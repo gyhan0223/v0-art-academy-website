@@ -7,9 +7,8 @@
  * 데이터는 lib/winter-results.ts에만 있다.
  */
 
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Minus } from "lucide-react";
+import { Minus } from "lucide-react";
 import {
   WINTER_COHORT,
   IS_PLACEHOLDER,
@@ -257,16 +256,6 @@ export default function WinterResultsPage() {
             모든 사례는 학생 및 학부모의 서면 동의를 받아 게시하며, 이름은
             이니셜로, 학교는 지역만 표기합니다. 등급은 미대 반영 3과목(국어·영어·
             탐구) 기준이며, 성적 향상 정도는 개인에 따라 다를 수 있습니다.
-          </p>
-
-          <p className="mt-6 text-center text-sm">
-            <Link
-              href="/grade-up"
-              className="inline-flex items-center gap-1.5 text-accent hover:underline"
-            >
-              학원 전체 성적 향상 사례 보기
-              <ArrowRight size={15} />
-            </Link>
           </p>
         </div>
       </section>

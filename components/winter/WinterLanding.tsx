@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * 윈터캠프 개요(/winter) — 결정에 필요한 것만 남긴 짧은 페이지.
+ * 윈터스쿨 개요(/winter) — 결정에 필요한 것만 남긴 짧은 페이지.
  *
  * 섹션 흐름:
  *  1. 히어로: 헤드라인 + 즉시 CTA + 긴급성(D-day·정원)
@@ -38,21 +38,21 @@ import {
 } from "lucide-react";
 import {
   CAMP_INFO,
-  REPORT_SAMPLE,
   WINTER_PAGES,
   SMS_HREF,
   KAKAO_CHANNEL_URL,
   getRemainingLabel,
 } from "@/lib/winter-camp";
+import { REPORT_SAMPLE } from "@/lib/winter-report";
 import CtaBand from "@/components/winter/CtaBand";
 import GradeSlopeChart from "@/components/winter/GradeSlopeChart";
 import ConsultForm from "@/components/winter/ConsultForm";
 import MobileActionBar from "@/components/winter/MobileActionBar";
+import ReportSample from "@/components/winter/ReportSample";
 import { NaverTalkButton } from "@/components/academy/NaverTalk";
 import {
   fadeUp,
   SectionHead,
-  SafeImage,
   WinterTabs,
   CONSULT_HREF,
   goToConsult,
@@ -60,7 +60,7 @@ import {
 
 /* --------------------------------- 데이터 ---------------------------------- */
 
-/** 1주차 진단 → 8주차 재측정 — 이 캠프가 결과를 확인하는 방식 */
+/** 1주차 진단 → 8주차 재측정 — 윈터스쿨이 결과를 확인하는 방식 */
 const MEASURE_STEPS = [
   {
     step: "1주차",
@@ -71,7 +71,7 @@ const MEASURE_STEPS = [
   {
     step: "2~7주차",
     title: "매주 확인",
-    desc: "화요일 영어·금요일 국어 모의고사와 매일 밤 영단어 100개 시험으로 학습량을 숫자로 남깁니다. 격주 리포트로 그 기록을 학부모님께 보내드립니다.",
+    desc: "주 2회 국어·영어 모의고사와 평일 매일 밤 영단어 100개 시험으로 학습량을 숫자로 남깁니다. 격주 리포트로 그 기록을 학부모님께 보내드립니다.",
     icon: Repeat,
   },
   {
@@ -141,7 +141,7 @@ export default function WinterLanding() {
       <section className="relative flex min-h-dvh flex-col overflow-hidden px-6 pt-36 pb-12 md:pt-32">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url(/images/winter/studio-practice.jpg)" }}
+          style={{ backgroundImage: "url(/images/winter/hero.jpg)" }}
           aria-hidden
         />
         <div className="absolute inset-0 bg-black/75" aria-hidden />
@@ -249,7 +249,7 @@ export default function WinterLanding() {
             {...fadeUp}
             className="mt-6 text-center text-sm text-white/50 break-keep"
           >
-            {CAMP_INFO.venueName}에서 진행하는 8주 기숙 과정입니다. 캠프가 끝나면
+            {CAMP_INFO.venueName}에서 진행하는 8주 기숙 과정입니다. 윈터스쿨이 끝나면
             각자의 학교 생활로 복귀합니다.
           </motion.p>
         </div>
@@ -324,7 +324,7 @@ export default function WinterLanding() {
             </div>
             <div className="rounded-2xl border border-accent/30 bg-accent/[0.05] p-8 md:p-10">
               <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
-                모다고 윈터캠프
+                모다고 윈터스쿨
               </p>
               <p className="mt-4 text-xl md:text-2xl font-bold text-white leading-snug break-keep">
                 평일은 학과에 전부,
@@ -409,20 +409,9 @@ export default function WinterLanding() {
           {/* ---- 격주 리포트 샘플 1장 ---- */}
           <motion.div
             {...fadeUp}
-            className="mt-12 grid items-center gap-8 rounded-2xl border border-white/10 bg-white/[0.03] p-7 md:grid-cols-2 md:p-10"
+            className="mt-12 rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-10"
           >
-            <figure>
-              <SafeImage
-                src={REPORT_SAMPLE.src}
-                alt={REPORT_SAMPLE.caption}
-                aspectClass="aspect-[3/4]"
-              />
-              <figcaption className="mt-3 text-center text-xs text-white/40 break-keep">
-                {REPORT_SAMPLE.caption}
-              </figcaption>
-            </figure>
-
-            <div>
+            <div className="mx-auto max-w-2xl text-center">
               <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
                 Report
               </p>
@@ -434,9 +423,19 @@ export default function WinterLanding() {
                 정리해 격주로 학부모님께 발송합니다. 8주가 끝난 뒤에 결과를
                 받아보는 것이 아니라, 진행되는 동안 계속 확인하실 수 있습니다.
               </p>
+            </div>
+
+            <figure className="mt-8">
+              <ReportSample />
+              <figcaption className="mt-3 text-center text-xs text-white/40 break-keep">
+                {REPORT_SAMPLE.caption}
+              </figcaption>
+            </figure>
+
+            <div className="mt-8 text-center">
               <Link
                 href="/winter/results"
-                className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
               >
                 실제 성적 향상 사례 보기
                 <ArrowRight size={15} />

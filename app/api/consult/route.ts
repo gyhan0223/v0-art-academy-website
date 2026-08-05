@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 /**
- * 윈터캠프 상담 신청 접수.
+ * 윈터스쿨 상담 신청 접수.
  *
  * 접수 내용을 구글 Apps Script 웹훅으로 전송한다.
  * 웹훅이 구글 스프레드시트 기록 + 이메일 알림을 모두 처리한다.

@@ -13,7 +13,7 @@ export type AdmissionList = {
 /** 가장 최근에 마감된 입시 연도 — "작년 합격자" 표기의 단일 기준 */
 export const RECENT_YEAR = "2026학년도";
 
-/** 대학별 합격 실적 카드. 메인(Scene2)·윈터캠프 실적 섹션이 함께 사용한다. */
+/** 대학별 합격 실적 카드. 메인(Scene2)·윈터스쿨 실적 섹션이 함께 사용한다. */
 export type UniversityCard = {
   name: string;
   /** 누적 합격자 수 */

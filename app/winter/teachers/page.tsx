@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import WinterTeachersPage from "@/components/winter/WinterTeachersPage";
 
-const PAGE_TITLE = "윈터캠프 강사진 | 2027 모다고 윈터캠프";
+const PAGE_TITLE = "윈터스쿨 강사진 | 2027 모다고 윈터스쿨";
 const PAGE_DESCRIPTION =
-  "윈터캠프 학과(국어·영어·사회탐구)는 강사 직강, 주말 실기는 지원 대학 유형별. 강사마다 한 줄 소개와 경력, 본원 상주 여부까지 공개합니다.";
+  "윈터스쿨 학과(국어·영어·사회탐구)는 강사 직강, 주말 실기는 지원 대학 유형별. 강사마다 한 줄 소개와 경력, 본원 상주 여부까지 공개합니다.";
 
 export const metadata: Metadata = {
   title: PAGE_TITLE,

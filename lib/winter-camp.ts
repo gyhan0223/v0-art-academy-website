@@ -1,5 +1,5 @@
 /**
- * 2027 모다고 윈터캠프 — 캠프 정보 단일 소스.
+ * 2027 모다고 윈터스쿨 — 윈터스쿨 정보 단일 소스.
  * 페이지·배너·네비게이션 등 모든 곳에서 이 객체만 참조한다.
  * 미확정 값은 대괄호 [ ]로 표기.
  */
@@ -8,10 +8,10 @@
 export const SHOW_ANNOUNCEMENT = true;
 
 export const CAMP_INFO = {
-  name: "2027 모다고 윈터캠프",
+  name: "2027 모다고 윈터스쿨",
   subtitle: "2028학년도 미대입시 대비 · 홍대 본원 기숙 직강 윈터스쿨",
 
-  // 장소 — 윈터캠프는 홍대 본원에서만 진행 (파주 기숙학원과 무관)
+  // 장소 — 윈터스쿨은 홍대 본원에서만 진행 (파주 기숙학원과 무관)
   venueName: "모두다른고양이 미술학원 홍대 본원",
   address: "서울시 마포구 와우산로23길 9 칼리오페 5층",
   mapUrl: "https://naver.me/5wWq5AUs",
@@ -62,7 +62,7 @@ export function getRemainingTotal(): number {
 /* ------------------------------- 하위 페이지 ------------------------------- */
 
 /**
- * 윈터캠프 하위 페이지 — 네비게이션 드롭다운과 /winter 하단 카드가
+ * 윈터스쿨 하위 페이지 — 네비게이션 드롭다운과 /winter 하단 카드가
  * 전부 이 배열 하나를 참조한다. 페이지를 늘리면 여기에만 추가하면 된다.
  */
 export const WINTER_PAGES = [
@@ -80,7 +80,7 @@ export const WINTER_PAGES = [
   },
   {
     href: "/winter/gallery",
-    label: "캠프 사진",
+    label: "윈터스쿨 사진",
     en: "Gallery",
     desc: "기숙사 · 강의실 · 실기실 · 식사",
   },
@@ -92,29 +92,24 @@ export const WINTER_PAGES = [
   },
 ] as const;
 
-/** 격주 리포트 샘플 이미지 — 파일이 없으면 화면에 "이미지 준비 중"으로 표시된다 */
-// TODO: 원장님 확인 — 실제 리포트 1장을 이름·점수 가린 뒤 이 경로에 올려 주세요.
-export const REPORT_SAMPLE = {
-  src: "/images/winter/report-sample.jpg",
-  caption: "격주 리포트 샘플 — 학생 이름과 개인정보는 가렸습니다",
-} as const;
+/** 격주 리포트 샘플은 이미지가 아니라 문서로 그린다 → lib/winter-report.ts */
 
 /* ---------------------------- 전/후 등급 비교 ------------------------------ */
 
 /**
- * 윈터캠프 전/후 등급 비교 — /winter [3] 섹션의 슬로프 차트가 이 값만 읽는다.
+ * 윈터스쿨 전/후 등급 비교 — /winter [3] 섹션의 슬로프 차트가 이 값만 읽는다.
  *
- * 같은 등급에서 출발한 두 학생이 8주 뒤 어디에 서 있는지가 이 캠프의 주장 전부다.
+ * 같은 등급에서 출발한 두 학생이 8주 뒤 어디에 서 있는지가 이 과정의 주장 전부다.
  * 등급은 숫자가 작을수록 높은 등급(1등급이 최상)이라 차트에서도 위로 그린다.
  *
  * TODO: 원장님 확인 — 지금 숫자는 두 방식의 차이를 설명하기 위한 예시입니다.
  * 실제 사례(1주차 진단 → 8주차 재측정 기록)가 모이면 숫자와 note를 함께
- * 교체하고, note를 실제 표본 수("2026 윈터캠프 수강생 N명 평균")로 바꿔 주세요.
+ * 교체하고, note를 실제 표본 수("2026 윈터스쿨 수강생 N명 평균")로 바꿔 주세요.
  * 실제 데이터 없이 note를 지우면 과장광고가 됩니다.
  */
 export const GRADE_COMPARISON = {
   subjects: "국어 · 영어 · 탐구",
-  beforeLabel: "윈터캠프 전",
+  beforeLabel: "윈터스쿨 전",
   afterLabel: "8주 뒤",
   /** 두 학생의 공통 출발 등급 */
   startGrade: 3,
@@ -129,7 +124,7 @@ export const GRADE_COMPARISON = {
     },
     {
       key: "modago",
-      name: "모다고 윈터캠프",
+      name: "모다고 윈터스쿨",
       detail: "평일 학과 · 주말 실기",
       afterGrade: 2,
       emphasis: true,
@@ -144,7 +139,7 @@ export const GRADE_COMPARISON = {
 export const SMS_PHONE = "0233833302";
 
 /** 문자 문의 기본 문구 */
-export const SMS_BODY = "[윈터캠프 문의] 학년:    / 이름: ";
+export const SMS_BODY = "[윈터스쿨 문의] 학년:    / 이름: ";
 
 /** iOS는 `sms:번호&body=`, Android는 `sms:번호?body=` — `?&body=` 표기가 양쪽 모두에서 동작 */
 export const SMS_HREF = `sms:${SMS_PHONE}?&body=${encodeURIComponent(SMS_BODY)}`;

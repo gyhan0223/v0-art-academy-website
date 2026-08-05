@@ -1,5 +1,5 @@
 /**
- * 윈터캠프 사진 데이터 단일 소스.
+ * 윈터스쿨 사진 데이터 단일 소스.
  * /winter/gallery 페이지가 이 파일만 참조한다.
  *
  * ── 사진 넣을 때 지킬 것 ──────────────────────────────────────
@@ -38,52 +38,53 @@ export interface GalleryPhoto {
   category: GalleryCategory;
 }
 
-// TODO: 원장님 확인 — 실제 촬영본으로 교체. 파일이 없는 항목은
-//       화면에 "이미지 준비 중"으로 표시되고 격자는 그대로 유지된다.
+// 본원(beutiful-academy) 시설 촬영본을 4:3으로 잘라 가져온 사진들.
+//
+// TODO: 원장님 확인 — 아래 컷은 본원 자료에 없어 아직 비어 있다. 촬영본이
+//       생기면 같은 규칙(4:3, 1600×1200, 500KB 이하)으로 추가한다.
+//       · 여학생 / 남학생 생활관을 구분해 보여줄 사진
+//       · 식당 전경과 30찬 뷔페 배식대 (지금 있는 식사 사진은 배식 도시락이라
+//         "매 끼 30찬 뷔페식"이라는 설명과 그림이 맞지 않는다)
+//       · 개인 이젤·작업 자리가 보이는 실기실 컷
 export const GALLERY_PHOTOS: GalleryPhoto[] = [
   {
-    src: "/images/winter/dorm-female.jpg",
-    caption: "여학생 생활관",
-    category: "기숙사",
-  },
-  {
-    src: "/images/winter/dorm-male.jpg",
-    caption: "남학생 생활관",
+    src: "/images/winter/dorm-room.jpg",
+    caption: "생활관 4인실",
     category: "기숙사",
   },
   {
     src: "/images/winter/dorm-study.jpg",
-    caption: "[생활관 독서실]",
+    caption: "생활관 독서실",
     category: "기숙사",
   },
   {
-    src: "/images/winter/classroom.jpg",
+    src: "/images/winter/classroom-lecture.jpg",
+    caption: "학과 수업",
+    category: "강의실",
+  },
+  {
+    src: "/images/winter/classroom-front.jpg",
     caption: "학과 강의실",
     category: "강의실",
   },
   {
-    src: "/images/winter/classroom-clinic.jpg",
-    caption: "[클리닉 강의실]",
+    src: "/images/winter/classroom-desks.jpg",
+    caption: "자기주도 학습 자리",
     category: "강의실",
   },
   {
-    src: "/images/winter/studio-practice.jpg",
+    src: "/images/winter/studio-01.jpg",
     caption: "실기실",
     category: "실기실",
   },
   {
-    src: "/images/winter/studio-desk.jpg",
-    caption: "[개인 이젤·작업 자리]",
+    src: "/images/winter/studio-02.jpg",
+    caption: "실기실",
     category: "실기실",
   },
   {
-    src: "/images/winter/dining-buffet.jpg",
-    caption: "매 끼 30찬 뷔페식",
-    category: "식사",
-  },
-  {
-    src: "/images/winter/dining-hall.jpg",
-    caption: "[식당]",
+    src: "/images/winter/dining-meal.jpg",
+    caption: "제공 식단",
     category: "식사",
   },
 ];

@@ -15,8 +15,8 @@ import { IS_PLACEHOLDER as GRADE_CASES_PLACEHOLDER } from "@/lib/grade-cases";
 const remainingTotal = getRemainingTotal();
 const ANNOUNCEMENT_TEXT =
   remainingTotal <= 0
-    ? "2027 모다고 윈터캠프 · 마감"
-    : `2027 모다고 윈터캠프 · ${getRemainingLabel()} · 홍대 본원 기숙`;
+    ? "2027 모다고 윈터스쿨 · 마감"
+    : `2027 모다고 윈터스쿨 · ${getRemainingLabel()} · 홍대 본원 기숙`;
 const ANNOUNCEMENT_KEY = "modago-winter-announcement-closed";
 
 const PHONE_HONGDAE = { label: "홍대 본원", number: "02-338-3302" };
@@ -64,9 +64,9 @@ const navItems: NavItem[] = [
   //   href: "/mock",
   //   badge: "접수중",
   // },
-  // 강사진은 상단에서 빼고 윈터캠프 드롭다운 안에만 둔다(/winter/teachers).
+  // 강사진은 상단에서 빼고 윈터스쿨 드롭다운 안에만 둔다(/winter/teachers).
   // 학원 전체 강사진 페이지(/teachers)는 그대로 살아 있고 파주 기숙학원 페이지와
-  // 윈터캠프 강사진 페이지 하단에서 연결된다.
+  // 윈터스쿨 강사진 페이지 하단에서 연결된다.
   {
     label: "성적 향상 사례",
     href: "/grade-up",
@@ -74,12 +74,12 @@ const navItems: NavItem[] = [
     badge: GRADE_CASES_PLACEHOLDER ? "준비중" : undefined,
   },
   {
-    label: "윈터캠프",
+    label: "윈터스쿨",
     href: "/winter",
     badge: "모집중",
     children: [
       {
-        label: "윈터캠프 (개요)",
+        label: "윈터스쿨 (개요)",
         href: "/winter",
         desc: "대상·정원·기간과 8주 운영 방식",
         badge: "모집중",

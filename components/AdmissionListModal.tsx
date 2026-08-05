@@ -2,7 +2,7 @@
 
 /**
  * 대학별 합격자 명단 모달.
- * 메인 페이지(Scene2)와 윈터캠프 합격 실적 섹션이 함께 사용한다.
+ * 메인 페이지(Scene2)와 윈터스쿨 합격 실적 섹션이 함께 사용한다.
  */
 
 import { AnimatePresence, motion } from "framer-motion";

@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * 윈터캠프 페이지들이 함께 쓰는 조각들.
+ * 윈터스쿨 페이지들이 함께 쓰는 조각들.
  * /winter(개요)와 4개 하위 페이지가 같은 얼굴을 유지하도록 여기에 모아 둔다.
  */
 
@@ -82,7 +82,7 @@ export function SubPageHeader({
         className="flex items-center justify-center gap-1.5 text-xs text-white/40"
       >
         <Link href="/winter" className="transition-colors hover:text-white/70">
-          윈터캠프
+          윈터스쿨
         </Link>
         <ChevronRight size={12} />
         <span className="text-white/70">{title}</span>
@@ -103,14 +103,14 @@ export function SubPageHeader({
   );
 }
 
-/** 윈터캠프 5개 페이지 — 개요가 맨 앞, 순서는 어느 페이지에서나 같다 */
+/** 윈터스쿨 5개 페이지 — 개요가 맨 앞, 순서는 어느 페이지에서나 같다 */
 const WINTER_TABS = [
-  { href: "/winter", label: "캠프 개요" },
+  { href: "/winter", label: "윈터스쿨 개요" },
   ...WINTER_PAGES.map((page) => ({ href: page.href, label: page.label })),
 ];
 
 /**
- * 윈터캠프 페이지끼리 오가는 줄 — 개요(/winter)를 포함한 다섯 페이지 모두에 같은 모습으로 둔다.
+ * 윈터스쿨 페이지끼리 오가는 줄 — 개요(/winter)를 포함한 다섯 페이지 모두에 같은 모습으로 둔다.
  * 어느 페이지로 넘어가도 이 줄이 화면 상단에서 사라지지 않아야 한다.
  *
  * 모바일에서는 줄바꿈 대신 가로 스크롤 한 줄로 둔다. 다섯 개가 두세 줄로 접히면
@@ -122,7 +122,7 @@ export function WinterTabs({ className = "" }: { className?: string }) {
   const activeRef = useRef<HTMLAnchorElement>(null);
 
   /* 현재 페이지 칩이 가로 스크롤 밖에 있을 때만, 딱 보일 만큼만 당겨온다.
-     가운데로 몰면 앞쪽 칩(캠프 개요)이 잘려 나가고, 페이지 세로 스크롤은 건드리지 않는다. */
+     가운데로 몰면 앞쪽 칩(윈터스쿨 개요)이 잘려 나가고, 페이지 세로 스크롤은 건드리지 않는다. */
   useEffect(() => {
     const list = listRef.current;
     const chip = activeRef.current;
@@ -139,7 +139,7 @@ export function WinterTabs({ className = "" }: { className?: string }) {
   }, [pathname]);
 
   return (
-    <nav aria-label="윈터캠프 메뉴" className={className}>
+    <nav aria-label="윈터스쿨 하위 메뉴" className={className}>
       {/* -mx-5 px-5: 모바일에서 스크롤 영역만 화면 끝까지 늘려 칩이 잘린 채 이어짐을 보여준다 */}
       <div
         ref={listRef}

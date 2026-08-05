@@ -1,10 +1,11 @@
 /**
- * 윈터캠프 하루 일과표 데이터 단일 소스.
+ * 윈터스쿨 하루 일과표 데이터 단일 소스.
  * /winter/schedule 페이지가 이 파일만 참조한다.
  * 시간표가 바뀌면 컴포넌트는 건드리지 말고 이 파일만 고치면 된다.
  *
- * 일과표는 "몇 시에 무엇" 목록이 아니라 한 시간 단위로 끊긴 타임라인 위에
- * 블록으로 그려진다. 그래서 각 항목은 시작·끝 시각을 모두 가진다.
+ * 일과표는 평일·주말을 나란히 놓은 한 장의 표로 그려진다. 두 요일의 시각이
+ * 갈리는 지점마다 행이 하나씩 생기고, 여러 행에 걸치는 일정은 셀을 합친다.
+ * 그래서 각 항목은 시작·끝 시각을 모두 가진다.
  */
 
 export type ScheduleType = "silgi" | "hakgwa" | "life";
@@ -23,9 +24,13 @@ export type TimeBlock = {
   type: ScheduleType;
 };
 
-/** 타임라인이 그려지는 하루의 범위 */
-export const DAY_START = "06:00";
-export const DAY_END = "23:00";
+/**
+ * 표가 그려지는 범위 — 깨어 있는 시간만 그린다.
+ * 22:00 취침 → 06:00 기상, 즉 매일 8시간 수면이 이 두 값에 들어 있다.
+ */
+export const WAKE_TIME = "06:00";
+export const SLEEP_TIME = "22:00";
+export const SLEEP_HOURS = 8;
 
 /** 2027학년도 시간표 기준 — 평일은 학과에 전부 쓴다 */
 export const WEEKDAY_SCHEDULE: TimeBlock[] = [
@@ -58,25 +63,24 @@ export const WEEKDAY_SCHEDULE: TimeBlock[] = [
     end: "17:25",
     label: "자기주도 학습",
     short: "자기주도",
-    note: "화 영어 · 금 국어 모의고사",
+    note: "주 2회 국어 · 영어 모의고사",
     type: "hakgwa",
   },
   { start: "17:25", end: "18:10", label: "저녁 시간", short: "저녁", type: "life" },
   {
     start: "18:10",
-    end: "22:20",
+    end: "21:50",
     label: "자기주도 학습",
     short: "자기주도",
     type: "hakgwa",
   },
   {
-    start: "22:20",
-    end: "22:40",
+    start: "21:50",
+    end: "22:00",
     label: "영어 100단어 시험",
     short: "단어 시험",
     type: "hakgwa",
   },
-  { start: "22:40", end: "23:00", label: "취침", short: "취침", type: "life" },
 ];
 
 /** 주말은 대학교 유형 실기에 온전히 쓴다 */
@@ -108,12 +112,11 @@ export const WEEKEND_SCHEDULE: TimeBlock[] = [
   { start: "17:25", end: "18:10", label: "저녁 시간", short: "저녁", type: "life" },
   {
     start: "18:10",
-    end: "22:30",
+    end: "22:00",
     label: "대학교 유형 미술실기",
     short: "대학 유형 실기",
     type: "silgi",
   },
-  { start: "22:30", end: "23:00", label: "취침", short: "취침", type: "life" },
 ];
 
 export const SCHEDULE_STYLE: Record<
@@ -164,23 +167,38 @@ export function durationLabel(minutes: number): string {
   return `${h}시간 ${m}분`;
 }
 
-/** 타임라인 전체 길이(분) — 위치를 비율로 환산할 때 쓴다 */
-export const DAY_MINUTES = toMinutes(DAY_END) - toMinutes(DAY_START);
+/** 깨어 있는 시간의 총량(분) — 06:00부터 22:00까지 */
+export const AWAKE_MINUTES = toMinutes(SLEEP_TIME) - toMinutes(WAKE_TIME);
 
-/** 하루 범위 안의 정시 눈금 — [6, 7, ... 23] */
-export const HOUR_MARKS: number[] = Array.from(
-  { length: Math.floor(toMinutes(DAY_END) / 60) - Math.ceil(toMinutes(DAY_START) / 60) + 1 },
-  (_, i) => Math.ceil(toMinutes(DAY_START) / 60) + i,
-);
+/* ------------------------------ 표의 행과 셀 ------------------------------ */
 
-/** 자정 기준 분 → 타임라인 상단에서의 위치(%) */
-export function offsetPercent(minutes: number): number {
-  return ((minutes - toMinutes(DAY_START)) / DAY_MINUTES) * 100;
-}
+/**
+ * 평일·주말의 시각이 갈리는 지점 = 표의 행이 시작하는 시각.
+ * 두 요일을 한 표에 나란히 놓기 위해 시작 시각을 모두 모아 정렬한다.
+ */
+export const ROW_STARTS: string[] = Array.from(
+  new Set([...WEEKDAY_SCHEDULE, ...WEEKEND_SCHEDULE].map((b) => b.start)),
+).sort((a, b) => toMinutes(a) - toMinutes(b));
 
-/** 길이(분) → 타임라인에서 차지하는 높이(%) */
-export function heightPercent(minutes: number): number {
-  return (minutes / DAY_MINUTES) * 100;
+/** 표에 그려지는 시각 눈금 — 각 행의 시작에 마지막 취침 시각을 더한 것 */
+export const ROW_TIMES: string[] = [...ROW_STARTS, SLEEP_TIME];
+
+export type ScheduleCell = {
+  block: TimeBlock;
+  /** ROW_STARTS 안에서의 시작 행 번호 (0부터) */
+  row: number;
+  /** 몇 개의 행에 걸치는지 — 1보다 크면 셀을 합친다 */
+  span: number;
+};
+
+/** 하루 일정을 표의 셀로 — 다른 요일 때문에 생긴 행까지 함께 덮게 한다 */
+export function cellsOf(blocks: TimeBlock[]): ScheduleCell[] {
+  return blocks.map((block) => {
+    const row = ROW_STARTS.indexOf(block.start);
+    const after = ROW_STARTS.findIndex((t) => toMinutes(t) >= toMinutes(block.end));
+    const end = after === -1 ? ROW_STARTS.length : after;
+    return { block, row, span: end - row };
+  });
 }
 
 /** 유형이 놓이는 순서 — 그날의 중심이 먼저 온다 */
@@ -212,11 +230,12 @@ export type WeeklyDay = {
 
 /** 8주 내내 반복되는 한 주의 모양 — 한눈에 보이게 하는 것이 목적이다 */
 export const WEEKLY_PATTERN: WeeklyDay[] = [
-  { day: "월", focus: "hakgwa" },
-  { day: "화", focus: "hakgwa", highlight: "영어 모의고사" },
-  { day: "수", focus: "hakgwa" },
-  { day: "목", focus: "hakgwa" },
-  { day: "금", focus: "hakgwa", highlight: "국어 모의고사" },
+  /* 모의고사는 주 2회지만 요일을 못박지 않는다 — 아래 WEEKLY_FIXTURES로만 안내한다 */
+  { day: "월", focus: "hakgwa", highlight: "영단어 시험" },
+  { day: "화", focus: "hakgwa", highlight: "영단어 시험" },
+  { day: "수", focus: "hakgwa", highlight: "영단어 시험" },
+  { day: "목", focus: "hakgwa", highlight: "영단어 시험" },
+  { day: "금", focus: "hakgwa", highlight: "영단어 시험" },
   { day: "토", focus: "silgi", highlight: "대학교 유형 실기" },
   { day: "일", focus: "silgi", highlight: "대학교 유형 실기" },
 ];
@@ -224,16 +243,16 @@ export const WEEKLY_PATTERN: WeeklyDay[] = [
 /** 요일과 무관하게 매일·매주 고정으로 반복되는 것들 */
 export const WEEKLY_FIXTURES: { label: string; detail: string }[] = [
   {
-    label: "매일 밤 22:20",
-    detail: "영어 100단어 시험 — 8주간 5,000단어",
+    label: "평일 매일 밤 21:50",
+    detail: "영어 100단어 시험 — 주 500단어, 8주간 4,000단어",
   },
   {
     label: "주 2회",
-    detail: "화요일 영어 · 금요일 국어 모의고사",
+    detail: "국어 · 영어 모의고사 — 요일은 주차별 진도에 맞춰 공지",
   },
   {
-    label: "매일 06:00 / 22:40",
-    detail: "기상·취침 시각 고정 — 8주간 생활 리듬을 흔들지 않는다",
+    label: "매일 06:00 / 22:00",
+    detail: "기상·취침 시각 고정 — 8주 내내 하루 8시간 수면을 보장한다",
   },
   {
     label: "격주",

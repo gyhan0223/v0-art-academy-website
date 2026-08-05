@@ -3,7 +3,7 @@ import WinterLanding from "@/components/winter/WinterLanding";
 import { CAMP_INFO } from "@/lib/winter-camp";
 
 const PAGE_TITLE =
-  "2027 모다고 윈터캠프 | 최상위권 미대 전문 홍대 본원 기숙 윈터스쿨";
+  "2027 모다고 윈터스쿨 | 최상위권 미대 전문 홍대 본원 기숙 과정";
 const PAGE_DESCRIPTION =
   "최상위권 미대 전문. 예비 고3 대상 8주 기숙 직강 과정. 학과(국어·영어·탐구)는 강사 직강, 실기는 주말 집중. 홍대 본원. 정원 14명.";
 

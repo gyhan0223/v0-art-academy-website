@@ -15,13 +15,17 @@ import {
   WEEKLY_FIXTURES,
   WEEKEND_POINTS,
   SCHEDULE_STYLE,
-  HOUR_MARKS,
+  ROW_STARTS,
+  ROW_TIMES,
+  AWAKE_MINUTES,
+  SLEEP_HOURS,
+  WAKE_TIME,
+  SLEEP_TIME,
+  cellsOf,
   durationOf,
   durationLabel,
-  toMinutes,
-  offsetPercent,
-  heightPercent,
   summarize,
+  type ScheduleCell,
   type TimeBlock,
 } from "@/lib/winter-schedule";
 import CtaBand from "@/components/winter/CtaBand";
@@ -34,55 +38,52 @@ import {
 } from "@/components/winter/shared";
 
 /**
- * 타임라인 높이. 한 시간이 항상 같은 높이를 차지하도록 고정한다.
- * (시간 눈금 17칸 × 52px / md 64px)
+ * 표의 첫 줄은 요일 머리, 그 다음부터 시각 행이 온다.
+ * CSS 그리드 행 번호는 1부터라 시각 행 i는 i + 2가 된다.
  */
-const TRACK_HEIGHT = "h-[884px] md:h-[1088px]";
+const gridRowOf = (i: number) => i + 2;
 
-/** 왼쪽 시간 눈금자 — 두 타임라인이 이 눈금을 함께 쓴다 */
-function HourRuler() {
-  return (
-    <div className={`relative ${TRACK_HEIGHT}`}>
-      {HOUR_MARKS.map((hour) => (
-        <span
-          key={hour}
-          className="absolute right-0 -translate-y-1/2 font-mono text-[10px] md:text-xs tabular-nums text-white/30"
-          style={{ top: `${offsetPercent(hour * 60)}%` }}
-        >
-          {String(hour).padStart(2, "0")}
-          <span className="hidden md:inline">:00</span>
-        </span>
-      ))}
-    </div>
-  );
-}
+/** 취침 줄 — 시각 행 아래에 한 줄 더 붙는다 */
+const SLEEP_ROW = gridRowOf(ROW_STARTS.length);
 
-/** 하루 시간이 유형별로 어떻게 갈리는지 — 타임라인 위에 얹는 막대 */
-function DayHead({ title, sub, blocks }: { title: string; sub: string; blocks: TimeBlock[] }) {
+/** 요일 머리 — 이름과 그날 시간이 유형별로 어떻게 갈리는지 */
+function DayHead({
+  title,
+  sub,
+  blocks,
+  column,
+}: {
+  title: string;
+  sub: string;
+  blocks: TimeBlock[];
+  column: number;
+}) {
   const shares = summarize(blocks);
   return (
-    <div className="flex flex-col justify-end pb-3">
+    <div
+      className="flex flex-col justify-end gap-1.5 pb-2"
+      style={{ gridColumn: column, gridRow: 1 }}
+    >
       <p className="text-sm md:text-base font-bold text-white break-keep">
         {title}{" "}
-        <span className="text-xs md:text-sm font-medium text-white/40">{sub}</span>
+        <span className="text-[10px] md:text-xs font-medium text-white/40">{sub}</span>
       </p>
-      {/* 유형별로 한 줄씩 — 두 요일의 줄 수가 같아야 눈금과 나란히 선다 */}
-      <dl className="mt-2 space-y-1">
+      <dl className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
         {shares.map((share) => (
-          <div key={share.type} className="flex items-center gap-1.5">
+          <div key={share.type} className="flex items-center gap-1">
             <span
               className={`h-1.5 w-1.5 shrink-0 rounded-full ${SCHEDULE_STYLE[share.type].dot}`}
             />
-            <dt className="text-[10px] md:text-xs text-white/45">
+            <dt className="text-[9px] md:text-[11px] text-white/45">
               {SCHEDULE_STYLE[share.type].label}
             </dt>
-            <dd className="text-[10px] md:text-xs font-medium tabular-nums text-white/70">
+            <dd className="text-[9px] md:text-[11px] font-medium tabular-nums text-white/70">
               {durationLabel(share.minutes)}
             </dd>
           </div>
         ))}
       </dl>
-      <div className="mt-3 flex h-1.5 overflow-hidden rounded-full bg-white/5">
+      <div className="flex h-1 overflow-hidden rounded-full bg-white/5">
         {shares.map((share) => (
           <span
             key={share.type}
@@ -95,77 +96,74 @@ function DayHead({ title, sub, blocks }: { title: string; sub: string; blocks: T
   );
 }
 
-/** 한 시간 단위로 끊긴 눈금 위에, 실제 길이만큼의 블록을 얹는다 */
-function DayTimeline({ blocks }: { blocks: TimeBlock[] }) {
+/** 표의 칸 하나 — 다른 요일 때문에 생긴 행까지 덮을 때는 셀을 합친다 */
+function SlotCell({ cell, column }: { cell: ScheduleCell; column: number }) {
+  const style = SCHEDULE_STYLE[cell.block.type];
   return (
     <div
-      className={`relative ${TRACK_HEIGHT} overflow-hidden rounded-xl border border-white/10 bg-white/[0.015]`}
+      className={`flex flex-col justify-center rounded-lg border-l-[3px] px-2 py-1.5 md:px-3.5 md:py-2.5 ${style.block}`}
+      style={{
+        gridColumn: column,
+        gridRow: `${gridRowOf(cell.row)} / span ${cell.span}`,
+      }}
     >
-      {/* 정시 눈금 */}
-      {HOUR_MARKS.map((hour) => (
+      <p
+        className={`text-[11px] md:text-sm font-semibold leading-snug break-keep ${style.title}`}
+      >
+        <span className="md:hidden">{cell.block.short}</span>
+        <span className="hidden md:inline">{cell.block.label}</span>
+      </p>
+      <p
+        className={`mt-0.5 text-[9px] md:text-[11px] tabular-nums ${style.text}`}
+      >
+        {durationLabel(durationOf(cell.block))}
+      </p>
+      {cell.block.note && (
+        <p className="mt-1 hidden md:block text-[11px] leading-relaxed text-white/40 break-keep">
+          {cell.block.note}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** 평일과 주말을 한 표에 나란히 — 스크롤 없이 하루가 한눈에 들어오게 한다 */
+function ScheduleTable() {
+  return (
+    <div className="grid auto-rows-[minmax(2.5rem,auto)] grid-cols-[38px_1fr_1fr] gap-x-1.5 gap-y-1 md:auto-rows-[minmax(3rem,auto)] md:grid-cols-[56px_1fr_1fr] md:gap-x-3 md:gap-y-1.5">
+      <DayHead title="평일" sub="월–금" blocks={WEEKDAY_SCHEDULE} column={2} />
+      <DayHead title="주말" sub="토·일" blocks={WEEKEND_SCHEDULE} column={3} />
+
+      {/* 왼쪽 시각 눈금 — 각 행이 시작하는 시각을 행 맨 위에 세운다 */}
+      {ROW_TIMES.map((time, i) => (
         <span
-          key={hour}
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 border-t border-white/[0.06]"
-          style={{ top: `${offsetPercent(hour * 60)}%` }}
-        />
+          key={time}
+          className="pt-1.5 text-right font-mono text-[10px] md:text-xs tabular-nums text-white/35"
+          style={{ gridColumn: 1, gridRow: gridRowOf(i) }}
+        >
+          {time}
+        </span>
       ))}
 
-      {blocks.map((block) => {
-        const minutes = durationOf(block);
-        const style = SCHEDULE_STYLE[block.type];
-        /* 블록이 짧으면 한 줄로만 쓴다 — 넘치는 것보다 낫다 */
-        const roomy = minutes >= 70;
-        const name = (
-          <>
-            <span className="md:hidden">{block.short}</span>
-            <span className="hidden md:inline">{block.label}</span>
-          </>
-        );
+      {cellsOf(WEEKDAY_SCHEDULE).map((cell) => (
+        <SlotCell key={`weekday-${cell.block.start}`} cell={cell} column={2} />
+      ))}
+      {cellsOf(WEEKEND_SCHEDULE).map((cell) => (
+        <SlotCell key={`weekend-${cell.block.start}`} cell={cell} column={3} />
+      ))}
 
-        return (
-          <div
-            key={`${block.start}-${block.label}`}
-            className={`absolute inset-x-1 overflow-hidden rounded-lg border-l-[3px] md:inset-x-1.5 ${
-              style.block
-            } ${roomy ? "px-2 py-1.5 md:px-3 md:py-2" : "flex items-center px-2 md:px-3"}`}
-            style={{
-              top: `calc(${offsetPercent(toMinutes(block.start))}% + 2px)`,
-              height: `calc(${heightPercent(minutes)}% - 4px)`,
-            }}
-          >
-            {roomy ? (
-              <>
-                <p className="font-mono text-[9px] md:text-[11px] tabular-nums text-white/35">
-                  {block.start}–{block.end}
-                </p>
-                <p
-                  className={`mt-0.5 text-[11px] md:text-sm font-semibold leading-snug break-keep ${style.title}`}
-                >
-                  {name}
-                </p>
-                <p className={`mt-1 text-[9px] md:text-[11px] ${style.text}`}>
-                  {durationLabel(minutes)}
-                </p>
-                {block.note && minutes >= 120 && (
-                  <p className="mt-1.5 hidden md:block text-[11px] leading-relaxed text-white/40 break-keep">
-                    {block.note}
-                  </p>
-                )}
-              </>
-            ) : (
-              <p
-                className={`flex w-full items-baseline gap-1.5 text-[10px] md:text-xs leading-none break-keep ${style.title}`}
-              >
-                {name}
-                <span className="shrink-0 font-normal text-white/30">
-                  {durationLabel(minutes)}
-                </span>
-              </p>
-            )}
-          </div>
-        );
-      })}
+      {/* 취침은 두 요일이 같다 — 한 칸으로 합쳐 8시간 수면을 못박는다 */}
+      <div
+        className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 rounded-lg border border-dashed border-white/15 bg-white/[0.02] px-2.5 py-2 md:px-3.5"
+        style={{ gridColumn: "2 / span 2", gridRow: SLEEP_ROW }}
+      >
+        <span className="text-[11px] md:text-sm font-semibold text-white/60">
+          취침
+        </span>
+        <span className="text-[10px] md:text-xs text-white/40 break-keep">
+          다음 날 {WAKE_TIME} 기상까지 — 매일 {SLEEP_HOURS}시간 수면
+        </span>
+      </div>
     </div>
   );
 }
@@ -178,7 +176,7 @@ export default function WinterSchedulePage() {
           <SubPageHeader
             en="Daily Routine"
             title="하루 일과표"
-            sub="평일은 학과에만, 주말은 대학교 유형 미술실기에 집중합니다. 기상과 취침 시각은 8주 내내 같습니다."
+            sub="평일은 학과에만, 주말은 대학교 유형 미술실기에 집중합니다. 06:00 기상·22:00 취침으로 8주 내내 하루 8시간 수면을 지킵니다."
           />
           <WinterTabs className="mt-8" />
         </div>
@@ -187,26 +185,17 @@ export default function WinterSchedulePage() {
       {/* ---- 평일 · 주말 시간표 ---- */}
       <section className="px-5 py-16 md:px-6 md:py-20">
         <div className="mx-auto max-w-4xl">
-          {/* 한 시간 눈금을 두 요일이 함께 쓴다 — 같은 높이 = 같은 시간 */}
-          <motion.div
-            {...fadeUp}
-            className="grid grid-cols-[26px_1fr_1fr] gap-x-2 md:grid-cols-[52px_1fr_1fr] md:gap-x-5"
-          >
-            <div />
-            <DayHead title="평일" sub="월–금" blocks={WEEKDAY_SCHEDULE} />
-            <DayHead title="주말" sub="토·일" blocks={WEEKEND_SCHEDULE} />
-
-            <HourRuler />
-            <DayTimeline blocks={WEEKDAY_SCHEDULE} />
-            <DayTimeline blocks={WEEKEND_SCHEDULE} />
+          {/* 평일과 주말을 같은 시각 눈금 위에 나란히 놓는다 */}
+          <motion.div {...fadeUp}>
+            <ScheduleTable />
           </motion.div>
 
           <motion.p
             {...fadeUp}
             className="mt-5 text-center text-xs leading-relaxed text-white/35 break-keep"
           >
-            ※ 블록의 높이가 실제 소요 시간입니다. 취침 이후 다음 날 06:00 기상까지는
-            생략했습니다.
+            ※ {WAKE_TIME} 기상부터 {SLEEP_TIME} 취침까지, 깨어 있는 하루{" "}
+            {durationLabel(AWAKE_MINUTES)}입니다.
             <br className="hidden sm:block" /> 수업시간은 효율에 따라 변경될 수
             있습니다.
           </motion.p>

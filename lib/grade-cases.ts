@@ -102,7 +102,7 @@ export interface GradeCase {
   /** 학교 — 실명 금지, 지역만. 예: "일산 소재 고교" */
   school?: string;
   campus?: CaseCampus;
-  /** 수강 과정 — 예: "정규반", "2026 윈터캠프" */
+  /** 수강 과정 — 예: "정규반", "2026 윈터스쿨" */
   program?: string;
   /** 기간 — 예: "2026.03 ~ 2026.11 (9개월)" */
   period?: string;
@@ -182,7 +182,7 @@ export const GRADE_CASES: GradeCase[] = [
     grade: "[고2]",
     school: "[일산 소재 고교]",
     campus: "일산 캠퍼스",
-    program: "[2026 윈터캠프]",
+    program: "[2026 윈터스쿨]",
     period: "[2026.01 ~ 2026.02 (8주)]",
     basis: "[전년 수능 → 6월 모평]",
     changes: [

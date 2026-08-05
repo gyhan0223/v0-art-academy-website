@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * 윈터캠프 페이지들이 함께 쓰는 조각들.
+ * 윈터스쿨 페이지들이 함께 쓰는 조각들.
  * /winter(개요)와 4개 하위 페이지가 같은 얼굴을 유지하도록 여기에 모아 둔다.
  */
 
@@ -82,7 +82,7 @@ export function SubPageHeader({
         className="flex items-center justify-center gap-1.5 text-xs text-white/40"
       >
         <Link href="/winter" className="transition-colors hover:text-white/70">
-          윈터캠프
+          윈터스쿨
         </Link>
         <ChevronRight size={12} />
         <span className="text-white/70">{title}</span>
@@ -109,14 +109,14 @@ export function SubPageTabs() {
 
   return (
     <nav
-      aria-label="윈터캠프 하위 메뉴"
+      aria-label="윈터스쿨 하위 메뉴"
       className="flex flex-wrap items-center justify-center gap-2"
     >
       <Link
         href="/winter"
         className="rounded-full border border-white/15 px-4 py-2 text-xs md:text-sm text-white/60 transition-colors hover:border-white/40 hover:text-white"
       >
-        캠프 개요
+        윈터스쿨 개요
       </Link>
       {WINTER_PAGES.map((page) => {
         const active = pathname === page.href;

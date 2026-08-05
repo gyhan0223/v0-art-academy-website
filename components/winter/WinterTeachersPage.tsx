@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * /winter/teachers — 윈터캠프 문맥에서 본 강사진.
+ * /winter/teachers — 윈터스쿨 문맥에서 본 강사진.
  *
  * 강사 데이터와 카드는 /teachers와 같은 것을 쓴다(lib/teachers.ts,
  * components/academy/TeacherCard.tsx). 여기서만 다른 것은 "8주 동안 이 강사들이
@@ -36,7 +36,7 @@ import {
   PlaceholderNotice,
 } from "@/components/winter/shared";
 
-/** 과목별로 8주 동안 무엇을 하는지 — 이 페이지에만 있는 윈터캠프 내용 */
+/** 과목별로 8주 동안 무엇을 하는지 — 이 페이지에만 있는 윈터스쿨 내용 */
 const SUBJECT_PLANS = [
   {
     subject: "국어",
@@ -83,7 +83,7 @@ export default function WinterTeachersPage() {
           <SubPageHeader
             en="Teachers"
             title="강사진"
-            sub="윈터캠프 학과(국어·영어·사회탐구)는 강사가 직접 가르치고, 주말 실기는 지원 대학 유형에 맞춰 붙습니다. 강사마다 한 줄로 먼저 밝히고, 경력은 네 줄까지만 적었습니다."
+            sub="윈터스쿨 학과(국어·영어·사회탐구)는 강사가 직접 가르치고, 주말 실기는 지원 대학 유형에 맞춰 붙습니다. 강사마다 한 줄로 먼저 밝히고, 경력은 네 줄까지만 적었습니다."
           />
 
           {IS_PLACEHOLDER && (

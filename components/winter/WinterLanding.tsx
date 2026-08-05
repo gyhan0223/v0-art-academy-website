@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * 윈터캠프 개요(/winter) — 결정에 필요한 것만 남긴 짧은 페이지.
+ * 윈터스쿨 개요(/winter) — 결정에 필요한 것만 남긴 짧은 페이지.
  *
  * 섹션 흐름:
  *  1. 히어로: 헤드라인 + 즉시 CTA + 긴급성(D-day·정원)
@@ -59,7 +59,7 @@ import {
 
 /* --------------------------------- 데이터 ---------------------------------- */
 
-/** 1주차 진단 → 8주차 재측정 — 이 캠프가 결과를 확인하는 방식 */
+/** 1주차 진단 → 8주차 재측정 — 윈터스쿨이 결과를 확인하는 방식 */
 const MEASURE_STEPS = [
   {
     step: "1주차",
@@ -244,7 +244,7 @@ export default function WinterLanding() {
             {...fadeUp}
             className="mt-6 text-center text-sm text-white/50 break-keep"
           >
-            {CAMP_INFO.venueName}에서 진행하는 8주 기숙 과정입니다. 캠프가 끝나면
+            {CAMP_INFO.venueName}에서 진행하는 8주 기숙 과정입니다. 윈터스쿨이 끝나면
             각자의 학교 생활로 복귀합니다.
           </motion.p>
         </div>
@@ -319,7 +319,7 @@ export default function WinterLanding() {
             </div>
             <div className="rounded-2xl border border-accent/30 bg-accent/[0.05] p-8 md:p-10">
               <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
-                모다고 윈터캠프
+                모다고 윈터스쿨
               </p>
               <p className="mt-4 text-xl md:text-2xl font-bold text-white leading-snug break-keep">
                 평일은 학과에 전부,

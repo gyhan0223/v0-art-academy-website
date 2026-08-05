@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * /winter/results — 윈터캠프 성적 향상 사례.
+ * /winter/results — 윈터스쿨 성적 향상 사례.
  * 1주차 진단고사 → 8주차 재측정, 국어·영어·탐구 세 과목만.
  * 분모(8주를 마친 전원)를 먼저 공개하고 그 안의 개별 사례를 보여준다.
  * 데이터는 lib/winter-results.ts에만 있다.
@@ -279,7 +279,7 @@ export default function WinterResultsPage() {
           <SectionHead
             en="Reviews"
             ko="먼저 보낸 부모님들의 이야기"
-            sub="캠프를 경험한 학생과 학부모님의 목소리입니다."
+            sub="윈터스쿨을 경험한 학생과 학부모님의 목소리입니다."
           />
           <motion.div {...fadeUp}>
             <Testimonials />

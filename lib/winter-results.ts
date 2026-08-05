@@ -1,5 +1,5 @@
 /**
- * 윈터캠프 성적 향상 사례 데이터 단일 소스.
+ * 윈터스쿨 성적 향상 사례 데이터 단일 소스.
  * /winter/results 페이지가 이 파일만 참조한다.
  *
  * 학원 전체 사례(lib/grade-cases.ts)와 다른 점 —
@@ -34,7 +34,7 @@ export const IS_PLACEHOLDER = true;
 /* ------------------------------- 집계(분모) ------------------------------- */
 
 export interface WinterCohort {
-  /** 기수 — 예: "2027 윈터캠프" */
+  /** 기수 — 예: "2027 윈터스쿨" */
   term: string;
   /** 분모: 8주 전 과정을 마친 인원 전원 */
   total: number;
@@ -52,7 +52,7 @@ export interface WinterCohort {
 
 // TODO: 원장님 확인 — 실제 집계 결과로 교체.
 export const WINTER_COHORT: WinterCohort = {
-  term: "[2027 윈터캠프]",
+  term: "[2027 윈터스쿨]",
   total: 14,
   measured: 13,
   improved: 10,

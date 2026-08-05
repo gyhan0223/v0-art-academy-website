@@ -9,11 +9,11 @@ import {
   getRemainingTotal,
 } from "@/lib/winter-camp";
 
-/** 홈 — 합격실적(Scene2)과 커리큘럼(Scene3) 사이에 배치되는 윈터캠프 와이드 배너 */
+/** 홈 — 합격실적(Scene2)과 커리큘럼(Scene3) 사이에 배치되는 윈터스쿨 와이드 배너 */
 export default function WinterBanner() {
   const remainingTotal = getRemainingTotal();
   const statusLabel =
-    remainingTotal <= 0 ? "마감" : `Winter Camp · ${getRemainingLabel()}`;
+    remainingTotal <= 0 ? "마감" : `Winter School · ${getRemainingLabel()}`;
 
   return (
     <section className="bg-black px-6 py-16 md:py-24">

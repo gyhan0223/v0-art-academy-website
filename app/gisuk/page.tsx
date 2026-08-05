@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "파주 미대 기숙학원 | 모두다른고양이 미술학원",
   description:
-    "경기 파주 소재 미대 재수 기숙학원이 2027년 3월 문을 엽니다. 모두다른고양이 미술학원의 정규 기숙 과정, 사전 상담 예약을 받고 있습니다.",
+    "경기 파주 소재 미대 재수 기숙학원이 2027년 3월 문을 엽니다. 1~2월 홍대 본원 윈터스쿨에서 먼저 시작해 3월 정규 과정으로 이어갈 수 있으며, 사전 상담 예약을 받고 있습니다.",
   alternates: { canonical: "/gisuk" },
 };
 
@@ -39,6 +39,23 @@ export default function Page() {
           >
             사전 상담 신청
           </a>
+
+          {/* 3월까지 기다릴 필요가 없다는 것을 여기서 먼저 알린다 */}
+          <div className="mt-10 rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-6 text-left">
+            <p className="text-xs font-semibold tracking-[0.2em] text-accent uppercase">
+              3월까지 기다리지 않아도 됩니다
+            </p>
+            <p className="mt-2.5 text-sm leading-relaxed text-white/70 break-keep">
+              1월부터 2월까지는 홍대 본원 기숙 윈터스쿨에서 국어·영어·탐구를
+              먼저 올려두고, 3월에 이곳 정규 과정으로 그대로 이어갈 수 있습니다.
+            </p>
+            <Link
+              href="/winter"
+              className="mt-4 inline-block text-sm font-semibold text-accent hover:underline"
+            >
+              2027 윈터스쿨 보기 →
+            </Link>
+          </div>
 
           {/* 기숙 과정에서 학부모가 가장 먼저 확인하는 것 — 누가 가르치는가 */}
           <p className="mt-6">

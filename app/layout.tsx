@@ -42,6 +42,9 @@ export const metadata: Metadata = {
     title: "모두다른고양이 미술학원(모다고) | 홍대 · 일산 미대입시",
     description:
       "서울대 252명, 홍익대 792명 누적 합격. 2027 미대 기숙 윈터스쿨 모집 중.",
+    // 자체 openGraph가 없는 페이지(/teachers·/gisuk·/tuition 등)가 이 그림을 물려받는다.
+    // openGraph를 직접 정의하는 페이지는 통째로 갈아끼우므로 그쪽에도 각자 넣어야 한다.
+    images: [{ url: "/images/og-home.jpg", width: 1200, height: 630 }],
   },
   verification: {
     other: {

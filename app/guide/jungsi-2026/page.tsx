@@ -25,6 +25,7 @@ export const metadata: Metadata = {
     description:
       "주요 미대 26곳의 모집군·전형방법·실기유형과 학과별 모집인원·경쟁률 — 지원 카드 3장을 어떻게 쓸지, 한 페이지로 끝내세요.",
     type: "article",
+    images: [{ url: "/images/og-home.jpg", width: 1200, height: 630 }],
   },
 };
 

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Snowflake } from "lucide-react";
 import {
   CAMP_INFO,
+  SHOW_REMAINING,
   getRemainingLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
@@ -12,8 +13,17 @@ import {
 /** 홈 — 합격실적(Scene2)과 커리큘럼(Scene3) 사이에 배치되는 윈터스쿨 와이드 배너 */
 export default function WinterBanner() {
   const remainingTotal = getRemainingTotal();
+  /** 자리가 실제로 차기 시작한 뒤에만 남은 수를 밝힌다 */
+  const showRemaining =
+    SHOW_REMAINING &&
+    remainingTotal > 0 &&
+    remainingTotal < CAMP_INFO.capacityTotal;
   const statusLabel =
-    remainingTotal <= 0 ? "마감" : `Winter School · ${getRemainingLabel()}`;
+    remainingTotal <= 0
+      ? "마감"
+      : showRemaining
+        ? `Winter School · ${getRemainingLabel()}`
+        : `Winter School · ${CAMP_INFO.capacityNote}`;
 
   return (
     <section className="bg-black px-6 py-16 md:py-24">
@@ -44,13 +54,9 @@ export default function WinterBanner() {
               <p className="mt-3 text-sm md:text-base text-white/60 break-keep">
                 홍대 본원 8주 기숙 · 학과 직강 + 실기 주말집중 + 숙식 · 정원{" "}
                 {CAMP_INFO.capacityTotal}명
-                {remainingTotal > 0 &&
-                  remainingTotal < CAMP_INFO.capacityTotal && (
-                    <span className="text-accent">
-                      {" "}
-                      · {getRemainingLabel()}
-                    </span>
-                  )}
+                {showRemaining && (
+                  <span className="text-accent"> · {getRemainingLabel()}</span>
+                )}
               </p>
             </div>
             <span className="inline-flex shrink-0 items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-black transition-transform group-hover:translate-x-1">

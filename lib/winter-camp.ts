@@ -22,7 +22,9 @@ export const CAMP_INFO = {
   // 대상 표기는 여기서만 고친다 — 랜딩 카드·메타 설명·상담 폼이 모두 이 값을 따른다
   target: "예비 고2 · 예비 고3 · 재수생 선행반",
   capacity: "여 8명 · 남 6명",
-  capacityTotal: 14,
+  capacityFemale: 8,
+  capacityMale: 6,
+  capacityTotal: 14, // = capacityFemale + capacityMale
   capacityNote: "선착순",
 
   /** 남은 자리 — 확정 등록 기준으로 직접 수정하세요. 0이 되면 마감 표시됩니다. */
@@ -40,6 +42,39 @@ export const CAMP_INFO = {
   earlyBird:
     "8주 일괄 등록 시 뒤 4주 35% 할인 적용 (월별 개별 납부 시 할인 적용 불가)",
 } as const;
+
+/**
+ * 남은 자리를 숫자로 밝힐지 여부.
+ *
+ * 모집 초반에는 false로 둔다. 남은 자리가 정원과 같으면 "아직 자리가 많다"가
+ * 아니라 "아직 아무도 등록하지 않았다"로 읽혀 오히려 역효과다.
+ * 자리가 실제로 차기 시작하면 true로 바꾸면 긴급성 문구로 전환된다.
+ */
+export const SHOW_REMAINING = false;
+
+/**
+ * 정원·남은 자리 한 줄 표기. 배너·히어로·CTA가 전부 이 함수만 쓴다.
+ * · 마감      — "마감"
+ * · 초반      — "정원 14명 (여 8 · 남 6) · 선착순"
+ * · 차는 중   — "정원 14명 · 여 3명 · 남 2명 남음 · 선착순"
+ *
+ * short — 상단 공지 띠처럼 폭이 좁은 자리용. 성별 내역을 뺀 "정원 14명 · 선착순".
+ */
+export function getCapacityLabel({ short = false } = {}): string {
+  const remaining = getRemainingTotal();
+  if (remaining <= 0) return "마감";
+
+  const head = `정원 ${CAMP_INFO.capacityTotal}명`;
+  const tail = CAMP_INFO.capacityNote;
+
+  // 한 자리도 나가지 않았으면 남은 수를 밝혀 봐야 얻을 게 없다
+  if (!SHOW_REMAINING || remaining >= CAMP_INFO.capacityTotal) {
+    return short
+      ? `${head} · ${tail}`
+      : `${head} (여 ${CAMP_INFO.capacityFemale} · 남 ${CAMP_INFO.capacityMale}) · ${tail}`;
+  }
+  return `${head} · ${getRemainingLabel()} · ${tail}`;
+}
 
 /** 남은 자리 표시 문구 (여/남 분리). 둘 다 0이면 "마감" */
 export function getRemainingLabel(): string {

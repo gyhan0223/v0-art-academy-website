@@ -252,7 +252,7 @@ export const WEEKLY_FIXTURES: { label: string; detail: string }[] = [
   },
   {
     label: "매일 06:00 / 22:00",
-    detail: "기상·취침 시각 고정 — 8주 내내 하루 8시간 수면을 보장한다",
+    detail: "기상·취침 시각 고정 — 8주 내내 하루 8시간 수면 확보",
   },
   {
     label: "격주",

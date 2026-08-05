@@ -41,7 +41,7 @@ import {
   WINTER_PAGES,
   SMS_HREF,
   KAKAO_CHANNEL_URL,
-  getRemainingLabel,
+  getCapacityLabel,
 } from "@/lib/winter-camp";
 import { REPORT_SAMPLE } from "@/lib/winter-report";
 import CtaBand from "@/components/winter/CtaBand";
@@ -175,7 +175,7 @@ export default function WinterLanding() {
             <DdayBadge />
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-sm font-semibold text-white">
               <Users size={14} className="text-accent" />
-              정원 {CAMP_INFO.capacityTotal}명 · {getRemainingLabel()}
+              {getCapacityLabel()}
             </span>
           </div>
 

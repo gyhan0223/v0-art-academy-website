@@ -6,6 +6,7 @@ import { Phone, PenLine } from "lucide-react";
 import { CAMP_INFO, getCapacityLabel } from "@/lib/winter-camp";
 import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 import { NaverTalkButton } from "@/components/academy/NaverTalk";
+import { NaverBookingButton } from "@/components/academy/NaverBooking";
 
 /** 섹션 사이에 반복 배치하는 전환용 CTA 밴드.
  *  읽다가 마음이 움직인 시점마다 신청 동선을 제공한다. */
@@ -38,7 +39,7 @@ export default function CtaBand({
         <p className="mt-4 text-xs font-semibold tracking-wide text-accent">
           {seatLabel}
         </p>
-        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
           {/* 상담 폼이 같은 페이지에 있으면 스크롤, 하위 페이지에서는 /winter로 이동 */}
           <Link
             href={CONSULT_HREF}
@@ -48,18 +49,25 @@ export default function CtaBand({
             <PenLine size={16} />
             상담 신청하기
           </Link>
-          <a
-            href={CAMP_INFO.phoneTel}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/25 px-8 py-4 text-base font-medium text-white transition-colors hover:border-white/50 sm:w-auto"
-          >
-            <Phone size={16} />
-            {CAMP_INFO.phone}
-          </a>
-          {/* 아직 신청까지는 아닌 분들 — 톡톡으로 먼저 물을 수 있게 */}
-          <NaverTalkButton className="w-full px-8 py-4 text-base sm:w-auto" />
+          {/* 폼을 채우고 연락을 기다리는 대신, 방문 날짜를 바로 고르는 길 */}
+          <NaverBookingButton className="w-full px-8 py-4 text-base sm:w-auto" />
+          {/* 전화·톡톡은 한 덩어리로 묶어 둔다 — 좁아지면 둘이 함께 다음 줄로 내려가,
+              어디서 보든 "신청·예약 / 문의" 두 줄로 정리된다 */}
+          <div className="grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto">
+            <a
+              href={CAMP_INFO.phoneTel}
+              className="inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/25 px-3 py-4 text-base font-medium text-white transition-colors hover:border-white/50 sm:w-auto sm:px-8"
+            >
+              <Phone size={16} />
+              {CAMP_INFO.phone}
+            </a>
+            {/* 아직 신청까지는 아닌 분들 — 톡톡으로 먼저 물을 수 있게 */}
+            <NaverTalkButton className="w-full px-3 py-4 text-base sm:w-auto sm:px-8" />
+          </div>
         </div>
         <p className="mt-4 text-xs text-white/40">
-          신청은 1분이면 충분합니다 · 밤에 남겨주셔도 다음 날 연락드립니다
+          신청은 1분이면 충분합니다 · 네이버 예약은 원하는 시간을 직접 고르실 수
+          있습니다
         </p>
       </motion.div>
     </section>

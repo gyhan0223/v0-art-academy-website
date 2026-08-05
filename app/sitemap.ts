@@ -31,8 +31,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
-    // /winter/teachers는 /teachers와 같은 강사진을 윈터스쿨 문맥으로 보여주는
-    // 페이지라 canonical을 /teachers로 걸어 두었다. 사이트맵에는 원본만 올린다.
+    // 윈터스쿨 강사진 — 강사 카드는 /teachers와 같은 데이터지만 과목별 8주
+    // 목표·수업 FAQ가 이 페이지에만 있어 각자 색인되게 둔다(canonical도 자기 자신).
+    // 강사 데이터가 초안인 동안에는 /teachers와 함께 빠진다.
+    ...(TEACHERS_PLACEHOLDER
+      ? []
+      : [
+          {
+            url: `${baseUrl}/winter/teachers`,
+            lastModified: new Date(),
+            changeFrequency: "monthly" as const,
+            priority: 0.7,
+          },
+        ]),
     // 성적 향상 사례 — 자리표시자 상태에서는 noindex라 사이트맵에서도 제외
     ...(WINTER_RESULTS_PLACEHOLDER
       ? []

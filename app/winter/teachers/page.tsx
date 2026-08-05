@@ -8,9 +8,11 @@ const PAGE_DESCRIPTION =
 export const metadata: Metadata = {
   title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
-  // 같은 강사진을 /teachers와 나눠 쓰는 페이지라 원본을 canonical로 지정한다.
-  // (중복 문서로 잡히지 않게 하려는 것 — 링크는 그대로 따라간다)
-  alternates: { canonical: "/teachers" },
+  // 강사 카드는 /teachers와 같은 데이터를 쓰지만, 이 페이지에만 있는 내용이
+  // 따로 있다 — 과목별 8주 목표·진행 방식과 윈터스쿨 수업 FAQ. 검색에서 찾는
+  // 질문("윈터스쿨 강사")도 다르다. 그래서 자기 자신을 canonical로 둔다.
+  // 예전에는 /teachers를 canonical로 걸어 이 페이지가 검색에서 통째로 빠졌다.
+  alternates: { canonical: "/winter/teachers" },
   openGraph: {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,

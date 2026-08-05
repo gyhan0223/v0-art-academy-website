@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * /winter/teachers — 윈터캠프 문맥에서 본 강사진.
+ * /winter/teachers — 윈터스쿨 문맥에서 본 강사진.
  *
  * 강사 데이터와 카드는 /teachers와 같은 것을 쓴다(lib/teachers.ts,
  * components/academy/TeacherCard.tsx). 여기서만 다른 것은 "8주 동안 이 강사들이
@@ -36,7 +36,7 @@ import {
   PlaceholderNotice,
 } from "@/components/winter/shared";
 
-/** 과목별로 8주 동안 무엇을 하는지 — 이 페이지에만 있는 윈터캠프 내용 */
+/** 과목별로 8주 동안 무엇을 하는지 — 이 페이지에만 있는 윈터스쿨 내용 */
 const SUBJECT_PLANS = [
   {
     subject: "국어",
@@ -83,7 +83,7 @@ export default function WinterTeachersPage() {
           <SubPageHeader
             en="Teachers"
             title="강사진"
-            sub="윈터캠프 학과(국어·영어·사회탐구)는 강사가 직접 가르치고, 주말 실기는 지원 대학 유형에 맞춰 붙습니다. 강사마다 한 줄로 먼저 밝히고, 경력은 네 줄까지만 적었습니다."
+            sub="윈터스쿨 학과(국어·영어·사회탐구)는 강사가 직접 가르치고, 주말 실기는 지원 대학 유형에 맞춰 붙습니다. 강사마다 한 줄로 먼저 밝히고, 경력은 네 줄까지만 적었습니다."
           />
 
           {IS_PLACEHOLDER && (
@@ -123,8 +123,8 @@ export default function WinterTeachersPage() {
             <p className="mt-6 border-t border-white/10 pt-5 text-sm leading-relaxed text-white/60 break-keep">
               수학 강사가 없는 것은 빠진 것이 아니라 뺀 것입니다. 미대 정시는
               대부분 수학을 반영하지 않기 때문에, 겨울 8주를 국어·영어·탐구 세
-              과목에 몰아줍니다. 상주인지 담당 시간에만 들어오는 출강인지는 카드에
-              그대로 적었습니다.
+              과목에 몰아줍니다. 본원에 상주하는 사람은 실기를 직접 지도하는 대표
+              한 명이고, 학과 강사는 전원 담당 수업 시간에 들어오는 출강입니다.
             </p>
           </motion.section>
         </div>

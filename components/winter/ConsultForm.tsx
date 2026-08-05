@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * 윈터캠프 상담 신청 폼.
+ * 윈터스쿨 상담 신청 폼.
  * 폼은 /winter(개요) 한 곳에만 두고, 하위 페이지의 버튼은
  * /winter#consult-form으로 보내 동선을 하나로 유지한다.
  */
@@ -248,7 +248,7 @@ export default function ConsultForm() {
             <div className="mt-3 space-y-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3.5 text-xs leading-relaxed text-white/50">
               <p>· 수집 항목: 학생 이름, 학년, 연락처, 희망 대학(선택)</p>
               <p>
-                · 이용 목적: 윈터캠프 상담 회신 (그 외 목적으로 사용하지
+                · 이용 목적: 윈터스쿨 상담 회신 (그 외 목적으로 사용하지
                 않습니다)
               </p>
               <p>

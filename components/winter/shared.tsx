@@ -5,7 +5,7 @@
  * /winter(개요)와 4개 하위 페이지가 같은 얼굴을 유지하도록 여기에 모아 둔다.
  */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -103,38 +103,67 @@ export function SubPageHeader({
   );
 }
 
-/** 하위 페이지끼리 오가는 줄 — 현재 페이지는 강조된다 */
-export function SubPageTabs() {
+/** 윈터캠프 5개 페이지 — 개요가 맨 앞, 순서는 어느 페이지에서나 같다 */
+const WINTER_TABS = [
+  { href: "/winter", label: "캠프 개요" },
+  ...WINTER_PAGES.map((page) => ({ href: page.href, label: page.label })),
+];
+
+/**
+ * 윈터캠프 페이지끼리 오가는 줄 — 개요(/winter)를 포함한 다섯 페이지 모두에 같은 모습으로 둔다.
+ * 어느 페이지로 넘어가도 이 줄이 화면 상단에서 사라지지 않아야 한다.
+ *
+ * 모바일에서는 줄바꿈 대신 가로 스크롤 한 줄로 둔다. 다섯 개가 두세 줄로 접히면
+ * 첫 화면에서 CTA를 밀어내기 때문이다.
+ */
+export function WinterTabs({ className = "" }: { className?: string }) {
   const pathname = usePathname();
+  const listRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef<HTMLAnchorElement>(null);
+
+  /* 현재 페이지 칩이 가로 스크롤 밖에 있을 때만, 딱 보일 만큼만 당겨온다.
+     가운데로 몰면 앞쪽 칩(캠프 개요)이 잘려 나가고, 페이지 세로 스크롤은 건드리지 않는다. */
+  useEffect(() => {
+    const list = listRef.current;
+    const chip = activeRef.current;
+    if (!list || !chip) return;
+
+    const margin = 20; // 다음 칩이 살짝 보이도록 남기는 여백
+    const left = chip.offsetLeft;
+    const right = left + chip.offsetWidth;
+    if (left - margin < list.scrollLeft) {
+      list.scrollLeft = Math.max(0, left - margin);
+    } else if (right + margin > list.scrollLeft + list.clientWidth) {
+      list.scrollLeft = right + margin - list.clientWidth;
+    }
+  }, [pathname]);
 
   return (
-    <nav
-      aria-label="윈터캠프 하위 메뉴"
-      className="flex flex-wrap items-center justify-center gap-2"
-    >
-      <Link
-        href="/winter"
-        className="rounded-full border border-white/15 px-4 py-2 text-xs md:text-sm text-white/60 transition-colors hover:border-white/40 hover:text-white"
+    <nav aria-label="윈터캠프 메뉴" className={className}>
+      {/* -mx-5 px-5: 모바일에서 스크롤 영역만 화면 끝까지 늘려 칩이 잘린 채 이어짐을 보여준다 */}
+      <div
+        ref={listRef}
+        className="-mx-5 flex gap-2 overflow-x-auto px-5 py-0.5 [-ms-overflow-style:none] [scrollbar-width:none] md:mx-0 md:flex-wrap md:justify-center md:overflow-x-visible md:px-0 [&::-webkit-scrollbar]:hidden"
       >
-        캠프 개요
-      </Link>
-      {WINTER_PAGES.map((page) => {
-        const active = pathname === page.href;
-        return (
-          <Link
-            key={page.href}
-            href={page.href}
-            aria-current={active ? "page" : undefined}
-            className={`rounded-full px-4 py-2 text-xs md:text-sm transition-colors ${
-              active
-                ? "bg-accent font-semibold text-black"
-                : "border border-white/15 text-white/60 hover:border-white/40 hover:text-white"
-            }`}
-          >
-            {page.label}
-          </Link>
-        );
-      })}
+        {WINTER_TABS.map((tab) => {
+          const active = pathname === tab.href;
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              ref={active ? activeRef : undefined}
+              aria-current={active ? "page" : undefined}
+              className={`shrink-0 whitespace-nowrap rounded-full px-3.5 py-2 text-xs transition-colors md:px-4 md:text-sm ${
+                active
+                  ? "bg-accent font-semibold text-black"
+                  : "border border-white/15 text-white/60 hover:border-white/40 hover:text-white"
+              }`}
+            >
+              {tab.label}
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }

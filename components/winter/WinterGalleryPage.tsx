@@ -32,7 +32,7 @@ import {
   fadeUp,
   SectionHead,
   SubPageHeader,
-  SubPageTabs,
+  WinterTabs,
   AccordionItem,
 } from "@/components/winter/shared";
 
@@ -205,9 +205,7 @@ export default function WinterGalleryPage() {
             title="캠프 사진"
             sub="8주를 보낼 공간입니다. 사진을 누르면 크게 볼 수 있습니다."
           />
-          <div className="mt-8">
-            <SubPageTabs />
-          </div>
+          <WinterTabs className="mt-8" />
         </div>
       </section>
 

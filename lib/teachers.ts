@@ -23,9 +23,10 @@
  * · 경력·학력 줄 — 기존 강사 소개 자료 그대로.
  * · headline — 그 경력만 근거로 쓴 문장. 사실 주장이 아니라 수업 방식
  *   설명이므로, 문구가 마음에 들지 않으면 이 필드만 고치면 된다.
- * · residency — 기존 소개에 타 학원 현직이 함께 적힌 두 명(김준범·이명신)은
- *   "visiting", 소속이 이 학원 하나뿐인 나머지는 "resident"로 두었다.
- *   실제 근무 형태가 다르면 해당 줄만 바꾸면 카드 뱃지가 따라 바뀐다.
+ * · residency — 원장 확인 결과, 본원에 상주하는 사람은 실기(한동희) 한 명뿐이고
+ *   학과 강사는 전원 담당 수업 시간에 들어오는 출강이다. 그래서 학과 아홉 명은
+ *   모두 "visiting"이다. 근무 형태가 바뀌면 해당 줄만 고치면 카드 뱃지와
+ *   상단 숫자(getFacultyCount)가 따라 바뀐다.
  * · 미대 특화 — 강사별 연차는 자료가 없어 숫자를 쓰지 않았다. 대신 과목
  *   섹션에 "미대 지원자 대상 편성"을 표시한다(SUBJECT_NOTE).
  *   개인 연차가 확인되면 mihakNote에 "미대 입시반 지도 12년" 식으로 넣으면
@@ -118,7 +119,7 @@ export const TEACHERS: Teacher[] = [
     name: "김지중",
     subject: "국어",
     headline: "출제자 쪽에 서 봤기 때문에, 지문에서 문제가 나올 자리를 먼저 짚습니다.",
-    residency: "resident", // 기존 소개에 타 학원 현직 없음
+    residency: "visiting", // 학과 강사는 전원 출강 — 상주는 실기(한동희)뿐
     careers: [
       "전국연합모의고사 출제위원",
       "전) 서초 메가스터디학원",
@@ -132,7 +133,7 @@ export const TEACHERS: Teacher[] = [
     subject: "국어",
     headline:
       "기출을 출제 의도 단위로 쪼개, 처음 보는 지문에서도 같은 방식이 통하게 만듭니다.",
-    residency: "resident", // 기존 소개에 타 학원 현직 없음
+    residency: "visiting", // 학과 강사는 전원 출강 — 상주는 실기(한동희)뿐
     careers: [
       "전국연합모의고사 출제위원",
       "전) 노량진 대성학원",
@@ -146,7 +147,7 @@ export const TEACHERS: Teacher[] = [
     subject: "국어",
     headline:
       "문학에서 점수가 흔들리는 학생을, 감상이 아니라 근거로 푸는 쪽으로 돌려놓습니다.",
-    residency: "resident", // 기존 소개에 타 학원 현직 없음
+    residency: "visiting", // 학과 강사는 전원 출강 — 상주는 실기(한동희)뿐
     careers: [
       "고려대학교 국어국문학 전공",
       "전) 대성학원",
@@ -163,7 +164,7 @@ export const TEACHERS: Teacher[] = [
     subject: "영어",
     headline:
       "해석은 되는데 답이 틀리는 구간, 문장이 아니라 글의 논리에서 원인을 찾습니다.",
-    residency: "resident", // 기존 소개에 타 학원 현직 없음
+    residency: "visiting", // 학과 강사는 전원 출강 — 상주는 실기(한동희)뿐
     careers: [
       "고려대학교 영어영문학과",
       "캘리포니아주립대 영어교육학",
@@ -178,8 +179,8 @@ export const TEACHERS: Teacher[] = [
     subject: "영어",
     headline:
       "재수 종합반에서 다듬은 구문·어법 정리로, 독해 속도부터 정상으로 돌립니다.",
-    // 기존 소개에 종로학원 강북본원 현직이 함께 적혀 있어 출강으로 둔다.
-    // 타 학원 현직을 적으면서 상주라고 쓰면 그 자리에서 신뢰를 잃는다.
+    // 학과 강사는 전원 출강. 종로학원 강북본원 현직이 함께 적혀 있어 더더욱
+    // 상주라고 쓸 수 없다 — 타 학원 현직과 상주를 같이 적으면 그 자리에서 신뢰를 잃는다.
     residency: "visiting",
     careers: [
       "고려대학교 영어영문학과 졸업",
@@ -194,7 +195,7 @@ export const TEACHERS: Teacher[] = [
     subject: "영어",
     headline:
       "어학원에서 쌓은 감각으로 어휘·듣기까지, 남들이 버리고 가는 배점을 챙깁니다.",
-    residency: "resident", // 기존 소개에 타 학원 현직 없음
+    residency: "visiting", // 학과 강사는 전원 출강 — 상주는 실기(한동희)뿐
     careers: [
       "The University of Sydney 졸업",
       "전) 스카이에듀학원",
@@ -210,7 +211,7 @@ export const TEACHERS: Teacher[] = [
     name: "박정식",
     subject: "사회탐구",
     headline: "기출 문제집을 쓴 사람이, 그 기출 중 무엇을 풀지 직접 골라 줍니다.",
-    residency: "resident", // 기존 소개에 타 학원 현직 없음
+    residency: "visiting", // 학과 강사는 전원 출강 — 상주는 실기(한동희)뿐
     careers: [
       "저서: 자이스토리 사회문화·정치와법",
       "저서: 네비게이션 사회문화·정치와법",
@@ -224,7 +225,7 @@ export const TEACHERS: Teacher[] = [
     name: "임성준",
     subject: "사회탐구",
     headline: "법학 전공자의 개념 정리로, 사탐 용어를 암기가 아니라 이해로 바꿉니다.",
-    residency: "resident", // 기존 소개에 타 학원 현직 없음
+    residency: "visiting", // 학과 강사는 전원 출강 — 상주는 실기(한동희)뿐
     careers: [
       "성균관대학교 법학 전공",
       "전) 대성학원",
@@ -241,7 +242,7 @@ export const TEACHERS: Teacher[] = [
     subject: "사회탐구",
     headline:
       "개념 → 기출 → 실전을 같은 주기로 반복시켜, 사탐 점수의 진폭을 줄입니다.",
-    // 기존 소개에 스카이에듀 사회탐구영역 현직이 함께 적혀 있어 출강으로 둔다.
+    // 학과 강사는 전원 출강. 스카이에듀 사회탐구영역 현직도 함께 적혀 있다.
     residency: "visiting",
     careers: [
       "고려대학교 졸업",
@@ -261,7 +262,7 @@ export const TEACHERS: Teacher[] = [
     headline:
       "1989년부터 미대 실기만 가르쳐 온 사람이, 학생 그림의 방향을 직접 잡습니다.",
     mihakNote: `미대 실기 지도 ${new Date().getFullYear() - 1989}년`,
-    // 2004년 개원 이후 홍대 본원을 직접 운영 중이라 상주로 둔다(아래 경력 참고)
+    // 강사진 중 유일한 상주. 2004년 개원 이후 홍대 본원을 직접 운영 중이다(아래 경력 참고).
     residency: "resident",
     residencyNote: "홍대 본원",
     careers: [
@@ -270,8 +271,7 @@ export const TEACHERS: Teacher[] = [
       "전) ipsa 미대기숙학원 · 화력푸른솔 · 한국조형폴리오",
       "2004년 홍대앞 모두다른고양이 미술학원 개원 · 현재까지 운영",
     ],
-    // 사진 없음 — 프로필 사진을 /public/images/teachers/teacher-han-donghee.jpg에
-    // 넣고(288×288 정방형·흑백) photoSrc를 추가하면 이니셜 자리에 들어간다.
+    photoSrc: "/images/teachers/teacher-han-donghee.jpg",
   },
 ];
 

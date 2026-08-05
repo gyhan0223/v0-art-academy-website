@@ -19,7 +19,8 @@ export const CAMP_INFO = {
   phoneTel: "tel:02-338-3302",
 
   period: "2027년 1월 4일 ~ 2027년 2월 26일 (약 8주)",
-  target: "예비 고3 (예비 고2 가능)",
+  // 대상 표기는 여기서만 고친다 — 랜딩 카드·메타 설명·상담 폼이 모두 이 값을 따른다
+  target: "예비 고2 · 예비 고3 · 재수생 선행반",
   capacity: "여 8명 · 남 6명",
   capacityTotal: 14,
   capacityNote: "선착순",

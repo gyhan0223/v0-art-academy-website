@@ -166,8 +166,8 @@ export default function WinterLanding() {
             시작할 상태로 돌려보냅니다
           </h1>
           <p className="mt-5 text-base md:text-xl text-white/75 break-keep">
-            예비 고3의 겨울 8주. 평일은 학과 직강,
-            <br className="md:hidden" /> 주말은 대학교 유형 실기.
+            예비 고2·고3과 재수생 선행반의 겨울 8주.
+            <br className="md:hidden" /> 평일은 학과 직강, 주말은 대학교 유형 실기.
           </p>
 
           {/* 긴급성 — D-day + 정원 */}

@@ -139,7 +139,7 @@ export default function WinterLanding() {
       <section className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6 pt-24 pb-12">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url(/images/winter/studio-practice.jpg)" }}
+          style={{ backgroundImage: "url(/images/winter/hero.jpg)" }}
           aria-hidden
         />
         <div className="absolute inset-0 bg-black/75" aria-hidden />

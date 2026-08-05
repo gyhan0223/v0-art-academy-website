@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useCallback } from "react";
 import Link from "next/link";
 import { Phone, MapPin, MessageCircle } from "lucide-react";
-import { NAVER_TALK_URL } from "@/lib/contact";
+import { NAVER_TALK_URL, CAMPUSES } from "@/lib/contact";
 import BlogLinks from "@/components/academy/BlogLinks";
 
 interface Particle {
@@ -17,39 +17,6 @@ interface Particle {
 }
 
 export default function Scene4() {
-  const [particles, setParticles] = useState<Particle[]>([]);
-  const [isExploding, setIsExploding] = useState(false);
-
-  const handleCTAClick = useCallback(() => {
-    if (isExploding) return;
-
-    setIsExploding(true);
-
-    // Generate particles
-    const newParticles: Particle[] = Array.from({ length: 24 }, (_, i) => ({
-      id: Date.now() + i,
-      x: 0,
-      y: 0,
-      angle: (i / 24) * 360,
-      velocity: 100 + Math.random() * 150,
-      size: 4 + Math.random() * 8,
-    }));
-
-    setParticles(newParticles);
-
-    // Open Naver reservation page
-    window.open(
-      "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1",
-      "_blank",
-    );
-
-    // Clear particles after animation
-    setTimeout(() => {
-      setParticles([]);
-      setIsExploding(false);
-    }, 1000);
-  }, [isExploding]);
-
   return (
     <section className="relative min-h-screen bg-background py-20 md:py-32">
       <div className="max-w-4xl mx-auto px-6">
@@ -98,87 +65,49 @@ export default function Scene4() {
             안내해 드립니다.
           </motion.p>
 
-          {/* CTA Button with particle effect */}
+          {/* 예약 상품이 캠퍼스마다 달라 버튼도 캠퍼스별로 둔다 —
+              주소는 lib/contact.ts의 CAMPUSES 하나만 고치면 된다. */}
           <motion.div
-            className="relative inline-block"
+            className="flex flex-col items-center justify-center gap-4 sm:flex-row"
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <button
-              onClick={handleCTAClick}
-              className="relative px-10 py-5 bg-primary text-primary-foreground font-bold text-lg rounded-full transition-all duration-300 hover:scale-105 active:scale-95"
-              style={{
-                boxShadow:
-                  "0 0 40px rgba(245, 136, 70, 0.4), 0 0 80px rgba(245, 136, 70, 0.2)",
-              }}
-            >
-              <span className="flex items-center gap-3">
-                <MessageCircle className="w-5 h-5" />
-                일산 캠퍼스 네이버 예약하기
-              </span>
-            </button>
-
-            {/* Particles */}
-            <AnimatePresence>
-              {particles.map((particle) => (
-                <motion.div
-                  key={particle.id}
-                  className="absolute left-1/2 top-1/2 rounded-full bg-primary pointer-events-none"
-                  initial={{
-                    x: 0,
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                  }}
-                  animate={{
-                    x:
-                      Math.cos((particle.angle * Math.PI) / 180) *
-                      particle.velocity,
-                    y:
-                      Math.sin((particle.angle * Math.PI) / 180) *
-                      particle.velocity,
-                    opacity: 0,
-                    scale: 0,
-                  }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  style={{
-                    width: particle.size,
-                    height: particle.size,
-                  }}
-                />
-              ))}
-            </AnimatePresence>
+            {CAMPUSES.map((campus) => (
+              <BookingButton
+                key={campus.label}
+                label={`${campus.label} 네이버 예약`}
+                href={campus.bookingUrl}
+              />
+            ))}
           </motion.div>
 
-          {/* 홍대 본원 전화 버튼 — 네이버 예약은 일산 캠퍼스 전용 */}
+          {/* 예약이 생겨도 전화로 물어보는 편이 편한 분들이 있다 —
+              번호는 그대로 눌러서 걸 수 있게 남겨 둔다. */}
           <motion.div
-            className="mt-6"
+            className="mt-8"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.35 }}
           >
-            <a
-              href="tel:02-338-3302"
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-primary/40 text-foreground font-semibold transition-colors hover:border-primary hover:text-primary"
-            >
-              <Phone className="w-5 h-5" />
-              홍대 본원 02-338-3302
-            </a>
+            <p className="text-muted-foreground text-sm">
+              전화 상담도 그대로 받습니다.
+            </p>
+            <div className="mt-3 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              {CAMPUSES.map((campus) => (
+                <a
+                  key={campus.label}
+                  href={`tel:${campus.phone}`}
+                  className="inline-flex items-center gap-2.5 rounded-full border border-primary/40 px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  <Phone className="w-4 h-4" />
+                  {campus.label} {campus.phone}
+                </a>
+              ))}
+            </div>
           </motion.div>
-
-          <motion.p
-            className="text-muted-foreground text-sm mt-6"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            홍대 본원은 전화로 예약 문의 부탁드립니다.
-          </motion.p>
         </div>
 
         {/* Contact Info Cards */}
@@ -253,6 +182,77 @@ export default function Scene4() {
         </motion.footer>
       </div>
     </section>
+  );
+}
+
+/**
+ * 예약 버튼 — 누르면 입자가 터지고 새 탭으로 네이버 예약이 열린다.
+ * 입자 상태를 버튼마다 따로 들고 있어야 한 쪽을 눌렀을 때
+ * 다른 캠퍼스 버튼에서도 같이 터지지 않는다.
+ */
+function BookingButton({ label, href }: { label: string; href: string }) {
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [isExploding, setIsExploding] = useState(false);
+
+  const handleClick = useCallback(() => {
+    if (isExploding) return;
+
+    setIsExploding(true);
+
+    const newParticles: Particle[] = Array.from({ length: 24 }, (_, i) => ({
+      id: Date.now() + i,
+      x: 0,
+      y: 0,
+      angle: (i / 24) * 360,
+      velocity: 100 + Math.random() * 150,
+      size: 4 + Math.random() * 8,
+    }));
+
+    setParticles(newParticles);
+    window.open(href, "_blank", "noopener,noreferrer");
+
+    setTimeout(() => {
+      setParticles([]);
+      setIsExploding(false);
+    }, 1000);
+  }, [href, isExploding]);
+
+  return (
+    <div className="relative inline-block">
+      <button
+        onClick={handleClick}
+        className="relative whitespace-nowrap rounded-full bg-primary px-8 py-5 text-base font-bold text-primary-foreground transition-all duration-300 hover:scale-105 active:scale-95 md:text-lg"
+        style={{
+          boxShadow:
+            "0 0 40px rgba(245, 136, 70, 0.4), 0 0 80px rgba(245, 136, 70, 0.2)",
+        }}
+      >
+        <span className="flex items-center justify-center gap-3">
+          <MessageCircle className="w-5 h-5" />
+          {label}
+        </span>
+      </button>
+
+      {/* Particles */}
+      <AnimatePresence>
+        {particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            className="absolute left-1/2 top-1/2 rounded-full bg-primary pointer-events-none"
+            initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+            animate={{
+              x: Math.cos((particle.angle * Math.PI) / 180) * particle.velocity,
+              y: Math.sin((particle.angle * Math.PI) / 180) * particle.velocity,
+              opacity: 0,
+              scale: 0,
+            }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            style={{ width: particle.size, height: particle.size }}
+          />
+        ))}
+      </AnimatePresence>
+    </div>
   );
 }
 

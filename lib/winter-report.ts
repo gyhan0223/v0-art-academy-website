@@ -10,12 +10,13 @@
 
 export const REPORT_SAMPLE = {
   /** 문서 머리 */
-  eyebrow: "2026 윈터스쿨",
+  eyebrow: "2027 윈터스쿨",
   title: "학습 리포트",
   subtitle: "모두다른고양이 미술학원 · 격주 학습 리포트",
 
   student: "김○○",
-  period: "1/5 ~ 1/16 (1~2주차)",
+  /** 캠프 시작(2027-01-04, 월)부터 2주 = 1/4~1/8, 1/11~1/15 */
+  period: "1/4 ~ 1/15 (1~2주차)",
 
   /** I. 이번 2주 한눈에 보기 */
   summary: [
@@ -28,46 +29,50 @@ export const REPORT_SAMPLE = {
   vocab: {
     caption: "단어시험",
     unit: "(100점 만점)",
+    /** 평일 밤에만 치르므로 주말(1/9·1/10)은 건너뛴다 */
     days: [
+      { date: "1/4", score: 96 },
       { date: "1/5", score: 96 },
       { date: "1/6", score: 96 },
-      { date: "1/7", score: 96 },
-      { date: "1/8", score: 97 },
-      { date: "1/9", score: 94 },
-      { date: "1/12", score: 100 },
-      { date: "1/13", score: 95 },
-      { date: "1/14", score: 99 },
-      { date: "1/15", score: 97 },
-      { date: "1/16", score: 100 },
+      { date: "1/7", score: 97 },
+      { date: "1/8", score: 94 },
+      { date: "1/11", score: 100 },
+      { date: "1/12", score: 95 },
+      { date: "1/13", score: 99 },
+      { date: "1/14", score: 97 },
+      { date: "1/15", score: 100 },
     ],
     note: "매일 밤 100단어 시험 (100점 만점 환산)",
   },
 
-  /** III. 모의고사 성적표 — 치르지 않은 시험은 "–" */
+  /**
+   * III. 모의고사 성적표 — 치르지 않은 시험은 "–".
+   * 일과표대로 화요일은 영어(1/5·1/12), 금요일은 국어(1/8·1/15)다.
+   */
   mock: {
     exams: ["시험 1", "시험 2", "시험 3", "시험 4"],
-    dates: ["1/6", "1/8", "1/13", "1/15"],
+    dates: ["1/5", "1/8", "1/12", "1/15"],
     subjects: [
       {
         name: "국어",
         /** up: true면 등급 옆에 상승 표시가 붙는다 */
         grades: [
-          { value: "2", up: false },
           { value: "–", up: false },
           { value: "2", up: false },
           { value: "–", up: false },
+          { value: "2", up: false },
         ],
-        raw: ["82", "–", "87", "–"],
+        raw: ["–", "82", "–", "87"],
       },
       {
         name: "영어",
         grades: [
-          { value: "–", up: false },
           { value: "2", up: false },
           { value: "–", up: false },
           { value: "1", up: true },
+          { value: "–", up: false },
         ],
-        raw: ["–", "84", "–", "90"],
+        raw: ["84", "–", "90", "–"],
       },
     ],
     note: "시험마다 난이도가 달라 원점수만으로는 비교가 어렵습니다. 원점수보다 등급을 기준으로 확인해 주세요.",
@@ -94,7 +99,7 @@ export const REPORT_SAMPLE = {
   ],
 
   /** 문서 발신 정보 */
-  issuedAt: "2026. 1. 16.",
+  issuedAt: "2027. 1. 15.",
   issuer: "모두다른고양이 미술학원 홍대 본원 기숙 윈터스쿨",
 
   /** 문서 아래 붙는 안내 */

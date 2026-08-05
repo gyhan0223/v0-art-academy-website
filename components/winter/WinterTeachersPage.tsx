@@ -31,7 +31,7 @@ import {
   fadeUp,
   SectionHead,
   SubPageHeader,
-  SubPageTabs,
+  WinterTabs,
   AccordionItem,
   PlaceholderNotice,
 } from "@/components/winter/shared";
@@ -95,9 +95,7 @@ export default function WinterTeachersPage() {
             </div>
           )}
 
-          <div className="mt-8">
-            <SubPageTabs />
-          </div>
+          <WinterTabs className="mt-8" />
 
           {/* 구성 — 기숙 과정에서 가장 먼저 읽혀야 하는 숫자는 "상주 몇 명"이다 */}
           <motion.section

@@ -53,6 +53,7 @@ import { NaverTalkButton } from "@/components/academy/NaverTalk";
 import {
   fadeUp,
   SectionHead,
+  WinterTabs,
   CONSULT_HREF,
   goToConsult,
 } from "@/components/winter/shared";
@@ -136,7 +137,8 @@ export default function WinterLanding() {
   return (
     <main className="bg-background text-foreground pb-20 md:pb-0">
       {/* ============ [1] 히어로 ============ */}
-      <section className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6 pt-24 pb-12">
+      {/* pt: 알림 띠가 붙은 사이트 헤더(모바일에서 두 줄까지 늘어난다) 아래로 메뉴 줄을 내린다 */}
+      <section className="relative flex min-h-dvh flex-col overflow-hidden px-6 pt-36 pb-12 md:pt-32">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url(/images/winter/hero.jpg)" }}
@@ -148,7 +150,10 @@ export default function WinterLanding() {
           aria-hidden
         />
 
-        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center text-center">
+        {/* 하위 페이지에서 넘어와도 같은 자리에 같은 줄이 보이도록, 개요에도 화면 상단에 둔다 */}
+        <WinterTabs className="relative z-10 mx-auto w-full max-w-4xl" />
+
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-1 flex-col items-center justify-center pt-8 text-center">
           <p className="mb-2.5 text-xs md:text-sm tracking-[0.3em] text-accent uppercase">
             최상위권 미대 전문
           </p>

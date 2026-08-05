@@ -34,7 +34,7 @@ import {
   fadeUp,
   SectionHead,
   SubPageHeader,
-  SubPageTabs,
+  WinterTabs,
 } from "@/components/winter/shared";
 
 /**
@@ -178,9 +178,7 @@ export default function WinterSchedulePage() {
             title="하루 일과표"
             sub="평일은 학과에만, 주말은 대학교 유형 미술실기에 집중합니다. 06:00 기상·22:00 취침으로 8주 내내 하루 8시간 수면을 지킵니다."
           />
-          <div className="mt-8">
-            <SubPageTabs />
-          </div>
+          <WinterTabs className="mt-8" />
         </div>
       </section>
 

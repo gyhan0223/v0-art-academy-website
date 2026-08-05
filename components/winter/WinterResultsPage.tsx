@@ -27,7 +27,7 @@ import {
   fadeUp,
   SectionHead,
   SubPageHeader,
-  SubPageTabs,
+  WinterTabs,
   PlaceholderNotice,
 } from "@/components/winter/shared";
 
@@ -145,9 +145,7 @@ export default function WinterResultsPage() {
             </div>
           )}
 
-          <div className="mt-8">
-            <SubPageTabs />
-          </div>
+          <WinterTabs className="mt-8" />
         </div>
       </section>
 

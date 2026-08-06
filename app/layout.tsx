@@ -105,6 +105,18 @@ export default function RootLayout({
         {process.env.NODE_ENV === "production" && (
           <>
             <Analytics />
+            {/* Google Analytics 4 (gtag.js) */}
+            <Script
+              src="https://www.googletagmanager.com/gtag/js?id=G-PNVLJBJ8NR"
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PNVLJBJ8NR');`}
+            </Script>
             {/* Microsoft Clarity — 히트맵·세션 레코딩 */}
             <Script id="ms-clarity" strategy="afterInteractive">
               {`(function(c,l,a,r,i,t,y){

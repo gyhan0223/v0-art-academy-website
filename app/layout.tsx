@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next"; // 💡 Viewport 임포트 추가
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
+import { Suspense } from "react";
+import GaPageView from "@/components/analytics/GaPageView";
 import SiteNav from "@/components/academy/SiteNav";
 import NaverTalkFab from "@/components/academy/NaverTalk";
 import "./globals.css";
@@ -101,7 +104,36 @@ export default function RootLayout({
         <SiteNav />
         {children}
         <NaverTalkFab />
-        {process.env.NODE_ENV === "production" && <Analytics />}
+        {process.env.NODE_ENV === "production" && (
+          <>
+            <Analytics />
+            {/* Google Analytics 4 (gtag.js) */}
+            <Script
+              src="https://www.googletagmanager.com/gtag/js?id=G-PNVLJBJ8NR"
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PNVLJBJ8NR');`}
+            </Script>
+            {/* useSearchParams는 Suspense 경계가 없으면 모든 페이지를
+                동적 렌더로 떨어뜨린다 */}
+            <Suspense fallback={null}>
+              <GaPageView gaId="G-PNVLJBJ8NR" />
+            </Suspense>
+            {/* Microsoft Clarity — 히트맵·세션 레코딩 */}
+            <Script id="ms-clarity" strategy="afterInteractive">
+              {`(function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "xy4nemyqcp");`}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );

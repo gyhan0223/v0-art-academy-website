@@ -5,12 +5,12 @@ import ScoreRecommender from "@/components/academy/ScoreRecommender";
 import { SILGI_META } from "@/lib/jungsi-data";
 
 export const metadata: Metadata = {
-  title: "2026 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
+  title: "2027 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
   description:
     "서울대·홍익대·국민대 등 주요 26개 미술대학의 정시 모집군·전형방법(수능 반영영역·실기 비율)·실기유형과 학과별 모집인원·경쟁률까지 한 페이지에 정리했습니다. 가·나·다군 지원 조합 짜기 전에 꼭 확인하세요.",
   keywords: [
     "미대 정시 가나다군",
-    "2026 미대 정시",
+    "2027 미대 정시",
     "미대 정시 전형방법",
     "미대 정시 경쟁률",
     "기초디자인 대학",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/guide/jungsi-2026" },
   openGraph: {
-    title: "2026 미대 정시 가나다군 총정리",
+    title: "2027 미대 정시 가나다군 총정리",
     description:
       "주요 미대 26곳의 모집군·전형방법·실기유형과 학과별 모집인원·경쟁률 — 지원 카드 3장을 어떻게 쓸지, 한 페이지로 끝내세요.",
     type: "article",
@@ -128,6 +128,8 @@ const FEATURED_EXAMPLES: Record<
   FeaturedType,
   {
     badge: string;
+    /* 원본 이미지와 같은 가로/세로 비율 (잘림 방지) */
+    aspectClass: string;
     images: { src: string; alt: string }[];
     caption: React.ReactNode;
     moreUrl?: string;
@@ -135,6 +137,7 @@ const FEATURED_EXAMPLES: Record<
 > = {
   기초디자인: {
     badge: "가장 많은 대학이 채택",
+    aspectClass: "aspect-[966/725]",
     images: [
       { src: "/images/silgi/gicho-design-1.jpg", alt: "유리구슬·부채·노끈을 얽어 화면을 구성한 기초디자인 예시작" },
       { src: "/images/silgi/gicho-design-2.jpg", alt: "색유리 구슬과 금속판·나무를 구성한 기초디자인 예시작" },
@@ -153,6 +156,7 @@ const FEATURED_EXAMPLES: Record<
   },
   기초소양: {
     badge: "관찰·발상 평가",
+    aspectClass: "aspect-[966/1288]",
     images: [
       { src: "/images/silgi/gicho-soyang-1.jpg", alt: "기초소양·기초조형 예시작 1" },
       { src: "/images/silgi/gicho-soyang-2.jpg", alt: "기초소양·기초조형 예시작 2" },
@@ -195,7 +199,7 @@ function FeaturedTypeCard({ type }: { type: FeaturedType }) {
           {cfg.images.map((ex) => (
             <div
               key={ex.src}
-              className="relative aspect-[4/3] overflow-hidden rounded-md border border-white/10 bg-black"
+              className={`relative ${cfg.aspectClass} overflow-hidden rounded-md border border-white/10 bg-black`}
             >
               <Image
                 src={ex.src}
@@ -234,19 +238,30 @@ export default function Page() {
         <header className="mb-16 text-center">
           <p className="mb-4 text-xs tracking-[0.3em] text-accent">입시정보</p>
           <h1 className="text-3xl font-bold leading-snug text-white md:text-4xl">
-            2026 미대 정시
+            2027 미대 정시
             <br />
             가나다군 총정리
           </h1>
           <p className="mt-4 text-xs leading-relaxed text-white/40">
-            2026학년도 모집요강 원본 대조 기준 · 2026년 7월 갱신
+            2027학년도 대학별 모집요강 원본 기준 · 2026년 8월 갱신
           </p>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground">
             정시는 군마다 1곳, 총 3장의 카드로 승부합니다.
-            <br className="hidden md:block" /> 주요 미대 26곳의 모집군 ·
-            전형방법 · 수능 반영영역 · 실기유형과 학과별 모집인원 · 경쟁률을 한
+            <br className="hidden md:block" /> 주요 미대 26곳의 핵심 정보를 한
             페이지에 담았습니다.
           </p>
+          <ul className="mx-auto mt-4 flex max-w-xl flex-wrap justify-center gap-2">
+            {["모집군", "전형방법", "수능 반영영역", "실기유형", "학과별 모집인원", "경쟁률"].map(
+              (item) => (
+                <li
+                  key={item}
+                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[12px] text-white/60"
+                >
+                  {item}
+                </li>
+              ),
+            )}
+          </ul>
           <CardSlots />
         </header>
 

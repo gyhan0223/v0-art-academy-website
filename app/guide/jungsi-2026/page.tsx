@@ -247,10 +247,21 @@ export default function Page() {
           </p>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground">
             정시는 군마다 1곳, 총 3장의 카드로 승부합니다.
-            <br className="hidden md:block" /> 주요 미대 26곳의 모집군 ·
-            전형방법 · 수능 반영영역 · 실기유형과 학과별 모집인원 · 경쟁률을 한
+            <br className="hidden md:block" /> 주요 미대 26곳의 핵심 정보를 한
             페이지에 담았습니다.
           </p>
+          <ul className="mx-auto mt-4 flex max-w-xl flex-wrap justify-center gap-2">
+            {["모집군", "전형방법", "수능 반영영역", "실기유형", "학과별 모집인원", "경쟁률"].map(
+              (item) => (
+                <li
+                  key={item}
+                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[12px] text-white/60"
+                >
+                  {item}
+                </li>
+              ),
+            )}
+          </ul>
           <CardSlots />
         </header>
 

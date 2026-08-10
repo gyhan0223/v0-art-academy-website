@@ -238,12 +238,12 @@ export default function Page() {
         <header className="mb-16 text-center">
           <p className="mb-4 text-xs tracking-[0.3em] text-accent">입시정보</p>
           <h1 className="text-3xl font-bold leading-snug text-white md:text-4xl">
-            2026 미대 정시
+            2027 미대 정시
             <br />
             가나다군 총정리
           </h1>
           <p className="mt-4 text-xs leading-relaxed text-white/40">
-            2026학년도 모집요강 원본 대조 기준 · 2026년 7월 갱신
+            2027학년도 대학별 모집요강 원본 기준 · 2026년 8월 갱신
           </p>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground">
             정시는 군마다 1곳, 총 3장의 카드로 승부합니다.

@@ -5,12 +5,12 @@ import ScoreRecommender from "@/components/academy/ScoreRecommender";
 import { SILGI_META } from "@/lib/jungsi-data";
 
 export const metadata: Metadata = {
-  title: "2026 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
+  title: "2027 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
   description:
     "서울대·홍익대·국민대 등 주요 26개 미술대학의 정시 모집군·전형방법(수능 반영영역·실기 비율)·실기유형과 학과별 모집인원·경쟁률까지 한 페이지에 정리했습니다. 가·나·다군 지원 조합 짜기 전에 꼭 확인하세요.",
   keywords: [
     "미대 정시 가나다군",
-    "2026 미대 정시",
+    "2027 미대 정시",
     "미대 정시 전형방법",
     "미대 정시 경쟁률",
     "기초디자인 대학",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/guide/jungsi-2026" },
   openGraph: {
-    title: "2026 미대 정시 가나다군 총정리",
+    title: "2027 미대 정시 가나다군 총정리",
     description:
       "주요 미대 26곳의 모집군·전형방법·실기유형과 학과별 모집인원·경쟁률 — 지원 카드 3장을 어떻게 쓸지, 한 페이지로 끝내세요.",
     type: "article",

@@ -464,7 +464,7 @@ async function renderShareImage(
   // 헤더
   ctx.fillStyle = ACCENT;
   ctx.font = `500 26px ${FONT}`;
-  ctx.fillText("2026 미대 정시", PAD, 108);
+  ctx.fillText("2027 미대 정시", PAD, 108);
   ctx.fillStyle = "#ffffff";
   ctx.font = `700 58px ${FONT}`;
   ctx.fillText("내 원서 조합", PAD, 178);

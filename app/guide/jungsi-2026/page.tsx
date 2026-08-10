@@ -128,6 +128,8 @@ const FEATURED_EXAMPLES: Record<
   FeaturedType,
   {
     badge: string;
+    /* 원본 이미지와 같은 가로/세로 비율 (잘림 방지) */
+    aspectClass: string;
     images: { src: string; alt: string }[];
     caption: React.ReactNode;
     moreUrl?: string;
@@ -135,6 +137,7 @@ const FEATURED_EXAMPLES: Record<
 > = {
   기초디자인: {
     badge: "가장 많은 대학이 채택",
+    aspectClass: "aspect-[966/725]",
     images: [
       { src: "/images/silgi/gicho-design-1.jpg", alt: "유리구슬·부채·노끈을 얽어 화면을 구성한 기초디자인 예시작" },
       { src: "/images/silgi/gicho-design-2.jpg", alt: "색유리 구슬과 금속판·나무를 구성한 기초디자인 예시작" },
@@ -153,6 +156,7 @@ const FEATURED_EXAMPLES: Record<
   },
   기초소양: {
     badge: "관찰·발상 평가",
+    aspectClass: "aspect-[966/1288]",
     images: [
       { src: "/images/silgi/gicho-soyang-1.jpg", alt: "기초소양·기초조형 예시작 1" },
       { src: "/images/silgi/gicho-soyang-2.jpg", alt: "기초소양·기초조형 예시작 2" },
@@ -195,7 +199,7 @@ function FeaturedTypeCard({ type }: { type: FeaturedType }) {
           {cfg.images.map((ex) => (
             <div
               key={ex.src}
-              className="relative aspect-[4/3] overflow-hidden rounded-md border border-white/10 bg-black"
+              className={`relative ${cfg.aspectClass} overflow-hidden rounded-md border border-white/10 bg-black`}
             >
               <Image
                 src={ex.src}

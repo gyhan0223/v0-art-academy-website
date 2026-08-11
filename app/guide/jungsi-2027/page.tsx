@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     "위시티 미술학원",
     "일산 미술학원",
   ],
-  alternates: { canonical: "/guide/jungsi-2026" },
+  alternates: { canonical: "/guide/jungsi-2027" },
   openGraph: {
     title: "2027학년도 미대 정시 가나다군 총정리",
     description:

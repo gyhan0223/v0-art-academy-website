@@ -88,7 +88,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className="dark">
-      <head>
+      <head data-clarity-unmask="true">
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

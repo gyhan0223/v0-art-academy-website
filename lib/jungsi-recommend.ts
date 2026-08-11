@@ -2,7 +2,7 @@ import {
   jungsiEntries,
   type Gun,
   type JungsiEntry,
-  type SilgiType,
+  type SilgiSubject,
 } from "./jungsi-data";
 
 /* ────────────────────────────────────────────────────────────────
@@ -210,20 +210,24 @@ const unitPriority = (e: JungsiEntry) => {
 /** 화면 표기(소수 첫째 자리)와 같은 기준의 비교값 */
 const displayScore = (v: number) => Math.round(v * 10);
 
-/** 학생이 준비 중인 실기 트랙 */
-export type PrepTrack = "기초디자인" | "기초소양";
+/** 학생이 준비 중인 실기 종목 트랙 (디자인계열 3종) */
+export type PrepTrack = Extract<
+  SilgiSubject,
+  "기초디자인" | "발상과표현" | "기초조형·소양평가"
+>;
 
 /**
- * 준비한 실기유형으로 그 대학에 지원할 수 있는지.
- * - 같은 유형이면 당연히 가능
- * - 선택실기: 지정 유형(기초디자인·기초소양·소묘 등) 중 골라 응시 → 준비한 유형으로 지원 가능
- * - 비실기: 실기 자체가 없음(수능·서류) → 누구나 지원 가능
- * - 다른 유형(기초디자인↔기초소양)·자체실기: 별도 준비가 필요 → 제외
+ * 준비 종목으로 그 대학에 응시할 수 있는지.
+ * - 비실기(subjects 빈 배열): 실기 무관 → 누구나 지원 가능
+ * - 그 외: 응시 가능 종목 배열에 준비 종목이 포함될 때만 가능
+ *   (택1 대학도 지정 종목에 없으면 제외 — 예: 서경대는 발상과표현·기초디자인 택1이라
+ *    기초조형·소양평가 트랙으로는 지원 불가)
  */
-export function isCompatibleTrack(silgi: SilgiType, track: PrepTrack): boolean {
-  if (silgi === track) return true;
-  if (silgi === "선택실기" || silgi === "비실기") return true;
-  return false;
+export function isCompatibleTrack(
+  subjects: SilgiSubject[],
+  track: PrepTrack,
+): boolean {
+  return subjects.length === 0 || subjects.includes(track);
 }
 
 function subjectPct(s: StudentScore, subj: Subject): number | null {
@@ -329,7 +333,7 @@ export function rankByGun(
 ): Record<Gun, Ranked[]> {
   const out: Record<Gun, Ranked[]> = { 가: [], 나: [], 다: [], 별도: [] };
   for (const entry of jungsiEntries) {
-    if (track && !isCompatibleTrack(entry.silgi, track)) continue;
+    if (track && !isCompatibleTrack(entry.subjects, track)) continue;
     if (opts?.excludeWomens && isWomensUniv(entry)) continue;
     const { value, blocked } = convertScore(entry.id, s);
     const cut = CUTOFFS[entry.id];

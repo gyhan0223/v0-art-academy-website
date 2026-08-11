@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { jungsiEntries, SILGI_META, type Gun } from "@/lib/jungsi-data";
+import { jungsiEntries, silgiShort, type Gun } from "@/lib/jungsi-data";
 import {
   hasScore,
   isCompatibleTrack,
@@ -19,7 +19,8 @@ import {
 const TRACK_OPTIONS: { value: PrepTrack | "전체"; label: string }[] = [
   { value: "전체", label: "전체 보기" },
   { value: "기초디자인", label: "기초디자인" },
-  { value: "기초소양", label: "기초소양·기초조형" },
+  { value: "발상과표현", label: "발상과 표현" },
+  { value: "기초조형·소양평가", label: "기초조형·소양평가" },
 ];
 
 /** 아래 '군별 대학 한눈에 보기'의 해당 대학 카드로 이동 요청 */
@@ -286,7 +287,7 @@ function RankRow({ r }: { r: Ranked }) {
             ) : null}
           </p>
           <p className="mt-0.5 truncate text-[11px] text-white/40">
-            {SILGI_META[entry.silgi].short} · {entry.units}
+            {silgiShort(entry)} · {entry.units}
           </p>
         </div>
         <div className="shrink-0 text-right">
@@ -368,7 +369,7 @@ export default function ScoreRecommender({ ctaHref }: { ctaHref: string }) {
     return jungsiEntries.filter(
       (e) =>
         (e.gun === "가" || e.gun === "나" || e.gun === "다") &&
-        !isCompatibleTrack(e.silgi, track),
+        !isCompatibleTrack(e.subjects, track),
     ).length;
   }, [track]);
 
@@ -458,7 +459,7 @@ export default function ScoreRecommender({ ctaHref }: { ctaHref: string }) {
         )}
       </div>
 
-      {/* 실기유형 선택 */}
+      {/* 실기 종목 선택 */}
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <span className="text-[12px] text-white/55">지금 준비하는 실기</span>
         {TRACK_OPTIONS.map((opt) => {
@@ -483,7 +484,7 @@ export default function ScoreRecommender({ ctaHref }: { ctaHref: string }) {
       {track !== "전체" && (
         <p className="mt-2 text-[12px] leading-relaxed text-white/45">
           <span className="text-white/70">{track}</span>으로 지원 가능한 대학만
-          보여드립니다 — 선택실기·비실기 포함.
+          보여드립니다 — 이 종목으로 응시할 수 있는 택1 대학과 비실기 대학 포함.
           {excludedCount > 0 && (
             <> 다른 실기 준비가 필요한 {excludedCount}곳은 제외했습니다.</>
           )}
@@ -527,7 +528,7 @@ export default function ScoreRecommender({ ctaHref }: { ctaHref: string }) {
                         {pick.entry.units}
                       </p>
                       <p className="mt-0.5 text-[11px] text-white/45">
-                        {SILGI_META[pick.entry.silgi].short} · 환산{" "}
+                        {silgiShort(pick.entry)} · 환산{" "}
                         <span className="font-mono text-white/70">
                           {pick.converted?.toFixed(1)}
                         </span>

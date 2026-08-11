@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import {
-  SILGI_META,
   jungsiEntries,
+  silgiShort,
   type Gun,
 } from "@/lib/jungsi-data";
 import { UNIV_PLAN_2027 } from "@/lib/univ-plan-2027";
@@ -266,7 +266,7 @@ export default function GunCardSlots() {
                         </div>
                         <span className="mt-0.5 flex shrink-0 items-center gap-1.5">
                           <span className="rounded border border-white/15 px-2 py-0.5 text-[11px] text-white/60">
-                            {SILGI_META[e.silgi].short}
+                            {silgiShort(e)}
                           </span>
                           {hasPlan && (
                             <span aria-hidden className="text-white/40">

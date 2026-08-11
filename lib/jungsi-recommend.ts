@@ -39,7 +39,14 @@ type ReflectSpec =
       mathRequired?: boolean;
       tamRequired?: boolean;
     }
-  | { kind: "custom"; label: string }; // 자체 환산 등 계산 제외
+  | { kind: "custom"; label: string } // 자체 환산 등 계산 제외
+  | {
+      /** 반영식이 모집단위별로 다른 대학: 학생에게 유리한 쪽으로 계산 */
+      kind: "maxOf";
+      specs: { kind: "fixed"; w: Weights }[];
+      mathRequired?: boolean;
+      tamRequired?: boolean;
+    };
 
 /** 대학(entry.id)별 수능 반영식. 모집요강의 '수능 반영영역' 문구를 구조화한 것. */
 const REFLECT: Record<string, ReflectSpec> = {
@@ -65,7 +72,17 @@ const REFLECT: Record<string, ReflectSpec> = {
   "hansung-ga": { kind: "fixed", w: { 국어: 35, 수학: 25, 영어: 20, 탐구: 20 } },
 
   // ── 나군 ──
-  "snu-art": { kind: "custom", label: "서울대 자체·통합실기 기준" },
+  // 서울대: 표준점수 자체 환산을 백분위 가중합으로 근사(수·영·한 감점은 미반영).
+  // 예술계열(국50+탐50)과 디자인과(국수탐 균등) 중 학생에게 유리한 쪽으로 계산.
+  // 수능 전 영역 응시가 지원 요건이라 수학 미응시는 제외.
+  "snu-art": {
+    kind: "maxOf",
+    mathRequired: true,
+    specs: [
+      { kind: "fixed", w: { 국어: 50, 탐구: 50 } },
+      { kind: "fixed", w: { 국어: 33.3, 수학: 33.4, 탐구: 33.3 } },
+    ],
+  },
   "hongik-art": { kind: "pickTop", pool: ["국어", "수학", "탐구"], weights: [40, 40], plus: { 영어: 20 } },
   "seoultech-na": { kind: "fixed", w: { 국어: 40, 영어: 25, 탐구: 35 } },
   "seoultech-nonsilgi-na": { kind: "fixed", w: { 국어: 30, 수학: 25, 영어: 25, 탐구: 20 }, mathRequired: true },
@@ -249,15 +266,24 @@ export function convertScore(
   if (mathRequired && s.수학 == null) return { value: null, blocked: "수학 필수 (미응시)" };
   if (tamRequired && s.탐구 == null) return { value: null, blocked: "탐구 필수 (미응시)" };
 
-  if (spec.kind === "fixed") {
+  const fixedValue = (w: Weights): number | null => {
     let total = 0;
     let wsum = 0;
-    for (const [subj, w] of Object.entries(spec.w) as [Subject, number][]) {
+    for (const [subj, wt] of Object.entries(w) as [Subject, number][]) {
       const p = subjectPct(s, subj) ?? 0; // 미응시 반영과목은 0점 처리(불리)
-      total += p * w;
-      wsum += w;
+      total += p * wt;
+      wsum += wt;
     }
-    return { value: wsum > 0 ? total / wsum : null };
+    return wsum > 0 ? total / wsum : null;
+  };
+
+  if (spec.kind === "fixed") return { value: fixedValue(spec.w) };
+
+  if (spec.kind === "maxOf") {
+    const vals = spec.specs
+      .map((sub) => fixedValue(sub.w))
+      .filter((v): v is number => v != null);
+    return { value: vals.length ? Math.max(...vals) : null };
   }
 
   // pickTop: 학생의 상위 과목에 큰 가중치를 배정
@@ -285,14 +311,26 @@ export function hasScore(s: StudentScore): boolean {
   return [s.국어, s.영어, s.탐구].some((v) => v != null);
 }
 
+/** 여자대학교 여부 — 남학생 추천에서 제외할 때 사용 */
+export function isWomensUniv(e: JungsiEntry): boolean {
+  return e.university.includes("여자대학교");
+}
+
+export type RecommendOpts = {
+  /** true면 여대를 추천·정렬에서 제외 (남학생) */
+  excludeWomens?: boolean;
+};
+
 /** 군별로 학생 점수에 맞춰 정렬된 대학 목록. track을 주면 지원 가능한 실기유형만 남깁니다. */
 export function rankByGun(
   s: StudentScore,
   track?: PrepTrack | null,
+  opts?: RecommendOpts,
 ): Record<Gun, Ranked[]> {
   const out: Record<Gun, Ranked[]> = { 가: [], 나: [], 다: [], 별도: [] };
   for (const entry of jungsiEntries) {
     if (track && !isCompatibleTrack(entry.silgi, track)) continue;
+    if (opts?.excludeWomens && isWomensUniv(entry)) continue;
     const { value, blocked } = convertScore(entry.id, s);
     const cut = CUTOFFS[entry.id];
     const r: Ranked = {
@@ -333,27 +371,102 @@ export function rankByGun(
   return out;
 }
 
-/** 가·나·다 각 1곳씩 추천 조합(환산 상위 + 적정/안정 우선). 같은 대학은 중복 추천하지 않습니다. */
+/**
+ * 가·나·다 각 1곳씩 추천 조합. 같은 대학은 중복 추천하지 않습니다.
+ *
+ * 원칙 — "안정적인 곳"이 아니라 "붙을 수 있는 곳 중 가장 가고 싶을 곳":
+ * 1. 군마다 지원권(안정·적정) 안에서는 환산점수가 아니라 입결 서열(벨류)이
+ *    가장 높은 대학을 고릅니다.
+ * 2. 세 군이 모두 지원권으로 채워지면, 도전 카드로 바꿨을 때 벨류가 가장
+ *    크게 오르는 군 하나를 도전으로 상향합니다 — 안정 2장 + 도전 1장 포트폴리오.
+ *    도전 풀에는 도전 뱃지 대학과, 입결 비공개라 뱃지가 없는 상위권 대학
+ *    (홍익·국민 등)을 함께 넣습니다.
+ * 3. 입결 비공개 대학이라도 환산이 압도적(97+)이면 지원권으로 취급합니다 —
+ *    최상위권 학생이 컷 공개 대학(건국 등)에만 묶여 벨류 낮은 조합을 받지
+ *    않도록.
+ */
+const PSEUDO_SAFE_MIN = 97;
+export type ComboPick = Ranked & {
+  /** 2차에서 도전 카드로 상향된 픽 (뱃지 없는 대학도 도전 카드로 표시) */
+  stretch?: boolean;
+};
+
 export function recommendCombo(
   s: StudentScore,
   track?: PrepTrack | null,
-): Partial<Record<Gun, Ranked>> {
-  const ranked = rankByGun(s, track);
-  const combo: Partial<Record<Gun, Ranked>> = {};
-  const usedUniversities = new Set<string>();
-  for (const g of ["가", "나", "다"] as Gun[]) {
-    const candidates = ranked[g].filter(
+  opts?: RecommendOpts,
+): Partial<Record<Gun, ComboPick>> {
+  const ranked = rankByGun(s, track, opts);
+  const guns = ["가", "나", "다"] as Gun[];
+
+  const byValue = (a: Ranked, b: Ranked) =>
+    prestigeOf(a.entry) - prestigeOf(b.entry) ||
+    unitPriority(a.entry) - unitPriority(b.entry) ||
+    (b.converted ?? 0) - (a.converted ?? 0);
+
+  // 지원권(앵커) 판정: 안정·적정 뱃지, 또는 입결 비공개지만 환산이 압도적인 곳
+  const isAnchor = (r: Ranked) =>
+    r.tier === "안정" ||
+    r.tier === "적정" ||
+    (!r.tier && (r.converted ?? 0) >= PSEUDO_SAFE_MIN);
+
+  const pools = guns.map((g) => {
+    const cands = ranked[g].filter(
       (r) => r.converted != null && r.tier !== "낮음",
     );
-    // 이미 추천한 대학은 건너뛰되, 그 군에 다른 대학이 없으면 중복이라도 추천
-    const pick =
-      candidates.find((r) => !usedUniversities.has(r.entry.university)) ??
-      candidates[0];
+    return {
+      g,
+      cands,
+      safe: cands.filter(isAnchor).sort(byValue),
+      // 도전 상향 후보: 도전 뱃지 + 입결 비공개(뱃지 없음) 대학
+      stretch: cands.filter((r) => r.tier === "도전" || !r.tier).sort(byValue),
+    };
+  });
+
+  const combo: Partial<Record<Gun, ComboPick>> = {};
+  const used = new Set<string>();
+  const firstFree = (pool: Ranked[]) =>
+    pool.find((r) => !used.has(r.entry.university));
+
+  // 1차: 군마다 지원권 중 벨류 최상위 → 지원권이 없으면 정렬 순(적정·안정 우선 정렬)
+  for (const p of pools) {
+    const pick = firstFree(p.safe) ?? firstFree(p.cands) ?? p.cands[0];
     if (pick) {
-      combo[g] = pick;
-      usedUniversities.add(pick.entry.university);
+      combo[p.g] = pick;
+      used.add(pick.entry.university);
     }
   }
+
+  // 2차: 세 군 모두 지원권이면 한 군을 도전 카드로 상향 (벨류 상승폭 최대인 군)
+  const allSafe = pools.every((p) => {
+    const pick = combo[p.g];
+    return pick != null && isAnchor(pick);
+  });
+  if (allSafe) {
+    let best: { g: Gun; cur: Ranked; ch: Ranked } | null = null;
+    let bestGain = 0;
+    for (const p of pools) {
+      const cur = combo[p.g];
+      if (!cur) continue;
+      const ch = p.stretch.find(
+        (r) =>
+          !used.has(r.entry.university) ||
+          r.entry.university === cur.entry.university,
+      );
+      if (!ch) continue;
+      const gain = prestigeOf(cur.entry) - prestigeOf(ch.entry);
+      if (gain > bestGain) {
+        bestGain = gain;
+        best = { g: p.g, cur, ch };
+      }
+    }
+    if (best) {
+      used.delete(best.cur.entry.university);
+      combo[best.g] = { ...best.ch, stretch: true };
+      used.add(best.ch.entry.university);
+    }
+  }
+
   return combo;
 }
 

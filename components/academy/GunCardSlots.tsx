@@ -52,20 +52,20 @@ export default function GunCardSlots() {
       <span className="mb-3 text-[11px] tracking-wider text-white/40">
         전형기간 (2027학년도 기준)
       </span>
-      <div className="flex items-stretch justify-center gap-3">
+      <div className="flex w-full max-w-sm items-stretch justify-center gap-2 md:w-auto md:max-w-none md:gap-3">
         {SLOTS.map((slot, i) => (
           <button
             key={slot.gun}
             type="button"
             onClick={() => setOpenGun(slot.gun)}
             aria-label={`${slot.label} 모집 대학 목록 보기`}
-            className="flex w-24 cursor-pointer flex-col items-center justify-center rounded-lg border border-white/15 bg-[#0a0a0a] py-5 transition-colors hover:border-accent/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-28"
+            className="flex min-w-0 flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border border-white/15 bg-[#0a0a0a] py-5 transition-colors hover:border-accent/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-28 md:flex-none"
             style={{ transform: `rotate(${(i - 1) * 2}deg)` }}
           >
             <span className="font-mono text-lg font-bold text-accent">
               {slot.label}
             </span>
-            <span className="mt-1 text-[10px] tracking-wider text-white/40">
+            <span className="mt-1 whitespace-nowrap text-[9px] tracking-wide text-white/40 md:text-[10px] md:tracking-wider">
               {slot.sub}
             </span>
           </button>
@@ -74,11 +74,11 @@ export default function GunCardSlots() {
           type="button"
           onClick={() => setOpenGun("별도")}
           aria-label="가나다군 외 별도 모집 대학 보기"
-          className="flex w-24 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-accent/50 py-5 transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-28"
+          className="flex min-w-0 flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-accent/50 py-5 transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-28 md:flex-none"
           style={{ transform: "rotate(4deg)" }}
         >
           <span className="font-mono text-lg font-bold text-accent/90">+</span>
-          <span className="mt-1 text-[10px] tracking-wider text-accent/70">
+          <span className="mt-1 whitespace-nowrap text-[9px] tracking-wide text-accent/70 md:text-[10px] md:tracking-wider">
             한예종 별도
           </span>
         </button>

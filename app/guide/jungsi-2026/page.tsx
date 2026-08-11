@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import GunCardSlots from "@/components/academy/GunCardSlots";
 import JungsiExplorer from "@/components/academy/JungsiExplorer";
+import JungsiScheduleModal from "@/components/academy/JungsiScheduleModal";
 import ScoreRecommender from "@/components/academy/ScoreRecommender";
+import SilgiGallery from "@/components/academy/SilgiGallery";
 import { SILGI_META } from "@/lib/jungsi-data";
 
 export const metadata: Metadata = {
-  title: "2027 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
+  title: "2027학년도 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
   description:
     "서울대·홍익대·국민대 등 주요 26개 미술대학의 정시 모집군·전형방법(수능 반영영역·실기 비율)·실기유형과 학과별 모집인원·경쟁률까지 한 페이지에 정리했습니다. 가·나·다군 지원 조합 짜기 전에 꼭 확인하세요.",
   keywords: [
@@ -21,7 +24,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/guide/jungsi-2026" },
   openGraph: {
-    title: "2027 미대 정시 가나다군 총정리",
+    title: "2027학년도 미대 정시 가나다군 총정리",
     description:
       "주요 미대 26곳의 모집군·전형방법·실기유형과 학과별 모집인원·경쟁률 — 지원 카드 3장을 어떻게 쓸지, 한 페이지로 끝내세요.",
     type: "article",
@@ -31,47 +34,6 @@ export const metadata: Metadata = {
 
 const NAVER_BOOKING =
   "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
-
-/* 히어로: "지원 카드 3장 + 보너스 1장" 시그니처 */
-function CardSlots() {
-  const slots = [
-    { label: "가군", sub: "1.5 – 1.12" },
-    { label: "나군", sub: "1.13 – 1.20" },
-    { label: "다군", sub: "1.21 – 1.28" },
-  ];
-  return (
-    <div className="mt-10 flex flex-col items-center">
-    <span className="mb-3 text-[11px] tracking-wider text-white/40">
-      전형기간 (2026학년도 기준)
-    </span>
-    <div className="flex items-stretch justify-center gap-3">
-      {slots.map((slot, i) => (
-        <div
-          key={slot.label}
-          className="flex w-24 flex-col items-center justify-center rounded-lg border border-white/15 bg-[#0a0a0a] py-5 md:w-28"
-          style={{ transform: `rotate(${(i - 1) * 2}deg)` }}
-        >
-          <span className="font-mono text-lg font-bold text-accent">
-            {slot.label}
-          </span>
-          <span className="mt-1 text-[10px] tracking-wider text-white/40">
-            {slot.sub}
-          </span>
-        </div>
-      ))}
-      <div
-        className="flex w-24 flex-col items-center justify-center rounded-lg border border-dashed border-accent/50 py-5 md:w-28"
-        style={{ transform: "rotate(4deg)" }}
-      >
-        <span className="font-mono text-lg font-bold text-accent/90">+</span>
-        <span className="mt-1 text-[10px] tracking-wider text-accent/70">
-          한예종 별도
-        </span>
-      </div>
-    </div>
-    </div>
-  );
-}
 
 const faqs: { q: string; a: React.ReactNode }[] = [
   {
@@ -195,22 +157,7 @@ function FeaturedTypeCard({ type }: { type: FeaturedType }) {
         {SILGI_META[type].description}
       </p>
       <figure className="mt-4">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-          {cfg.images.map((ex) => (
-            <div
-              key={ex.src}
-              className={`relative ${cfg.aspectClass} overflow-hidden rounded-md border border-white/10 bg-black`}
-            >
-              <Image
-                src={ex.src}
-                alt={ex.alt}
-                fill
-                sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 170px"
-                className="object-cover"
-              />
-            </div>
-          ))}
-        </div>
+        <SilgiGallery images={cfg.images} aspectClass={cfg.aspectClass} />
         <figcaption className="mt-2.5 text-[12px] leading-relaxed text-white/45">
           {cfg.caption}
         </figcaption>
@@ -238,12 +185,13 @@ export default function Page() {
         <header className="mb-16 text-center">
           <p className="mb-4 text-xs tracking-[0.3em] text-accent">입시정보</p>
           <h1 className="text-3xl font-bold leading-snug text-white md:text-4xl">
-            2027 미대 정시
+            2027학년도 미대 정시
             <br />
             가나다군 총정리
           </h1>
           <p className="mt-4 text-xs leading-relaxed text-white/40">
-            2027학년도 대학별 모집요강 원본 기준 · 2026년 8월 갱신
+            2027학년도 대입전형 시행계획 및 대학별 모집요강 기준 · 2026년 8월
+            갱신
           </p>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground">
             정시는 군마다 1곳, 총 3장의 카드로 승부합니다.
@@ -262,15 +210,39 @@ export default function Page() {
               ),
             )}
           </ul>
-          <CardSlots />
+          <GunCardSlots />
+          <JungsiScheduleModal />
         </header>
 
         {/* 실기유형 설명 */}
         <section className="mb-14" aria-label="실기유형 안내">
-          <h2 className="mb-2 text-xl font-bold text-white md:text-2xl">
-            <span className="mr-3 font-mono text-base text-accent">01</span>
-            실기유형부터 이해하기
-          </h2>
+          <details className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-lg py-1 transition-colors hover:text-white [&::-webkit-details-marker]:hidden">
+              <h2 className="text-xl font-bold text-white md:text-2xl">
+                <span className="mr-3 font-mono text-base text-accent">01</span>
+                실기유형부터 이해하기
+              </h2>
+              <span className="flex shrink-0 items-center gap-2 text-[12px] text-white/45">
+                <span className="hidden group-open:inline">접기</span>
+                <span className="group-open:hidden">펼쳐서 예시작 보기</span>
+                <svg
+                  aria-hidden
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="transition-transform group-open:rotate-180"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+            </summary>
+
+            <div className="pt-2">
           <p className="mb-6 text-sm leading-relaxed text-white/60">
 어느 대학에 갈 수 있는지는 결국 성적이 정하지만, 어느 대학을 노려볼 수 있는지는 준비한 실기유형이 먼저 가릅니다. 유형이 다르면 준비 방식이 완전히 달라 중간에 갈아타기 어렵습니다. 아래 다섯 가지 유형부터 확인하고, 군별 대학 표를 보면 지원 전략이 훨씬 선명해집니다.
           </p>
@@ -333,6 +305,8 @@ export default function Page() {
               <span aria-hidden>→</span>
             </a>
           </div>
+            </div>
+          </details>
         </section>
 
         {/* 성적 기반 추천 */}

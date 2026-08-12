@@ -591,8 +591,12 @@ export default function ScoreRecommender({ ctaHref }: { ctaHref: string }) {
           {/* CTA */}
           <div className="mt-6 flex flex-col items-center gap-3 rounded-lg border border-accent/30 bg-accent/[0.06] p-4 text-center md:flex-row md:justify-between md:text-left">
             <p className="text-[13px] leading-relaxed text-white/70">
-              <span className="font-bold text-white">여기까지는 수능 점수 기준입니다.</span>{" "}
-              실기 실력·지망 학과까지 넣은 정확한 조합은 상담에서 잡아 드립니다.
+              <span className="font-bold text-white">
+                지원 가능한 대학은 확인했습니다. 이제 어떤 조합으로 지원할지가
+                중요합니다.
+              </span>{" "}
+              실기 실력·지망 학과까지 넣은 가·나·다군 조합은 상담에서 함께 잡아
+              드립니다.
             </p>
             <a
               href={ctaHref}
@@ -600,7 +604,7 @@ export default function ScoreRecommender({ ctaHref }: { ctaHref: string }) {
               rel="noopener noreferrer"
               className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              내 조합 무료 진단
+              정시 지원 전략 상담받기
               <span aria-hidden>→</span>
             </a>
           </div>

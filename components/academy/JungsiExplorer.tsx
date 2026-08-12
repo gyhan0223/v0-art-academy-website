@@ -854,6 +854,19 @@ export default function JungsiExplorer({
   const [query, setQuery] = useState("");
   const [selection, setSelection] = useState<Selection>({});
   const [focusId, setFocusId] = useState<string | null>(null);
+  // 성적 추천기에서 넘어온 카드 — 결과로 돌아가는 링크를 카드 위에 유지
+  const [cameFromScoreId, setCameFromScoreId] = useState<string | null>(null);
+
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // 군 전환 시 목록을 아래까지 스크롤한 상태 그대로 두면 빈 화면·엉뚱한
+  // 섹션이 보인다 — 탭바(스티키) 바로 아래 목록 시작점으로 복귀시킨다.
+  const scrollToListTop = () => {
+    const el = rootRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 80;
+    if (window.scrollY > top) window.scrollTo(0, Math.max(0, top));
+  };
 
   // 다른 섹션(성적 추천기)에서 "이 대학으로 이동" 요청을 받으면 해당 군으로 전환
   useEffect(() => {
@@ -864,6 +877,7 @@ export default function JungsiExplorer({
       setSilgi("전체");
       setQuery("");
       setFocusId(detail.id);
+      setCameFromScoreId(detail.id);
     };
     window.addEventListener("jungsi:focus", handler);
     return () => window.removeEventListener("jungsi:focus", handler);
@@ -968,12 +982,14 @@ export default function JungsiExplorer({
     setGun(g);
     setSilgi("전체");
     setQuery("");
+    setCameFromScoreId(null);
+    scrollToListTop();
   };
 
   const hasSelection = Object.keys(selection).length > 0;
 
   return (
-    <div>
+    <div ref={rootRef}>
       {/* 군 탭 + 필터 */}
       <div
         role="tablist"
@@ -988,7 +1004,11 @@ export default function JungsiExplorer({
                 key={g}
                 role="tab"
                 aria-selected={active}
-                onClick={() => setGun(g)}
+                onClick={() => {
+                  setGun(g);
+                  setCameFromScoreId(null);
+                  scrollToListTop();
+                }}
                 className={`shrink-0 rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                   active
                     ? "bg-accent text-black"
@@ -1107,6 +1127,16 @@ export default function JungsiExplorer({
                     id={`uni-${entry.id}`}
                     className="scroll-mt-44 rounded-lg transition-shadow"
                   >
+                    {cameFromScoreId === entry.id && (
+                      <a
+                        href="#score-finder"
+                        onClick={() => setCameFromScoreId(null)}
+                        className="mb-1.5 inline-flex items-center gap-1.5 text-[12px] font-medium text-accent/90 transition-colors hover:text-accent"
+                      >
+                        <span aria-hidden>↑</span>
+                        내 성적 추천 결과로 돌아가기
+                      </a>
+                    )}
                     <UniversityCard
                       entry={entry}
                       selected={selection[entry.gun] === entry.id}
@@ -1118,6 +1148,26 @@ export default function JungsiExplorer({
             </section>
           );
         })
+      )}
+
+      {/* 목록을 끝까지 본 사용자를 성적 기반 검색으로 안내 (페이지 내 1회) */}
+      {filtered.length > 0 && (
+        <div className="mt-10 flex flex-col gap-3 rounded-lg border border-white/10 bg-white/[0.03] p-5 md:flex-row md:items-center md:justify-between md:gap-6">
+          <p className="text-[13px] leading-relaxed text-white/60">
+            <span className="font-medium text-white/85">
+              일일이 비교하지 않아도 됩니다.
+            </span>
+            <br className="hidden md:block" /> 수능 백분위를 입력하면 대학마다
+            다른 반영식으로 환산해, 지원 가능한 대학을 유리한 순으로 보여드립니다.
+          </p>
+          <a
+            href="#score-finder"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/50 px-5 py-2.5 text-[13px] font-medium text-accent transition-colors hover:border-accent hover:bg-accent/[0.08] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            내 성적으로 대학 찾기
+            <span aria-hidden>→</span>
+          </a>
+        </div>
       )}
 
       {/* 확인 중 대학 */}

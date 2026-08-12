@@ -39,6 +39,25 @@ type NavItem = {
 const navItems: NavItem[] = [
   { label: "홈", href: "/" },
   {
+    // href는 링크가 아니라 드롭다운 식별자로만 쓰인다(부모는 버튼으로 렌더).
+    // 홍대 본원 전용 페이지가 따로 없어 본원을 대표하는 홈("/")으로 연결한다.
+    // 일산은 실기 전문 캠퍼스 — 설명에 학과·기숙·윈터스쿨을 붙이면 안 된다.
+    label: "캠퍼스",
+    href: "/campus",
+    children: [
+      {
+        label: "홍대 본원",
+        href: "/",
+        desc: "학과·실기 중심",
+      },
+      {
+        label: "일산캠퍼스",
+        href: "/ilsan",
+        desc: "평일 18:00–22:00 · 입시미술 실기",
+      },
+    ],
+  },
+  {
     label: "입시 정보",
     href: "/guide",
     children: [
@@ -51,8 +70,8 @@ const navItems: NavItem[] = [
       //   desc: "홍익대 미술활동보고서 작성 전략",
       // },
       {
-        label: "2026학년도 미대 입시 정보",
-        href: "/guide/jungsi-2026",
+        label: "2027학년도 미대 입시 정보",
+        href: "/guide/jungsi-2027",
         desc: "가·나·다군 모집군·전형방법 총정리",
       },
     ],
@@ -213,8 +232,13 @@ export default function SiteNav() {
             aria-label="주 메뉴"
           >
             {navItems.map((item) => {
+              // 하위 항목 판정은 isChildActive로 — startsWith만 쓰면 홈("/")이
+              // 모든 경로에 걸려 캠퍼스 메뉴가 항상 켜진다. 홈은 이미 "홈" 메뉴가
+              // 담당하므로 부모(캠퍼스) 활성 판정에서는 "/"를 제외한다.
               const active = item.children
-                ? item.children.some((c) => pathname.startsWith(c.href))
+                ? item.children.some(
+                    (c) => c.href !== "/" && isChildActive(pathname, c.href),
+                  )
                 : item.href === "/"
                   ? pathname === "/"
                   : pathname.startsWith(item.href);

@@ -3,32 +3,42 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   GUN_ORDER,
+  SILGI_CATEGORY_ORDER,
   SILGI_META,
   jungsiEntries,
   pendingUniversities,
+  silgiCategory,
+  silgiLabel,
+  silgiShort,
   type Gun,
   type JungsiEntry,
   type Major,
-  type SilgiType,
+  type SilgiCategory,
 } from "@/lib/jungsi-data";
 import { useReportBottomBar } from "@/components/academy/NaverTalk";
 
 /* ─────────────────────────── 배지 · 비율 바 ─────────────────────────── */
 
-const SILGI_BADGE: Record<SilgiType, string> = {
-  기초소양: "bg-accent/15 text-accent border border-accent/40",
+/* accent = 사고·발상형 종목, 화이트 = 묘사·조형형 종목, 비실기 = 파선 */
+const SILGI_BADGE: Record<SilgiCategory, string> = {
   기초디자인: "bg-white/8 text-white/85 border border-white/20",
-  선택실기: "bg-white/5 text-white/75 border border-white/25 border-dotted",
-  자체실기: "bg-transparent text-accent border border-accent/60",
+  발상과표현: "bg-accent/15 text-accent border border-accent/40",
+  "기초조형·소양평가":
+    "bg-accent/10 text-accent/90 border border-accent/30 border-dotted",
+  소묘: "bg-white/5 text-white/75 border border-white/25",
+  "수채화·수묵담채": "bg-white/5 text-white/75 border border-white/25 border-dotted",
+  "소조·입체": "bg-white/5 text-white/75 border border-white/25 border-dashed",
+  "만화·상황표현": "bg-white/8 text-white/75 border border-white/30",
+  "통합·자체실기": "bg-transparent text-accent border border-accent/60",
   비실기: "bg-transparent text-white/70 border border-dashed border-white/35",
 };
 
-function SilgiBadge({ type }: { type: SilgiType }) {
+function SilgiBadge({ entry }: { entry: JungsiEntry }) {
   return (
     <span
-      className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium tracking-wide ${SILGI_BADGE[type]}`}
+      className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium tracking-wide ${SILGI_BADGE[silgiCategory(entry)]}`}
     >
-      {SILGI_META[type].label}
+      {silgiLabel(entry)}
     </span>
   );
 }
@@ -222,7 +232,7 @@ function UniversityCard({
             {entry.units}
           </p>
         </div>
-        <SilgiBadge type={entry.silgi} />
+        <SilgiBadge entry={entry} />
       </div>
 
       <ul className="mt-3 space-y-1">
@@ -291,41 +301,56 @@ function analyzeSelection(picked: JungsiEntry[]): {
   detail: string;
 } {
   const main = picked.filter((e) => e.gun !== "별도");
-  const types = new Set(main.map((e) => e.silgi));
   const hasKarts = picked.some((e) => e.gun === "별도");
+  const silgiPicks = picked.filter((e) => e.subjects.length > 0);
+  const nonSilgiPicks = main.filter((e) => e.subjects.length === 0);
 
-  if (types.has("자체실기") || (hasKarts && main.length > 0)) {
+  if (
+    silgiPicks.some((e) => e.subjects.includes("통합·자체실기")) ||
+    (hasKarts && main.length > 0)
+  ) {
     return {
       headline: "자체 실기 대비가 들어가는 조합",
       detail:
-        "서울대·한예종은 대학이 직접 출제하는 실기라 기초소양·기초디자인과 별도의 준비 시간이 필요합니다.",
+        "서울대·이화여대·한예종급 자체실기는 대학 기출에 맞춘 별도 준비가 필요합니다. 나머지 카드의 종목과 시간 배분을 함께 설계해야 합니다.",
     };
   }
-  if (types.has("비실기") && types.size > 1) {
+
+  // 선택한 실기 대학들이 공유하는 종목 (택1 대학은 응시 가능 종목 전체로 판정)
+  const common =
+    silgiPicks.length > 0
+      ? silgiPicks[0].subjects.filter((s) =>
+          silgiPicks.every((e) => e.subjects.includes(s)),
+        )
+      : [];
+
+  if (silgiPicks.length >= 2 && common.length === 0) {
+    const names = [
+      ...new Set(silgiPicks.map((e) => SILGI_META[silgiCategory(e)].short)),
+    ];
+    return {
+      headline: "실기 두 갈래를 병행하는 조합",
+      detail: `선택한 대학들의 실기 종목이 겹치지 않아 ${names.join("·")} 종목을 각각 준비해야 합니다. 남은 기간의 시간 배분이 합격을 가릅니다.`,
+    };
+  }
+  if (nonSilgiPicks.length > 0 && silgiPicks.length > 0) {
     return {
       headline: "실기 + 수능·서류를 병행하는 조합",
       detail:
-        "홍익대 슬롯은 그림 대신 수능과 미술활동보고서 관리가 승부처입니다. 나머지 카드의 실기와 시간 배분이 필요합니다.",
+        "비실기 카드는 그림 대신 수능·서류 관리가 승부처입니다. 나머지 카드의 실기와 시간 배분이 필요합니다.",
     };
   }
-  if (types.size === 1 && types.has("비실기")) {
+  if (main.length > 0 && silgiPicks.length === 0) {
     return {
       headline: "실기 없이 가는 조합",
       detail:
         "실기고사 부담이 없는 대신, 수능 성적과 서류 완성도가 당락을 결정합니다.",
     };
   }
-  if (types.has("기초소양") && types.has("기초디자인")) {
+  if (silgiPicks.length > 0) {
     return {
-      headline: "함께 준비 가능한 조합",
-      detail:
-        "기초소양과 기초디자인은 병행 준비가 되는 유형이라, 상위권·중위권을 동시에 노리는 표준 전략입니다.",
-    };
-  }
-  if (main.length > 0 || hasKarts) {
-    return {
-      headline: "한 유형으로 끝나는 조합",
-      detail: "실기 준비를 한 갈래에 집중할 수 있는 조합입니다.",
+      headline: "한 종목으로 끝나는 조합",
+      detail: `${SILGI_META[common[0]].label} 하나로 선택한 실기 대학을 모두 지원할 수 있어, 실기 준비를 한 갈래에 집중할 수 있는 조합입니다.`,
     };
   }
   return { headline: "", detail: "" };
@@ -339,7 +364,7 @@ function slotLine(entry: JungsiEntry) {
   const name = entry.campus
     ? `${entry.university} ${entry.campus}`
     : entry.university;
-  return { name, silgi: SILGI_META[entry.silgi].label };
+  return { name, silgi: silgiLabel(entry) };
 }
 
 /** 상담 예약 요청사항에 붙여넣을 조합 요약 텍스트 */
@@ -726,7 +751,7 @@ function PlanTray({
                   {entry.campus ? ` ${entry.campus}` : ""}
                 </span>
                 <span className="text-[10px] text-white/50">
-                  {SILGI_META[entry.silgi].short}
+                  {silgiShort(entry)}
                 </span>
                 <button
                   type="button"
@@ -807,14 +832,17 @@ function PlanTray({
 
 /* ─────────────────────────── 메인 탐색기 ─────────────────────────── */
 
-const SILGI_FILTERS: (SilgiType | "전체")[] = [
+const SILGI_FILTERS: (SilgiCategory | "전체")[] = [
   "전체",
-  "기초디자인",
-  "기초소양",
-  "선택실기",
-  "자체실기",
-  "비실기",
+  ...SILGI_CATEGORY_ORDER,
 ];
+
+/** 종목 필터 판정 — 택1 대학은 응시 가능 종목 필터 모두에 노출 */
+function matchesSilgiFilter(e: JungsiEntry, filter: SilgiCategory | "전체") {
+  if (filter === "전체") return true;
+  if (filter === "비실기") return e.subjects.length === 0;
+  return e.subjects.includes(filter);
+}
 
 export default function JungsiExplorer({
   ctaHref = "#",
@@ -822,7 +850,7 @@ export default function JungsiExplorer({
   ctaHref?: string;
 }) {
   const [gun, setGun] = useState<Gun>("가");
-  const [silgi, setSilgi] = useState<SilgiType | "전체">("전체");
+  const [silgi, setSilgi] = useState<SilgiCategory | "전체">("전체");
   const [query, setQuery] = useState("");
   const [selection, setSelection] = useState<Selection>({});
   const [focusId, setFocusId] = useState<string | null>(null);
@@ -898,7 +926,7 @@ export default function JungsiExplorer({
       (e) =>
         // 검색어가 있으면 전체 군에서 찾고, 없으면 선택한 군만 표시
         (q !== "" || e.gun === gun) &&
-        (silgi === "전체" || e.silgi === silgi) &&
+        matchesSilgiFilter(e, silgi) &&
         (q === "" ||
           e.university.includes(q) ||
           (e.campus ?? "").includes(q) ||
@@ -1023,7 +1051,7 @@ export default function JungsiExplorer({
 
         <div className="mt-2.5 flex items-center gap-2 overflow-x-auto">
           <span className="shrink-0 text-[11px] tracking-wider text-white/35">
-            실기유형
+            실기 종목
           </span>
           {SILGI_FILTERS.map((s) => {
             const active = silgi === s;
@@ -1038,7 +1066,7 @@ export default function JungsiExplorer({
                     : "border-white/15 text-white/55 hover:border-white/35 hover:text-white/85"
                 }`}
               >
-                {s === "전체" ? "전체" : SILGI_META[s].label}
+                {s === "전체" ? "전체" : SILGI_META[s].short}
               </button>
             );
           })}
@@ -1049,7 +1077,7 @@ export default function JungsiExplorer({
       {!hasSelection && (
         <p className="mt-5 rounded-md border border-white/10 bg-white/[0.03] px-4 py-3 text-[13px] leading-relaxed text-white/55">
           카드의 <span className="text-accent">담기</span> 버튼을 누르면 아래에
-          원서 조합이 만들어집니다. 군마다 1곳씩, 3장을 채워 보세요 — 실기유형
+          원서 조합이 만들어집니다. 군마다 1곳씩, 3장을 채워 보세요 — 실기 종목
           궁합을 바로 알려드립니다.
         </p>
       )}

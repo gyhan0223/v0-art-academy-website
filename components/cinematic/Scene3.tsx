@@ -47,7 +47,10 @@ const curriculumItems = [
 
 export default function Scene3() {
   return (
-    <section className="relative min-h-screen bg-[#05050a] py-32 md:py-48 px-6 overflow-hidden">
+    <section
+      id="curriculum"
+      className="relative min-h-screen bg-[#05050a] py-32 md:py-48 px-6 overflow-hidden scroll-mt-16"
+    >
       {/* 시네마틱 배경 빛 장식 */}
       <div className="absolute top-0 left-1/4 w-250 h-250 bg-purple-900/10 rounded-full blur-[160px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-200 h-200amber-900/10 rounded-full blur-[140px] pointer-events-none" />
@@ -66,9 +69,9 @@ export default function Scene3() {
             The Curriculum
           </span>
           <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mt-4 tracking-tighter leading-none break-keep drop-shadow-lg">
-            생각의 힘을 설계하는
+            최상위권을 완성하는
             <br />
-            핵심 교육 과정
+            실기 교육 과정
           </h2>
         </motion.div>
 

@@ -70,8 +70,8 @@ const navItems: NavItem[] = [
       //   desc: "홍익대 미술활동보고서 작성 전략",
       // },
       {
-        label: "2026학년도 미대 입시 정보",
-        href: "/guide/jungsi-2026",
+        label: "2027학년도 미대 입시 정보",
+        href: "/guide/jungsi-2027",
         desc: "가·나·다군 모집군·전형방법 총정리",
       },
     ],

@@ -63,7 +63,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
           },
         ]),
     {
-      url: `${baseUrl}/guide/jungsi-2026`,
+      url: `${baseUrl}/guide/jungsi-2027`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,

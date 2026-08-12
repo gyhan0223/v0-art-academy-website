@@ -1,30 +1,35 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import GunCardSlots from "@/components/academy/GunCardSlots";
 import JungsiExplorer from "@/components/academy/JungsiExplorer";
+import JungsiScheduleModal from "@/components/academy/JungsiScheduleModal";
 import ScoreRecommender from "@/components/academy/ScoreRecommender";
-import { SILGI_META } from "@/lib/jungsi-data";
+import SilgiGallery from "@/components/academy/SilgiGallery";
+import { SILGI_CATEGORY_ORDER, SILGI_META } from "@/lib/jungsi-data";
 
 export const metadata: Metadata = {
-  title: "2027 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
+  title: "2027학년도 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
   description:
-    "서울대·홍익대·국민대 등 주요 26개 미술대학의 정시 모집군·전형방법(수능 반영영역·실기 비율)·실기유형과 학과별 모집인원·경쟁률까지 한 페이지에 정리했습니다. 가·나·다군 지원 조합 짜기 전에 꼭 확인하세요.",
+    "서울대·홍익대·국민대 등 주요 26개 미술대학의 정시 모집군·전형방법(수능 반영영역·실기 비율)·실기 종목과 학과별 모집인원·경쟁률까지 한 페이지에 정리했습니다. 가·나·다군 지원 조합 짜기 전에 꼭 확인하세요.",
   keywords: [
     "미대 정시 가나다군",
     "2027 미대 정시",
     "미대 정시 전형방법",
     "미대 정시 경쟁률",
     "기초디자인 대학",
+    "발상과 표현",
     "기초소양평가",
+    "미대 실기 종목",
     "홍익대 비실기",
     "위시티 미술학원",
     "일산 미술학원",
   ],
-  alternates: { canonical: "/guide/jungsi-2026" },
+  alternates: { canonical: "/guide/jungsi-2027" },
   openGraph: {
-    title: "2027 미대 정시 가나다군 총정리",
+    title: "2027학년도 미대 정시 가나다군 총정리",
     description:
-      "주요 미대 26곳의 모집군·전형방법·실기유형과 학과별 모집인원·경쟁률 — 지원 카드 3장을 어떻게 쓸지, 한 페이지로 끝내세요.",
+      "주요 미대 26곳의 모집군·전형방법·실기 종목과 학과별 모집인원·경쟁률 — 지원 카드 3장을 어떻게 쓸지, 한 페이지로 끝내세요.",
     type: "article",
     images: [{ url: "/images/og-home.jpg", width: 1200, height: 630 }],
   },
@@ -33,59 +38,18 @@ export const metadata: Metadata = {
 const NAVER_BOOKING =
   "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
 
-/* 히어로: "지원 카드 3장 + 보너스 1장" 시그니처 */
-function CardSlots() {
-  const slots = [
-    { label: "가군", sub: "1.5 – 1.12" },
-    { label: "나군", sub: "1.13 – 1.20" },
-    { label: "다군", sub: "1.21 – 1.28" },
-  ];
-  return (
-    <div className="mt-10 flex flex-col items-center">
-    <span className="mb-3 text-[11px] tracking-wider text-white/40">
-      전형기간 (2026학년도 기준)
-    </span>
-    <div className="flex items-stretch justify-center gap-3">
-      {slots.map((slot, i) => (
-        <div
-          key={slot.label}
-          className="flex w-24 flex-col items-center justify-center rounded-lg border border-white/15 bg-[#0a0a0a] py-5 md:w-28"
-          style={{ transform: `rotate(${(i - 1) * 2}deg)` }}
-        >
-          <span className="font-mono text-lg font-bold text-accent">
-            {slot.label}
-          </span>
-          <span className="mt-1 text-[10px] tracking-wider text-white/40">
-            {slot.sub}
-          </span>
-        </div>
-      ))}
-      <div
-        className="flex w-24 flex-col items-center justify-center rounded-lg border border-dashed border-accent/50 py-5 md:w-28"
-        style={{ transform: "rotate(4deg)" }}
-      >
-        <span className="font-mono text-lg font-bold text-accent/90">+</span>
-        <span className="mt-1 text-[10px] tracking-wider text-accent/70">
-          한예종 별도
-        </span>
-      </div>
-    </div>
-    </div>
-  );
-}
-
 const faqs: { q: string; a: React.ReactNode }[] = [
   {
     q: "가군, 나군, 다군이 뭔가요?",
     a: "정시에서는 대학들이 시험 기간에 따라 세 그룹(군)으로 나뉘고, 학생은 군마다 1곳씩 최대 3곳에 지원할 수 있습니다. 같은 군에 두 곳을 쓸 수 없기 때문에, 어느 군에 어떤 대학이 있는지가 지원 전략의 출발점입니다. 군은 대학이 아니라 학과 단위로 정해진다는 점이 핵심입니다 — 건국대처럼 학과별로 가·나·다군에 나뉜 대학은 한 학교에 최대 3번 지원할 수도 있습니다.",
   },
   {
-    q: "기초소양평가와 기초디자인은 뭐가 다른가요?",
-    a: "기초디자인이 '주어진 사물로 화면을 얼마나 완성도 있게 구성하는가'를 본다면, 기초소양·기초조형 계열은 '대상을 관찰하거나 주제를 보고 아이디어를 어떻게 풀어내는가'를 봅니다. 국민대(기초조형평가), 성균관대(기초실기소양평가), 고려대가 대표적입니다. 서울대·서울시립대·이화여대는 대학이 직접 출제하는 통합·자체 실기를 봐서 또 다르게 준비해야 합니다.",
+    q: "기초조형·소양평가와 기초디자인은 뭐가 다른가요?",
+    a: "기초디자인이 '주어진 사물로 화면을 얼마나 완성도 있게 구성하는가'를 본다면, 기초조형·소양평가는 '대상을 관찰하거나 주제를 보고 아이디어를 어떻게 풀어내는가'를 봅니다. 국민대(기초조형평가)·성균관대(기초실기소양평가)가 대표적이고, 고려대는 별도 종목인 발상과 표현으로 선발합니다. 서울대·서울시립대·이화여대는 대학이 직접 출제하는 통합·자체 실기를 봐서 또 다르게 준비해야 합니다.",
   },
   {
-    q: "실기유형 하나만 준비하면 여러 대학을 쓸 수 있나요?",
-    a: "기초디자인은 서울권 상당수 대학이 채택하고 있어, 한 유형으로도 여러 학교를 지원할 수 있습니다. 여기에 삼육대·덕성여대·성신여대처럼 '기초디자인·기초소양 등 중 택1'을 받는 선택실기 대학까지 더하면 준비하던 그림을 그대로 살려 지원 폭을 넓힐 수 있습니다. 다만 서울대·서울시립대·이화여대의 자체·통합실기는 별도의 준비 시간이 필요합니다.",
+    q: "실기 종목 하나만 준비하면 여러 대학을 쓸 수 있나요?",
+    a: "기초디자인은 서울권 상당수 대학이 채택하고 있어, 한 종목으로도 여러 학교를 지원할 수 있습니다. 여기에 삼육대·덕성여대·성신여대·서경대처럼 지정된 여러 종목 중 하나를 골라 응시하는 택1 대학까지 더하면 준비하던 그림을 그대로 살려 지원 폭을 넓힐 수 있습니다. 다만 택1 대학도 지정 종목에 내 종목이 있어야 하고, 서울대·서울시립대·이화여대의 통합·자체실기는 별도의 준비 시간이 필요합니다.",
   },
   {
     q: "홍익대는 왜 실기가 없나요?",
@@ -99,12 +63,12 @@ const faqs: { q: string; a: React.ReactNode }[] = [
     q: "고2인데 지금 실기를 시작해도 늦지 않나요?",
     a: (
       <>
-        늦지 않았습니다. 기초디자인처럼 채택 대학이 많은 유형은 고2 겨울에
-        시작해 정시로 합격하는 사례가 매년 나옵니다. 다만 유형에 따라 필요한
-        준비 기간이 크게 달라서 — 서울대·이화여대의 자체·통합실기는 더 오래
+        늦지 않았습니다. 기초디자인처럼 채택 대학이 많은 종목은 고2 겨울에
+        시작해 정시로 합격하는 사례가 매년 나옵니다. 다만 종목에 따라 필요한
+        준비 기간이 크게 달라서 — 서울대·이화여대의 통합·자체실기는 더 오래
         걸립니다 — 지금 시점에는 &lsquo;언제 시작하느냐&rsquo;보다 &lsquo;남은
-        기간에 승산 있는 유형을 고르느냐&rsquo;가 관건입니다. 현재 성적과
-        성향으로 어떤 유형·대학 조합이 가능한지는{" "}
+        기간에 승산 있는 종목을 고르느냐&rsquo;가 관건입니다. 현재 성적과
+        성향으로 어떤 종목·대학 조합이 가능한지는{" "}
         <a
           href={NAVER_BOOKING}
           target="_blank"
@@ -119,11 +83,9 @@ const faqs: { q: string; a: React.ReactNode }[] = [
   },
 ];
 
-const SILGI_ORDER = ["기초디자인", "기초소양", "선택실기", "자체실기", "비실기"] as const;
-
-/* 예시작 갤러리를 크게 보여주는 대표 유형.
+/* 예시작 갤러리를 크게 보여주는 대표 종목.
    public/images/silgi/ 에 실제 그림을 같은 이름으로 넣으면 그대로 노출됩니다. */
-type FeaturedType = "기초디자인" | "기초소양";
+type FeaturedType = "기초디자인" | "기초조형·소양평가";
 
 const FEATURED_EXAMPLES: Record<
   FeaturedType,
@@ -155,15 +117,15 @@ const FEATURED_EXAMPLES: Record<
     ),
     moreUrl: "https://blog.naver.com/modago-/221152752551",
   },
-  기초소양: {
+  "기초조형·소양평가": {
     badge: "관찰·발상 평가",
     aspectClass: "aspect-[966/1288]",
     images: [
-      { src: "/images/silgi/gicho-soyang-1.jpg", alt: "기초소양·기초조형 예시작 1" },
-      { src: "/images/silgi/gicho-soyang-2.jpg", alt: "기초소양·기초조형 예시작 2" },
-      { src: "/images/silgi/gicho-soyang-3.jpg", alt: "기초소양·기초조형 예시작 3" },
-      { src: "/images/silgi/gicho-soyang-4.jpg", alt: "기초소양·기초조형 예시작 4" },
-      { src: "/images/silgi/gicho-soyang-5.jpg", alt: "기초소양·기초조형 예시작 5" },
+      { src: "/images/silgi/gicho-soyang-1.jpg", alt: "기초조형·소양평가 예시작 1" },
+      { src: "/images/silgi/gicho-soyang-2.jpg", alt: "기초조형·소양평가 예시작 2" },
+      { src: "/images/silgi/gicho-soyang-3.jpg", alt: "기초조형·소양평가 예시작 3" },
+      { src: "/images/silgi/gicho-soyang-4.jpg", alt: "기초조형·소양평가 예시작 4" },
+      { src: "/images/silgi/gicho-soyang-5.jpg", alt: "기초조형·소양평가 예시작 5" },
     ],
     caption: (
       <>
@@ -175,10 +137,12 @@ const FEATURED_EXAMPLES: Record<
   },
 };
 
-/* 이미지로 함께 보여줄 나머지 유형(1장씩). src 를 채우면 카드에 예시작이 붙습니다. */
-const SILGI_EXAMPLE: Partial<Record<(typeof SILGI_ORDER)[number], { src: string; alt: string }>> = {
-  // 선택실기: { src: "/images/silgi/select-1.jpg", alt: "…" },
-  // 자체실기: { src: "/images/silgi/jache-1.jpg", alt: "…" },
+/* 이미지로 함께 보여줄 나머지 종목(1장씩). src 를 채우면 카드에 예시작이 붙습니다. */
+const SILGI_EXAMPLE: Partial<
+  Record<(typeof SILGI_CATEGORY_ORDER)[number], { src: string; alt: string }>
+> = {
+  // 발상과표현: { src: "/images/silgi/balsang-1.jpg", alt: "…" },
+  // "수채화·수묵담채": { src: "/images/silgi/hoehwa-1.jpg", alt: "…" },
 };
 
 /* 대표 유형 카드 — 라벨·배지·설명·예시작 5장·해설·(선택)더보기 링크 */
@@ -196,22 +160,7 @@ function FeaturedTypeCard({ type }: { type: FeaturedType }) {
         {SILGI_META[type].description}
       </p>
       <figure className="mt-4">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-          {cfg.images.map((ex) => (
-            <div
-              key={ex.src}
-              className={`relative ${cfg.aspectClass} overflow-hidden rounded-md border border-white/10 bg-black`}
-            >
-              <Image
-                src={ex.src}
-                alt={ex.alt}
-                fill
-                sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 170px"
-                className="object-cover"
-              />
-            </div>
-          ))}
-        </div>
+        <SilgiGallery images={cfg.images} aspectClass={cfg.aspectClass} />
         <figcaption className="mt-2.5 text-[12px] leading-relaxed text-white/45">
           {cfg.caption}
         </figcaption>
@@ -239,12 +188,13 @@ export default function Page() {
         <header className="mb-16 text-center">
           <p className="mb-4 text-xs tracking-[0.3em] text-accent">입시정보</p>
           <h1 className="text-3xl font-bold leading-snug text-white md:text-4xl">
-            2027 미대 정시
+            2027학년도 미대 정시
             <br />
             가나다군 총정리
           </h1>
           <p className="mt-4 text-xs leading-relaxed text-white/40">
-            2027학년도 대학별 모집요강 원본 기준 · 2026년 8월 갱신
+            2027학년도 대입전형 시행계획 및 대학별 모집요강 기준 · 2026년 8월
+            갱신
           </p>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground">
             정시는 군마다 1곳, 총 3장의 카드로 승부합니다.
@@ -252,7 +202,7 @@ export default function Page() {
             페이지에 담았습니다.
           </p>
           <ul className="mx-auto mt-4 flex max-w-xl flex-wrap justify-center gap-2">
-            {["모집군", "전형방법", "수능 반영영역", "실기유형", "자체실기 대학", "학과별 모집인원", "경쟁률"].map(
+            {["모집군", "전형방법", "수능 반영영역", "실기 종목", "통합·자체실기 대학", "학과별 모집인원", "경쟁률"].map(
               (item) => (
                 <li
                   key={item}
@@ -263,7 +213,8 @@ export default function Page() {
               ),
             )}
           </ul>
-          <CardSlots />
+          <GunCardSlots />
+          <JungsiScheduleModal />
 
           {/* 윈터스쿨 slim CTA — 정보 탐색 단계이므로 /winter 내부 링크로 연결 */}
           <div className="mx-auto mt-10 flex max-w-xl flex-col items-center gap-4 rounded-lg border border-white/10 bg-white/[0.03] px-5 py-4 text-center md:flex-row md:justify-between md:gap-6 md:text-left">
@@ -285,23 +236,46 @@ export default function Page() {
           </div>
         </header>
 
-        {/* 실기유형 설명 */}
-        <section className="mb-14" aria-label="실기유형 안내">
-          <h2 className="mb-2 text-xl font-bold text-white md:text-2xl">
-            <span className="mr-3 font-mono text-base text-accent">01</span>
-            실기유형부터 이해하기
-          </h2>
-          <p className="mb-6 text-sm leading-relaxed text-white/60">
-어느 대학에 갈 수 있는지는 결국 성적이 정하지만, 어느 대학을 노려볼 수 있는지는 준비한 실기유형이 먼저 가릅니다. 유형이 다르면 준비 방식이 완전히 달라 중간에 갈아타기 어렵습니다. 아래 다섯 가지 유형부터 확인하고, 군별 대학 표를 보면 지원 전략이 훨씬 선명해집니다.
-          </p>
-          {/* 대표 유형 — 예시작 갤러리 카드 */}
-          <FeaturedTypeCard type="기초디자인" />
-          <FeaturedTypeCard type="기초소양" />
+        {/* 실기 종목 설명 */}
+        <section className="mb-14" aria-label="실기 종목 안내">
+          <details className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-lg py-1 transition-colors hover:text-white [&::-webkit-details-marker]:hidden">
+              <h2 className="text-xl font-bold text-white md:text-2xl">
+                <span className="mr-3 font-mono text-base text-accent">01</span>
+                실기 종목부터 이해하기
+              </h2>
+              <span className="flex shrink-0 items-center gap-2 text-[12px] text-white/45">
+                <span className="hidden group-open:inline">접기</span>
+                <span className="group-open:hidden">펼쳐서 예시작 보기</span>
+                <svg
+                  aria-hidden
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="transition-transform group-open:rotate-180"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+            </summary>
 
-          {/* 나머지 유형 */}
+            <div className="pt-2">
+          <p className="mb-6 text-sm leading-relaxed text-white/60">
+어느 대학에 갈 수 있는지는 결국 성적이 정하지만, 어느 대학을 노려볼 수 있는지는 준비한 실기 종목이 먼저 가릅니다. 종목이 다르면 준비 방식이 완전히 달라 중간에 갈아타기 어렵습니다. 실제 시험 종목 기준으로 정리했으니, 대표 종목 두 가지를 예시작과 함께 보고 나머지 종목까지 확인한 뒤 군별 대학 표를 보면 지원 전략이 훨씬 선명해집니다.
+          </p>
+          {/* 대표 종목 — 예시작 갤러리 카드 */}
+          <FeaturedTypeCard type="기초디자인" />
+          <FeaturedTypeCard type="기초조형·소양평가" />
+
+          {/* 나머지 종목 */}
           <div className="grid gap-4 md:grid-cols-2">
-            {SILGI_ORDER.filter(
-              (type) => type !== "기초디자인" && type !== "기초소양",
+            {SILGI_CATEGORY_ORDER.filter(
+              (type) => type !== "기초디자인" && type !== "기초조형·소양평가",
             ).map((type) => {
               const ex = SILGI_EXAMPLE[type];
               return (
@@ -333,9 +307,32 @@ export default function Page() {
             })}
           </div>
 
-          {/* 최상위권 자체실기 안내 — 문제 인식 단계, 대학별 상세는 아래 탐색기에 위임 */}
+          {/* 실기 종목 섹션 CTA */}
+          <div className="mt-8 flex flex-col items-center gap-4 rounded-lg border border-accent/30 bg-accent/[0.06] p-5 text-center md:flex-row md:items-center md:justify-between md:gap-6 md:p-6 md:text-left">
+            <p className="text-sm leading-relaxed text-white/70">
+              <span className="font-bold text-white">
+                우리 아이는 어떤 종목이 맞을까요?
+              </span>
+              <br className="hidden md:block" /> 성적·성향에 맞는 실기 종목과
+              지원 전략을 <span className="text-accent">무료</span>로 진단해
+              드립니다.
+            </p>
+            <a
+              href={NAVER_BOOKING}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              무료 진단 신청
+              <span aria-hidden>→</span>
+            </a>
+          </div>
+            </div>
+          </details>
+
+          {/* 최상위권 통합·자체실기 안내 — 문제 인식 단계, 대학별 상세는 아래 탐색기에 위임 */}
           <div className="mt-8 rounded-lg border border-white/10 bg-[#0a0a0a] p-5 md:p-6">
-            <p className="text-xs tracking-[0.25em] text-accent">최상위권 자체실기</p>
+            <p className="text-xs tracking-[0.25em] text-accent">통합·자체실기</p>
             <h3 className="mt-2 text-base font-bold leading-snug text-white md:text-lg">
               최상위권 미대는 &lsquo;같은 실기&rsquo;로 준비하지 않습니다
             </h3>
@@ -382,7 +379,7 @@ export default function Page() {
             <p className="mt-4 text-[13px] leading-relaxed text-white/60">
               목표 대학이 정해져 있다면 대학별 출제 방식에 맞춘 별도 훈련이
               필요합니다. 모두다른고양이는 일반 미대 실기뿐 아니라 최상위권
-              미대 자체실기를 학교별로 따로 준비합니다.
+              미대 통합·자체실기를 학교별로 따로 준비합니다.
             </p>
             <Link
               href="/winter"
@@ -391,27 +388,6 @@ export default function Page() {
               최상위권 미대 준비 방식 보기
               <span aria-hidden>→</span>
             </Link>
-          </div>
-
-          {/* 실기유형 섹션 CTA */}
-          <div className="mt-8 flex flex-col items-center gap-4 rounded-lg border border-accent/30 bg-accent/[0.06] p-5 text-center md:flex-row md:items-center md:justify-between md:gap-6 md:p-6 md:text-left">
-            <p className="text-sm leading-relaxed text-white/70">
-              <span className="font-bold text-white">
-                우리 아이는 어떤 유형이 맞을까요?
-              </span>
-              <br className="hidden md:block" /> 성적·성향에 맞는 실기유형과
-              지원 전략을 <span className="text-accent">무료</span>로 진단해
-              드립니다.
-            </p>
-            <a
-              href={NAVER_BOOKING}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-            >
-              무료 진단 신청
-              <span aria-hidden>→</span>
-            </a>
           </div>
         </section>
 
@@ -462,7 +438,7 @@ export default function Page() {
             군별 대학 한눈에 보기
           </h2>
           <p className="mb-4 text-sm leading-relaxed text-white/60">
-            군 탭과 실기유형 필터로 탐색하고, 마음에 드는 대학을{" "}
+            군 탭과 실기 종목 필터로 탐색하고, 마음에 드는 대학을{" "}
             <span className="text-accent">담기</span>로 골라 나만의 원서 3장을
             시뮬레이션해 보세요. 카드의 <span className="text-accent">학과별
             모집 상세</span>를 펼치면 전공별 모집인원과 경쟁률까지 볼 수
@@ -538,7 +514,7 @@ export default function Page() {
           <p className="mt-2 text-[13px] leading-relaxed text-white/60">
             이 페이지의 26개 대학 모집요강 대조와 환산식 정리는 원장이 직접
             했습니다. 모두다른고양이는 원장이 수업과 입시 상담을 직접 맡는
-            소수정예 학원으로, 학생마다 성적과 성향에 맞춰 실기유형과
+            소수정예 학원으로, 학생마다 성적과 성향에 맞춰 실기 종목과
             가·나·다군 조합을 함께 설계합니다. 아래 무료 진단 상담도 원장이
             직접 진행합니다.
           </p>

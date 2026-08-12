@@ -19,6 +19,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    // 일산캠퍼스 광고 랜딩 — 지역 키워드(일산 미술학원 등) 검색 유입 도착 페이지
+    {
+      url: `${baseUrl}/ilsan`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
     {
       url: `${baseUrl}/winter/schedule`,
       lastModified: new Date(),
@@ -56,13 +63,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
           },
         ]),
     {
-      url: `${baseUrl}/ilsan`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/guide/jungsi-2026`,
+      url: `${baseUrl}/guide/jungsi-2027`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,

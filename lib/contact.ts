@@ -10,15 +10,26 @@ export const NAVER_TALK_URL = "https://talk.naver.com/profile/w44x0x";
 export const NAVER_GREEN = "#03C75A";
 
 /**
- * 네이버 예약 — 홍대 본원 상담 예약 (윈터스쿨 상담이 여기로 들어온다).
+ * 네이버 예약 — 홍대 본원 상담 예약 상품의 실제 주소.
  * 예약 상품이 바뀌면 biz/item 번호가 달라지므로 이 값만 고치면 된다.
+ *
+ * 버튼에 직접 걸지 말 것 — startDate를 클릭 시점 날짜로 채워야 하므로
+ * 아래 NAVER_BOOKING_URL(/booking/hongdae 리다이렉트)을 거쳐야 한다.
+ */
+export const NAVER_BOOKING_HONGDAE_ITEM =
+  "https://booking.naver.com/booking/6/bizes/1713916/items/7946327";
+
+/**
+ * 네이버 예약 — 홍대 본원 상담 예약 (윈터스쿨 상담이 여기로 들어온다).
+ * 정적 페이지에 네이버 주소를 그대로 박으면 startDate가 빌드 날짜로
+ * 굳어버리므로, 클릭할 때마다 오늘 날짜를 붙여 보내는 내부 리다이렉트
+ * (app/booking/hongdae/route.ts)를 가리킨다.
  *
  * 윈터스쿨은 홍대 본원에서만 진행하므로 윈터스쿨 쪽 버튼은 캠퍼스를
  * 고르지 않고 이 주소를 바로 쓴다. 두 캠퍼스를 모두 안내하는 자리라면
  * 아래 CAMPUSES를 쓸 것.
  */
-export const NAVER_BOOKING_URL =
-  "https://booking.naver.com/booking/5/bizes/770673/items/4636302";
+export const NAVER_BOOKING_URL = "/booking/hongdae";
 
 /** 네이버 예약 — 일산 캠퍼스 상담 예약 (예약 상품이 달라 biz/item 번호가 다르다) */
 export const NAVER_BOOKING_URL_ILSAN =

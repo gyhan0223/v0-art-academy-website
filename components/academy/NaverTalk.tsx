@@ -77,8 +77,10 @@ export function useReportBottomBar(ref: React.RefObject<HTMLElement | null>) {
 export default function NaverTalkFab() {
   const pathname = usePathname() ?? "";
 
-  // /winter*는 모바일 하단 액션 바(MobileActionBar)가 이미 자리를 쓴다.
-  // 모바일에서는 숨기고, 대신 그 바 안에 톡톡 칸을 넣어 두었다.
+  // /winter*는 모바일 하단 액션 바(MobileActionBar)가 이미 자리를 쓰고
+  // 그 바 안에 톡톡 칸이 있어 모바일에서는 숨긴다.
+  // (/ilsan도 예전 랜딩의 하단 고정 상담 바 때문에 숨겼지만, 새 랜딩은
+  // 고정 바가 없으므로 다시 보여준다.)
   const visibility = pathname.startsWith("/winter")
     ? "hidden md:inline-flex"
     : "inline-flex";

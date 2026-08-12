@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import GunCardSlots from "@/components/academy/GunCardSlots";
 import JungsiExplorer from "@/components/academy/JungsiExplorer";
 import JungsiScheduleModal from "@/components/academy/JungsiScheduleModal";
@@ -201,7 +202,7 @@ export default function Page() {
             페이지에 담았습니다.
           </p>
           <ul className="mx-auto mt-4 flex max-w-xl flex-wrap justify-center gap-2">
-            {["모집군", "전형방법", "수능 반영영역", "실기 종목", "학과별 모집인원", "경쟁률"].map(
+            {["모집군", "전형방법", "수능 반영영역", "실기 종목", "통합·자체실기 대학", "학과별 모집인원", "경쟁률"].map(
               (item) => (
                 <li
                   key={item}
@@ -214,6 +215,25 @@ export default function Page() {
           </ul>
           <GunCardSlots />
           <JungsiScheduleModal />
+
+          {/* 윈터스쿨 slim CTA — 정보 탐색 단계이므로 /winter 내부 링크로 연결 */}
+          <div className="mx-auto mt-10 flex max-w-xl flex-col items-center gap-4 rounded-lg border border-white/10 bg-white/[0.03] px-5 py-4 text-center md:flex-row md:justify-between md:gap-6 md:text-left">
+            <div>
+              <p className="text-[13px] font-medium leading-relaxed text-white/80">
+                2027 미대 정시, 겨울에 어디까지 준비하느냐가 달라집니다.
+              </p>
+              <p className="mt-1 text-[12px] leading-relaxed text-white/45">
+                수능 · 실기 · 생활관리를 한 번에 잡는 미대 기숙 집중 과정
+              </p>
+            </div>
+            <Link
+              href="/winter"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/50 px-4 py-2.5 text-[13px] font-medium text-accent transition-colors hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              2027 기숙 윈터스쿨 보기
+              <span aria-hidden>→</span>
+            </Link>
+          </div>
         </header>
 
         {/* 실기 종목 설명 */}
@@ -309,6 +329,66 @@ export default function Page() {
           </div>
             </div>
           </details>
+
+          {/* 최상위권 통합·자체실기 안내 — 문제 인식 단계, 대학별 상세는 아래 탐색기에 위임 */}
+          <div className="mt-8 rounded-lg border border-white/10 bg-[#0a0a0a] p-5 md:p-6">
+            <p className="text-xs tracking-[0.25em] text-accent">통합·자체실기</p>
+            <h3 className="mt-2 text-base font-bold leading-snug text-white md:text-lg">
+              최상위권 미대는 &lsquo;같은 실기&rsquo;로 준비하지 않습니다
+            </h3>
+            <p className="mt-3 text-[13px] leading-relaxed text-white/60">
+              서울대·서울시립대·이화여대 등 일부 최상위권 미대는 기초디자인이
+              아니라 대학이 직접 출제하는 통합·자체실기로 선발합니다. 문제
+              유형과 평가 방식이 달라, 기초디자인 준비만으로는 대응하기
+              어렵습니다.
+            </p>
+            <ul className="mt-4 divide-y divide-white/[0.07] border-y border-white/[0.07]">
+              {[
+                {
+                  university: "서울대학교",
+                  type: "통합실기",
+                  diff: "주어진 주제를 제시된 재료로 표현 — 사물 구성보다 발상과 재료 해석이 관건",
+                },
+                {
+                  university: "서울시립대학교",
+                  type: "통합실기",
+                  diff: "한 장에 두 문제를 연계해 해결 — 문제를 읽고 풀어내는 방식 자체가 다름",
+                },
+                {
+                  university: "이화여자대학교",
+                  type: "통합실기",
+                  diff: "대상·주제를 다양한 재료로 표현 — 2절 화면을 5시간 동안 운용",
+                },
+              ].map((row) => (
+                <li
+                  key={row.university}
+                  className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:gap-4"
+                >
+                  <span className="flex shrink-0 items-baseline gap-2 sm:w-40">
+                    <span className="text-[13px] font-bold text-white">
+                      {row.university}
+                    </span>
+                    <span className="text-[11px] text-accent/80">{row.type}</span>
+                  </span>
+                  <span className="text-[12px] leading-relaxed text-white/55">
+                    {row.diff}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-[13px] leading-relaxed text-white/60">
+              목표 대학이 정해져 있다면 대학별 출제 방식에 맞춘 별도 훈련이
+              필요합니다. 모두다른고양이는 일반 미대 실기뿐 아니라 최상위권
+              미대 통합·자체실기를 학교별로 따로 준비합니다.
+            </p>
+            <Link
+              href="/winter"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2.5 text-[13px] font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              최상위권 미대 준비 방식 보기
+              <span aria-hidden>→</span>
+            </Link>
+          </div>
         </section>
 
         {/* 성적 기반 추천 */}
@@ -323,6 +403,32 @@ export default function Page() {
             가·나·다군에서 유리한 순으로 정렬해 드립니다.
           </p>
           <ScoreRecommender ctaHref={NAVER_BOOKING} />
+
+          {/* 윈터스쿨 메인 CTA — 지원 가능 대학 확인 직후가 핵심 전환 지점 */}
+          <div className="mt-8 rounded-lg border border-accent/40 bg-gradient-to-br from-accent/[0.12] via-accent/[0.05] to-transparent p-6 md:p-8">
+            <p className="text-xs tracking-[0.25em] text-accent">
+              2027 미대 기숙 윈터스쿨
+            </p>
+            <h3 className="mt-3 text-lg font-bold leading-snug text-white md:text-xl">
+              갈 수 있는 대학을 알았다면,
+              <br className="md:hidden" /> 이제 만드는 일만 남았습니다.
+            </h3>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/65">
+              정시는 지원 전략만으로 끝나지 않습니다. 겨울 동안 수능 성적, 실기
+              완성도, 하루 루틴을 얼마나 끌어올리느냐에 따라 실제 지원 가능한
+              대학이 달라집니다.
+            </p>
+            <p className="mt-2 text-[13px] text-white/45">
+              수능 + 실기 + 생활관리 집중 과정
+            </p>
+            <Link
+              href="/winter"
+              className="mt-6 inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-accent px-6 py-3.5 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto"
+            >
+              윈터스쿨 커리큘럼 보기
+              <span aria-hidden>→</span>
+            </Link>
+          </div>
         </section>
 
         {/* 대학 탐색기 */}
@@ -414,27 +520,38 @@ export default function Page() {
           </p>
         </section>
 
-        {/* CTA */}
+        {/* 최종 CTA — Primary: 윈터스쿨(/winter) · Secondary: 무료 진단(네이버 예약) */}
         <section className="mt-16 text-center">
-          <h2 className="text-xl font-bold leading-snug text-white md:text-2xl">
-            우리 아이는 어떤 조합으로
-            <br />
-            3장의 카드를 써야 할까요?
+          <p className="text-xs tracking-[0.25em] text-accent">
+            2027 미대 기숙 윈터스쿨
+          </p>
+          <h2 className="mt-3 text-xl font-bold leading-snug text-white md:text-2xl">
+            3장의 카드를 바꾸는 겨울
           </h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-            성적대와 실기 스타일에 따라 최적의 가·나·다군 조합은 전부 다릅니다.
-            현재 성적 기준으로 지원 가능한 조합을 무료로 진단해 드립니다.
+            지금 성적으로 지원 대학을 정하는 데서 끝내지 마세요. 겨울 동안
+            성적과 실기를 끌어올려 지원 가능한 대학 자체를 바꾸는 것이 모다고
+            윈터스쿨의 목표입니다.
           </p>
-          <a
-            href={NAVER_BOOKING}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-block rounded-md bg-accent px-8 py-3.5 text-sm font-medium text-black transition-opacity hover:opacity-85"
-          >
-            정시 조합 무료 진단 신청
-          </a>
+          <div className="mx-auto mt-8 flex max-w-md flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+            <Link
+              href="/winter"
+              className="inline-flex items-center justify-center gap-1.5 rounded-md bg-accent px-8 py-3.5 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              윈터스쿨 자세히 보기
+              <span aria-hidden>→</span>
+            </Link>
+            <a
+              href={NAVER_BOOKING}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-md border border-white/20 px-8 py-3.5 text-sm font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              정시 조합 무료 진단
+            </a>
+          </div>
           <p className="mt-3 text-xs text-white/35">
-            네이버 예약으로 연결됩니다 · 031-916-8885
+            무료 진단은 네이버 예약으로 연결됩니다 · 031-916-8885
           </p>
         </section>
       </article>

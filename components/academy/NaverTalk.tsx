@@ -77,11 +77,14 @@ export function useReportBottomBar(ref: React.RefObject<HTMLElement | null>) {
 export default function NaverTalkFab() {
   const pathname = usePathname() ?? "";
 
-  // /winter*는 모바일 하단 액션 바(MobileActionBar)가 이미 자리를 쓴다.
-  // 모바일에서는 숨기고, 대신 그 바 안에 톡톡 칸을 넣어 두었다.
-  const visibility = pathname.startsWith("/winter")
-    ? "hidden md:inline-flex"
-    : "inline-flex";
+  // /winter*는 모바일 하단 액션 바(MobileActionBar)가, /ilsan은 하단 고정
+  // 상담 바(IlsanLanding의 StickyCta)가 이미 자리를 쓴다.
+  // 모바일에서는 숨긴다 — /winter*는 그 바 안에 톡톡 칸이 있고,
+  // /ilsan은 본문 하단 CTA에 톡톡 버튼을 두었다.
+  const visibility =
+    pathname.startsWith("/winter") || pathname.startsWith("/ilsan")
+      ? "hidden md:inline-flex"
+      : "inline-flex";
 
   return (
     <a

@@ -56,6 +56,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
           },
         ]),
     {
+      url: `${baseUrl}/ilsan`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/guide/jungsi-2026`,
       lastModified: new Date(),
       changeFrequency: "monthly",

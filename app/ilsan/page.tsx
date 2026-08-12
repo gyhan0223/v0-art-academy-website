@@ -3,25 +3,26 @@ import IlsanLanding from "@/components/ilsan/IlsanLanding";
 import { ILSAN_INFO } from "@/lib/ilsan";
 
 /**
- * 일산캠퍼스 광고 랜딩.
- * "일산 미술학원", "일산 입시미술" 등 검색 광고 유입의 도착 페이지 —
- * 본문·데이터는 components/ilsan/IlsanLanding.tsx와 lib/ilsan.ts에 있다.
+ * 일산캠퍼스 랜딩.
+ * "일산 입시미술학원" 등 검색 유입의 도착 페이지 — 2027학년도 예비 고3(현 고2)
+ * 중심의 상담 전환용. 본문·데이터는 components/ilsan/IlsanLanding.tsx와
+ * lib/ilsan.ts에 있다.
  */
 
-const PAGE_TITLE = "일산 미대입시 미술학원 | 모두다른고양이 일산캠퍼스";
+const PAGE_TITLE = "일산 입시미술학원 | 모두다른고양이 일산 캠퍼스";
 const PAGE_DESCRIPTION =
-  "평일 오후 6시부터 10시까지 미대입시 실기에 집중하는 모두다른고양이 일산캠퍼스. 목표 대학을 위한 입시미술 실기 수업과 1:1 상담을 만나보세요.";
+  "예비 고2·고3을 위한 일산 입시미술 실기 수업. 평일 저녁 6시부터 10시까지 목표 대학과 현재 실력에 맞춰 실기 준비 방향을 함께 설계합니다.";
 
 export const metadata: Metadata = {
   title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
   keywords: [
-    "일산 미술학원",
-    "일산 입시미술",
-    "일산 미대입시",
     "일산 입시미술학원",
-    "식사동 미술학원",
-    "고양시 미술학원",
+    "일산 미대입시",
+    "일산 입시미술",
+    "고양시 입시미술",
+    "예비 고3 입시미술",
+    "예비 고2 입시미술",
     "모두다른고양이",
     "모다고",
   ],
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
   },
 };
 
-/* 지역 검색(일산·식사동 미술학원) 노출을 위한 구조화 데이터 */
+/* 지역 검색(일산·고양시 입시미술학원) 노출을 위한 구조화 데이터 */
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
@@ -68,7 +69,9 @@ export default function Page() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(localBusinessJsonLd),
+        }}
       />
       <IlsanLanding />
     </>

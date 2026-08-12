@@ -48,7 +48,7 @@ export default function Footer() {
           </p>
           <p className="text-background/50 text-xs">
             <span className="text-background/30 mr-2">HOURS</span>
-            평일 13:00 – 19:00 (토·일·공휴일 휴무)
+            평일 18:00 – 22:00
           </p>
           <p className="text-background/50 text-xs">
             <span className="text-background/30 mr-2">ADDR</span>

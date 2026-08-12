@@ -51,7 +51,7 @@ const navItems: NavItem[] = [
         desc: "학과·실기 중심",
       },
       {
-        label: "일산캠퍼스",
+        label: "일산 캠퍼스",
         href: "/ilsan",
         desc: "평일 18:00–22:00 · 입시미술 실기",
       },
@@ -184,9 +184,11 @@ export default function SiteNav() {
 
   return (
     <>
+      {/* /ilsan은 사이트에서 유일한 밝은 배경 페이지 — 투명 헤더의 흰 글자가
+          안 보이므로 스크롤 전에도 불투명한 검은 바를 유지한다. */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
+          scrolled || pathname === "/ilsan"
             ? "bg-black/85 backdrop-blur-md border-b border-white/10"
             : "bg-transparent"
         }`}
@@ -557,7 +559,7 @@ export default function SiteNav() {
                 {CAMPUS_ILSAN.phone}
               </span>
               <span className="block text-white/30 text-xs mt-0.5">
-                {CAMPUS_ILSAN.label} · 평일 13:00–19:00
+                {CAMPUS_ILSAN.label} · 평일 18:00–22:00
               </span>
             </a>
           </div>

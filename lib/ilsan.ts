@@ -5,6 +5,9 @@
  * 학과 수업·기숙·윈터스쿨이 없다. 이 파일의 문구를 고칠 때도 일산에
  * 학과 관리·윈터스쿨이 있는 것처럼 읽히는 표현을 넣으면 안 된다.
  *
+ * 랜딩의 톤 원칙: 불안·공포·긴급성("지금 안 하면 늦습니다" 류)을 자극하는
+ * 문구를 넣지 않는다. "현재 위치 확인 → 목표 → 준비 방향 → 상담"의 흐름.
+ *
  * 전화·예약 주소는 lib/contact.ts의 CAMPUSES가 단일 소스다.
  * 여기서는 그 값을 다시 꺼내 쓰기만 한다.
  */
@@ -20,79 +23,61 @@ export const ILSAN_INFO = {
   phoneTel: `tel:${ILSAN_CAMPUS.phone}`,
   bookingUrl: ILSAN_CAMPUS.bookingUrl,
   blogUrl: ILSAN_BLOG.href,
-  /* Scene4(메인 오시는 길)와 같은 주소·지도 링크 */
+  /* 메인(Scene4 오시는 길)과 같은 주소·지도 링크 */
   address: "경기 고양시 일산동구 원중1길 56 8층",
   mapUrl: "https://naver.me/FpPBS3sw",
   /* 수업 시간 — 평일 저녁 실기 수업 */
-  hours: "평일 18:00 – 22:00",
+  hours: "평일 18:00–22:00",
 } as const;
 
-/**
- * 18:00 → 22:00 시그니처 섹션의 흐름.
- * TODO: 실제 일산캠퍼스 세부 수업 프로세스가 확정되면 문구를 맞춰 넣을 것 —
- * 지금은 사실을 지어내지 않도록 일반적인 실기 수업 흐름으로만 적어 두었다.
- */
-export const ILSAN_TIMELINE = [
-  { time: "18:00", label: "수업 시작", desc: "오늘 그릴 주제와 목표를 확인합니다." },
-  { time: "", label: "작품 진행", desc: "제한 시간 안에서 화면을 구성하고 그려 나갑니다." },
-  { time: "", label: "강사 피드백", desc: "진행 중인 그림을 기준으로 고칠 점을 짚습니다." },
-  { time: "", label: "수정과 반복", desc: "피드백 받은 부분을 다시 그리며 몸에 익힙니다." },
-  { time: "22:00", label: "수업 마무리", desc: "오늘 연습에서 남은 과제를 정리하고 끝냅니다." },
-] as const;
-
-/** WHY 섹션 — 실기 '전문' 수업임을 보여주는 포인트. 확인되지 않은 운영 디테일은 넣지 않는다. */
-export const ILSAN_WHY = [
-  {
-    title: "목표 대학 기준의 실기",
-    desc: "취미 미술이 아니라, 목표 대학과 전형을 기준에 두고 실기를 준비합니다.",
-  },
-  {
-    title: "지금 수준에 맞는 피드백",
-    desc: "잘 그린 그림의 흉내가 아니라, 현재 실기 수준에서 고쳐야 할 것부터 짚습니다.",
-  },
-  {
-    title: "완성보다 과정",
-    desc: "한 장의 완성작보다, 실력이 늘어나는 연습 과정 자체에 집중합니다.",
-  },
-  {
-    title: "입시를 위한 반복",
-    desc: "같은 유형을 반복해서 그리며 시험장에서 흔들리지 않는 손을 만듭니다.",
-  },
-] as const;
-
-/**
- * 대상 학년 안내.
- * TODO: 실제 모집 대상(학년·재수생 포함 여부)이 확정되면 이 배열만 고치면 된다.
- */
+/** SECTION 2 — 이런 학생을 위한 수업. 핵심 타겟(예비 고3) 순서를 바꾸지 말 것. */
 export const ILSAN_AUDIENCE = [
-  { grade: "고1", desc: "미대입시를 처음 시작하고 싶은 학생" },
-  { grade: "고2", desc: "본격적으로 실기 준비량을 늘려야 하는 학생" },
-  { grade: "고3", desc: "수시·정시 실기를 집중적으로 준비해야 하는 학생" },
-  { grade: "재수생", desc: "다시 실기 방향을 잡고 입시에 도전하는 학생" },
+  {
+    no: "01",
+    grade: "현재 고2",
+    title: "이제 고3을 앞두고 있는 학생",
+    desc: "지금까지의 실기 준비를 돌아보고 앞으로의 방향을 구체화할 시기입니다.",
+  },
+  {
+    no: "02",
+    grade: "현재 고1",
+    title: "고2부터 입시미술을 본격적으로 준비하고 싶은 학생",
+    desc: "서두르기보다 기본기를 만들고, 자신의 목표에 맞는 준비를 시작합니다.",
+  },
+  {
+    no: "03",
+    grade: "학과 병행",
+    title: "학교와 학과 공부를 이어가면서",
+    desc: "평일 저녁에는 입시미술 실기에 집중하고 싶은 학생에게 적합합니다.",
+  },
+] as const;
+
+/** SECTION 3 — 준비 방향 Flow. 순서 자체가 메시지(현재 확인이 먼저)다. */
+export const ILSAN_FLOW = [
+  "현재 실기",
+  "목표 대학",
+  "필요한 준비",
+  "수업 방향",
+] as const;
+
+/** SECTION 4 — 평일 저녁 시간 구조. 숫자가 주인공인 섹션. */
+export const ILSAN_SCHEDULE = [
+  { figure: "18:00", label: "수업 시작" },
+  { figure: "4 HOURS", label: "입시미술 실기 집중" },
+  { figure: "22:00", label: "수업 종료" },
 ] as const;
 
 /**
- * 작품·수업 현장 섹션 이미지.
- * 지금 코드베이스에는 일산캠퍼스에서 찍은 것으로 확인된 사진이 없다.
- * 예시작(사이트 전체에서 쓰는 이미지)만 넣고, 일산 현장 사진 자리는
- * src를 비워 placeholder로 둔다 — 파일이 준비되면 src만 채우면 된다.
- *
- * TODO(사진 교체 목록):
- *  - 일산캠퍼스 실기 수업 장면
- *  - 강사 첨삭·피드백 장면
- *  - 일산캠퍼스 공간(강의실) 사진
+ * SECTION 6 — 학부모 확인용 정보. FAQ 카드가 아니라 좌우 정렬 리스트로 쓴다.
+ * 전화·위치는 링크가 필요해 컴포넌트에서 ILSAN_INFO로 직접 그린다.
  */
-export const ILSAN_WORKS = [
-  { src: "/images/silgi/gicho-design-1.jpg", alt: "유리구슬·부채·노끈을 얽어 화면을 구성한 기초디자인 예시작", caption: "기초디자인 예시작" },
-  { src: "/images/silgi/gicho-design-3.jpg", alt: "유리구슬과 주름 금속·부채를 역동적으로 구성한 기초디자인 예시작", caption: "기초디자인 예시작" },
-  { src: "/images/silgi/gicho-soyang-1.jpg", alt: "기초소양·기초조형 예시작", caption: "기초소양 예시작" },
-  { src: "/images/silgi/gicho-design-4.jpg", alt: "부채와 유리구슬을 방사형으로 구성한 기초디자인 예시작", caption: "기초디자인 예시작" },
-  { src: "/images/silgi/gicho-soyang-3.jpg", alt: "기초소양·기초조형 예시작", caption: "기초소양 예시작" },
-  { src: "/images/silgi/gicho-design-5.jpg", alt: "유리구슬·금속판·나무막대를 사선으로 구성한 기초디자인 예시작", caption: "기초디자인 예시작" },
-] as const;
-
-/** 일산 현장 사진 자리 — 파일이 들어오면 src를 채운다 */
-export const ILSAN_SCENE_PLACEHOLDERS = [
-  { src: "", alt: "일산캠퍼스 실기 수업 장면", caption: "실기 수업 장면 · 사진 준비 중" },
-  { src: "", alt: "일산캠퍼스 강사 첨삭 장면", caption: "첨삭·피드백 장면 · 사진 준비 중" },
+export const ILSAN_FACTS = [
+  { label: "수업 대상", value: "예비 고2·고3 중심" },
+  { label: "수업 시간", value: ILSAN_INFO.hours },
+  { label: "수업 내용", value: "입시미술 실기" },
+  { label: "학과 수업", value: "일산 캠퍼스에서는 운영하지 않음" },
+  {
+    label: "상담",
+    value: "현재 학년, 준비 상황, 목표 대학 등을 기준으로 안내",
+  },
 ] as const;

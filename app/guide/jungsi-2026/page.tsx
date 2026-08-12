@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import JungsiExplorer from "@/components/academy/JungsiExplorer";
 import ScoreRecommender from "@/components/academy/ScoreRecommender";
 import { SILGI_META } from "@/lib/jungsi-data";
@@ -263,6 +264,24 @@ export default function Page() {
             )}
           </ul>
           <CardSlots />
+
+          {/* 두 가지 탐색 경로 — 직접 둘러보기 · 성적으로 찾기 */}
+          <div className="mx-auto mt-10 flex max-w-md flex-col justify-center gap-2.5 sm:flex-row">
+            <a
+              href="#explorer"
+              className="inline-flex items-center justify-center gap-1.5 rounded-md border border-white/15 px-5 py-2.5 text-[13px] font-medium text-white/85 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              가나다군 대학 둘러보기
+              <span aria-hidden>↓</span>
+            </a>
+            <a
+              href="#score-finder"
+              className="inline-flex items-center justify-center gap-1.5 rounded-md border border-accent/50 bg-accent/[0.08] px-5 py-2.5 text-[13px] font-medium text-accent transition-colors hover:border-accent hover:bg-accent/[0.15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              내 성적으로 지원 가능 대학 찾기
+              <span aria-hidden>↓</span>
+            </a>
+          </div>
         </header>
 
         {/* 실기유형 설명 */}
@@ -336,7 +355,11 @@ export default function Page() {
         </section>
 
         {/* 성적 기반 추천 */}
-        <section className="mb-14" aria-label="내 성적으로 조합 찾기">
+        <section
+          id="score-finder"
+          className="mb-14 scroll-mt-24"
+          aria-label="내 성적으로 조합 찾기"
+        >
           <h2 className="mb-2 text-xl font-bold text-white md:text-2xl">
             <span className="mr-3 font-mono text-base text-accent">02</span>
             내 성적으로 유리한 조합 찾기
@@ -350,7 +373,7 @@ export default function Page() {
         </section>
 
         {/* 대학 탐색기 */}
-        <section aria-label="대학별 정시 정보">
+        <section id="explorer" className="scroll-mt-24" aria-label="대학별 정시 정보">
           <h2 className="mb-2 text-xl font-bold text-white md:text-2xl">
             <span className="mr-3 font-mono text-base text-accent">03</span>
             군별 대학 한눈에 보기
@@ -459,6 +482,15 @@ export default function Page() {
           </a>
           <p className="mt-3 text-xs text-white/35">
             네이버 예약으로 연결됩니다 · 031-916-8885
+          </p>
+          <p className="mt-6 text-[12px] text-white/45">
+            겨울 8주 동안 수능·실기를 함께 설계하는 과정이 궁금하다면{" "}
+            <Link
+              href="/winter"
+              className="text-accent underline underline-offset-2 hover:opacity-85"
+            >
+              윈터스쿨 안내 →
+            </Link>
           </p>
         </section>
       </article>

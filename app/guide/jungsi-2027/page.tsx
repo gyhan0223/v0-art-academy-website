@@ -4,7 +4,6 @@ import Link from "next/link";
 import GunCardSlots from "@/components/academy/GunCardSlots";
 import JungsiExplorer from "@/components/academy/JungsiExplorer";
 import JungsiScheduleModal from "@/components/academy/JungsiScheduleModal";
-import ScoreRecommender from "@/components/academy/ScoreRecommender";
 import SilgiGallery from "@/components/academy/SilgiGallery";
 import { SILGI_CATEGORY_ORDER, SILGI_META } from "@/lib/jungsi-data";
 
@@ -99,7 +98,7 @@ const FEATURED_EXAMPLES: Record<
   }
 > = {
   기초디자인: {
-    badge: "가장 많은 대학이 채택",
+    badge: "구성·묘사 평가",
     aspectClass: "aspect-[966/725]",
     images: [
       { src: "/images/silgi/gicho-design-1.jpg", alt: "유리구슬·부채·노끈을 얽어 화면을 구성한 기초디자인 예시작" },
@@ -284,11 +283,15 @@ export default function Page() {
 
             <div className="pt-2">
           <p className="mb-6 text-sm leading-relaxed text-white/60">
-어느 대학에 갈 수 있는지는 결국 성적이 정하지만, 어느 대학을 노려볼 수 있는지는 준비한 실기 종목이 먼저 가릅니다. 종목이 다르면 준비 방식이 완전히 달라 중간에 갈아타기 어렵습니다. 실제 시험 종목 기준으로 정리했으니, 대표 종목 두 가지를 예시작과 함께 보고 나머지 종목까지 확인한 뒤 군별 대학 표를 보면 지원 전략이 훨씬 선명해집니다.
+어느 대학에 갈 수 있는지는 결국 성적이 정하지만, 어느 대학을 노려볼 수 있는지는 준비한 실기 종목이 먼저 가릅니다. 종목이 다르면 준비 방식이 완전히 달라 중간에 갈아타기 어렵습니다. 실제 시험 종목 기준으로 정리했으니, 대표 종목 두 가지를 예시작과 함께 보고 나머지 종목까지 확인한 뒤 군별 대학 표를 보면 지원 전략이 훨씬 선명해집니다.{" "}
+            <span className="text-white/80">
+              모다고는 창의력을 중심으로 실기를 훈련합니다.
+            </span>
           </p>
           {/* 대표 종목 — 예시작 갤러리 카드 */}
-          <FeaturedTypeCard type="기초디자인" />
+          {/* 기초조형(학원 강점 종목)을 기초디자인보다 먼저 노출한다 */}
           <FeaturedTypeCard type="기초조형·소양평가" />
+          <FeaturedTypeCard type="기초디자인" />
 
           {/* 나머지 종목 */}
           <div className="grid gap-4 md:grid-cols-2">
@@ -421,10 +424,33 @@ export default function Page() {
           </h2>
           <p className="mb-4 text-sm leading-relaxed text-white/60">
             미대 정시는 대학마다 반영 과목이 달라, 같은 백분위라도 유리한 학교가
-            제각각입니다. 모의고사·수능 백분위를 넣으면 각 대학 반영식으로 환산해
-            가·나·다군에서 유리한 순으로 정렬해 드립니다.
+            제각각입니다. 학년·준비 중인 실기·최근 성적을 넣으면 약 1분 만에
+            가·나·다군 지원 조합과, 성적이 한 등급 오르면 어디까지 넓어지는지까지
+            비교해 드립니다.
           </p>
-          <ScoreRecommender ctaHref={NAVER_BOOKING} />
+
+          {/* 온보딩 진단(/diagnosis)으로 이어주는 CTA — 기존 인라인 계산기
+              (ScoreRecommender)는 /diagnosis와 입력 UI가 중복돼 페이지에서 내렸다.
+              컴포넌트 파일은 남아 있으니 필요하면 다시 걸면 된다. */}
+          <div className="flex flex-col items-center gap-4 rounded-lg border border-accent/30 bg-accent/[0.06] p-5 text-center md:flex-row md:items-center md:justify-between md:gap-6 md:p-6 md:text-left">
+            <p className="text-sm leading-relaxed text-white/70">
+              <span className="font-bold text-white">
+                내 성적으로 어디까지 가능할까요?
+              </span>
+              <br className="hidden md:block" /> 대학마다 다른 수능 반영방식과
+              현재 준비 중인 실기를 함께 비교해보세요.
+            </p>
+            <Link
+              href="/diagnosis"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              내 성적으로 미대 찾아보기
+              <span aria-hidden>→</span>
+            </Link>
+            <p className="text-[12px] text-white/40 md:hidden">
+              약 1분 · 회원가입 없음
+            </p>
+          </div>
 
           {/* 윈터스쿨 메인 CTA — 지원 가능 대학 확인 직후가 핵심 전환 지점 */}
           <div className="mt-8 rounded-lg border border-accent/40 bg-gradient-to-br from-accent/[0.12] via-accent/[0.05] to-transparent p-6 md:p-8">

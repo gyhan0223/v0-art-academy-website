@@ -182,6 +182,10 @@ export default function SiteNav() {
     };
   }, []);
 
+  // /diagnosis 온보딩은 자체 상단 바를 쓴다 — 일반 네비·공지 띠를 숨긴다.
+  // (모든 hook 호출 뒤의 early return이라 hook 순서는 깨지지 않는다)
+  if (pathname?.startsWith("/diagnosis")) return null;
+
   return (
     <>
       {/* /ilsan은 사이트에서 유일한 밝은 배경 페이지 — 투명 헤더의 흰 글자가

@@ -474,6 +474,18 @@ export function recommendCombo(
   return combo;
 }
 
+/** 진단 페이지 등 외부에서 참고 합격선을 읽는 읽기 전용 접근자 */
+export function getCutoffInfo(
+  entryId: string,
+): { p: number; label: string } | null {
+  return CUTOFFS[entryId] ?? null;
+}
+
+/** 입결 서열 읽기 전용 접근자 (숫자가 작을수록 상위, 미수록 999) */
+export function getPrestige(university: string): number {
+  return PRESTIGE[university] ?? 999;
+}
+
 export const RECOMMEND_COVERAGE = {
   totalEntries: jungsiEntries.length,
   withReflect: Object.values(REFLECT).filter((r) => r.kind !== "custom").length,

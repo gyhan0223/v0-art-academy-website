@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import JungsiExplorer from "@/components/academy/JungsiExplorer";
-import ScoreRecommender from "@/components/academy/ScoreRecommender";
 import { SILGI_META } from "@/lib/jungsi-data";
 
 export const metadata: Metadata = {
@@ -118,7 +118,8 @@ const faqs: { q: string; a: React.ReactNode }[] = [
   },
 ];
 
-const SILGI_ORDER = ["기초디자인", "기초소양", "선택실기", "자체실기", "비실기"] as const;
+// 기초소양(학원 강점 유형)을 기초디자인보다 먼저 노출한다
+const SILGI_ORDER = ["기초소양", "기초디자인", "선택실기", "자체실기", "비실기"] as const;
 
 /* 예시작 갤러리를 크게 보여주는 대표 유형.
    public/images/silgi/ 에 실제 그림을 같은 이름으로 넣으면 그대로 노출됩니다. */
@@ -136,7 +137,7 @@ const FEATURED_EXAMPLES: Record<
   }
 > = {
   기초디자인: {
-    badge: "가장 많은 대학이 채택",
+    badge: "구성·묘사 평가",
     aspectClass: "aspect-[966/725]",
     images: [
       { src: "/images/silgi/gicho-design-1.jpg", alt: "유리구슬·부채·노끈을 얽어 화면을 구성한 기초디자인 예시작" },
@@ -272,46 +273,81 @@ export default function Page() {
             실기유형부터 이해하기
           </h2>
           <p className="mb-6 text-sm leading-relaxed text-white/60">
-어느 대학에 갈 수 있는지는 결국 성적이 정하지만, 어느 대학을 노려볼 수 있는지는 준비한 실기유형이 먼저 가릅니다. 유형이 다르면 준비 방식이 완전히 달라 중간에 갈아타기 어렵습니다. 아래 다섯 가지 유형부터 확인하고, 군별 대학 표를 보면 지원 전략이 훨씬 선명해집니다.
+어느 대학에 갈 수 있는지는 결국 성적이 정하지만, 어느 대학을 노려볼 수 있는지는 준비한 실기유형이 먼저 가릅니다. 유형이 다르면 준비 방식이 완전히 달라 중간에 갈아타기 어렵습니다. 아래 다섯 가지 유형부터 확인하고, 군별 대학 표를 보면 지원 전략이 훨씬 선명해집니다.{" "}
+            <span className="text-white/80">
+              모다고는 창의력을 중심으로 실기를 훈련합니다.
+            </span>
           </p>
-          {/* 대표 유형 — 예시작 갤러리 카드 */}
-          <FeaturedTypeCard type="기초디자인" />
-          <FeaturedTypeCard type="기초소양" />
+          {/* 유형 카드 전체를 기본 접힘으로 — 콘텐츠는 HTML에 그대로 있어
+              SEO에 영향이 없고, 접힌 동안엔 예시작 이미지도 로드되지 않는다.
+              하단 무료 진단 CTA는 접힘 밖에 둬서 항상 보인다. */}
+          <details className="group/silgi">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-lg border border-white/10 bg-[#0a0a0a] px-5 py-4 transition-colors hover:border-white/25 [&::-webkit-details-marker]:hidden">
+              <span className="text-sm font-medium text-white/90 transition-colors group-open/silgi:text-accent">
+                다섯 가지 실기유형 자세히 보기
+                <span className="ml-2 text-[12px] font-normal text-white/40">
+                  예시작 포함
+                </span>
+              </span>
+              <svg
+                width="14"
+                height="8"
+                viewBox="0 0 14 8"
+                fill="none"
+                aria-hidden
+                className="shrink-0 text-white/40 transition-transform duration-200 group-open/silgi:rotate-180"
+              >
+                <path
+                  d="M1 1L7 7L13 1"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </summary>
 
-          {/* 나머지 유형 */}
-          <div className="grid gap-4 md:grid-cols-2">
-            {SILGI_ORDER.filter(
-              (type) => type !== "기초디자인" && type !== "기초소양",
-            ).map((type) => {
-              const ex = SILGI_EXAMPLE[type];
-              return (
-                <div
-                  key={type}
-                  className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]"
-                >
-                  {ex && (
-                    <div className="relative aspect-[16/9] border-b border-white/10 bg-black">
-                      <Image
-                        src={ex.src}
-                        alt={ex.alt}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 400px"
-                        className="object-cover"
-                      />
+            <div className="mt-4">
+              {/* 대표 유형 — 예시작 갤러리 카드 (기초소양 먼저) */}
+              <FeaturedTypeCard type="기초소양" />
+              <FeaturedTypeCard type="기초디자인" />
+
+              {/* 나머지 유형 */}
+              <div className="grid gap-4 md:grid-cols-2">
+                {SILGI_ORDER.filter(
+                  (type) => type !== "기초디자인" && type !== "기초소양",
+                ).map((type) => {
+                  const ex = SILGI_EXAMPLE[type];
+                  return (
+                    <div
+                      key={type}
+                      className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]"
+                    >
+                      {ex && (
+                        <div className="relative aspect-[16/9] border-b border-white/10 bg-black">
+                          <Image
+                            src={ex.src}
+                            alt={ex.alt}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 400px"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="p-5">
+                        <p className="text-sm font-bold text-white">
+                          {SILGI_META[type].label}
+                        </p>
+                        <p className="mt-2 text-[13px] leading-relaxed text-white/60">
+                          {SILGI_META[type].description}
+                        </p>
+                      </div>
                     </div>
-                  )}
-                  <div className="p-5">
-                    <p className="text-sm font-bold text-white">
-                      {SILGI_META[type].label}
-                    </p>
-                    <p className="mt-2 text-[13px] leading-relaxed text-white/60">
-                      {SILGI_META[type].description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
+            </div>
+          </details>
 
           {/* 실기유형 섹션 CTA */}
           <div className="mt-8 flex flex-col items-center gap-4 rounded-lg border border-accent/30 bg-accent/[0.06] p-5 text-center md:flex-row md:items-center md:justify-between md:gap-6 md:p-6 md:text-left">
@@ -336,17 +372,44 @@ export default function Page() {
         </section>
 
         {/* 성적 기반 추천 */}
-        <section className="mb-14" aria-label="내 성적으로 조합 찾기">
+        <section
+          id="score-recommender"
+          className="mb-14 scroll-mt-24"
+          aria-label="내 성적으로 조합 찾기"
+        >
           <h2 className="mb-2 text-xl font-bold text-white md:text-2xl">
             <span className="mr-3 font-mono text-base text-accent">02</span>
             내 성적으로 유리한 조합 찾기
           </h2>
           <p className="mb-4 text-sm leading-relaxed text-white/60">
             미대 정시는 대학마다 반영 과목이 달라, 같은 백분위라도 유리한 학교가
-            제각각입니다. 모의고사·수능 백분위를 넣으면 각 대학 반영식으로 환산해
-            가·나·다군에서 유리한 순으로 정렬해 드립니다.
+            제각각입니다. 학년·준비 중인 실기·최근 성적을 넣으면 약 1분 만에
+            가·나·다군 지원 조합과, 성적이 한 등급 오르면 어디까지 넓어지는지까지
+            비교해 드립니다.
           </p>
-          <ScoreRecommender ctaHref={NAVER_BOOKING} />
+
+          {/* 온보딩 진단(/diagnosis)으로 이어주는 CTA — 기존 인라인 계산기
+              (ScoreRecommender)는 입력 UI가 중복돼 페이지에서 내렸다.
+              컴포넌트 파일은 남아 있으니 필요하면 다시 걸면 된다. */}
+          <div className="flex flex-col items-center gap-4 rounded-lg border border-accent/30 bg-accent/[0.06] p-5 text-center md:flex-row md:items-center md:justify-between md:gap-6 md:p-6 md:text-left">
+            <p className="text-sm leading-relaxed text-white/70">
+              <span className="font-bold text-white">
+                내 성적으로 어디까지 가능할까요?
+              </span>
+              <br className="hidden md:block" /> 대학마다 다른 수능 반영방식과
+              현재 준비 중인 실기를 함께 비교해보세요.
+            </p>
+            <Link
+              href="/diagnosis"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              내 성적으로 미대 찾아보기
+              <span aria-hidden>→</span>
+            </Link>
+            <p className="text-[12px] text-white/40 md:hidden">
+              약 1분 · 회원가입 없음
+            </p>
+          </div>
         </section>
 
         {/* 대학 탐색기 */}
@@ -356,13 +419,14 @@ export default function Page() {
             군별 대학 한눈에 보기
           </h2>
           <p className="mb-4 text-sm leading-relaxed text-white/60">
-            군 탭과 실기유형 필터로 탐색하고, 마음에 드는 대학을{" "}
+            군 탭과 실기유형 필터로 탐색해 보세요. 카드에는 전형 구조와 실기
+            유형만 압축해 담았고, <span className="text-accent">카드를
+            누르면</span> 전형 방법·수능 반영·학과별 모집인원·경쟁률 상세가
+            펼쳐집니다. 마음에 드는 대학은{" "}
             <span className="text-accent">담기</span>로 골라 나만의 원서 3장을
-            시뮬레이션해 보세요. 카드의 <span className="text-accent">학과별
-            모집 상세</span>를 펼치면 전공별 모집인원과 경쟁률까지 볼 수
-            있습니다. 비율 바는 실기 반영 단계 기준입니다.
+            시뮬레이션해 보세요.
           </p>
-          <JungsiExplorer ctaHref={NAVER_BOOKING} />
+          <JungsiExplorer ctaHref={NAVER_BOOKING} scoreFinderHref="/diagnosis" />
         </section>
 
         {/* FAQ */}

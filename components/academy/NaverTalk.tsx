@@ -77,6 +77,9 @@ export function useReportBottomBar(ref: React.RefObject<HTMLElement | null>) {
 export default function NaverTalkFab() {
   const pathname = usePathname() ?? "";
 
+  // /diagnosis 온보딩은 한 화면 한 질문에 집중해야 한다 — 플로팅 버튼도 숨긴다.
+  if (pathname.startsWith("/diagnosis")) return null;
+
   // /winter*는 모바일 하단 액션 바(MobileActionBar)가 이미 자리를 쓴다.
   // 모바일에서는 숨기고, 대신 그 바 안에 톡톡 칸을 넣어 두었다.
   const visibility = pathname.startsWith("/winter")

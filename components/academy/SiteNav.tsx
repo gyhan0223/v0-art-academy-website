@@ -51,7 +51,7 @@ const navItems: NavItem[] = [
       //   desc: "홍익대 미술활동보고서 작성 전략",
       // },
       {
-        label: "2026학년도 미대 입시 정보",
+        label: "2027학년도 미대 입시 정보",
         href: "/guide/jungsi-2026",
         desc: "가·나·다군 모집군·전형방법 총정리",
       },
@@ -162,6 +162,10 @@ export default function SiteNav() {
       document.removeEventListener("keydown", handleEscape);
     };
   }, []);
+
+  // /diagnosis 온보딩은 자체 상단 바를 쓴다 — 일반 네비·공지 띠를 숨긴다.
+  // (모든 hook 호출 뒤의 early return이라 hook 순서는 깨지지 않는다)
+  if (pathname?.startsWith("/diagnosis")) return null;
 
   return (
     <>

@@ -8,180 +8,12 @@ import {
   pendingUniversities,
   type Gun,
   type JungsiEntry,
-  type Major,
   type SilgiType,
 } from "@/lib/jungsi-data";
 import { useReportBottomBar } from "@/components/academy/NaverTalk";
+import UniversityCompareCard from "@/components/academy/jungsi/UniversityCompareCard";
 
-/* ─────────────────────────── 배지 · 비율 바 ─────────────────────────── */
-
-const SILGI_BADGE: Record<SilgiType, string> = {
-  기초소양: "bg-accent/15 text-accent border border-accent/40",
-  기초디자인: "bg-white/8 text-white/85 border border-white/20",
-  선택실기: "bg-white/5 text-white/75 border border-white/25 border-dotted",
-  자체실기: "bg-transparent text-accent border border-accent/60",
-  비실기: "bg-transparent text-white/70 border border-dashed border-white/35",
-};
-
-function SilgiBadge({ type }: { type: SilgiType }) {
-  return (
-    <span
-      className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium tracking-wide ${SILGI_BADGE[type]}`}
-    >
-      {SILGI_META[type].label}
-    </span>
-  );
-}
-
-function RatioBar({ entry }: { entry: JungsiEntry }) {
-  if (!entry.ratio) return null;
-  const { suneung, silgi, etc = 0, etcLabel } = entry.ratio;
-  const segments = [
-    { key: "수능", value: suneung, className: "bg-accent" },
-    { key: "실기", value: silgi, className: "bg-white/70" },
-    ...(etc > 0
-      ? [{ key: etcLabel ?? "기타", value: etc, className: "bg-white/25" }]
-      : []),
-  ].filter((s) => s.value > 0);
-
-  return (
-    <div className="mt-4" aria-label="최종 단계 반영비율">
-      <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-white/5">
-        {segments.map((s) => (
-          <div
-            key={s.key}
-            className={s.className}
-            style={{ width: `${s.value}%` }}
-          />
-        ))}
-      </div>
-      <div className="mt-1.5 flex gap-3 text-[11px] text-white/45">
-        {segments.map((s) => (
-          <span key={s.key} className="flex items-center gap-1.5">
-            <span
-              className={`inline-block h-1.5 w-1.5 rounded-full ${s.className}`}
-            />
-            {s.key} {s.value}%
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─────────────────────── 실기·모집 상세 ─────────────────────── */
-
-function fmtRate(rate: number | null) {
-  return rate == null ? "—" : `${rate.toFixed(2)} : 1`;
-}
-
-/** 카드 상단: 실기내용 · 화지 · 시간 + 모집인원/경쟁률 요약 */
-function MajorSummary({ entry }: { entry: JungsiEntry }) {
-  const majors = entry.majors ?? [];
-  if (majors.length === 0 && !entry.practical) return null;
-
-  const rates = majors
-    .map((m) => m.rate)
-    .filter((r): r is number => r != null);
-  const quotas = majors
-    .map((m) => m.quota)
-    .filter((q): q is number => q != null);
-  const totalQuota = quotas.reduce((a, b) => a + b, 0);
-  const minRate = rates.length ? Math.min(...rates) : null;
-  const maxRate = rates.length ? Math.max(...rates) : null;
-
-  const specParts = [entry.practical, entry.paper, entry.duration].filter(
-    (v): v is string => Boolean(v),
-  );
-
-  return (
-    <div className="mt-4 space-y-2">
-      {specParts.length > 0 && (
-        <p className="text-[12px] leading-relaxed text-white/55">
-          <span className="text-white/40">실기</span>{" "}
-          {specParts.join(" · ")}
-        </p>
-      )}
-      {(totalQuota > 0 || minRate != null) && (
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px]">
-          {totalQuota > 0 && (
-            <span className="text-white/70">
-              <span className="text-white/40">모집 </span>
-              <span className="font-mono text-white">{totalQuota}</span>명
-            </span>
-          )}
-          {minRate != null && (
-            <span className="text-white/70">
-              <span className="text-white/40">2025 경쟁률 </span>
-              <span className="font-mono text-accent">
-                {minRate === maxRate
-                  ? fmtRate(minRate)
-                  : `${minRate.toFixed(2)}~${maxRate!.toFixed(2)} : 1`}
-              </span>
-            </span>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/** 접이식 학과별 표 */
-function MajorTable({ majors }: { majors: Major[] }) {
-  if (majors.length === 0) return null;
-  return (
-    <details className="group/major mt-3">
-      <summary className="flex cursor-pointer list-none items-center gap-1.5 text-[12px] font-medium text-white/55 transition-colors hover:text-accent">
-        <span className="text-accent transition-transform group-open/major:rotate-90">
-          ▸
-        </span>
-        학과별 모집 상세 · {majors.length}개 전공
-      </summary>
-      <ul className="mt-2 divide-y divide-white/5 rounded-md border border-white/10 bg-black/30">
-        {majors.map((m) => (
-          <li
-            key={m.name}
-            className="flex items-center justify-between gap-3 px-3 py-2"
-          >
-            <span className="min-w-0 text-[12px] leading-tight text-white/80">
-              {m.name}
-              {m.stageTag && (
-                <span className="ml-1.5 rounded-sm bg-white/8 px-1 py-0.5 align-middle text-[10px] text-white/45">
-                  {m.stageTag}
-                </span>
-              )}
-              {(m.practical || m.duration) && (
-                <span className="mt-0.5 block text-[10px] text-white/35">
-                  {[m.practical, m.duration].filter(Boolean).join(" · ")}
-                </span>
-              )}
-            </span>
-            <span className="shrink-0 text-right text-[11px] leading-tight text-white/50">
-              <span className="font-mono text-white/70">
-                {m.quota != null ? `${m.quota}명` : m.quotaNote ?? "—"}
-              </span>
-              <span className="mt-0.5 block font-mono text-accent/80">
-                {fmtRate(m.rate)}
-              </span>
-              {m.applicants != null && (
-                <span className="mt-0.5 block font-mono text-[10px] text-white/35">
-                  지원 {m.applicants}명
-                </span>
-              )}
-              {m.rateQuota != null && m.rateQuota !== m.quota && (
-                <span className="mt-0.5 block text-[10px] text-white/35">
-                  당시 {m.rateQuota}명 모집
-                </span>
-              )}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </details>
-  );
-}
-
-/* ─────────────────────────── 대학 카드 ─────────────────────────── */
+/* ─────────────────────────── 군 라벨 ─────────────────────────── */
 
 const GUN_LABEL: Record<Gun, string> = {
   가: "가군",
@@ -189,98 +21,6 @@ const GUN_LABEL: Record<Gun, string> = {
   다: "다군",
   별도: "군 외",
 };
-
-function UniversityCard({
-  entry,
-  selected,
-  onToggle,
-}: {
-  entry: JungsiEntry;
-  selected: boolean;
-  onToggle: (entry: JungsiEntry) => void;
-}) {
-  const slotName = entry.gun === "별도" ? "한예종 슬롯" : `${GUN_LABEL[entry.gun]} 카드`;
-  return (
-    <article
-      className={`flex flex-col rounded-lg border bg-[#0a0a0a] p-5 transition-colors ${
-        selected
-          ? "border-accent/70 shadow-[0_0_0_1px_rgba(245,136,70,0.25)]"
-          : "border-white/10 hover:border-white/25"
-      }`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="text-base font-bold leading-tight text-white">
-            {entry.university}
-            {entry.campus && (
-              <span className="ml-1.5 text-xs font-medium text-white/45">
-                {entry.campus}
-              </span>
-            )}
-          </h3>
-          <p className="mt-1 text-xs leading-relaxed text-white/55">
-            {entry.units}
-          </p>
-        </div>
-        <SilgiBadge type={entry.silgi} />
-      </div>
-
-      <ul className="mt-3 space-y-1">
-        {entry.method.map((line) => (
-          <li
-            key={line}
-            className="text-[13px] leading-relaxed text-white/80 before:mr-2 before:text-accent before:content-['·']"
-          >
-            {line}
-          </li>
-        ))}
-      </ul>
-
-      <RatioBar entry={entry} />
-
-      <MajorSummary entry={entry} />
-
-      {entry.majors && entry.majors.length > 1 && (
-        <MajorTable majors={entry.majors} />
-      )}
-
-      {(entry.tags?.length || entry.note) && (
-        <div className="mt-4 border-t border-white/5 pt-3">
-          {entry.tags && entry.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {entry.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-sm bg-white/5 px-1.5 py-0.5 text-[11px] text-white/60"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-          {entry.note && (
-            <p className="mt-2 text-[11px] leading-relaxed text-white/40">
-              {entry.note}
-            </p>
-          )}
-        </div>
-      )}
-
-      <button
-        type="button"
-        onClick={() => onToggle(entry)}
-        aria-pressed={selected}
-        className={`mt-4 w-full rounded-md border py-2 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-          selected
-            ? "border-accent/60 bg-accent/15 text-accent hover:bg-accent/25"
-            : "border-white/15 text-white/70 hover:border-accent/50 hover:text-accent"
-        }`}
-      >
-        {selected ? `${slotName}에서 빼기` : `${slotName}에 담기`}
-      </button>
-    </article>
-  );
-}
 
 /* ─────────────────────────── 조합 분석 ─────────────────────────── */
 
@@ -818,14 +558,27 @@ const SILGI_FILTERS: (SilgiType | "전체")[] = [
 
 export default function JungsiExplorer({
   ctaHref = "#",
+  scoreFinderHref,
 }: {
   ctaHref?: string;
+  /** 카드 목록 중간 CTA가 가리킬 성적 기반 조합 찾기 섹션 (없으면 CTA 미노출) */
+  scoreFinderHref?: string;
 }) {
   const [gun, setGun] = useState<Gun>("가");
   const [silgi, setSilgi] = useState<SilgiType | "전체">("전체");
   const [query, setQuery] = useState("");
   const [selection, setSelection] = useState<Selection>({});
   const [focusId, setFocusId] = useState<string | null>(null);
+  // 상세가 펼쳐진 카드들 — 여러 카드를 동시에 열어 비교할 수 있게 Set으로 관리
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (entry: JungsiEntry) =>
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(entry.id)) next.delete(entry.id);
+      else next.add(entry.id);
+      return next;
+    });
 
   // 다른 섹션(성적 추천기)에서 "이 대학으로 이동" 요청을 받으면 해당 군으로 전환
   useEffect(() => {
@@ -836,6 +589,8 @@ export default function JungsiExplorer({
       setSilgi("전체");
       setQuery("");
       setFocusId(detail.id);
+      // 이동해 온 카드는 바로 상세까지 펼쳐 보여준다
+      setExpandedIds((prev) => new Set(prev).add(detail.id));
     };
     window.addEventListener("jungsi:focus", handler);
     return () => window.removeEventListener("jungsi:focus", handler);
@@ -902,8 +657,12 @@ export default function JungsiExplorer({
     const el = document.getElementById(`uni-${focusId}`);
     if (!el) return;
     // scrollIntoView는 body 스크롤 컨테이너 때문에 뷰포트를 못 움직여서 window.scrollTo 사용.
-    // 스티키 헤더(64px)+군 탭바(약 110px) 아래로 오도록 오프셋 확보.
-    const top = el.getBoundingClientRect().top + window.scrollY - 176;
+    // 스티키 헤더(64px)+군 탭바(모바일에선 검색창 줄바꿈으로 더 높음) 아래로 오도록 실측 오프셋.
+    const tabbar = document.querySelector<HTMLElement>('[role="tablist"]');
+    const top =
+      el.getBoundingClientRect().top +
+      window.scrollY -
+      (64 + (tabbar?.offsetHeight ?? 110) + 12);
     // 네이티브 smooth는 reduced-motion 환경에서 no-op이 되므로 즉시 이동으로 확실히 처리
     window.scrollTo(0, Math.max(0, top));
     el.classList.add("ring-2", "ring-accent", "ring-offset-2", "ring-offset-black");
@@ -952,7 +711,8 @@ export default function JungsiExplorer({
         aria-label="모집군 선택"
         className="sticky top-16 z-30 -mx-5 border-b border-white/10 bg-black/85 px-5 py-3 backdrop-blur-md"
       >
-        <div className="flex gap-2 overflow-x-auto">
+        {/* 모바일에서 군 탭이 가로 스크롤 없이 보이도록 검색창은 줄바꿈 허용 */}
+        <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
           {GUN_ORDER.map((g) => {
             const active = gun === g;
             return (
@@ -961,20 +721,24 @@ export default function JungsiExplorer({
                 role="tab"
                 aria-selected={active}
                 onClick={() => setGun(g)}
-                className={`shrink-0 rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-                  active
-                    ? "bg-accent text-black"
-                    : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
+                className={`relative shrink-0 px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                  active ? "text-accent" : "text-white/60 hover:text-white"
                 }`}
               >
                 {GUN_LABEL[g]}
                 <span
-                  className={`ml-1.5 font-mono text-[11px] ${
-                    active ? "text-black/60" : "text-white/35"
+                  className={`ml-1 font-mono text-[11px] ${
+                    active ? "text-accent/70" : "text-white/35"
                   }`}
                 >
                   {gunCounts[g]}
                 </span>
+                <span
+                  aria-hidden
+                  className={`absolute inset-x-2 bottom-0 h-0.5 rounded-full ${
+                    active ? "bg-accent" : "bg-transparent"
+                  }`}
+                />
               </button>
             );
           })}
@@ -1028,8 +792,9 @@ export default function JungsiExplorer({
       {/* 사용 안내 (선택 전에만) */}
       {!hasSelection && (
         <p className="mt-5 rounded-md border border-white/10 bg-white/[0.03] px-4 py-3 text-[13px] leading-relaxed text-white/55">
-          카드의 <span className="text-accent">담기</span> 버튼을 누르면 아래에
-          원서 조합이 만들어집니다. 군마다 1곳씩, 3장을 채워 보세요 — 실기유형
+          카드를 누르면 전형 방법·수능 반영·경쟁률 상세가 펼쳐지고,{" "}
+          <span className="text-accent">담기</span> 버튼을 누르면 아래에 원서
+          조합이 만들어집니다. 군마다 1곳씩, 3장을 채워 보세요 — 실기유형
           궁합을 바로 알려드립니다.
         </p>
       )}
@@ -1038,7 +803,9 @@ export default function JungsiExplorer({
       {filtered.length === 0 ? (
         <div className="py-20 text-center">
           <p className="text-sm text-white/50">
-            이 조합에 해당하는 대학이 없습니다.
+            {silgi !== "전체" && query.trim() === ""
+              ? "이 군에는 해당 실기로 지원 가능한 전형이 없어요."
+              : "이 조합에 해당하는 대학이 없습니다."}
           </p>
           <button
             onClick={() => {
@@ -1054,9 +821,10 @@ export default function JungsiExplorer({
       ) : (
         visibleGuns.map((g) => {
           const entries = filtered.filter((e) => e.gun === g);
+          const uniCount = new Set(entries.map((e) => e.university)).size;
           return (
             <section key={g} className="pt-10" aria-label={GUN_LABEL[g]}>
-              <div className="mb-4 flex items-baseline gap-3">
+              <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <h3 className="text-lg font-bold text-white">
                   <span className="mr-2 font-mono text-accent">
                     {g === "별도" ? "+" : g}
@@ -1064,7 +832,7 @@ export default function JungsiExplorer({
                   {GUN_LABEL[g]}
                 </h3>
                 <span className="text-xs text-white/40">
-                  {entries.length}개 대학
+                  {entries.length}개 전형 · {uniCount}개 대학
                 </span>
                 {g === "별도" && (
                   <span className="text-xs text-white/40">
@@ -1072,17 +840,19 @@ export default function JungsiExplorer({
                   </span>
                 )}
               </div>
-              <div className="grid gap-4">
+              <div className="grid items-start gap-4 md:grid-cols-2">
                 {entries.map((entry) => (
                   <div
                     key={entry.id}
                     id={`uni-${entry.id}`}
                     className="scroll-mt-44 rounded-lg transition-shadow"
                   >
-                    <UniversityCard
+                    <UniversityCompareCard
                       entry={entry}
                       selected={selection[entry.gun] === entry.id}
-                      onToggle={toggleEntry}
+                      expanded={expandedIds.has(entry.id)}
+                      onToggleSelect={toggleEntry}
+                      onToggleExpand={toggleExpand}
                     />
                   </div>
                 ))}
@@ -1090,6 +860,22 @@ export default function JungsiExplorer({
             </section>
           );
         })
+      )}
+
+      {/* 목록 하단 — 성적 기반 진단으로 연결하는 단일 CTA (카드마다 반복하지 않음) */}
+      {scoreFinderHref && filtered.length > 0 && (
+        <div className="mt-10 flex flex-col items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] p-5 text-center md:flex-row md:justify-between md:text-left">
+          <p className="text-sm leading-relaxed text-white/70">
+            내 성적으로 이 대학들이 가능한지 궁금하다면
+          </p>
+          <a
+            href={scoreFinderHref}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/50 px-5 py-2.5 text-sm font-medium text-accent transition-colors hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            내 성적으로 미대 찾아보기
+            <span aria-hidden>→</span>
+          </a>
+        </div>
       )}
 
       {/* 확인 중 대학 */}

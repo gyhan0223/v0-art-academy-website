@@ -33,7 +33,7 @@ export const SILGI_META: Record<
     label: "기초디자인",
     short: "기초디자인",
     description:
-      "제시된 사물과 조건으로 화면을 구성하는 유형입니다. 묘사력·구성력·완성도가 핵심이며, 가장 많은 대학이 채택하고 있습니다.",
+      "제시된 사물과 조건으로 화면을 구성하는 유형입니다. 묘사력·구성력·완성도가 핵심이며, 여러 대학이 채택하고 있습니다.",
   },
   기초소양: {
     label: "기초소양·기초조형",
@@ -80,6 +80,26 @@ export type Major = {
   duration?: string;
 };
 
+/** 전형 비율 bar의 한 조각. type은 색·범례 구분용, label은 화면 표기 덮어쓰기용 */
+export type StagePart = {
+  type: "수능" | "실기" | "1단계 성적" | "학생부" | "서류" | "면접" | "기타";
+  /** 반영 비율(%) — 한 단계 안에서 합이 100 */
+  value: number;
+  /** 기초조형·사고력평가처럼 type과 다르게 표기할 때만 */
+  label?: string;
+};
+
+/**
+ * 전형 구조 시각화(bar)용 단계 데이터.
+ * method·ratio가 원본이고 이 값은 UI 보조 데이터입니다 — 단계별 전형처럼
+ * ratio만으로 bar를 만들 수 없는 entry에만 수기로 작성합니다.
+ */
+export type AdmissionStage = {
+  label: string;
+  parts: StagePart[];
+  note?: string;
+};
+
 export type JungsiEntry = {
   id: string;
   university: string;
@@ -91,6 +111,8 @@ export type JungsiEntry = {
   silgi: SilgiType;
   /** 전형방법 요약. 한 줄에 한 항목. */
   method: string[];
+  /** 전형 bar 시각화용 단계 구조 (단계별·혼합 전형만 수기 작성 · 일괄합산은 ratio에서 생성) */
+  stages?: AdmissionStage[];
   /** 최종(또는 실기 반영) 단계 기준 반영비율(%). 합이 100이 되도록. */
   ratio?: {
     suneung: number;
@@ -123,6 +145,17 @@ export const jungsiEntries: JungsiEntry[] = [
       "2단계 1단계성적 60% + 실기 40% (디자인학부 실기·실적전형은 40% + 60%)",
       "수능 반영영역: 국·수·탐 중 택2 (각 50%) · 영어 가산점(1~3등급 동점) · 한국사 미반영",
     ],
+    stages: [
+      { label: "1단계", parts: [{ type: "수능", value: 100 }], note: "수능전형 4배수 · 실기·실적전형 8배수" },
+      {
+        label: "2단계",
+        parts: [
+          { type: "1단계 성적", value: 60 },
+          { type: "실기", value: 40 },
+        ],
+        note: "디자인학부 실기·실적전형은 1단계 40% + 실기 60%",
+      },
+    ],
     ratio: { suneung: 60, silgi: 40 },
     practical: "제시된 대상과 주제를 다양한 재료로 표현 (통합실기)",
     paper: "2절",
@@ -150,6 +183,24 @@ export const jungsiEntries: JungsiEntry[] = [
       "[일괄합산] 수능 60% + 기초조형평가 40% (공업·공간디자인)",
       "[단계별] 1단계 수능 60% + 기초조형 40%(5배수) → 2단계 1단계성적 80% + 사고력평가 20%",
       "수능 반영영역: 국어 + 영어 + 수학·탐구 중 상위 1개 (한국사 감점)",
+    ],
+    stages: [
+      {
+        label: "1단계",
+        parts: [
+          { type: "수능", value: 60 },
+          { type: "실기", value: 40, label: "기초조형" },
+        ],
+        note: "공업·공간디자인은 이 비율의 일괄합산으로 최종 선발",
+      },
+      {
+        label: "2단계",
+        parts: [
+          { type: "1단계 성적", value: 80 },
+          { type: "기타", value: 20, label: "사고력평가" },
+        ],
+        note: "시각·공예·의상 등 7개 학과만 진행 (1단계 5배수)",
+      },
     ],
     ratio: { suneung: 60, silgi: 40 },
     practical: "기초조형평가 — 관찰하고 그리기 (대상을 관찰·표현하는 조형 능력 평가)",
@@ -179,6 +230,24 @@ export const jungsiEntries: JungsiEntry[] = [
       "1단계 학생부 40% + 수능 60% (6배수)",
       "2단계 학생부 20% + 수능 40% + 실기 40%",
       "수능 반영영역: 국어 + 영어 + 수학·탐구 중 상위 1개 (한국사 감점)",
+    ],
+    stages: [
+      {
+        label: "1단계",
+        parts: [
+          { type: "학생부", value: 40 },
+          { type: "수능", value: 60 },
+        ],
+        note: "6배수",
+      },
+      {
+        label: "2단계",
+        parts: [
+          { type: "학생부", value: 20 },
+          { type: "수능", value: 40 },
+          { type: "실기", value: 40 },
+        ],
+      },
     ],
     ratio: { suneung: 40, silgi: 40, etc: 20, etcLabel: "학생부" },
     practical: "① 아이디어 스케치(설명글 100~400자, 1시간) ② 주제가 있는 회화(4시간)",
@@ -239,6 +308,17 @@ export const jungsiEntries: JungsiEntry[] = [
       "2단계 수능 40% + 실기 50% + 면접 10%",
       "수능 반영영역: 국어 50 + 영어 30 + 탐구 20 (수학 미반영 · 한국사 감점)",
     ],
+    stages: [
+      { label: "1단계", parts: [{ type: "수능", value: 100 }], note: "6배수" },
+      {
+        label: "2단계",
+        parts: [
+          { type: "수능", value: 40 },
+          { type: "실기", value: 50 },
+          { type: "면접", value: 10 },
+        ],
+      },
+    ],
     ratio: { suneung: 40, silgi: 50, etc: 10, etcLabel: "면접" },
     practical: "통합실기 (한 장에 두 문제, 문제 ①·② 연계)",
     paper: "3절",
@@ -260,6 +340,17 @@ export const jungsiEntries: JungsiEntry[] = [
       "1단계 수능 100% (4배수)",
       "2단계 수능 30% + 실기 50% + 면접 20%",
       "수능 반영영역: 국어 40 + 영어 40 + 탐구 20 (수학 미반영 · 한국사 감점)",
+    ],
+    stages: [
+      { label: "1단계", parts: [{ type: "수능", value: 100 }], note: "4배수" },
+      {
+        label: "2단계",
+        parts: [
+          { type: "수능", value: 30 },
+          { type: "실기", value: 50 },
+          { type: "면접", value: 20 },
+        ],
+      },
     ],
     ratio: { suneung: 30, silgi: 50, etc: 20, etcLabel: "면접" },
     practical: "① 소조 — 실제 인물모델을 보고 인물두상(쇄골까지, 400점) ② 소묘 — 주제소묘(100점)",
@@ -512,6 +603,17 @@ export const jungsiEntries: JungsiEntry[] = [
       "2단계 1단계성적 40% + 실기 30% + 면접 30%",
       "수능 반영영역: 디자인과 국33.3+수33.3+탐33.3 / 예술계열 국50+탐50 (수·영·한 감점)",
     ],
+    stages: [
+      { label: "1단계", parts: [{ type: "수능", value: 100 }], note: "5배수" },
+      {
+        label: "2단계",
+        parts: [
+          { type: "1단계 성적", value: 40 },
+          { type: "실기", value: 30 },
+          { type: "면접", value: 30 },
+        ],
+      },
+    ],
     ratio: { suneung: 40, silgi: 30, etc: 30, etcLabel: "면접" },
     practical: "주어진 주제를 제시된 재료로 표현",
     paper: "미정",
@@ -536,6 +638,17 @@ export const jungsiEntries: JungsiEntry[] = [
       "1단계 수능 100% (3배수)",
       "2단계 1단계성적 60% + 서류 40%(미술활동보고서·학생부) · 실기 없음",
       "수능 반영영역: 국·수·탐 중 상위 2개 각 40 + 영어 20 (한국사 가산)",
+    ],
+    stages: [
+      { label: "1단계", parts: [{ type: "수능", value: 100 }], note: "3배수" },
+      {
+        label: "2단계",
+        parts: [
+          { type: "1단계 성적", value: 60 },
+          { type: "서류", value: 40 },
+        ],
+        note: "서류 = 미술활동보고서·학생부 · 실기 없음",
+      },
     ],
     ratio: { suneung: 60, silgi: 0, etc: 40, etcLabel: "서류" },
     majors: [
@@ -564,6 +677,17 @@ export const jungsiEntries: JungsiEntry[] = [
       "1단계 수능 100% (4배수)",
       "2단계 1단계성적 60% + 실기 40% (도예·조형예술은 50% + 50%)",
       "수능 반영영역: 국어 40 + 영어 25 + 탐구 35 (수학 미반영 · 직업탐구 반영)",
+    ],
+    stages: [
+      { label: "1단계", parts: [{ type: "수능", value: 100 }], note: "4배수" },
+      {
+        label: "2단계",
+        parts: [
+          { type: "1단계 성적", value: 60 },
+          { type: "실기", value: 40 },
+        ],
+        note: "도예·조형예술은 1단계 50% + 실기 50%",
+      },
     ],
     ratio: { suneung: 60, silgi: 40 },
     practical: "기초디자인",
@@ -853,6 +977,22 @@ export const jungsiEntries: JungsiEntry[] = [
       "조형예술 수능 30% + 실기 70% / 생활예술 수능 20% + 실기 80% 일괄합산",
       "수능 반영영역: 국·수·영 중 택2 각 40 + 탐구1 20 (선택형)",
     ],
+    stages: [
+      {
+        label: "조형예술 · 일괄합산",
+        parts: [
+          { type: "수능", value: 30 },
+          { type: "실기", value: 70 },
+        ],
+      },
+      {
+        label: "생활예술 · 일괄합산",
+        parts: [
+          { type: "수능", value: 20 },
+          { type: "실기", value: 80 },
+        ],
+      },
+    ],
     ratio: { suneung: 20, silgi: 80 },
     practical: "기초디자인",
     paper: "3절(가로)",
@@ -1066,6 +1206,16 @@ export const jungsiEntries: JungsiEntry[] = [
     method: [
       "1단계 실기 100% (3배수) → 2단계 수능 30% + 실기 70%",
       "수능 반영영역: 국·수·탐 중 상위 2개 각 40 + 영어 20 (직업탐구 반영)",
+    ],
+    stages: [
+      { label: "1단계", parts: [{ type: "실기", value: 100 }], note: "3배수" },
+      {
+        label: "2단계",
+        parts: [
+          { type: "수능", value: 30 },
+          { type: "실기", value: 70 },
+        ],
+      },
     ],
     ratio: { suneung: 30, silgi: 70 },
     practical: "창의적 의상조형 — 드레이핑 마네킹에 한지·전지·켄트지로 의상 제작 후 채색",

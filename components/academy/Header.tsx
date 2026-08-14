@@ -114,7 +114,7 @@ export default function Header() {
             >
               031-000-0000
             </a>
-            <p className="text-background/30 text-xs">일산점 · 평일 13:00–19:00</p>
+            <p className="text-background/30 text-xs">일산점 · 평일 18:00–22:00</p>
           </div>
         </nav>
       </div>

@@ -17,6 +17,7 @@ import {
   convertScore,
   getCutoffInfo,
   getPrestige,
+  isWomensUniv,
   rankByGun,
   type Ranked,
   type StudentScore,
@@ -37,11 +38,8 @@ import type {
 
 /* -------------------------------- 여대 판정 ------------------------------- */
 
-const WOMENS_UNIV_PATTERN = /여자대학교/;
-
-export function isWomensUniv(university: string): boolean {
-  return WOMENS_UNIV_PATTERN.test(university);
-}
+// 여대 판정은 lib/jungsi-recommend.ts의 isWomensUniv(entry)를 그대로 쓴다.
+export { isWomensUniv } from "@/lib/jungsi-recommend";
 
 /* --------------------------- 상세 성적 → 백분위 투영 -------------------------- */
 
@@ -91,11 +89,11 @@ export type DiagnosisFilters = {
 
 export type DiagnosisRankings = {
   ranked: Record<Gun, Ranked[]>;
-  combo: Partial<Record<Gun, Ranked>>;
+  combo: Partial<Record<Gun, DiagnosisComboPick>>;
 };
 
 function passesFilters(entry: JungsiEntry, f: DiagnosisFilters): boolean {
-  if (f.gender === "남학생" && isWomensUniv(entry.university)) return false;
+  if (f.gender === "남학생" && isWomensUniv(entry)) return false;
   return isCompatibleSilgiAny(entry, f.silgi);
 }
 
@@ -118,48 +116,94 @@ export function convertDetailed(
 }
 
 /**
- * 가·나·다 각 1곳 조합.
- * 서로 다른 대학의 환산값은 반영식이 달라 직접 비교하면 안 되므로,
- * 환산 숫자보다 (1) 입결 컷이 확인된 대학 → (2) 지원권(적정→안정→도전)
- * → (3) 입결 서열 순으로 고른다. 컷 미공개 대학(참고)은 그 군에
- * 판정 가능한 대학이 하나도 없을 때만 마지막 수단으로 올라온다.
- * (전 과목 1등급인데 다군에 추계예대가 뜨던 문제의 수정)
+ * 가·나·다 각 1곳 조합 — lib/jungsi-recommend.ts recommendCombo와 같은 철학을
+ * 진단 필터(성별·복수 실기)가 적용된 목록 위에서 수행한다.
+ *
+ * 원칙 — "안정적인 곳"이 아니라 "붙을 수 있는 곳 중 가장 가고 싶을 곳":
+ * 1. 군마다 지원권(안정·적정, 또는 입결 비공개지만 환산이 압도적인 곳) 안에서
+ *    입결 서열(벨류)이 가장 높은 대학을 고른다 — 환산 숫자는 반영식이 달라
+ *    대학 간 직접 비교 지표로 쓰지 않는다.
+ * 2. 세 군이 모두 지원권이면 벨류 상승폭이 가장 큰 군 하나를 도전 카드로
+ *    상향한다(안정 2장 + 도전 1장 포트폴리오).
  */
+const PSEUDO_SAFE_MIN = 97;
+
+export type DiagnosisComboPick = Ranked & {
+  /** 도전 카드로 상향된 픽 (입결 비공개 대학 포함) */
+  stretch?: boolean;
+};
+
 function pickCombo(
   ranked: Record<Gun, Ranked[]>,
-  topTier: boolean,
-): Partial<Record<Gun, Ranked>> {
-  const tierPriority: Record<string, number> = { 적정: 0, 안정: 1, 도전: 2 };
-  const rankOf = (r: Ranked) =>
-    r.tier != null && r.tier in tierPriority ? tierPriority[r.tier] : 3;
+): Partial<Record<Gun, DiagnosisComboPick>> {
+  const guns = ["가", "나", "다"] as Gun[];
 
-  const combo: Partial<Record<Gun, Ranked>> = {};
+  const byValue = (a: Ranked, b: Ranked) =>
+    getPrestige(a.entry.university) - getPrestige(b.entry.university) ||
+    (b.converted ?? 0) - (a.converted ?? 0);
+
+  const isAnchor = (r: Ranked) =>
+    r.tier === "안정" ||
+    r.tier === "적정" ||
+    (!r.tier && (r.converted ?? 0) >= PSEUDO_SAFE_MIN);
+
+  const pools = guns.map((g) => {
+    const cands = ranked[g].filter(
+      (r) => r.converted != null && r.tier !== "낮음",
+    );
+    return {
+      g,
+      cands,
+      safe: cands.filter(isAnchor).sort(byValue),
+      stretch: cands.filter((r) => r.tier === "도전" || !r.tier).sort(byValue),
+    };
+  });
+
+  const combo: Partial<Record<Gun, DiagnosisComboPick>> = {};
   const used = new Set<string>();
-  for (const g of ["가", "나", "다"] as Gun[]) {
-    const candidates = ranked[g]
-      .filter((r) => r.converted != null && r.tier !== "낮음")
-      .slice()
-      .sort((a, b) => {
-        const t = rankOf(a) - rankOf(b);
-        if (t !== 0) return t;
-        // 컷 미공개(참고)끼리: 최상위권은 입결 서열, 그 외에는 학생 성적에
-        // 상대적으로 유리한(환산 높은) 순 — 하위권에게 실기 비중 큰 대학이
-        // 자연스럽게 올라오도록.
-        if (rankOf(a) === 3 && !topTier) {
-          return (b.converted ?? 0) - (a.converted ?? 0);
-        }
-        const p =
-          getPrestige(a.entry.university) - getPrestige(b.entry.university);
-        if (p !== 0) return p;
-        return (b.converted ?? 0) - (a.converted ?? 0);
-      });
-    const pick =
-      candidates.find((r) => !used.has(r.entry.university)) ?? candidates[0];
+  const firstFree = (pool: Ranked[]) =>
+    pool.find((r) => !used.has(r.entry.university));
+
+  // 1차: 군마다 지원권 중 벨류 최상위 → 지원권이 없으면 정렬 순(적정·안정 우선)
+  for (const p of pools) {
+    const pick = firstFree(p.safe) ?? firstFree(p.cands) ?? p.cands[0];
     if (pick) {
-      combo[g] = pick;
+      combo[p.g] = pick;
       used.add(pick.entry.university);
     }
   }
+
+  // 2차: 세 군 모두 지원권이면 한 군을 도전 카드로 상향 (벨류 상승폭 최대인 군)
+  const allSafe = pools.every((p) => {
+    const pick = combo[p.g];
+    return pick != null && isAnchor(pick);
+  });
+  if (allSafe) {
+    let best: { g: Gun; cur: Ranked; ch: Ranked } | null = null;
+    let bestGain = 0;
+    for (const p of pools) {
+      const cur = combo[p.g];
+      if (!cur) continue;
+      const ch = p.stretch.find(
+        (r) =>
+          !used.has(r.entry.university) ||
+          r.entry.university === cur.entry.university,
+      );
+      if (!ch) continue;
+      const gain =
+        getPrestige(cur.entry.university) - getPrestige(ch.entry.university);
+      if (gain > bestGain) {
+        bestGain = gain;
+        best = { g: p.g, cur, ch };
+      }
+    }
+    if (best) {
+      used.delete(best.cur.entry.university);
+      combo[best.g] = { ...best.ch, stretch: true };
+      used.add(best.ch.entry.university);
+    }
+  }
+
   return combo;
 }
 
@@ -168,12 +212,14 @@ export function diagnose(
   d: DetailedStudentScore,
   filters: DiagnosisFilters,
 ): DiagnosisRankings {
-  const all = rankByGun(toStudentScore(d));
+  const all = rankByGun(toStudentScore(d), null, {
+    excludeWomens: filters.gender === "남학생",
+  });
   const ranked: Record<Gun, Ranked[]> = { 가: [], 나: [], 다: [], 별도: [] };
   for (const g of Object.keys(all) as Gun[]) {
     ranked[g] = all[g].filter((r) => passesFilters(r.entry, filters));
   }
-  return { ranked, combo: pickCombo(ranked, isTopTier(d)) };
+  return { ranked, combo: pickCombo(ranked) };
 }
 
 /* --------------------------- 자체 기준 전형 참고 --------------------------- */
@@ -225,7 +271,7 @@ export function customBasisFromRanked(
 export function universityOptions(gender: DiagnosisGender): string[] {
   const names = new Set<string>();
   for (const e of jungsiEntries) {
-    if (gender === "남학생" && isWomensUniv(e.university)) continue;
+    if (gender === "남학생" && isWomensUniv(e)) continue;
     names.add(e.university);
   }
   return [...names].sort((a, b) => a.localeCompare(b, "ko"));

@@ -1,3 +1,5 @@
+import type { SilgiCategory } from "@/lib/jungsi-data";
+
 /**
  * /diagnosis 온보딩 진단 전용 데이터 모델.
  *
@@ -48,24 +50,13 @@ export type DiagnosisGender = "남학생" | "여학생";
 /* ------------------------------ 준비 중 실기 ------------------------------ */
 
 /**
- * 진단에서 고르는 실기 과목.
- * 기존 PrepTrack(기초디자인·기초소양 2종)은 기존 페이지용으로 그대로 두고,
- * 여기서는 실제 학생들이 준비하는 과목 전체를 다룬다.
- * "모름"은 실기 조건으로 대학을 걸러내지 않는다.
+ * 진단에서 고르는 실기 종목.
+ * lib/jungsi-data.ts의 SilgiCategory(실제 시험 종목 8종 + 비실기)를 그대로 쓰고,
+ * 진단 전용 선택지로 "모름"만 얹는다 — "모름"은 실기 조건으로 대학을 걸러내지 않는다.
  */
-export type DiagnosisSilgi =
-  | "기초디자인"
-  | "발상과 표현"
-  | "기초조형·소양평가"
-  | "소묘"
-  | "수채화·수묵담채"
-  | "소조·입체"
-  | "만화·상황표현"
-  | "통합·자체실기"
-  | "비실기"
-  | "모름";
+export type DiagnosisSilgi = SilgiCategory | "모름";
 
-// 기초조형·소양평가(학원 강점 유형)를 첫 번째로 노출한다.
+// 기초조형·소양평가(학원 강점 종목)를 첫 번째로 노출한다.
 // hint의 대학명은 lib/jungsi-data.ts 실기 내용 기준 대표 예시 — 데이터가 바뀌면 함께 갱신한다.
 export const DIAGNOSIS_SILGI_OPTIONS: {
   value: DiagnosisSilgi;
@@ -74,7 +65,7 @@ export const DIAGNOSIS_SILGI_OPTIONS: {
 }[] = [
   { value: "기초조형·소양평가", label: "기초조형·소양평가", hint: "국민대 · 성균관대 · 고려대 등" },
   { value: "기초디자인", label: "기초디자인", hint: "숙명여대 · 건국대 · 서울과기대 등" },
-  { value: "발상과 표현", label: "발상과 표현", hint: "고려대 · 서경대 · 삼육대 등" },
+  { value: "발상과표현", label: "발상과 표현", hint: "고려대 · 서경대 · 삼육대 등" },
   { value: "소묘", label: "소묘", hint: "중앙대 · 건국대(현대미술) 등" },
   { value: "수채화·수묵담채", label: "수채화·수묵담채", hint: "성균관대 · 경희대 · 숙명여대 등" },
   { value: "소조·입체", label: "소조·입체", hint: "서울시립대 · 국민대 · 경희대 등" },

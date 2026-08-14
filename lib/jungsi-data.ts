@@ -1,4 +1,4 @@
-// 미대 정시 모집군 · 전형방법 · 수능 반영영역 · 실기유형 데이터.
+// 미대 정시 모집군 · 전형방법 · 수능 반영영역 · 실기 종목 데이터.
 //
 // ⚠️ 데이터 출처 · 확인 필요
 // - 2026학년도 정시 모집요강 원본(『2026 미술대학 입시요강』 · 각 대학 입학처 PDF)을
@@ -6,7 +6,7 @@
 // - 경쟁률·합격선은 2026학년도 정시 입시결과 기준입니다.
 //   경쟁률은 원서접수 최종 마감(수시이월 반영) 수치, 합격선은 2026년 5~6월
 //   각 대학 입학처 공개 자료·어디가 기준입니다.
-// - 2027학년도 최종 모집요강은 2026년 9월경 발표되며, 모집군·반영비율·실기유형이
+// - 2027학년도 최종 모집요강은 2026년 9월경 발표되며, 모집군·반영비율·실기 종목이
 //   바뀔 수 있습니다. 실제 지원 전에는 반드시 각 대학 입학처 자료로 대조하세요.
 // - 원본 대조 결과, 배치표 기준 기존 데이터에서 누락된 학과·학교, 군 이동
 //   (동덕여대·서울여대), 전형 구조(1단계 수능 100%·면접·비실기)를 다수 정정했습니다.
@@ -16,42 +16,73 @@
 
 export type Gun = "가" | "나" | "다" | "별도";
 
-export type SilgiType =
-  | "기초소양"
+/** 실기 종목 — 실제 입시에서 통용되는 시험 종목명 기준 */
+export type SilgiSubject =
   | "기초디자인"
-  | "선택실기"
-  | "비실기"
-  | "자체실기";
+  | "발상과표현"
+  | "기초조형·소양평가"
+  | "소묘"
+  | "수채화·수묵담채"
+  | "소조·입체"
+  | "만화·상황표현"
+  | "통합·자체실기";
+
+/** 필터·뱃지·설명 카드용 카테고리 = 종목 + 비실기(subjects 빈 배열) */
+export type SilgiCategory = SilgiSubject | "비실기";
 
 export const GUN_ORDER: Gun[] = ["가", "나", "다", "별도"];
 
 export const SILGI_META: Record<
-  SilgiType,
+  SilgiCategory,
   { label: string; short: string; description: string }
 > = {
   기초디자인: {
     label: "기초디자인",
     short: "기초디자인",
     description:
-      "제시된 사물과 조건으로 화면을 구성하는 유형입니다. 묘사력·구성력·완성도가 핵심이며, 여러 대학이 채택하고 있습니다.",
+      "제시된 사물과 조건으로 화면을 구성하는 시험입니다. 묘사력·구성력·완성도를 보며, 여러 대학이 채택하는 종목입니다.",
   },
-  기초소양: {
-    label: "기초소양·기초조형",
-    short: "기초소양",
+  발상과표현: {
+    label: "발상과 표현",
+    short: "발상과표현",
     description:
-      "주제·대상을 보고 발상을 이끌어내 화면으로 풀어내는 유형입니다. 국민대(기초조형평가)·성균관대(기초실기소양평가)처럼 사물 묘사보다 관찰·사고 과정을 봅니다.",
+      "제시된 사물·주제에서 아이디어를 끌어내 화면으로 표현하는 시험입니다. 고려대(디자인조형)가 대표적이며, 서경대·삼육대에서도 이 종목으로 응시할 수 있습니다.",
   },
-  선택실기: {
-    label: "선택실기(택1)",
-    short: "선택실기",
+  "기초조형·소양평가": {
+    label: "기초조형·소양평가",
+    short: "기초조형",
     description:
-      "학교가 지정한 여러 유형(기초디자인·기초소양·소묘 등) 중 하나를 골라 응시합니다. 준비하던 유형을 그대로 살려 지원할 수 있는 것이 장점입니다.",
+      "국민대(기초조형평가)·성균관대(기초실기소양평가)처럼 대상을 관찰하고 사고 과정을 화면으로 푸는 시험입니다. 잘 그리는 손보다 관찰력과 발상을 봅니다.",
   },
-  자체실기: {
-    label: "자체·통합실기",
+  소묘: {
+    label: "소묘",
+    short: "소묘",
+    description:
+      "연필·색채로 대상을 정확히 묘사하는 시험입니다. 중앙대(공간구성과 묘사)·건국대 현대미술(인체색채소묘)이 대표적입니다.",
+  },
+  "수채화·수묵담채": {
+    label: "수채화·수묵담채",
+    short: "수채화·수묵",
+    description:
+      "정물·인물을 수채화 또는 수묵담채로 그리는 회화 실기입니다. 회화과·동양화과 지원의 기본 종목으로, 세종대·숙명여대 회화과 등이 채택합니다.",
+  },
+  "소조·입체": {
+    label: "소조·입체",
+    short: "소조",
+    description:
+      "점토로 인물 두상 등을 빚는 조소과 실기입니다. 국민대 입체미술·동국대 조소·경희대 조소가 대표적입니다.",
+  },
+  "만화·상황표현": {
+    label: "만화·상황표현",
+    short: "만화·상황",
+    description:
+      "주어진 주제를 칸 만화·상황 연출로 표현하는 시험입니다. 경기대 애니메이션(4컷 웹툰)이 대표적이며 웹툰·애니 지망생의 종목입니다.",
+  },
+  "통합·자체실기": {
+    label: "통합·자체실기",
     short: "자체실기",
     description:
-      "대학이 독자 출제하는 통합·전공별 실기입니다. 서울대·서울시립대·이화여대의 통합실기, 회화·조소의 인체·소조처럼 재료·주제가 학교마다 달라 별도의 준비가 필요합니다.",
+      "대학이 독자 출제하는 실기입니다. 서울대·이화여대·서울시립대·한예종이 대표적이며, 기출 경향에 맞춘 별도 준비가 필요합니다.",
   },
   비실기: {
     label: "비실기(수능·서류)",
@@ -60,6 +91,42 @@ export const SILGI_META: Record<
       "실기고사 없이 수능·학생부·서류·면접으로 선발합니다. 홍익대가 대표적이며, 그림 연습보다 수능 성적 관리가 승부처입니다. 대부분 수학을 반영영역에 포함합니다.",
   },
 };
+
+/** 대표 카테고리 — subjects[0]이 대표(주력) 종목, 빈 배열이면 비실기 */
+export function silgiCategory(e: Pick<JungsiEntry, "subjects">): SilgiCategory {
+  return e.subjects.length === 0 ? "비실기" : e.subjects[0];
+}
+
+/** 뱃지용 라벨. 택1(2개 이상)이면 응시 가능 종목을 그대로 노출 */
+export function silgiLabel(e: Pick<JungsiEntry, "subjects">): string {
+  const s = e.subjects;
+  if (s.length === 0) return SILGI_META.비실기.label;
+  if (s.length === 1) return SILGI_META[s[0]].label;
+  if (s.length === 2)
+    return `${SILGI_META[s[0]].short}·${SILGI_META[s[1]].short} 택1`;
+  return `${SILGI_META[s[0]].short} 등 택1`;
+}
+
+/** 칩·팝업용 짧은 라벨 */
+export function silgiShort(e: Pick<JungsiEntry, "subjects">): string {
+  const s = e.subjects;
+  if (s.length === 0) return SILGI_META.비실기.short;
+  if (s.length === 1) return SILGI_META[s[0]].short;
+  return `${SILGI_META[s[0]].short} 등 택1`;
+}
+
+/** 필터·가이드 카드 공용 노출 순서 — 기초조형(학원 강점 종목)을 기초디자인보다 먼저 */
+export const SILGI_CATEGORY_ORDER: SilgiCategory[] = [
+  "기초조형·소양평가",
+  "기초디자인",
+  "발상과표현",
+  "수채화·수묵담채",
+  "소묘",
+  "소조·입체",
+  "만화·상황표현",
+  "통합·자체실기",
+  "비실기",
+];
 
 /** 대학 카드 안에 펼쳐 보이는 학과(전공)별 상세 */
 export type Major = {
@@ -108,7 +175,12 @@ export type JungsiEntry = {
   /** 해당 모집군에서 뽑는 학과·학부 요약 */
   units: string;
   gun: Gun;
-  silgi: SilgiType;
+  /**
+   * 응시 가능 실기 종목(OR) — 이 중 한 종목만 준비해도 지원 가능.
+   * 주력 종목(모집인원·배점 비중이 큰 종목)을 첫 번째로 — subjects[0]이 대표 카테고리·뱃지가 됨.
+   * 빈 배열 = 비실기. 두 과제를 모두 치르는 복합 출제는 대표 종목 1개만 배정(OR 의미 유지).
+   */
+  subjects: SilgiSubject[];
   /** 전형방법 요약. 한 줄에 한 항목. */
   method: string[];
   /** 전형 bar 시각화용 단계 구조 (단계별·혼합 전형만 수기 작성 · 일괄합산은 ratio에서 생성) */
@@ -139,7 +211,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "이화여자대학교",
     units: "디자인학부 · 조형예술학부(동양화·서양화·도자예술·조소) · 섬유패션학부(섬유예술·패션디자인)",
     gun: "가",
-    silgi: "자체실기",
+    subjects: ["통합·자체실기"],
     method: [
       "1단계 수능 100% (수능전형 4배수 / 실기·실적전형 8배수)",
       "2단계 1단계성적 60% + 실기 40% (디자인학부 실기·실적전형은 40% + 60%)",
@@ -178,7 +250,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "국민대학교",
     units: "조형대학 — 공업·공간·시각·영상·의상·자동차운송·AI디자인, 금속·도자공예",
     gun: "가",
-    silgi: "기초소양",
+    subjects: ["기초조형·소양평가"],
     method: [
       "[일괄합산] 수능 60% + 기초조형평가 40% (공업·공간디자인)",
       "[단계별] 1단계 수능 60% + 기초조형 40%(5배수) → 2단계 1단계성적 80% + 사고력평가 20%",
@@ -225,7 +297,8 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "국민대학교",
     units: "예술대학 미술학부 회화전공",
     gun: "가",
-    silgi: "자체실기",
+    // 아이디어 스케치+주제 회화 복합 출제 — 단일 종목 트랙과 호환되지 않음
+    subjects: ["통합·자체실기"],
     method: [
       "1단계 학생부 40% + 수능 60% (6배수)",
       "2단계 학생부 20% + 수능 40% + 실기 40%",
@@ -261,7 +334,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "성균관대학교",
     units: "디자인학과(시각디자인·써피스디자인 통합선발)",
     gun: "가",
-    silgi: "기초소양",
+    subjects: ["기초조형·소양평가"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국어 45 + 탐구 45 + 영어 10 (수학 미반영 · 한국사 감점)",
@@ -281,7 +354,8 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "성균관대학교",
     units: "미술학과(동양화·서양화)",
     gun: "가",
-    silgi: "자체실기",
+    // 인물화(재료 자유: 연필·수채·먹·채색) — 회화 주력, 연필 응시도 가능해 소묘 병기
+    subjects: ["수채화·수묵담채", "소묘"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국어 45 + 탐구 45 + 영어 10 (수학 미반영 · 한국사 감점)",
@@ -302,7 +376,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서울시립대학교",
     units: "디자인학과(시각디자인·산업디자인)",
     gun: "가",
-    silgi: "자체실기",
+    subjects: ["통합·자체실기"],
     method: [
       "1단계 수능 100% (6배수 · 2026학년도 5→6배수 확대)",
       "2단계 수능 40% + 실기 50% + 면접 10%",
@@ -335,7 +409,8 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서울시립대학교",
     units: "조각학과",
     gun: "가",
-    silgi: "자체실기",
+    // 소조 400점+주제소묘 100점 복합 출제 — 배점 지배 종목만 배정
+    subjects: ["소조·입체"],
     method: [
       "1단계 수능 100% (4배수)",
       "2단계 수능 30% + 실기 50% + 면접 20%",
@@ -365,7 +440,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "고려대학교",
     units: "디자인조형학부",
     gun: "가",
-    silgi: "기초소양",
+    subjects: ["발상과표현"],
     method: [
       "수능 70% + 실기 30% 일괄합산",
       "수능 반영영역: 국어 55.56 + 탐구 44.44 (수학·영어 미반영 · 영어·한국사 등급별 감점)",
@@ -387,7 +462,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "고려대학교",
     units: "자유전공학부 (교과우수전형·비실기)",
     gun: "가",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "학생부 20% + 수능 80% 일괄합산 · 실기 없음",
       "수능 반영영역: 국어 35.7 + 수학 35.7 + 탐구 28.6 (수학 필수)",
@@ -402,7 +477,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "숙명여자대학교",
     units: "시각·영상디자인, 산업디자인, 환경디자인, 공예",
     gun: "가",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국어 40 + 영어 30 + 탐구 30 (수학 미반영 · 한국사 가산)",
@@ -425,7 +500,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "숙명여자대학교",
     units: "회화과(한국화·서양화)",
     gun: "가",
-    silgi: "자체실기",
+    subjects: ["수채화·수묵담채"],
     method: [
       "수능 30% + 실기 70% 일괄합산",
       "수능 반영영역: 국어 60 + 영어 40 (수학·탐구 미반영 · 한국사 가산)",
@@ -446,7 +521,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서울여자대학교",
     units: "산업디자인, 공예_컬렉터블디자인",
     gun: "가",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국·영·수·탐1 중 상위 3개 (40 / 40 / 20 · 직업탐구 반영 · 한국사 가산)",
@@ -467,7 +542,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서경대학교",
     units: "디자인학부(비주얼디자인·라이프스타일디자인)",
     gun: "가",
-    silgi: "선택실기",
+    subjects: ["발상과표현", "기초디자인"],
     method: [
       "수능 20% + 실기 80% 일괄합산",
       "수능 반영영역: 국·수·탐 중 상위 2개 각 40 + 영어 20 (한국사 가산)",
@@ -488,7 +563,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "삼육대학교",
     units: "아트앤디자인학과",
     gun: "가",
-    silgi: "선택실기",
+    subjects: ["기초디자인", "발상과표현", "기초조형·소양평가"],
     method: [
       "수능 51% + 실기 49% 일괄합산",
       "수능 반영영역: 국·영·수·탐1 중 상위 2개 (자체 등급 환산점수)",
@@ -507,7 +582,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "영상학과",
     gun: "가",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국어 45 + 영어 25 + 수학·탐구 중 상위 1개 30 (한국사 감점)",
@@ -526,7 +601,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "현대미술학과",
     gun: "가",
-    silgi: "자체실기",
+    subjects: ["소묘"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국어 45 + 영어 25 + 수학·탐구 중 상위 1개 30 (한국사 감점)",
@@ -544,7 +619,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "애니메이션학과(상상과 표현·웹툰)",
     gun: "가",
-    silgi: "자체실기",
+    subjects: ["만화·상황표현"],
     method: [
       "수능 30% + 실기 70% 일괄합산",
       "수능 반영영역: 영어 30 + 국·수·사탐·과탐 중 상위 2개 각 35 (한국사 감점)",
@@ -565,7 +640,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "동덕여자대학교",
     units: "미술학부 큐레이터학전공 (비실기)",
     gun: "가",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "수능 100% · 실기 없음",
       "수능 반영영역: 국어·수학 중 우수한 순 35 / 25 + 영어 20 + 탐구1 20 (한국사 가산)",
@@ -580,7 +655,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "한성대학교",
     units: "ICT디자인학부(주간·비실기) → 2027 AI융합디자인학부",
     gun: "가",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "수능 100% · 실기 없음",
       "수능 반영영역: 국어 35 + 수학 25 + 영어 20 + 탐구 20 (한국사 가산)",
@@ -597,7 +672,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서울대학교",
     units: "디자인과, 동양화·서양화·조소·공예",
     gun: "나",
-    silgi: "자체실기",
+    subjects: ["통합·자체실기"],
     method: [
       "1단계 수능 100% (5배수)",
       "2단계 1단계성적 40% + 실기 30% + 면접 30%",
@@ -633,7 +708,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "홍익대학교",
     units: "예술학과, 회화·동양화·판화·조소, 디자인학부, 공예, 자율전공 등 11개 모집단위",
     gun: "나",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "1단계 수능 100% (3배수)",
       "2단계 1단계성적 60% + 서류 40%(미술활동보고서·학생부) · 실기 없음",
@@ -672,7 +747,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서울과학기술대학교",
     units: "디자인학과(산업·시각), 금속공예디자인, 도예학과, 조형예술학과 (실기전형)",
     gun: "나",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "1단계 수능 100% (4배수)",
       "2단계 1단계성적 60% + 실기 40% (도예·조형예술은 50% + 50%)",
@@ -708,7 +783,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서울과학기술대학교",
     units: "산업·시각디자인, 금속공예디자인 (비실기)",
     gun: "나",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "수능 100% 일괄합산 · 실기 없음",
       "수능 반영영역: 국어 30 + 수학 25 + 영어 25 + 탐구 20 (수학 필수)",
@@ -727,7 +802,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "세종대학교",
     units: "회화과(한국화·서양화)",
     gun: "나",
-    silgi: "자체실기",
+    subjects: ["수채화·수묵담채"],
     method: [
       "학생부 20% + 수능 50% + 실기 30% 일괄합산",
       "수능 반영영역: 국어 70 + 영어 30 (수학·탐구·한국사 미반영)",
@@ -744,7 +819,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "세종대학교",
     units: "패션디자인학과",
     gun: "나",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "학생부 20% + 수능 50% + 실기 30% 일괄합산",
       "수능 반영영역: 국어 70 + 영어 30 (수학·탐구·한국사 미반영)",
@@ -762,7 +837,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "세종대학교",
     units: "창의소프트학부(디자인이노베이션·만화애니메이션텍·비실기)",
     gun: "나",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "수능 100% · 실기 없음",
       "수능 반영영역: 국어 35 + 수학 35 + 영어 20 + 탐구 10 (수학 필수)",
@@ -781,7 +856,8 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "미술학부(한국화·회화·조소)",
     gun: "나",
-    silgi: "자체실기",
+    // 택1이 아니라 학과별 상이(한국화·회화=수묵·수채 / 조소=소조) — 준비 종목별로 해당 학과 지원 가능
+    subjects: ["수채화·수묵담채", "소조·입체"],
     method: [
       "수능 40% + 실기 60% 일괄합산",
       "수능 반영영역: 국어 60 + 탐구 40 (수학·영어 미반영 · 영어·한국사 감점)",
@@ -804,7 +880,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "미술학부 조소",
     gun: "나",
-    silgi: "자체실기",
+    subjects: ["소조·입체"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국어 45 + 영어 15 + 탐구 40 (수학 미반영 · 직업탐구 반영 · 한국사 감점)",
@@ -822,7 +898,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "공연영상창작학부 공간연출",
     gun: "나",
-    silgi: "자체실기",
+    subjects: ["소묘"],
     method: [
       "수능 55% + 실기 45% 일괄합산",
       "수능 반영영역: 국어 50 + 탐구 50 (수학·영어 미반영 · 영어·한국사 가산)",
@@ -840,7 +916,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "국민대학교",
     units: "예술대학 미술학부 입체미술전공",
     gun: "나",
-    silgi: "자체실기",
+    subjects: ["소조·입체"],
     method: [
       "학생부 20% + 수능 30% + 실기 50% 일괄합산 (실질 학생부 7 / 수능 35 / 실기 58)",
       "수능 반영영역: 국어 + 영어 + 탐구 (수학 미반영 · 탐구 필수 · 대체 불가)",
@@ -858,7 +934,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "커뮤니케이션디자인, 의상디자인(예체능), 리빙디자인",
     gun: "나",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국어 45 + 영어 25 + 수학·탐구 중 상위 1개 30 (한국사 감점)",
@@ -881,7 +957,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "의상디자인학과(인문·비실기)",
     gun: "나",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "수능 100% · 실기 없음",
       "수능 반영영역: 국어 40 + 수학 30 + 영어 10 + 탐구 20 (수학 필수)",
@@ -896,7 +972,8 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "동덕여자대학교",
     units: "미술학부 회화(한국화·서양화)",
     gun: "나",
-    silgi: "자체실기",
+    // practical '회화'(재료 자유) — 회화 트랙 준비생이 대응 가능한 시험으로 분류
+    subjects: ["수채화·수묵담채"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국·수 중 택1 33.3 + 영어 33.3 + 탐구1 33.3 (한국사 가산)",
@@ -912,7 +989,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서울여자대학교",
     units: "아트앤디자인스쿨 시각디자인",
     gun: "나",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국·영·수·탐1 중 상위 3개 (40 / 40 / 20 · 직업탐구 반영)",
@@ -930,7 +1007,8 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서울여자대학교",
     units: "아트앤디자인스쿨 현대미술",
     gun: "나",
-    silgi: "자체실기",
+    // '발상과 묘사(색채)'는 발상 중심 색채 표현이라 발상과표현으로 분류 — 요강 확정 시 재확인
+    subjects: ["발상과표현"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국·영·수·탐1 중 상위 3개 (40 / 40 / 20 · 직업탐구 반영)",
@@ -948,7 +1026,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "덕성여자대학교",
     units: "Art&Design대학 (실기 종목별 선발)",
     gun: "나",
-    silgi: "선택실기",
+    subjects: ["기초디자인", "기초조형·소양평가", "수채화·수묵담채"],
     method: [
       "수능 20% + 실기 80% 일괄합산",
       "수능 반영영역: 국·영·수·탐1 중 택2 (각 50 · 한국사 가산)",
@@ -972,7 +1050,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "미술학부 조형예술·생활예술 (수시이월)",
     gun: "나",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "조형예술 수능 30% + 실기 70% / 생활예술 수능 20% + 실기 80% 일괄합산",
       "수능 반영영역: 국·수·영 중 택2 각 40 + 탐구1 20 (선택형)",
@@ -1010,7 +1088,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "SW융합학부 애니메이션 · 자유전공(예체능계열·비실기)",
     gun: "나",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "수능 100% · 실기 없음",
       "수능 반영영역: 애니메이션 국25+수35+영20+탐20 / 자유전공 국35+수25+영20+탐20 (수학 필수)",
@@ -1031,7 +1109,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "자율전공(자연·예능 / 인문·예능·비실기)",
     gun: "다",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "수능 100% 일괄합산 · 실기 없음 · 학생부 없음",
       "수능 반영영역: 자연·예능 국20+수35+영15+탐30 / 인문·예능 국30+수30+영15+탐25 (수학 필수)",
@@ -1049,7 +1127,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "동덕여자대학교",
     units: "시각·실내·미디어디자인, 디지털공예, 패션디자인(주·야)",
     gun: "다",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국·수 중 택1 33.3 + 영어 33.3 + 탐구1 33.3 (한국사 가산)",
@@ -1074,7 +1152,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "추계예술대학교",
     units: "미술창작학부(동양화 / 서양화·현대미술 / 판화미디어)",
     gun: "다",
-    silgi: "자체실기",
+    subjects: ["수채화·수묵담채", "소묘"],
     method: [
       "수능 30% + 실기 70% 일괄합산",
       "수능 반영영역: 국어 50 + 영어 50 (수학·탐구 미반영 · 한국사 응시만 필수)",
@@ -1095,7 +1173,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "한성대학교",
     units: "예술학부(동양화·서양화)",
     gun: "다",
-    silgi: "자체실기",
+    subjects: ["수채화·수묵담채"],
     method: [
       "수능 30% + 실기 70% 일괄합산 (개인용 화판 사용 금지)",
       "수능 반영영역: 국·수 중 상위 1개 40 + 영어 40 + 탐구 20",
@@ -1115,7 +1193,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서울여자대학교",
     units: "아트앤디자인스쿨 첨단미디어디자인 (비실기)",
     gun: "다",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "수능 100% · 실기 없음",
       "수능 반영영역: 국·수·영·탐 우수한 순 35 / 30 / 20 / 15 (4개 영역 전부 · 한국사 가산)",
@@ -1130,7 +1208,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "성신여자대학교",
     units: "디자인과",
     gun: "다",
-    silgi: "선택실기",
+    subjects: ["기초디자인", "기초조형·소양평가"],
     method: [
       "수능 55% + 실기 45% 일괄합산",
       "수능 반영영역: 국·수·영·탐 중 상위 3개 각 33.3 (직업탐구 불인정)",
@@ -1149,7 +1227,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "디지털콘텐츠디자인학과",
     gun: "다",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국어 35 + 영어 35 + 수학·탐구 중 상위 1개 30",
@@ -1168,7 +1246,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "인공지능·소프트웨어융합대학 (비실기)",
     gun: "다",
-    silgi: "비실기",
+    subjects: [],
     method: [
       "수능 100% · 실기 없음",
       "수능 반영영역: 국어 25 + 수학 35 + 영어 20 + 탐구 20 (수학 필수 · 과탐 10% 가산)",
@@ -1184,7 +1262,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "서울",
     units: "산업디자인학과",
     gun: "다",
-    silgi: "기초디자인",
+    subjects: ["기초디자인"],
     method: [
       "수능 60% + 실기 40% 일괄합산",
       "수능 반영영역: 국어 45 + 영어 25 + 수학·탐구 중 상위 1개 30 (한국사 감점)",
@@ -1202,7 +1280,7 @@ export const jungsiEntries: JungsiEntry[] = [
     university: "서경대학교",
     units: "공연예술학부 무대패션",
     gun: "다",
-    silgi: "자체실기",
+    subjects: ["통합·자체실기"],
     method: [
       "1단계 실기 100% (3배수) → 2단계 수능 30% + 실기 70%",
       "수능 반영영역: 국·수·탐 중 상위 2개 각 40 + 영어 20 (직업탐구 반영)",
@@ -1232,7 +1310,7 @@ export const jungsiEntries: JungsiEntry[] = [
     campus: "미술원",
     units: "조형예술과, 디자인과, 건축과",
     gun: "별도",
-    silgi: "자체실기",
+    subjects: ["통합·자체실기"],
     method: [
       "가·나·다군과 무관한 자체 일정으로 선발",
       "1차 서류·실기, 2차 실기·면접 등 학과별 단계 전형",

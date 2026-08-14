@@ -8,9 +8,9 @@
  */
 
 import type { Gun } from "@/lib/jungsi-data";
-import { SILGI_META } from "@/lib/jungsi-data";
-import type { Ranked } from "@/lib/jungsi-recommend";
+import { silgiShort } from "@/lib/jungsi-data";
 import { isSilgiFree } from "@/lib/diagnosis/silgi";
+import type { DiagnosisComboPick } from "@/lib/diagnosis/score-engine";
 
 const GUN_LABEL: Record<Gun, string> = {
   가: "가군",
@@ -43,7 +43,7 @@ export function ComboCard({
   highlight = false,
 }: {
   gun: Gun;
-  pick?: Ranked;
+  pick?: DiagnosisComboPick;
   highlight?: boolean;
 }) {
   return (
@@ -74,13 +74,14 @@ export function ComboCard({
                 </span>
               ) : null}
             </p>
-            <TierBadge tier={pick.tier} />
+            {/* 도전 상향 카드는 입결 비공개라도 '도전'으로 표기 */}
+            <TierBadge tier={pick.stretch ? "도전" : pick.tier} />
           </div>
           <p className="mt-1 text-[13px] leading-relaxed text-white/55">
             {pick.entry.units}
           </p>
           <p className="mt-1.5 text-[12px] text-white/40">
-            {SILGI_META[pick.entry.silgi].short}
+            {silgiShort(pick.entry)}
             {isSilgiFree(pick.entry) && " · 실기 무관"}
           </p>
           <details className="group mt-3">

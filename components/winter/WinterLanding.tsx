@@ -51,6 +51,7 @@ import MobileActionBar from "@/components/winter/MobileActionBar";
 import ReportSample from "@/components/winter/ReportSample";
 import { NaverTalkButton } from "@/components/academy/NaverTalk";
 import { NaverBookingButton } from "@/components/academy/NaverBooking";
+import { NAVER_BOOKING_WINTER_URL } from "@/lib/contact";
 import {
   fadeUp,
   SectionHead,
@@ -190,7 +191,10 @@ export default function WinterLanding() {
               상담 신청하기
             </Link>
             {/* 연락을 기다리지 않고 방문 날짜까지 바로 잡고 싶은 분들 */}
-            <NaverBookingButton className="w-full px-8 py-4 text-base sm:w-auto" />
+            <NaverBookingButton
+              className="w-full px-8 py-4 text-base sm:w-auto"
+              href={NAVER_BOOKING_WINTER_URL}
+            />
             {/* 전화·톡톡은 보조 동선 — 모바일에서는 두 칸으로 붙여 첫 화면을 덜 밀어낸다 */}
             <div className="grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto sm:gap-3">
               <a
@@ -603,6 +607,7 @@ export default function WinterLanding() {
               <NaverBookingButton
                 className="px-7 py-3.5 text-sm"
                 label="네이버 예약"
+                href={NAVER_BOOKING_WINTER_URL}
               />
               {/* 문자 문의 — 데스크톱은 문자 앱이 없어 모바일에서만 노출 */}
               <a

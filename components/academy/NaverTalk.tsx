@@ -78,7 +78,10 @@ export default function NaverTalkFab() {
   const pathname = usePathname() ?? "";
 
   // /diagnosis 온보딩은 한 화면 한 질문에 집중해야 한다 — 플로팅 버튼도 숨긴다.
-  if (pathname.startsWith("/diagnosis")) return null;
+  // /consulting 전환 랜딩도 하단 sticky CTA와 겹치므로 숨긴다 —
+  // 보조 문의 수단은 랜딩 폼 아래 인라인 톡톡 버튼이 담당한다.
+  if (pathname.startsWith("/diagnosis") || pathname.startsWith("/consulting"))
+    return null;
 
   // /winter*는 모바일 하단 액션 바(MobileActionBar)가 이미 자리를 쓰고
   // 그 바 안에 톡톡 칸이 있어 모바일에서는 숨긴다.

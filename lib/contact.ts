@@ -20,16 +20,38 @@ export const NAVER_BOOKING_HONGDAE_ITEM =
   "https://booking.naver.com/booking/6/bizes/1713916/items/7946327";
 
 /**
- * 네이버 예약 — 홍대 본원 상담 예약 (윈터스쿨 상담이 여기로 들어온다).
+ * 네이버 예약 — 홍대 본원 상담 예약 (일반 입학 상담).
  * 정적 페이지에 네이버 주소를 그대로 박으면 startDate가 빌드 날짜로
  * 굳어버리므로, 클릭할 때마다 오늘 날짜를 붙여 보내는 내부 리다이렉트
  * (app/booking/hongdae/route.ts)를 가리킨다.
  *
- * 윈터스쿨은 홍대 본원에서만 진행하므로 윈터스쿨 쪽 버튼은 캠퍼스를
- * 고르지 않고 이 주소를 바로 쓴다. 두 캠퍼스를 모두 안내하는 자리라면
- * 아래 CAMPUSES를 쓸 것.
+ * 윈터스쿨 상담은 전용 상품(NAVER_BOOKING_WINTER_URL)이 따로 있다 —
+ * 윈터스쿨 쪽 버튼에 이 주소를 쓰지 말 것.
  */
 export const NAVER_BOOKING_URL = "/booking/hongdae";
+
+/**
+ * 네이버 예약 — "2027 윈터스쿨 상담신청" 전용 상품의 실제 주소.
+ * 홍대 일반 상담과 예약 서비스 버전(booking/5)·biz 번호가 다르다.
+ * 버튼에는 아래 NAVER_BOOKING_WINTER_URL(내부 리다이렉트)을 걸 것 —
+ * startDateTime을 클릭한 날짜로 채워야 하기 때문(hongdae와 같은 이유).
+ */
+export const NAVER_BOOKING_WINTER_ITEM =
+  "https://booking.naver.com/booking/5/bizes/770673/items/8004638";
+
+/** 윈터스쿨 상담 예약 버튼이 실제로 거는 주소 (app/booking/winter/route.ts) */
+export const NAVER_BOOKING_WINTER_URL = "/booking/winter";
+
+/**
+ * 네이버 예약 — "1:1 컨설팅 예약하기" 전용 상품의 실제 주소.
+ * 유료 1:1 입시 전략 컨설팅(lib/consulting.ts)의 예약 창구다 —
+ * 무료 입학 상담(hongdae)·윈터스쿨 상담과 상품이 다르니 섞지 말 것.
+ */
+export const NAVER_BOOKING_CONSULTING_ITEM =
+  "https://booking.naver.com/booking/5/bizes/770673/items/8004662";
+
+/** 1:1 컨설팅 예약 버튼이 실제로 거는 주소 (app/booking/consulting/route.ts) */
+export const NAVER_BOOKING_CONSULTING_URL = "/booking/consulting";
 
 /** 네이버 예약 — 일산 캠퍼스 상담 예약 (예약 상품이 달라 biz/item 번호가 다르다) */
 export const NAVER_BOOKING_URL_ILSAN =

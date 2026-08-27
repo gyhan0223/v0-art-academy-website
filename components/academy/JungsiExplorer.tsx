@@ -560,7 +560,7 @@ async function renderShareImage(
   ctx.fillText("모두다른고양이 미술학원", PAD, H - 62);
   ctx.fillStyle = "rgba(255,255,255,0.5)";
   ctx.font = `400 24px ${FONT}`;
-  ctx.fillText("일산 · 031-916-8885 · 무료 진단 예약 가능", PAD, H - 24);
+  ctx.fillText("일산 · 031-916-8885 · 입학 상담 예약 가능", PAD, H - 24);
 
   return canvas;
 }
@@ -671,13 +671,13 @@ function PlanTray({
     }
   };
 
-  // 예약 페이지로 넘어가기 전에 조합 요약을 복사해 두면
-  // 요청사항란에 붙여넣기만 하면 됨 → 상담 리드에 조합 정보가 따라붙음
+  // 상담 신청으로 넘어가기 전에 조합 요약을 복사해 두면
+  // 신청서에 붙여넣기만 하면 됨 → 상담 리드에 조합 정보가 따라붙음
   const handleCta = async () => {
     const ok = await copyText(buildDiagnosisText(selection, byId, analysis));
     if (ok)
       showToast(
-        "조합 내용을 복사했어요 — 예약 '요청사항'란에 붙여넣어 주세요.",
+        "조합 내용을 복사했어요 — 신청서 '지금 가장 고민되는 점'란에 붙여넣어 주세요.",
       );
   };
 
@@ -798,7 +798,7 @@ function PlanTray({
           <p aria-live="polite" className="text-[12px] leading-relaxed">
             {complete ? (
               <span className="font-bold text-accent">
-                ✓ 3장 완성! 이 조합, 지금 바로 진단받아 보세요.
+                ✓ 3장 완성! 이 조합, 1:1 상담에서 바로 점검받아 보세요.
               </span>
             ) : (
               analysis.headline && (
@@ -811,10 +811,12 @@ function PlanTray({
               )
             )}
           </p>
+          {/* 내부 경로(/consulting 등)는 같은 탭에서, 외부 예약 주소만 새 탭에서 연다 */}
           <a
             href={ctaHref}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...(/^https?:/.test(ctaHref)
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
             onClick={handleCta}
             className={
               complete
@@ -822,7 +824,9 @@ function PlanTray({
                 : "shrink-0 rounded-md bg-accent px-5 py-2.5 text-center text-xs font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             }
           >
-            {complete ? "이 3장 조합 무료 진단 받기" : "이 조합으로 무료 진단 받기"}
+            {complete
+              ? "이 3장 조합으로 전략 상담받기"
+              : "이 조합으로 전략 상담받기"}
           </a>
         </div>
       </div>

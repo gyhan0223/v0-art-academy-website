@@ -17,7 +17,7 @@ import {
   PenLine,
 } from "lucide-react";
 import { CAMP_INFO, SMS_HREF } from "@/lib/winter-camp";
-import { NAVER_TALK_URL, NAVER_BOOKING_URL } from "@/lib/contact";
+import { NAVER_TALK_URL, NAVER_BOOKING_WINTER_URL } from "@/lib/contact";
 import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 
 export default function MobileActionBar() {
@@ -82,7 +82,7 @@ export default function MobileActionBar() {
           </a>
           {/* 예약은 채워진 초록 — 톡톡(테두리)과 한눈에 구분된다 */}
           <a
-            href={NAVER_BOOKING_URL}
+            href={NAVER_BOOKING_WINTER_URL}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="네이버 예약으로 상담 예약하기"

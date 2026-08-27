@@ -18,17 +18,23 @@ import { NAVER_BOOKING_URL } from "@/lib/contact";
 
 const ARIA_LABEL = "네이버 예약으로 상담 예약하기";
 
-/** 크기·너비는 호출부가 className으로 정한다(주변 버튼과 같은 치수를 쓰기 위함). */
+/**
+ * 크기·너비는 호출부가 className으로 정한다(주변 버튼과 같은 치수를 쓰기 위함).
+ * href 기본값은 홍대 본원 일반 상담이다 — 윈터스쿨처럼 전용 예약 상품이 있는
+ * 자리는 lib/contact.ts의 해당 URL을 href로 넘겨야 한다.
+ */
 export function NaverBookingButton({
   className = "",
   label = "네이버 예약하기",
+  href = NAVER_BOOKING_URL,
 }: {
   className?: string;
   label?: string;
+  href?: string;
 }) {
   return (
     <a
-      href={NAVER_BOOKING_URL}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={ARIA_LABEL}

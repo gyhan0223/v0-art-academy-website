@@ -11,6 +11,7 @@ import {
   getRemainingTotal,
 } from "@/lib/winter-camp";
 import { CAMPUSES } from "@/lib/contact";
+import { CONSULTING_INFO } from "@/lib/consulting";
 
 const remainingTotal = getRemainingTotal();
 const ANNOUNCEMENT_TEXT =
@@ -73,6 +74,13 @@ const navItems: NavItem[] = [
         label: "2027학년도 미대 입시 정보",
         href: "/guide/jungsi-2027",
         desc: "가·나·다군 모집군·전형방법 총정리",
+      },
+      // 유료 상품 — 캠퍼스 무료 입학 상담(상담 신청 버튼)과 다른 동선이라
+      // 가격을 설명에 명시해 혼동을 막는다. 가격은 lib/consulting.ts 참조.
+      {
+        label: CONSULTING_INFO.name,
+        href: "/consulting?from=nav",
+        desc: `성적·실기·희망대학 맞춤 분석 · ${CONSULTING_INFO.priceLabel}`,
       },
     ],
   },
@@ -182,9 +190,14 @@ export default function SiteNav() {
     };
   }, []);
 
-  // /diagnosis 온보딩은 자체 상단 바를 쓴다 — 일반 네비·공지 띠를 숨긴다.
+  // /diagnosis 온보딩과 /consulting 전환 랜딩은 자체 상단 바를 쓴다 —
+  // 일반 네비·공지 띠를 숨긴다.
   // (모든 hook 호출 뒤의 early return이라 hook 순서는 깨지지 않는다)
-  if (pathname?.startsWith("/diagnosis")) return null;
+  if (
+    pathname?.startsWith("/diagnosis") ||
+    pathname?.startsWith("/consulting")
+  )
+    return null;
 
   return (
     <>

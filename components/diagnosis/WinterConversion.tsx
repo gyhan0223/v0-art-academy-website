@@ -1,7 +1,10 @@
 "use client";
 
 /**
- * 결과 → 윈터스쿨 전환 블록.
+ * 결과 → 윈터스쿨 안내 블록.
+ * 진단 직후의 주 CTA는 1:1 전략 컨설팅(StrategyConsultCta)이고, 윈터스쿨은
+ * 그 아래의 맥락형 보조 선택지다 — 채워진 accent 버튼은 컨설팅 CTA가
+ * 독점하도록 여기서는 테두리형 버튼만 쓴다.
  * 숫자는 lib/winter-results.ts 단일 소스에서만 가져온다 — JSX에 하드코딩하지 않는다.
  */
 
@@ -19,11 +22,12 @@ export default function WinterConversion() {
   return (
     <section
       aria-label="윈터스쿨 안내"
-      className="rounded-2xl border border-accent/25 bg-accent/[0.05] p-6"
+      className="rounded-2xl border border-white/10 bg-white/[0.02] p-6"
     >
-      <h2 className="text-[22px] font-bold leading-snug text-white">
-        이번 겨울,
-        <br />이 차이를 줄여보세요.
+      <h2 className="text-[20px] font-bold leading-snug text-white">
+        겨울방학 동안
+        <br />
+        집중 관리가 필요하다면
       </h2>
 
       {summary.isValid && (
@@ -46,7 +50,7 @@ export default function WinterConversion() {
         <Link
           href="/winter"
           onClick={() => trackDiagnosis("diagnosis_winter_cta_click")}
-          className="block rounded-xl bg-accent px-6 py-4 text-center text-base font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="block rounded-xl border border-accent/50 px-6 py-4 text-center text-[15px] font-bold text-accent transition-colors hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           윈터스쿨에서 한 등급 올리는 방법 보기
         </Link>

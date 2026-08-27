@@ -6,6 +6,7 @@ import JungsiExplorer from "@/components/academy/JungsiExplorer";
 import JungsiScheduleModal from "@/components/academy/JungsiScheduleModal";
 import SilgiGallery from "@/components/academy/SilgiGallery";
 import { SILGI_CATEGORY_ORDER, SILGI_META } from "@/lib/jungsi-data";
+import { CONSULTING_INFO } from "@/lib/consulting";
 
 export const metadata: Metadata = {
   title: "2027학년도 미대 정시 가나다군 총정리 | 모두다른고양이 미술학원",
@@ -34,8 +35,12 @@ export const metadata: Metadata = {
   },
 };
 
-const NAVER_BOOKING =
-  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
+/**
+ * 입시 전략을 묻는 문맥의 CTA는 유료 1:1 전략 컨설팅 랜딩으로 보낸다.
+ * (예전에는 일산 네이버 예약(무료 진단 상담)으로 직접 보냈다 — 일반 캠퍼스
+ * 등록 상담은 상단 네비 "상담 신청" 버튼이 그대로 담당한다.)
+ */
+const CONSULTING_HREF = "/consulting?from=jungsi";
 
 const faqs: { q: string; a: React.ReactNode }[] = [
   {
@@ -68,15 +73,13 @@ const faqs: { q: string; a: React.ReactNode }[] = [
         걸립니다 — 지금 시점에는 &lsquo;언제 시작하느냐&rsquo;보다 &lsquo;남은
         기간에 승산 있는 종목을 고르느냐&rsquo;가 관건입니다. 현재 성적과
         성향으로 어떤 종목·대학 조합이 가능한지는{" "}
-        <a
-          href={NAVER_BOOKING}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href={CONSULTING_HREF}
           className="font-medium text-accent underline underline-offset-2 hover:opacity-85"
         >
-          무료 진단 상담
-        </a>
-        에서 바로 확인해 드립니다.
+          1:1 입시 전략 컨설팅
+        </Link>
+        에서 함께 판단해 드립니다.
       </>
     ),
   },
@@ -328,25 +331,23 @@ export default function Page() {
             })}
           </div>
 
-          {/* 실기 종목 섹션 CTA */}
+          {/* 실기 종목 섹션 CTA — 종목 선택은 전략 판단이라 1:1 컨설팅으로 연결 */}
           <div className="mt-8 flex flex-col items-center gap-4 rounded-lg border border-accent/30 bg-accent/[0.06] p-5 text-center md:flex-row md:items-center md:justify-between md:gap-6 md:p-6 md:text-left">
             <p className="text-sm leading-relaxed text-white/70">
               <span className="font-bold text-white">
                 우리 아이는 어떤 종목이 맞을까요?
               </span>
               <br className="hidden md:block" /> 성적·성향에 맞는 실기 종목과
-              지원 전략을 <span className="text-accent">무료</span>로 진단해
-              드립니다.
+              지원 전략을 1:1로 정리합니다 ·{" "}
+              <span className="text-accent">{CONSULTING_INFO.priceLabel}</span>
             </p>
-            <a
-              href={NAVER_BOOKING}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href={CONSULTING_HREF}
               className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-6 py-3 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              무료 진단 신청
+              실기 종목 전략 상담받기
               <span aria-hidden>→</span>
-            </a>
+            </Link>
           </div>
             </div>
           </details>
@@ -492,7 +493,44 @@ export default function Page() {
             모집 상세</span>를 펼치면 전공별 모집인원과 경쟁률까지 볼 수
             있습니다. 비율 바는 실기 반영 단계 기준입니다.
           </p>
-          <JungsiExplorer ctaHref={NAVER_BOOKING} />
+          <JungsiExplorer ctaHref={CONSULTING_HREF} />
+        </section>
+
+        {/* 대학 정보를 충분히 본 직후 — "그래서 나는 어디를 써야 하지?" 지점의
+            1:1 전략 컨설팅 CTA. 무료 진단은 전 단계로 함께 안내한다. */}
+        <section
+          className="mt-16 rounded-lg border border-accent/40 bg-accent/[0.06] p-6 md:p-8"
+          aria-label="1:1 입시 전략 컨설팅 안내"
+        >
+          <p className="text-xs tracking-[0.25em] text-accent">
+            {CONSULTING_INFO.name}
+          </p>
+          <h2 className="mt-3 text-lg font-bold leading-snug text-white md:text-xl">
+            대학 정보는 알겠는데,
+            <br className="md:hidden" /> 내 세 장은 어떻게 써야 할까요?
+          </h2>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/65 break-keep">
+            현재 성적 · 실기 · 희망 대학을 함께 보고 가·나·다군 지원 방향을
+            1:1로 정리합니다.
+          </p>
+          <p className="mt-2 text-[13px] text-white/45">
+            {CONSULTING_INFO.name} · {CONSULTING_INFO.priceLabel}
+          </p>
+          <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+            <Link
+              href={CONSULTING_HREF}
+              className="inline-flex items-center justify-center gap-1.5 rounded-md bg-accent px-6 py-3.5 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              내 지원 전략 상담받기
+              <span aria-hidden>→</span>
+            </Link>
+            <Link
+              href="/diagnosis"
+              className="inline-flex items-center justify-center rounded-md border border-white/20 px-6 py-3.5 text-sm font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              무료 성적 진단 먼저 해보기
+            </Link>
+          </div>
         </section>
 
         {/* FAQ */}
@@ -563,12 +601,12 @@ export default function Page() {
             이 페이지의 26개 대학 모집요강 대조와 환산식 정리는 원장이 직접
             했습니다. 모두다른고양이는 원장이 수업과 입시 상담을 직접 맡는
             소수정예 학원으로, 학생마다 성적과 성향에 맞춰 실기 종목과
-            가·나·다군 조합을 함께 설계합니다. 아래 무료 진단 상담도 원장이
+            가·나·다군 조합을 함께 설계합니다. 1:1 입시 전략 컨설팅도 원장이
             직접 진행합니다.
           </p>
         </section>
 
-        {/* 최종 CTA — Primary: 윈터스쿨(/winter) · Secondary: 무료 진단(네이버 예약) */}
+        {/* 최종 CTA — Primary: 윈터스쿨(/winter) · Secondary: 1:1 전략 컨설팅(/consulting) */}
         <section className="mt-16 text-center">
           <p className="text-xs tracking-[0.25em] text-accent">
             2027 미대 기숙 윈터스쿨
@@ -589,18 +627,13 @@ export default function Page() {
               윈터스쿨 자세히 보기
               <span aria-hidden>→</span>
             </Link>
-            <a
-              href={NAVER_BOOKING}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href={CONSULTING_HREF}
               className="inline-flex items-center justify-center rounded-md border border-white/20 px-8 py-3.5 text-sm font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              정시 조합 무료 진단
-            </a>
+              1:1 입시 전략 컨설팅 · {CONSULTING_INFO.priceLabel}
+            </Link>
           </div>
-          <p className="mt-3 text-xs text-white/35">
-            무료 진단은 네이버 예약으로 연결됩니다 · 031-916-8885
-          </p>
         </section>
       </article>
     </main>

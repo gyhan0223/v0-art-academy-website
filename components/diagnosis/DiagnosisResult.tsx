@@ -2,8 +2,10 @@
 
 /**
  * 진단 결과 화면.
- * - 고2·고3·N수: 현재 가·나·다 조합 → 한 등급 상승 비교 → 윈터스쿨 전환
- * - 고1·중3 이하: 희망 대학까지의 거리(정량화 가능할 때만) → 윈터스쿨 전환
+ * - 고2·고3·N수: 현재 가·나·다 조합 → 한 등급 상승 비교 → 1:1 컨설팅 CTA
+ * - 고1·중3 이하: 희망 대학까지의 거리(정량화 가능할 때만) → 1:1 컨설팅 CTA
+ * 윈터스쿨은 두 분기 모두에서 컨설팅 아래의 보조 선택지로 내려간다.
+ * 컨설팅 CTA는 분기 조건상 정확히 한 번만 렌더된다.
  */
 
 import { useEffect, useMemo, useRef } from "react";
@@ -31,7 +33,7 @@ import {
 } from "@/lib/diagnosis/types";
 import { trackDiagnosis } from "@/lib/diagnosis/analytics";
 import { ComboCard, TierBadge } from "./ComboCards";
-import ConsultCta from "./ConsultCta";
+import StrategyConsultCta from "./StrategyConsultCta";
 import GradeUpComparison from "./GradeUpComparison";
 import WinterConversion from "./WinterConversion";
 import { useFadeProps } from "./step-ui";
@@ -334,11 +336,13 @@ export default function DiagnosisResult({
         </div>
       )}
 
-      {/* 데이터가 부족한 분기(중3·성적 없음·목표 대학)에서 막다른 길이 되지 않게
-          사람이 이어받는 상담 창구를 결과 바로 아래에 둔다 */}
-      {(scoreless || branch === "target") && (
+      {/* 1:1 전략 컨설팅 CTA — 모든 분기에서 정확히 한 번만 노출한다.
+          성적 없음·희망 대학 분석 분기는 결과 바로 아래(여기),
+          지원권 조합 분기는 한 등급 상승 비교 뒤(아래쪽)에 둔다.
+          데이터가 부족한 분기에서 사람이 이어받는 창구 역할도 겸한다. */}
+      {(scoreless || (branch === "target" && target != null)) && (
         <div className="mt-6">
-          <ConsultCta showMiddleSchoolNote={grade === "중3 이하"} />
+          <StrategyConsultCta showMiddleSchoolNote={grade === "중3 이하"} />
         </div>
       )}
 
@@ -363,6 +367,13 @@ export default function DiagnosisResult({
       {branch === "simulation" && gradeUp != null && (
         <div className="mt-12">
           <GradeUpComparison current={current.combo} gradeUp={gradeUp.combo} />
+        </div>
+      )}
+
+      {/* 1:1 전략 컨설팅 CTA — 지원권 조합을 본 학생용 (위 분기와 중복되지 않는다) */}
+      {!scoreless && !(branch === "target" && target != null) && (
+        <div className="mt-12">
+          <StrategyConsultCta />
         </div>
       )}
 

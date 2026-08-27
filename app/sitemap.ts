@@ -62,6 +62,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.8,
           },
         ]),
+    // 유료 1:1 입시 전략 컨설팅 랜딩 — 검색 유입 도착 페이지
+    {
+      url: `${baseUrl}/consulting`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
     {
       url: `${baseUrl}/guide/jungsi-2027`,
       lastModified: new Date(),

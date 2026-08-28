@@ -28,8 +28,8 @@ export const CAMP_INFO = {
   capacityNote: "선착순",
 
   /** 남은 자리 — 확정 등록 기준으로 직접 수정하세요. 0이 되면 마감 표시됩니다. */
-  remainingFemale: 8,
-  remainingMale: 6,
+  remainingFemale: 4, // 여 4명 예약 (2026-08-28 기준)
+  remainingMale: 5, // 남 1명 예약 (2026-08-28 기준)
 
   deadline: "2027년 1월 3일",
   /** D-day 자동 계산용 실제 마감일 (KST 기준) */
@@ -50,7 +50,7 @@ export const CAMP_INFO = {
  * 아니라 "아직 아무도 등록하지 않았다"로 읽혀 오히려 역효과다.
  * 자리가 실제로 차기 시작하면 true로 바꾸면 긴급성 문구로 전환된다.
  */
-export const SHOW_REMAINING = false;
+export const SHOW_REMAINING = true;
 
 /**
  * 정원·남은 자리 한 줄 표기. 배너·히어로·CTA가 전부 이 함수만 쓴다.

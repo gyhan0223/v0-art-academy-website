@@ -6,6 +6,18 @@
 /** 네이버 톡톡 — 모두다른고양이 미술학원 프로필 */
 export const NAVER_TALK_URL = "https://talk.naver.com/profile/w44x0x";
 
+/**
+ * [임시] 네이버 예약 전면 차단 스위치.
+ * 네이버 예약 상품이 검수 중이라 예약 진입을 잠시 막아둔다.
+ * true인 동안 모든 예약 리다이렉트(app/booking/*)가 네이버 대신
+ * 준비 중 안내 페이지(NAVER_BOOKING_PAUSED_URL)로 보내 전화 예약을 안내한다.
+ * 검수가 끝나면 이 값만 false로 되돌리면 전부 원상복구된다.
+ */
+export const NAVER_BOOKING_PAUSED = true;
+
+/** 예약 차단 중 안내 페이지 — 전화 예약을 안내한다 (app/booking/paused/page.tsx) */
+export const NAVER_BOOKING_PAUSED_URL = "/booking/paused";
+
 /** 네이버 브랜드 그린 — 톡톡·예약 버튼 전용 색 */
 export const NAVER_GREEN = "#03C75A";
 
@@ -53,9 +65,17 @@ export const NAVER_BOOKING_CONSULTING_ITEM =
 /** 1:1 컨설팅 예약 버튼이 실제로 거는 주소 (app/booking/consulting/route.ts) */
 export const NAVER_BOOKING_CONSULTING_URL = "/booking/consulting";
 
-/** 네이버 예약 — 일산 캠퍼스 상담 예약 (예약 상품이 달라 biz/item 번호가 다르다) */
-export const NAVER_BOOKING_URL_ILSAN =
+/**
+ * 네이버 예약 — 일산 캠퍼스 상담 예약 상품의 실제 주소
+ * (예약 상품이 달라 biz/item 번호가 홍대와 다르다).
+ * 버튼에 직접 걸지 말 것 — 차단 스위치(NAVER_BOOKING_PAUSED)를 태우려면
+ * 아래 NAVER_BOOKING_URL_ILSAN(내부 리다이렉트)을 거쳐야 한다.
+ */
+export const NAVER_BOOKING_ILSAN_ITEM =
   "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
+
+/** 일산 캠퍼스 예약 버튼이 실제로 거는 주소 (app/booking/ilsan/route.ts) */
+export const NAVER_BOOKING_URL_ILSAN = "/booking/ilsan";
 
 /**
  * 캠퍼스별 연락 창구 — 전화와 상담 예약이 캠퍼스마다 다르다.

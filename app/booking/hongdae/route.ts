@@ -8,11 +8,22 @@
  */
 
 import { NextResponse } from "next/server";
-import { NAVER_BOOKING_HONGDAE_ITEM } from "@/lib/contact";
+import {
+  NAVER_BOOKING_HONGDAE_ITEM,
+  NAVER_BOOKING_PAUSED,
+  NAVER_BOOKING_PAUSED_URL,
+} from "@/lib/contact";
 
 export const dynamic = "force-dynamic";
 
-export function GET() {
+export function GET(request: Request) {
+  // 예약 상품 검수 중에는 네이버 대신 전화 예약 안내로 보낸다.
+  if (NAVER_BOOKING_PAUSED) {
+    return NextResponse.redirect(
+      new URL(NAVER_BOOKING_PAUSED_URL, request.url),
+      307,
+    );
+  }
   // 서버는 UTC로 돌므로 반드시 KST 기준으로 날짜를 뽑는다.
   // en-CA 로케일이 YYYY-MM-DD 형식을 그대로 내준다.
   const today = new Intl.DateTimeFormat("en-CA", {

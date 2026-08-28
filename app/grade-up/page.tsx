@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import GradeCaseList from "@/components/academy/GradeCaseList";
+import { NAVER_BOOKING_URL_ILSAN } from "@/lib/contact";
 import {
   COHORT,
   GRADE_CASES,
@@ -18,8 +19,8 @@ export const metadata: Metadata = {
   ...(IS_PLACEHOLDER ? { robots: { index: false, follow: true } } : {}),
 };
 
-const NAVER_BOOKING =
-  "https://m.booking.naver.com/booking/6/bizes/1602022/items/7458196?theme=place&service-target=map-pc&lang=ko&area=bmp&map-search=1";
+// 일산 네이버 예약 — 내부 리다이렉트를 거쳐 차단 스위치(lib/contact.ts)를 태운다.
+const NAVER_BOOKING = NAVER_BOOKING_URL_ILSAN;
 
 const PHONE_HONGDAE = "02-338-3302";
 

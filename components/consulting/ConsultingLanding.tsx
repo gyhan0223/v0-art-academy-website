@@ -21,8 +21,10 @@ import Link from "next/link";
 import {
   CONSULTING_FAQS,
   CONSULTING_INFO,
+  normalizeConsultingOrigin,
   normalizeConsultingSource,
   trackConsulting,
+  type ConsultingEventParams,
   type ConsultingSource,
 } from "@/lib/consulting";
 import { NAVER_BOOKING_CONSULTING_URL } from "@/lib/contact";
@@ -87,22 +89,32 @@ export default function ConsultingLanding() {
   // useSearchParams 대신 마운트 후 location에서 읽는다 — useSearchParams를
   // 쓰면 Suspense 경계가 필요해지고, 경계 안 콘텐츠는 selective hydration으로
   // 늦게 하이드레이션돼 첫 인터랙션이 밀릴 수 있다.
+  // ?origin= 은 직전 단계(from)와 별개인 최초 유입 경로 —
+  // jungsi → diagnosis → consulting처럼 두 단계를 거쳐도 최초 origin이
+  // 이벤트에 남는다. 둘 다 whitelist를 거치며 임의 문자열은 버려진다.
   const [source, setSource] = useState<ConsultingSource>("consulting");
+  const [origin, setOrigin] = useState<ConsultingSource | null>(null);
 
   const viewed = useRef(false);
   useEffect(() => {
     if (viewed.current) return;
     viewed.current = true;
-    const s = normalizeConsultingSource(
-      new URLSearchParams(window.location.search).get("from"),
-    );
+    const params = new URLSearchParams(window.location.search);
+    const s = normalizeConsultingSource(params.get("from"));
+    const o = normalizeConsultingOrigin(params.get("origin"));
     setSource(s);
-    trackConsulting("consulting_view", { source: s });
+    setOrigin(o);
+    trackConsulting("consulting_view", { source: s, origin: o ?? undefined });
   }, []);
+
+  const eventParams: ConsultingEventParams = {
+    source,
+    origin: origin ?? undefined,
+  };
 
   // CTA는 전부 네이버 예약으로 바로 나가므로 여기서는 이벤트만 남긴다
   const handlePrimaryCta = () => {
-    trackConsulting("consulting_primary_cta_click", { source });
+    trackConsulting("consulting_primary_cta_click", eventParams);
   };
 
   return (
@@ -118,7 +130,7 @@ export default function ConsultingLanding() {
         </Link>
         <Link
           href="/diagnosis"
-          onClick={() => trackConsulting("consulting_diagnosis_click", { source })}
+          onClick={() => trackConsulting("consulting_diagnosis_click", eventParams)}
           className="rounded-md px-2 py-1.5 text-[14px] text-white/60 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           무료 성적 진단
@@ -161,7 +173,7 @@ export default function ConsultingLanding() {
             <Link
               href="/diagnosis"
               onClick={() =>
-                trackConsulting("consulting_diagnosis_click", { source })
+                trackConsulting("consulting_diagnosis_click", eventParams)
               }
               className="block min-h-[44px] w-full rounded-xl border border-white/15 px-6 py-3.5 text-center text-[15px] font-medium text-white/80 transition-colors hover:border-accent/50 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
@@ -271,7 +283,7 @@ export default function ConsultingLanding() {
               <Link
                 href="/diagnosis"
                 onClick={() =>
-                  trackConsulting("consulting_diagnosis_click", { source })
+                  trackConsulting("consulting_diagnosis_click", eventParams)
                 }
                 className="mt-5 block min-h-[44px] rounded-xl border border-white/15 px-4 py-3 text-center text-[14px] font-medium text-white/80 transition-colors hover:border-accent/50 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
@@ -440,7 +452,7 @@ export default function ConsultingLanding() {
             <Link
               href="/winter"
               onClick={() =>
-                trackConsulting("consulting_winter_click", { source })
+                trackConsulting("consulting_winter_click", eventParams)
               }
               className="mt-4 inline-flex min-h-[44px] items-center gap-1.5 rounded-md border border-white/15 px-4 py-2.5 text-[13px] font-medium text-white/80 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >

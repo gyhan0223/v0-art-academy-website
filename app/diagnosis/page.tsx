@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import DiagnosisFlow from "@/components/diagnosis/DiagnosisFlow";
+import {
+  normalizeDiagnosisEntrySource,
+  normalizeDiagnosisTarget,
+} from "@/lib/diagnosis/entry-params";
 
 export const metadata: Metadata = {
   title: "내 성적으로 갈 수 있는 미대 진단 | 모두다른고양이 미술학원",
@@ -15,6 +19,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
-  return <DiagnosisFlow />;
+/**
+ * ?from=jungsi&target=건국대학교 형태로 들어오면 target 대학 기준으로
+ * 첫 화면·결과를 개인화한다. target은 실존 대학명일 때만 통과시키고
+ * (entry-params.ts), 아니면 기존 일반 진단 그대로다.
+ */
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const first = (v: string | string[] | undefined) =>
+    Array.isArray(v) ? v[0] : v;
+  return (
+    <DiagnosisFlow
+      initialTarget={normalizeDiagnosisTarget(first(params.target))}
+      entrySource={normalizeDiagnosisEntrySource(first(params.from))}
+    />
+  );
 }

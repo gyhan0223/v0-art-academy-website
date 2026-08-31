@@ -18,7 +18,10 @@ export type DiagnosisEventName =
   | "diagnosis_winter_cta_click"
   | "diagnosis_winter_results_click"
   | "diagnosis_consult_click"
-  | "diagnosis_restart";
+  | "diagnosis_restart"
+  // /guide/jungsi-2027 → /diagnosis micro-conversion (대학 카드·원서 트레이)
+  | "jungsi_university_diagnosis_click"
+  | "jungsi_plantray_diagnosis_click";
 
 export type DiagnosisEventParams = {
   grade_group?: string;
@@ -26,6 +29,13 @@ export type DiagnosisEventParams = {
   silgi_type?: string;
   has_detailed_score?: boolean;
   result_branch?: string;
+  /** /diagnosis 유입 경로 — lib/diagnosis/entry-params.ts whitelist 값만 */
+  entry_source?: string;
+  /** 공개 대학명(개인정보 아님) — canonical 이름만 */
+  target_university?: string;
+  gun?: string;
+  /** 원서 트레이에서 채워진 가·나·다 슬롯 수 */
+  plan_filled_count?: number;
 };
 
 export function trackDiagnosis(

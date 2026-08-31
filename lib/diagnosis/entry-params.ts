@@ -30,3 +30,15 @@ export function normalizeDiagnosisTarget(
   const entry = jungsiEntries.find((e) => e.university === q);
   return entry ? entry.university : null;
 }
+
+/**
+ * /guide/jungsi-2027 → /diagnosis 개인화 진입 링크 생성 (단일 소스).
+ * target은 대학명(공개 정보)만 싣고 URLSearchParams로 안전하게 인코딩한다 —
+ * /diagnosis 쪽 normalizeDiagnosisTarget이 재검증하므로 캠퍼스 구분 없이
+ * university 이름 그대로가 canonical 식별자다.
+ */
+export function jungsiDiagnosisHref(target?: string): string {
+  const params = new URLSearchParams({ from: "jungsi" });
+  if (target) params.set("target", target);
+  return `/diagnosis?${params.toString()}`;
+}

@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   jungsiEntries,
+  silgiCategory,
   silgiShort,
   type Gun,
 } from "@/lib/jungsi-data";
 import { UNIV_PLAN_2027 } from "@/lib/univ-plan-2027";
+import { trackDiagnosis } from "@/lib/diagnosis/analytics";
+import { jungsiDiagnosisHref } from "@/lib/diagnosis/entry-params";
 
 /* 히어로: "지원 카드 3장 + 보너스 1장" — 카드를 누르면 해당 군 대학 목록 팝업 */
 
@@ -43,6 +47,8 @@ export default function GunCardSlots() {
   }, [openGun]);
 
   const detail = detailId == null ? null : UNIV_PLAN_2027[detailId];
+  const detailEntry =
+    detailId == null ? null : jungsiEntries.find((e) => e.id === detailId);
 
   const entries =
     openGun == null ? [] : jungsiEntries.filter((e) => e.gun === openGun);
@@ -238,6 +244,41 @@ export default function GunCardSlots() {
                     </li>
                   ))}
                 </ul>
+
+                {/* 상세를 끝까지 읽은 사용자의 다음 행동 — 닫기/뒤로 대신
+                    "내 성적으로 가능한가?"를 잇는다. 모달 스크롤의 일반
+                    콘텐츠로 두고(fixed 금지), href·검증은 대학 카드 CTA와
+                    같은 jungsiDiagnosisHref 단일 소스를 재사용한다. */}
+                {detailEntry && (
+                  <div className="mt-5 rounded-lg border border-accent/30 bg-accent/[0.06] p-4">
+                    <p className="break-keep text-[15px] font-bold leading-snug text-white">
+                      {detailEntry.university}, 내 성적으로 가능할까요?
+                    </p>
+                    <p className="mt-1.5 break-keep text-[12px] leading-relaxed text-white/55">
+                      현재 성적과 실기 유형을 기준으로 지원 가능 범위를
+                      확인해보세요.
+                    </p>
+                    <Link
+                      href={jungsiDiagnosisHref(detailEntry.university)}
+                      onClick={() =>
+                        trackDiagnosis("jungsi_university_diagnosis_click", {
+                          target_university: detailEntry.university,
+                          gun: detailEntry.gun,
+                          silgi_type: silgiCategory(detailEntry),
+                          placement: "detail_modal",
+                        })
+                      }
+                      className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-md bg-accent px-4 py-2.5 text-center text-[13px] font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                    >
+                      <span className="break-keep">
+                        {detailEntry.university} 가능성 무료로 확인하기
+                      </span>
+                      <span aria-hidden className="shrink-0">
+                        →
+                      </span>
+                    </Link>
+                  </div>
+                )}
               </div>
             ) : (
               <>

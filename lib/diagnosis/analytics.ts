@@ -36,6 +36,8 @@ export type DiagnosisEventParams = {
   gun?: string;
   /** 원서 트레이에서 채워진 가·나·다 슬롯 수 */
   plan_filled_count?: number;
+  /** 진단 CTA 노출 위치 — "card"(대학 카드) | "detail_modal"(군 팝업 상세) */
+  placement?: string;
 };
 
 export function trackDiagnosis(

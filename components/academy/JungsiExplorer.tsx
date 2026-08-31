@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { trackDiagnosis } from "@/lib/diagnosis/analytics";
+import { jungsiDiagnosisHref } from "@/lib/diagnosis/entry-params";
 import {
   GUN_ORDER,
   SILGI_CATEGORY_ORDER,
@@ -195,18 +196,6 @@ function MajorTable({ majors }: { majors: Major[] }) {
 
 /* ─────────────────────────── 대학 카드 ─────────────────────────── */
 
-/**
- * 대학 카드·트레이 → /diagnosis 개인화 진입 링크.
- * target은 대학명(공개 정보)만 싣고 URLSearchParams로 안전하게 인코딩한다 —
- * /diagnosis 쪽에서 실존 대학명인지 검증(entry-params.ts)하므로
- * 캠퍼스 구분 없이 university 이름 그대로가 canonical 식별자다.
- */
-function diagnosisHref(target?: string) {
-  const params = new URLSearchParams({ from: "jungsi" });
-  if (target) params.set("target", target);
-  return `/diagnosis?${params.toString()}`;
-}
-
 const GUN_LABEL: Record<Gun, string> = {
   가: "가군",
   나: "나군",
@@ -293,12 +282,13 @@ function UniversityCard({
       {/* 대학 정보를 본 직후의 자연스러운 다음 질문 — "내 성적으로 가능한가?"
           담기(계획)보다 먼저, 진단(개인화) 진입을 대학별 CTA로 제공한다 */}
       <Link
-        href={diagnosisHref(entry.university)}
+        href={jungsiDiagnosisHref(entry.university)}
         onClick={() =>
           trackDiagnosis("jungsi_university_diagnosis_click", {
             target_university: entry.university,
             gun: entry.gun,
             silgi_type: silgiCategory(entry),
+            placement: "card",
           })
         }
         className="mt-4 flex min-h-[44px] w-full items-center justify-between gap-2 rounded-md border border-accent/35 bg-accent/[0.06] px-3.5 py-2.5 text-left text-[13px] font-medium text-accent transition-colors hover:border-accent/70 hover:bg-accent/[0.12] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -873,8 +863,8 @@ function PlanTray({
               <Link
                 href={
                   picked.length === 1
-                    ? diagnosisHref(picked[0].university)
-                    : diagnosisHref()
+                    ? jungsiDiagnosisHref(picked[0].university)
+                    : jungsiDiagnosisHref()
                 }
                 onClick={() =>
                   trackDiagnosis("jungsi_plantray_diagnosis_click", {

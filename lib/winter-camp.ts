@@ -28,7 +28,7 @@ export const CAMP_INFO = {
   capacityNote: "선착순",
 
   /** 남은 자리 — 확정 등록 기준으로 직접 수정하세요. 0이 되면 마감 표시됩니다. */
-  remainingFemale: 4, // 여 4명 예약 (2026-08-28 기준)
+  remainingFemale: 2, // 여 6명 예약 (2026-08-31 기준)
   remainingMale: 5, // 남 1명 예약 (2026-08-28 기준)
 
   deadline: "2027년 1월 3일",

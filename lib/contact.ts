@@ -7,10 +7,12 @@
 export const NAVER_TALK_URL = "https://talk.naver.com/profile/w44x0x";
 
 /**
- * [임시] 네이버 예약 전면 차단 스위치.
+ * [임시] 네이버 예약 차단 스위치.
  * 네이버 예약 상품이 검수 중이라 예약 진입을 잠시 막아둔다.
- * true인 동안 모든 예약 리다이렉트(app/booking/*)가 네이버 대신
+ * true인 동안 홍대·일산 상담 예약 리다이렉트가 네이버 대신
  * 준비 중 안내 페이지(NAVER_BOOKING_PAUSED_URL)로 보내 전화 예약을 안내한다.
+ * 윈터스쿨·1:1 컨설팅은 검수를 통과한 신규 상품(biz 1727058)이라
+ * 이 스위치를 타지 않고 바로 네이버로 간다.
  * 검수가 끝나면 이 값만 false로 되돌리면 전부 원상복구된다.
  */
 export const NAVER_BOOKING_PAUSED = true;
@@ -43,13 +45,13 @@ export const NAVER_BOOKING_HONGDAE_ITEM =
 export const NAVER_BOOKING_URL = "/booking/hongdae";
 
 /**
- * 네이버 예약 — "2027 윈터스쿨 상담신청" 전용 상품의 실제 주소.
- * 홍대 일반 상담과 예약 서비스 버전(booking/5)·biz 번호가 다르다.
+ * 네이버 예약 — "모다고 2027 윈터스쿨" 전용 상품의 실제 주소.
+ * 검수를 통과한 신규 상품이라 홍대 일반 상담과 biz 번호가 다르다.
  * 버튼에는 아래 NAVER_BOOKING_WINTER_URL(내부 리다이렉트)을 걸 것 —
- * startDateTime을 클릭한 날짜로 채워야 하기 때문(hongdae와 같은 이유).
+ * startDate를 클릭한 날짜로 채워야 하기 때문(hongdae와 같은 이유).
  */
 export const NAVER_BOOKING_WINTER_ITEM =
-  "https://booking.naver.com/booking/5/bizes/770673/items/8004638";
+  "https://m.booking.naver.com/booking/6/bizes/1727058/items/8008187";
 
 /** 윈터스쿨 상담 예약 버튼이 실제로 거는 주소 (app/booking/winter/route.ts) */
 export const NAVER_BOOKING_WINTER_URL = "/booking/winter";
@@ -60,7 +62,7 @@ export const NAVER_BOOKING_WINTER_URL = "/booking/winter";
  * 무료 입학 상담(hongdae)·윈터스쿨 상담과 상품이 다르니 섞지 말 것.
  */
 export const NAVER_BOOKING_CONSULTING_ITEM =
-  "https://booking.naver.com/booking/5/bizes/770673/items/8004662";
+  "https://m.booking.naver.com/booking/6/bizes/1727058/items/8008194";
 
 /** 1:1 컨설팅 예약 버튼이 실제로 거는 주소 (app/booking/consulting/route.ts) */
 export const NAVER_BOOKING_CONSULTING_URL = "/booking/consulting";

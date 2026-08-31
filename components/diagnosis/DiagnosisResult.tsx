@@ -2,8 +2,12 @@
 
 /**
  * 진단 결과 화면.
- * - 고2·고3·N수: 현재 가·나·다 조합 → 한 등급 상승 비교 → 1:1 컨설팅 CTA
+ * - 고2·고3·N수: (target이 있으면 목표 대학 분석 먼저) → 현재 가·나·다 조합
+ *   → 한 등급 상승 비교 → 1:1 컨설팅 CTA
  * - 고1·중3 이하: 희망 대학까지의 거리(정량화 가능할 때만) → 1:1 컨설팅 CTA
+ * target은 온보딩의 희망 대학 단계뿐 아니라 /guide/jungsi-2027 대학 카드
+ * (?target=) 진입으로도 채워진다 — 사용자가 처음 던진 "이 대학 가능할까?"에
+ * 결과 화면이 먼저 답하도록, target 분석을 모든 분기에서 최상단에 둔다.
  * 윈터스쿨은 두 분기 모두에서 컨설팅 아래의 보조 선택지로 내려간다.
  * 컨설팅 CTA는 분기 조건상 정확히 한 번만 렌더된다.
  */
@@ -260,6 +264,7 @@ export default function DiagnosisResult({
   silgi,
   score,
   target,
+  entrySource = null,
   onRestart,
 }: {
   grade: DiagnosisGrade;
@@ -267,6 +272,8 @@ export default function DiagnosisResult({
   silgi: DiagnosisSilgi[];
   score: DetailedStudentScore;
   target: string | null;
+  /** 검증된 유입 경로 (예: "jungsi") — 애널리틱스에만 쓴다 */
+  entrySource?: string | null;
   onRestart: () => void;
 }) {
   const fade = useFadeProps();
@@ -301,8 +308,10 @@ export default function DiagnosisResult({
       silgi_type: silgi.join(",") || undefined,
       has_detailed_score: scoreDetailLevel(score) === "detailed",
       result_branch: branch === "target" && target ? "target" : branch,
+      entry_source: entrySource ?? undefined,
+      target_university: target ?? undefined,
     });
-  }, [grade, gender, silgi, score, branch, target]);
+  }, [grade, gender, silgi, score, branch, target, entrySource]);
 
   const showCombo = !scoreless && (branch === "simulation" || target == null);
 
@@ -329,8 +338,9 @@ export default function DiagnosisResult({
         </section>
       )}
 
-      {/* 희망 대학 거리 (고1·중3 이하 + 목표 대학 선택) */}
-      {branch === "target" && target != null && (
+      {/* 희망 대학 거리 — 온보딩에서 골랐든 정시 가이드 카드(?target=)로
+          들어왔든, target이 있으면 학년 분기와 무관하게 가장 먼저 답한다 */}
+      {target != null && (
         <div className="mt-6">
           <TargetGapView score={score} university={target} filters={filters} />
         </div>
@@ -342,7 +352,11 @@ export default function DiagnosisResult({
           데이터가 부족한 분기에서 사람이 이어받는 창구 역할도 겸한다. */}
       {(scoreless || (branch === "target" && target != null)) && (
         <div className="mt-6">
-          <StrategyConsultCta showMiddleSchoolNote={grade === "중3 이하"} />
+          <StrategyConsultCta
+            showMiddleSchoolNote={grade === "중3 이하"}
+            targetUniversity={target}
+            entrySource={entrySource}
+          />
         </div>
       )}
 
@@ -373,7 +387,10 @@ export default function DiagnosisResult({
       {/* 1:1 전략 컨설팅 CTA — 지원권 조합을 본 학생용 (위 분기와 중복되지 않는다) */}
       {!scoreless && !(branch === "target" && target != null) && (
         <div className="mt-12">
-          <StrategyConsultCta />
+          <StrategyConsultCta
+            targetUniversity={target}
+            entrySource={entrySource}
+          />
         </div>
       )}
 

@@ -21,6 +21,7 @@ import {
   type DiagnosisSilgi,
 } from "@/lib/diagnosis/types";
 import { trackDiagnosis } from "@/lib/diagnosis/analytics";
+import type { DiagnosisEntrySource } from "@/lib/diagnosis/entry-params";
 import { hasAnyScore } from "@/lib/diagnosis/score-engine";
 import DiagnosisProgress from "./DiagnosisProgress";
 import GradeStep from "./GradeStep";
@@ -66,14 +67,14 @@ type Action =
   | { type: "EDIT_FROM_CONFIRM"; step: Step }
   | { type: "RESTART" };
 
-function initialState(): FlowState {
+function initialState(initialTarget: string | null): FlowState {
   return {
     step: "intro",
     grade: null,
     gender: null,
     silgi: [],
     score: createEmptyScore(),
-    target: null,
+    target: initialTarget,
     returnToConfirm: false,
   };
 }
@@ -95,7 +96,8 @@ function reducer(state: FlowState, action: Action): FlowState {
     case "EDIT_FROM_CONFIRM":
       return { ...state, step: action.step, returnToConfirm: true };
     case "RESTART":
-      return { ...initialState(), step: "grade" };
+      // 처음부터 다시 = 일반 진단으로 초기화 (query target도 버린다)
+      return { ...initialState(null), step: "grade" };
   }
 }
 
@@ -112,7 +114,14 @@ function progressOf(state: FlowState): { current: number; total: number } {
 
 /* -------------------------------- 시작 화면 ------------------------------- */
 
-function IntroStep({ onStart }: { onStart: () => void }) {
+function IntroStep({
+  target,
+  onStart,
+}: {
+  /** /guide/jungsi-2027 대학 카드에서 넘어온 canonical 대학명 (없으면 일반 진입) */
+  target: string | null;
+  onStart: () => void;
+}) {
   const fade = useFadeProps();
   return (
     <motion.div
@@ -122,18 +131,35 @@ function IntroStep({ onStart }: { onStart: () => void }) {
       <p className="text-[12px] tracking-wider text-white/40">
         서울 주요 미대 전형 데이터 기준
       </p>
-      <h1 className="mt-4 text-[28px] font-bold leading-snug text-white">
-        내 성적으로 갈 수 있는 미대,
-        <br />
-        지금 바로 확인해보세요.
-      </h1>
-      <p className="mt-4 text-[15px] leading-relaxed text-white/55">
-        현재 성적과 준비 중인 실기를 기준으로
-        <br />
-        지원 전략을 비교해드려요.
-      </p>
+      {target != null ? (
+        <>
+          <h1 className="mt-4 break-keep text-[28px] font-bold leading-snug text-white">
+            {target},
+            <br />내 성적으로 가능할까요?
+          </h1>
+          <p className="mt-4 break-keep text-[15px] leading-relaxed text-white/55">
+            현재 성적과 준비 중인 실기를 기준으로 {target}와 현재 지원권을
+            함께 비교해드려요.
+          </p>
+        </>
+      ) : (
+        <>
+          <h1 className="mt-4 text-[28px] font-bold leading-snug text-white">
+            내 성적으로 갈 수 있는 미대,
+            <br />
+            지금 바로 확인해보세요.
+          </h1>
+          <p className="mt-4 text-[15px] leading-relaxed text-white/55">
+            현재 성적과 준비 중인 실기를 기준으로
+            <br />
+            지원 전략을 비교해드려요.
+          </p>
+        </>
+      )}
       <div className="mt-10">
-        <PrimaryButton onClick={onStart}>무료로 진단하기</PrimaryButton>
+        <PrimaryButton onClick={onStart}>
+          {target != null ? `${target} 가능성 확인하기` : "무료로 진단하기"}
+        </PrimaryButton>
         <p className="mt-3 text-center text-[13px] text-white/40">
           약 1분 · 회원가입 없음
         </p>
@@ -144,8 +170,16 @@ function IntroStep({ onStart }: { onStart: () => void }) {
 
 /* --------------------------------- 플로우 -------------------------------- */
 
-export default function DiagnosisFlow() {
-  const [state, dispatch] = useReducer(reducer, undefined, initialState);
+export default function DiagnosisFlow({
+  initialTarget = null,
+  entrySource = null,
+}: {
+  /** query에서 검증된 canonical 대학명 — 있으면 첫 화면·결과를 개인화 */
+  initialTarget?: string | null;
+  /** 검증된 유입 경로 (예: "jungsi") — 애널리틱스에만 쓴다 */
+  entrySource?: DiagnosisEntrySource | null;
+}) {
+  const [state, dispatch] = useReducer(reducer, initialTarget, initialState);
   const { step, grade, gender, silgi, score, target } = state;
 
   const goto = useCallback((s: Step) => dispatch({ type: "GOTO", step: s }), []);
@@ -185,8 +219,12 @@ export default function DiagnosisFlow() {
           {step === "intro" && (
             <IntroStep
               key="intro"
+              target={initialTarget}
               onStart={() => {
-                trackDiagnosis("diagnosis_start");
+                trackDiagnosis("diagnosis_start", {
+                  entry_source: entrySource ?? undefined,
+                  target_university: initialTarget ?? undefined,
+                });
                 goto("grade");
               }}
             />
@@ -324,6 +362,7 @@ export default function DiagnosisFlow() {
               silgi={silgi}
               score={score}
               target={target}
+              entrySource={entrySource}
               onRestart={() => dispatch({ type: "RESTART" })}
             />
           )}

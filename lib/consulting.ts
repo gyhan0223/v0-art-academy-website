@@ -44,6 +44,20 @@ export function normalizeConsultingSource(
     : "consulting";
 }
 
+/**
+ * /consulting?origin=… — 직전 단계(from)와 별개인 최초 유입 경로.
+ * 진단을 거쳐 온 경우 from=diagnosis&origin=jungsi처럼 최초 origin이
+ * /consulting 이벤트까지 살아남게 한다. whitelist 밖·없음이면 null —
+ * origin 없이 들어온 기존 direct 유입 분석은 그대로 유지된다.
+ */
+export function normalizeConsultingOrigin(
+  value: string | null | undefined,
+): ConsultingSource | null {
+  return (CONSULTING_SOURCES as readonly string[]).includes(value ?? "")
+    ? (value as ConsultingSource)
+    : null;
+}
+
 /* -------------------------------- 신청 폼 -------------------------------- */
 
 /**
@@ -111,6 +125,8 @@ export type ConsultingEventName =
 
 export type ConsultingEventParams = {
   source?: ConsultingSource;
+  /** 최초 유입 경로 (?origin= whitelist 통과값) — 없으면 보내지 않는다 */
+  origin?: ConsultingSource;
 };
 
 export function trackConsulting(

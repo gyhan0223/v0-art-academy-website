@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { trackDiagnosis } from "@/lib/diagnosis/analytics";
 import {
   GUN_ORDER,
   SILGI_CATEGORY_ORDER,
@@ -193,6 +195,18 @@ function MajorTable({ majors }: { majors: Major[] }) {
 
 /* ─────────────────────────── 대학 카드 ─────────────────────────── */
 
+/**
+ * 대학 카드·트레이 → /diagnosis 개인화 진입 링크.
+ * target은 대학명(공개 정보)만 싣고 URLSearchParams로 안전하게 인코딩한다 —
+ * /diagnosis 쪽에서 실존 대학명인지 검증(entry-params.ts)하므로
+ * 캠퍼스 구분 없이 university 이름 그대로가 canonical 식별자다.
+ */
+function diagnosisHref(target?: string) {
+  const params = new URLSearchParams({ from: "jungsi" });
+  if (target) params.set("target", target);
+  return `/diagnosis?${params.toString()}`;
+}
+
 const GUN_LABEL: Record<Gun, string> = {
   가: "가군",
   나: "나군",
@@ -276,11 +290,32 @@ function UniversityCard({
         </div>
       )}
 
+      {/* 대학 정보를 본 직후의 자연스러운 다음 질문 — "내 성적으로 가능한가?"
+          담기(계획)보다 먼저, 진단(개인화) 진입을 대학별 CTA로 제공한다 */}
+      <Link
+        href={diagnosisHref(entry.university)}
+        onClick={() =>
+          trackDiagnosis("jungsi_university_diagnosis_click", {
+            target_university: entry.university,
+            gun: entry.gun,
+            silgi_type: silgiCategory(entry),
+          })
+        }
+        className="mt-4 flex min-h-[44px] w-full items-center justify-between gap-2 rounded-md border border-accent/35 bg-accent/[0.06] px-3.5 py-2.5 text-left text-[13px] font-medium text-accent transition-colors hover:border-accent/70 hover:bg-accent/[0.12] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      >
+        <span className="break-keep leading-snug">
+          내 성적으로 {entry.university} 가능성 확인
+        </span>
+        <span aria-hidden className="shrink-0">
+          →
+        </span>
+      </Link>
+
       <button
         type="button"
         onClick={() => onToggle(entry)}
         aria-pressed={selected}
-        className={`mt-4 w-full rounded-md border py-2 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+        className={`mt-2 w-full rounded-md border py-2 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
           selected
             ? "border-accent/60 bg-accent/15 text-accent hover:bg-accent/25"
             : "border-white/15 text-white/70 hover:border-accent/50 hover:text-accent"
@@ -795,39 +830,75 @@ function PlanTray({
         </div>
 
         <div className="mt-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <p aria-live="polite" className="text-[12px] leading-relaxed">
+          {/* 1~2장 상태는 트레이 높이를 최소화한다 — 모바일은 다음 질문 한
+              줄만, 궁합 headline은 md 이상에서만 덧붙인다(detail은 공유
+              이미지·상담 요약 텍스트에는 그대로 들어간다). */}
+          <p aria-live="polite" className="text-[12px] leading-snug">
             {complete ? (
               <span className="font-bold text-accent">
                 ✓ 3장 완성! 이 조합, 1:1 상담에서 바로 점검받아 보세요.
               </span>
             ) : (
-              analysis.headline && (
-                <>
-                  <span className="font-medium text-accent">
-                    {analysis.headline}
-                  </span>{" "}
-                  <span className="text-white/55">{analysis.detail}</span>
-                </>
-              )
+              <>
+                {analysis.headline && (
+                  <span className="hidden font-medium text-accent md:inline">
+                    {analysis.headline}{" "}
+                  </span>
+                )}
+                <span className="text-white/55">
+                  선택한 대학, 내 성적에서도 현실적일까요?
+                </span>
+              </>
             )}
           </p>
-          {/* 내부 경로(/consulting 등)는 같은 탭에서, 외부 예약 주소만 새 탭에서 연다 */}
-          <a
-            href={ctaHref}
-            {...(/^https?:/.test(ctaHref)
-              ? { target: "_blank", rel: "noopener noreferrer" }
-              : {})}
-            onClick={handleCta}
-            className={
-              complete
-                ? "w-full shrink-0 rounded-md bg-accent px-6 py-3 text-center text-sm font-bold text-black shadow-[0_0_0_3px_rgba(255,255,255,0.12)] transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-auto"
-                : "shrink-0 rounded-md bg-accent px-5 py-2.5 text-center text-xs font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-            }
-          >
-            {complete
-              ? "이 3장 조합으로 전략 상담받기"
-              : "이 조합으로 전략 상담받기"}
-          </a>
+          {/* CTA 강도는 engagement에 맞춘다 —
+              1~2장: 유료 상담을 요구하기엔 이르다. "이 선택이 내 성적에서
+              현실적인가?"가 자연스러운 다음 질문이라 무료 진단을 primary로,
+              전략 상담은 낮은 강조의 secondary로 둔다.
+              3장 완성: 전략 의도가 충분히 강하므로 기존 강한 상담 CTA 유지.
+              내부 경로(/consulting 등)는 같은 탭에서, 외부 예약 주소만 새 탭에서 연다 */}
+          {complete ? (
+            <a
+              href={ctaHref}
+              {...(/^https?:/.test(ctaHref)
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
+              onClick={handleCta}
+              className="w-full shrink-0 rounded-md bg-accent px-6 py-3 text-center text-sm font-bold text-black shadow-[0_0_0_3px_rgba(255,255,255,0.12)] transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-auto"
+            >
+              이 3장 조합으로 전략 상담받기
+            </a>
+          ) : (
+            <div className="flex shrink-0 items-center gap-3">
+              <Link
+                href={
+                  picked.length === 1
+                    ? diagnosisHref(picked[0].university)
+                    : diagnosisHref()
+                }
+                onClick={() =>
+                  trackDiagnosis("jungsi_plantray_diagnosis_click", {
+                    plan_filled_count: filledCount,
+                    target_university:
+                      picked.length === 1 ? picked[0].university : undefined,
+                  })
+                }
+                className="flex-1 rounded-md bg-accent px-5 py-2.5 text-center text-xs font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:flex-none"
+              >
+                무료로 확인하기 →
+              </Link>
+              <a
+                href={ctaHref}
+                {...(/^https?:/.test(ctaHref)
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+                onClick={handleCta}
+                className="shrink-0 py-2 text-[11px] text-white/50 underline underline-offset-2 transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              >
+                1:1 전략 상담
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </div>

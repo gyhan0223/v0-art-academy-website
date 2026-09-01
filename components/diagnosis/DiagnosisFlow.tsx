@@ -128,7 +128,7 @@ function IntroStep({
       {...fade}
       className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-5 pb-24 pt-10"
     >
-      <p className="text-[12px] tracking-wider text-white/40">
+      <p className="text-[13px] tracking-wider text-white/50">
         서울 주요 미대 전형 데이터 기준
       </p>
       {target != null ? (
@@ -137,7 +137,7 @@ function IntroStep({
             {target},
             <br />내 성적으로 가능할까요?
           </h1>
-          <p className="mt-4 break-keep text-[15px] leading-relaxed text-white/55">
+          <p className="mt-4 break-keep text-[15px] leading-relaxed text-white/65">
             현재 성적과 준비 중인 실기를 기준으로 {target}와 현재 지원권을
             함께 비교해드려요.
           </p>
@@ -149,7 +149,7 @@ function IntroStep({
             <br />
             지금 바로 확인해보세요.
           </h1>
-          <p className="mt-4 text-[15px] leading-relaxed text-white/55">
+          <p className="mt-4 text-[15px] leading-relaxed text-white/65">
             현재 성적과 준비 중인 실기를 기준으로
             <br />
             지원 전략을 비교해드려요.
@@ -160,7 +160,7 @@ function IntroStep({
         <PrimaryButton onClick={onStart}>
           {target != null ? `${target} 가능성 확인하기` : "무료로 진단하기"}
         </PrimaryButton>
-        <p className="mt-3 text-center text-[13px] text-white/40">
+        <p className="mt-3 text-center text-[13px] text-white/50">
           약 1분 · 회원가입 없음
         </p>
       </div>
@@ -206,7 +206,7 @@ export default function DiagnosisFlow({
         </Link>
         <Link
           href="/"
-          className="rounded-md px-2 py-1.5 text-[14px] text-white/50 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="rounded-md px-2 py-1.5 text-[14px] text-white/60 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           나가기
         </Link>

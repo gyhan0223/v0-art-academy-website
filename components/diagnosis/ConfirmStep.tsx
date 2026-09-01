@@ -33,13 +33,13 @@ function Row({
   return (
     <li className="flex items-center justify-between gap-3 border-b border-white/8 py-3.5 last:border-b-0">
       <div className="min-w-0">
-        <p className="text-[13px] text-white/45">{label}</p>
+        <p className="text-[13px] text-white/55">{label}</p>
         <p className="mt-0.5 text-[15px] text-white/90">{value}</p>
       </div>
       <button
         type="button"
         onClick={onEdit}
-        className="shrink-0 rounded-md border border-white/15 px-3 py-2 text-[13px] text-white/60 transition-colors hover:border-accent/50 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        className="shrink-0 rounded-md border border-white/15 px-3 py-2 text-[13px] text-white/70 transition-colors hover:border-accent/50 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         수정
       </button>

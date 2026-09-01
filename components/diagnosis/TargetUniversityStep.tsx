@@ -48,12 +48,12 @@ export default function TargetUniversityStep({
         placeholder="대학 이름 검색 — 예: 국민"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3.5 text-base text-white placeholder:text-white/25 focus:border-accent/60 focus:outline-none"
+        className="w-full rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3.5 text-base text-white placeholder:text-white/35 focus:border-accent/60 focus:outline-none"
       />
 
       <ul className="mt-4 max-h-[45vh] overflow-y-auto rounded-xl border border-white/10 bg-white/[0.02]">
         {filtered.length === 0 && (
-          <li className="px-5 py-6 text-center text-[14px] text-white/40">
+          <li className="px-5 py-6 text-center text-[14px] text-white/55">
             검색 결과가 없어요. 다른 이름으로 찾아보세요.
           </li>
         )}

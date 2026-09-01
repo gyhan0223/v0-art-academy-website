@@ -26,7 +26,7 @@ function ComboColumn({
 }) {
   return (
     <div>
-      <p className="mb-3 text-[14px] font-bold text-white/70">{title}</p>
+      <p className="mb-3 text-[15px] font-bold text-white/80">{title}</p>
       <div className="space-y-3">
         {GUNS.map((g) => (
           <ComboCard
@@ -91,7 +91,7 @@ export default function GradeUpComparison({
       <h2 className="text-[22px] font-bold leading-snug text-white">
         성적이 한 등급씩 오른다면?
       </h2>
-      <p className="mt-2 text-[14px] leading-relaxed text-white/55">
+      <p className="mt-2 text-[15px] leading-relaxed text-white/65">
         국어·영어·탐구가 각각 한 등급 상승한 수준으로 시뮬레이션했어요.
       </p>
 
@@ -108,7 +108,7 @@ export default function GradeUpComparison({
       </div>
 
       {newUniversities.size > 0 && (
-        <p className="mt-4 text-[14px] leading-relaxed text-white/70">
+        <p className="mt-4 text-[15px] leading-relaxed text-white/75">
           한 등급씩 올리면 지원 전략이{" "}
           <span className="font-bold text-accent">
             {[...newUniversities].join(" · ")}
@@ -117,7 +117,7 @@ export default function GradeUpComparison({
         </p>
       )}
 
-      <p className="mt-4 text-[12px] leading-relaxed text-white/35">
+      <p className="mt-4 text-[12px] leading-relaxed text-white/45">
         성적 상승 결과는 등급 변화에 따른 참고 시뮬레이션이며 실제
         표준점수·백분위는 시험 난이도에 따라 달라질 수 있습니다.
       </p>

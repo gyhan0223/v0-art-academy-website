@@ -158,12 +158,12 @@ function FeaturedTypeCard({ type }: { type: FeaturedType }) {
           {cfg.badge}
         </span>
       </div>
-      <p className="mt-2 text-[13px] leading-relaxed text-white/60">
+      <p className="mt-2.5 text-sm leading-relaxed text-white/70">
         {SILGI_META[type].description}
       </p>
       <figure className="mt-4">
         <SilgiGallery images={cfg.images} aspectClass={cfg.aspectClass} />
-        <figcaption className="mt-2.5 text-[12px] leading-relaxed text-white/45">
+        <figcaption className="mt-3 text-[13px] leading-relaxed text-white/60">
           {cfg.caption}
         </figcaption>
       </figure>
@@ -172,7 +172,7 @@ function FeaturedTypeCard({ type }: { type: FeaturedType }) {
           href={cfg.moreUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2 text-[13px] font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2 text-sm font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           {SILGI_META[type].label} 예시작 더 보기
           <span aria-hidden>→</span>
@@ -194,11 +194,11 @@ export default function Page() {
             <br />
             가나다군 총정리
           </h1>
-          <p className="mt-4 text-xs leading-relaxed text-white/40">
+          <p className="mt-4 text-[13px] leading-relaxed text-white/45">
             2027학년도 대입전형 시행계획 및 대학별 모집요강 기준 · 2026년 8월
             갱신
           </p>
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground">
+          <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-white/70">
             정시는 군마다 1곳, 총 3장의 카드로 승부합니다.
             <br className="hidden md:block" /> 주요 미대 26곳의 핵심 정보를 한
             페이지에 담았습니다.
@@ -208,7 +208,7 @@ export default function Page() {
               (item) => (
                 <li
                   key={item}
-                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[12px] text-white/60"
+                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[13px] text-white/65"
                 >
                   {item}
                 </li>
@@ -222,14 +222,14 @@ export default function Page() {
           <div className="mx-auto mt-10 flex max-w-md flex-col justify-center gap-2.5 sm:flex-row">
             <a
               href="#explorer"
-              className="inline-flex items-center justify-center gap-1.5 rounded-md border border-white/15 px-5 py-2.5 text-[13px] font-medium text-white/85 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="inline-flex items-center justify-center gap-1.5 rounded-md border border-white/15 px-5 py-2.5 text-sm font-medium text-white/85 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               가나다군 대학 둘러보기
               <span aria-hidden>↓</span>
             </a>
             <a
               href="#score-finder"
-              className="inline-flex items-center justify-center gap-1.5 rounded-md border border-accent/50 bg-accent/[0.08] px-5 py-2.5 text-[13px] font-medium text-accent transition-colors hover:border-accent hover:bg-accent/[0.15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="inline-flex items-center justify-center gap-1.5 rounded-md border border-accent/50 bg-accent/[0.08] px-5 py-2.5 text-sm font-medium text-accent transition-colors hover:border-accent hover:bg-accent/[0.15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               내 성적으로 지원 가능 대학 찾기
               <span aria-hidden>↓</span>
@@ -239,16 +239,16 @@ export default function Page() {
           {/* 윈터스쿨 slim CTA — 정보 탐색 단계이므로 /winter 내부 링크로 연결 */}
           <div className="mx-auto mt-6 flex max-w-xl flex-col items-center gap-4 rounded-lg border border-white/10 bg-white/[0.03] px-5 py-4 text-center md:flex-row md:justify-between md:gap-6 md:text-left">
             <div>
-              <p className="text-[13px] font-medium leading-relaxed text-white/80">
+              <p className="text-sm font-medium leading-relaxed text-white/85">
                 2027 미대 정시, 겨울에 어디까지 준비하느냐가 달라집니다.
               </p>
-              <p className="mt-1 text-[12px] leading-relaxed text-white/45">
+              <p className="mt-1.5 text-[13px] leading-relaxed text-white/55">
                 수능 · 실기 · 생활관리를 한 번에 잡는 미대 기숙 집중 과정
               </p>
             </div>
             <Link
               href="/winter"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/50 px-4 py-2.5 text-[13px] font-medium text-accent transition-colors hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/50 px-4 py-2.5 text-sm font-medium text-accent transition-colors hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               2027 기숙 윈터스쿨 보기
               <span aria-hidden>→</span>
@@ -264,7 +264,7 @@ export default function Page() {
                 <span className="mr-3 font-mono text-base text-accent">01</span>
                 실기 종목부터 이해하기
               </h2>
-              <span className="flex shrink-0 items-center gap-2 text-[12px] text-white/45">
+              <span className="flex shrink-0 items-center gap-2 text-[13px] text-white/60">
                 <span className="hidden group-open:inline">접기</span>
                 <span className="group-open:hidden">펼쳐서 예시작 보기</span>
                 <svg
@@ -285,7 +285,7 @@ export default function Page() {
             </summary>
 
             <div className="pt-2">
-          <p className="mb-6 text-sm leading-relaxed text-white/60">
+          <p className="mb-6 text-[15px] leading-relaxed text-white/70">
 어느 대학에 갈 수 있는지는 결국 성적이 정하지만, 어느 대학을 노려볼 수 있는지는 준비한 실기 종목이 먼저 가릅니다. 종목이 다르면 준비 방식이 완전히 달라 중간에 갈아타기 어렵습니다. 실제 시험 종목 기준으로 정리했으니, 대표 종목 두 가지를 예시작과 함께 보고 나머지 종목까지 확인한 뒤 군별 대학 표를 보면 지원 전략이 훨씬 선명해집니다.{" "}
             <span className="text-white/80">
               모다고는 창의력을 중심으로 실기를 훈련합니다.
@@ -319,10 +319,10 @@ export default function Page() {
                     </div>
                   )}
                   <div className="p-5">
-                    <p className="text-sm font-bold text-white">
+                    <p className="text-[15px] font-bold text-white">
                       {SILGI_META[type].label}
                     </p>
-                    <p className="mt-2 text-[13px] leading-relaxed text-white/60">
+                    <p className="mt-2.5 text-sm leading-relaxed text-white/70">
                       {SILGI_META[type].description}
                     </p>
                   </div>
@@ -333,7 +333,7 @@ export default function Page() {
 
           {/* 실기 종목 섹션 CTA — 종목 선택은 전략 판단이라 1:1 컨설팅으로 연결 */}
           <div className="mt-8 flex flex-col items-center gap-4 rounded-lg border border-accent/30 bg-accent/[0.06] p-5 text-center md:flex-row md:items-center md:justify-between md:gap-6 md:p-6 md:text-left">
-            <p className="text-sm leading-relaxed text-white/70">
+            <p className="text-[15px] leading-relaxed text-white/75">
               <span className="font-bold text-white">
                 우리 아이는 어떤 종목이 맞을까요?
               </span>
@@ -358,7 +358,7 @@ export default function Page() {
             <h3 className="mt-2 text-base font-bold leading-snug text-white md:text-lg">
               최상위권 미대는 &lsquo;같은 실기&rsquo;로 준비하지 않습니다
             </h3>
-            <p className="mt-3 text-[13px] leading-relaxed text-white/60">
+            <p className="mt-3 text-sm leading-relaxed text-white/70">
               서울대·서울시립대·이화여대 등 일부 최상위권 미대는 기초디자인이
               아니라 대학이 직접 출제하는 통합·자체실기로 선발합니다. 문제
               유형과 평가 방식이 달라, 기초디자인 준비만으로는 대응하기
@@ -384,28 +384,28 @@ export default function Page() {
               ].map((row) => (
                 <li
                   key={row.university}
-                  className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:gap-4"
+                  className="flex flex-col gap-1.5 py-3.5 sm:flex-row sm:items-baseline sm:gap-4"
                 >
                   <span className="flex shrink-0 items-baseline gap-2 sm:w-40">
-                    <span className="text-[13px] font-bold text-white">
+                    <span className="text-sm font-bold text-white">
                       {row.university}
                     </span>
-                    <span className="text-[11px] text-accent/80">{row.type}</span>
+                    <span className="text-[12px] text-accent/90">{row.type}</span>
                   </span>
-                  <span className="text-[12px] leading-relaxed text-white/55">
+                  <span className="text-[13px] leading-relaxed text-white/65">
                     {row.diff}
                   </span>
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-[13px] leading-relaxed text-white/60">
+            <p className="mt-4 text-sm leading-relaxed text-white/70">
               목표 대학이 정해져 있다면 대학별 출제 방식에 맞춘 별도 훈련이
               필요합니다. 모두다른고양이는 일반 미대 실기뿐 아니라 최상위권
               미대 통합·자체실기를 학교별로 따로 준비합니다.
             </p>
             <Link
               href="/winter"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2.5 text-[13px] font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2.5 text-sm font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               최상위권 미대 준비 방식 보기
               <span aria-hidden>→</span>
@@ -423,7 +423,7 @@ export default function Page() {
             <span className="mr-3 font-mono text-base text-accent">02</span>
             내 성적으로 유리한 조합 찾기
           </h2>
-          <p className="mb-4 text-sm leading-relaxed text-white/60">
+          <p className="mb-5 text-[15px] leading-relaxed text-white/70">
             미대 정시는 대학마다 반영 과목이 달라, 같은 백분위라도 유리한 학교가
             제각각입니다. 학년·준비 중인 실기·최근 성적을 넣으면 약 1분 만에
             가·나·다군 지원 조합과, 성적이 한 등급 오르면 어디까지 넓어지는지까지
@@ -434,7 +434,7 @@ export default function Page() {
               (ScoreRecommender)는 /diagnosis와 입력 UI가 중복돼 페이지에서 내렸다.
               컴포넌트 파일은 남아 있으니 필요하면 다시 걸면 된다. */}
           <div className="flex flex-col items-center gap-4 rounded-lg border border-accent/30 bg-accent/[0.06] p-5 text-center md:flex-row md:items-center md:justify-between md:gap-6 md:p-6 md:text-left">
-            <p className="text-sm leading-relaxed text-white/70">
+            <p className="text-[15px] leading-relaxed text-white/75">
               <span className="font-bold text-white">
                 내 성적으로 어디까지 가능할까요?
               </span>
@@ -448,7 +448,7 @@ export default function Page() {
               내 성적으로 미대 찾아보기
               <span aria-hidden>→</span>
             </Link>
-            <p className="text-[12px] text-white/40 md:hidden">
+            <p className="text-[13px] text-white/50 md:hidden">
               약 1분 · 회원가입 없음
             </p>
           </div>
@@ -462,12 +462,12 @@ export default function Page() {
               갈 수 있는 대학을 알았다면,
               <br className="md:hidden" /> 이제 만드는 일만 남았습니다.
             </h3>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/65">
+            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/75">
               정시는 지원 전략만으로 끝나지 않습니다. 겨울 동안 수능 성적, 실기
               완성도, 하루 루틴을 얼마나 끌어올리느냐에 따라 실제 지원 가능한
               대학이 달라집니다.
             </p>
-            <p className="mt-2 text-[13px] text-white/45">
+            <p className="mt-2.5 text-sm text-white/55">
               수능 + 실기 + 생활관리 집중 과정
             </p>
             <Link
@@ -486,7 +486,7 @@ export default function Page() {
             <span className="mr-3 font-mono text-base text-accent">03</span>
             군별 대학 한눈에 보기
           </h2>
-          <p className="mb-4 text-sm leading-relaxed text-white/60">
+          <p className="mb-5 text-[15px] leading-relaxed text-white/70">
             군 탭과 실기 종목 필터로 탐색하고, 마음에 드는 대학을{" "}
             <span className="text-accent">담기</span>로 골라 나만의 원서 3장을
             시뮬레이션해 보세요. 카드의 <span className="text-accent">학과별
@@ -509,11 +509,11 @@ export default function Page() {
             대학 정보는 알겠는데,
             <br className="md:hidden" /> 내 세 장은 어떻게 써야 할까요?
           </h2>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/65 break-keep">
+          <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/75 break-keep">
             현재 성적 · 실기 · 희망 대학을 함께 보고 가·나·다군 지원 방향을
             1:1로 정리합니다.
           </p>
-          <p className="mt-2 text-[13px] text-white/45">
+          <p className="mt-2.5 text-sm text-white/55">
             {CONSULTING_INFO.name} · {CONSULTING_INFO.priceLabel}
           </p>
           <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
@@ -543,12 +543,12 @@ export default function Page() {
             {faqs.map((faq) => (
               <details
                 key={faq.q}
-                className="group rounded-lg border border-white/10 bg-[#0a0a0a] px-5 py-4"
+                className="group rounded-lg border border-white/10 bg-[#0a0a0a] px-5 py-4 md:px-6 md:py-5"
               >
-                <summary className="cursor-pointer list-none text-sm font-medium text-white/90 transition-colors group-open:text-accent">
+                <summary className="cursor-pointer list-none text-[15px] font-medium leading-relaxed text-white/90 transition-colors group-open:text-accent">
                   {faq.q}
                 </summary>
-                <p className="mt-3 text-[13px] leading-relaxed text-white/60">
+                <p className="mt-4 text-[15px] leading-[1.75] text-white/75">
                   {faq.a}
                 </p>
               </details>
@@ -561,7 +561,7 @@ export default function Page() {
           <p className="text-xs font-medium tracking-wide text-white/50">
             이 페이지의 정보에 대해
           </p>
-          <ul className="mt-3 space-y-2 text-[13px] leading-relaxed text-white/55">
+          <ul className="mt-3 space-y-3 text-sm leading-relaxed text-white/60">
             <li>
               주요 26개 대학의 학과별 모집인원·수능 반영영역·실기내용·화지규격은
               2026학년도 정시 모집요강 원본(가·나·다 세 군)을 대조해 정리했고,
@@ -594,10 +594,10 @@ export default function Page() {
           <p className="text-xs font-medium tracking-wide text-white/50">
             이 자료를 만든 사람
           </p>
-          <p className="mt-3 text-sm font-bold text-white">
+          <p className="mt-3 text-[15px] font-bold text-white">
             모두다른고양이 미술학원 원장
           </p>
-          <p className="mt-2 text-[13px] leading-relaxed text-white/60">
+          <p className="mt-2.5 text-sm leading-relaxed text-white/70">
             이 페이지의 26개 대학 모집요강 대조와 환산식 정리는 원장이 직접
             했습니다. 모두다른고양이는 원장이 수업과 입시 상담을 직접 맡는
             소수정예 학원으로, 학생마다 성적과 성향에 맞춰 실기 종목과
@@ -614,7 +614,7 @@ export default function Page() {
           <h2 className="mt-3 text-xl font-bold leading-snug text-white md:text-2xl">
             3장의 카드를 바꾸는 겨울
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+          <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-white/70">
             지금 성적으로 지원 대학을 정하는 데서 끝내지 마세요. 겨울 동안
             성적과 실기를 끌어올려 지원 가능한 대학 자체를 바꾸는 것이 모다고
             윈터스쿨의 목표입니다.

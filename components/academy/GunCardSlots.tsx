@@ -55,7 +55,7 @@ export default function GunCardSlots() {
 
   return (
     <div className="mt-10 flex flex-col items-center">
-      <span className="mb-3 text-[11px] tracking-wider text-white/40">
+      <span className="mb-3 text-[12px] tracking-wider text-white/50">
         전형기간 (2027학년도 기준)
       </span>
       <div className="flex w-full max-w-sm items-stretch justify-center gap-2 md:w-auto md:max-w-none md:gap-3">
@@ -71,7 +71,7 @@ export default function GunCardSlots() {
             <span className="font-mono text-lg font-bold text-accent">
               {slot.label}
             </span>
-            <span className="mt-1 whitespace-nowrap text-[9px] tracking-wide text-white/40 md:text-[10px] md:tracking-wider">
+            <span className="mt-1 whitespace-nowrap text-[10px] tracking-wide text-white/50 md:text-[11px] md:tracking-wider">
               {slot.sub}
             </span>
           </button>
@@ -84,12 +84,12 @@ export default function GunCardSlots() {
           style={{ transform: "rotate(4deg)" }}
         >
           <span className="font-mono text-lg font-bold text-accent/90">+</span>
-          <span className="mt-1 whitespace-nowrap text-[9px] tracking-wide text-accent/70 md:text-[10px] md:tracking-wider">
+          <span className="mt-1 whitespace-nowrap text-[10px] tracking-wide text-accent/80 md:text-[11px] md:tracking-wider">
             한예종 별도
           </span>
         </button>
       </div>
-      <span className="mt-3 text-[11px] text-white/30">
+      <span className="mt-3 text-[12px] text-white/45">
         카드를 누르면 해당 군의 대학 목록이 열립니다
       </span>
 
@@ -108,12 +108,12 @@ export default function GunCardSlots() {
           <div className="relative flex max-h-[85vh] w-full max-w-lg flex-col rounded-xl border border-white/15 bg-[#0a0a0a] shadow-2xl">
             <div className="flex items-start justify-between gap-4 border-b border-white/10 p-5 md:p-6">
               <div className="text-left">
-                <p className="mb-1 text-[11px] tracking-[0.25em] text-accent">
+                <p className="mb-1 text-[12px] tracking-[0.25em] text-accent">
                   2027학년도 정시
                 </p>
                 <h2 className="text-lg font-bold leading-snug text-white">
                   {GUN_TITLE[openGun]}
-                  <span className="ml-2 font-mono text-sm font-medium text-white/45">
+                  <span className="ml-2 font-mono text-sm font-medium text-white/55">
                     {entries.length}곳
                   </span>
                 </h2>
@@ -145,31 +145,31 @@ export default function GunCardSlots() {
                 <button
                   type="button"
                   onClick={() => setDetailId(null)}
-                  className="mb-4 inline-flex items-center gap-1.5 text-[12px] text-white/55 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-accent"
+                  className="mb-4 inline-flex items-center gap-1.5 text-[13px] text-white/65 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-accent"
                 >
                   <span aria-hidden>←</span> 대학 목록으로
                 </button>
-                <h3 className="text-base font-bold text-white">
+                <h3 className="text-[17px] font-bold text-white">
                   {detail.title}
                 </h3>
-                <p className="mt-1 text-[11px] text-white/40">
+                <p className="mt-1.5 text-[12px] text-white/50">
                   {detail.source}
                 </p>
 
-                <div className="mt-4 overflow-hidden rounded-lg border border-white/12">
-                  <table className="w-full border-collapse text-[12px]">
+                <div className="mt-4 overflow-x-auto rounded-lg border border-white/12">
+                  <table className="w-full border-collapse text-[13px]">
                     <thead>
-                      <tr className="bg-white/[0.05] text-white/55">
-                        <th className="px-3 py-2 text-left font-medium">
+                      <tr className="bg-white/[0.05] text-white/60">
+                        <th className="px-3 py-2.5 text-left font-medium">
                           모집단위
                         </th>
-                        <th className="px-3 py-2 text-left font-medium">
+                        <th className="px-3 py-2.5 text-left font-medium">
                           전공
                         </th>
                         {detail.columns.map((col) => (
                           <th
                             key={col}
-                            className="px-3 py-2 text-right font-medium"
+                            className="px-3 py-2.5 text-right font-medium"
                           >
                             {col}
                           </th>
@@ -185,19 +185,19 @@ export default function GunCardSlots() {
                             key={`${row.group}-${row.name ?? ""}`}
                             className="border-t border-white/[0.06]"
                           >
-                            <td className="px-3 py-2 text-white/70">
+                            <td className="px-3 py-2.5 text-white/75">
                               {firstOfGroup ? row.group : ""}
                             </td>
-                            <td className="px-3 py-2 text-white/85">
+                            <td className="px-3 py-2.5 text-white/90">
                               {row.name ?? "—"}
                             </td>
                             {row.values.map((v, vi) => (
                               <td
                                 key={vi}
-                                className={`px-3 py-2 text-right font-mono ${
+                                className={`px-3 py-2.5 text-right font-mono ${
                                   vi === row.values.length - 1
                                     ? "text-white"
-                                    : "text-white/60"
+                                    : "text-white/65"
                                 }`}
                               >
                                 {v}
@@ -215,30 +215,46 @@ export default function GunCardSlots() {
                     key={block.title}
                     className="mt-4 rounded-lg border border-white/10 bg-white/[0.03] p-4"
                   >
-                    <p className="text-[12px] font-bold text-white/80">
+                    <p className="text-[13px] font-bold text-white/90">
                       {block.title}
                     </p>
-                    <ul className="mt-2 space-y-1.5">
-                      {block.lines.map((line) => (
-                        <li
-                          key={line}
-                          className="flex gap-2 text-[12px] leading-relaxed text-white/60"
-                        >
-                          <span className="text-accent" aria-hidden>
-                            ·
-                          </span>
-                          {line}
-                        </li>
-                      ))}
+                    <ul className="mt-2.5 space-y-2">
+                      {block.lines.map((line) => {
+                        // "실기고사: …"처럼 앞에 라벨이 있는 줄은 라벨을
+                        // 먼저 보이게 한다 (데이터 문자열은 그대로).
+                        const labeled = line.match(/^([^:]{1,14}):\s*(.+)$/);
+                        return (
+                          <li
+                            key={line}
+                            className="flex gap-2 text-[13px] leading-relaxed text-white/70"
+                          >
+                            <span className="text-accent" aria-hidden>
+                              ·
+                            </span>
+                            <span className="min-w-0">
+                              {labeled ? (
+                                <>
+                                  <span className="mr-1.5 font-semibold text-white/90">
+                                    {labeled[1]}
+                                  </span>
+                                  {labeled[2]}
+                                </>
+                              ) : (
+                                line
+                              )}
+                            </span>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 ))}
 
-                <ul className="mt-4 space-y-1.5">
+                <ul className="mt-4 space-y-2">
                   {detail.notes.map((note) => (
                     <li
                       key={note}
-                      className="text-[11px] leading-relaxed text-white/35"
+                      className="text-[12px] leading-relaxed text-white/50"
                     >
                       ※ {note}
                     </li>
@@ -254,7 +270,7 @@ export default function GunCardSlots() {
                     <p className="break-keep text-[15px] font-bold leading-snug text-white">
                       {detailEntry.university}, 내 성적으로 가능할까요?
                     </p>
-                    <p className="mt-1.5 break-keep text-[12px] leading-relaxed text-white/55">
+                    <p className="mt-2 break-keep text-[13px] leading-relaxed text-white/65">
                       현재 성적과 실기 유형을 기준으로 지원 가능 범위를
                       확인해보세요.
                     </p>
@@ -268,7 +284,7 @@ export default function GunCardSlots() {
                           placement: "detail_modal",
                         })
                       }
-                      className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-md bg-accent px-4 py-2.5 text-center text-[13px] font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                      className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-md bg-accent px-4 py-2.5 text-center text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                     >
                       <span className="break-keep">
                         {detailEntry.university} 가능성 무료로 확인하기
@@ -288,27 +304,27 @@ export default function GunCardSlots() {
                     const inner = (
                       <>
                         <div className="min-w-0 text-left">
-                          <p className="text-sm font-medium text-white">
+                          <p className="text-[15px] font-medium text-white">
                             {e.university}
                             {e.campus && (
-                              <span className="ml-1.5 text-[12px] font-normal text-white/50">
+                              <span className="ml-1.5 text-[13px] font-normal text-white/55">
                                 {e.campus}
                               </span>
                             )}
                             {hasPlan && (
-                              <span className="ml-2 rounded bg-accent/15 px-1.5 py-0.5 text-[10px] font-medium text-accent">
+                              <span className="ml-2 inline-block whitespace-nowrap rounded bg-accent/15 px-1.5 py-0.5 text-[11px] font-medium text-accent">
                                 {UNIV_PLAN_2027[e.id].source.includes("시행계획")
                                   ? "2027 시행계획"
                                   : "2027 요강 확정"}
                               </span>
                             )}
                           </p>
-                          <p className="mt-0.5 text-[12px] leading-relaxed text-white/45">
+                          <p className="mt-1 text-[13px] leading-relaxed text-white/55">
                             {e.units}
                           </p>
                         </div>
                         <span className="mt-0.5 flex shrink-0 items-center gap-1.5">
-                          <span className="rounded border border-white/15 px-2 py-0.5 text-[11px] text-white/60">
+                          <span className="rounded border border-white/15 px-2 py-0.5 text-[12px] text-white/65">
                             {silgiShort(e)}
                           </span>
                           {hasPlan && (
@@ -328,12 +344,12 @@ export default function GunCardSlots() {
                           <button
                             type="button"
                             onClick={() => setDetailId(e.id)}
-                            className="flex w-full items-start justify-between gap-3 py-3 transition-colors hover:bg-white/[0.03] focus-visible:outline-2 focus-visible:outline-accent"
+                            className="flex w-full items-start justify-between gap-3 py-3.5 transition-colors hover:bg-white/[0.03] focus-visible:outline-2 focus-visible:outline-accent"
                           >
                             {inner}
                           </button>
                         ) : (
-                          <div className="flex items-start justify-between gap-3 py-3">
+                          <div className="flex items-start justify-between gap-3 py-3.5">
                             {inner}
                           </div>
                         )}
@@ -342,9 +358,9 @@ export default function GunCardSlots() {
                   })}
                 </ul>
 
-                <p className="border-t border-white/10 px-5 py-3.5 text-[11px] leading-relaxed text-white/35 md:px-6">
+                <p className="border-t border-white/10 px-5 py-3.5 text-[12px] leading-relaxed text-white/50 md:px-6">
                   전형방법·모집인원·경쟁률 상세는 아래{" "}
-                  <span className="text-white/55">군별 대학 한눈에 보기</span>
+                  <span className="text-white/70">군별 대학 한눈에 보기</span>
                   에서 확인하세요.
                 </p>
               </>

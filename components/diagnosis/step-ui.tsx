@@ -58,7 +58,7 @@ export function StepLayout({
         <button
           type="button"
           onClick={onBack}
-          className="mb-6 -ml-1 inline-flex min-h-[44px] items-center gap-1 rounded-md px-1 text-sm text-white/50 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="mb-6 -ml-1 inline-flex min-h-[44px] items-center gap-1 rounded-md px-1 text-sm text-white/60 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           <span aria-hidden>←</span> 이전
         </button>
@@ -69,7 +69,7 @@ export function StepLayout({
         {title}
       </h1>
       {sub != null && (
-        <p className="mt-3 text-[15px] leading-relaxed text-white/55">{sub}</p>
+        <p className="mt-3 text-[15px] leading-relaxed text-white/65">{sub}</p>
       )}
       <div className="mt-8">{children}</div>
     </motion.div>
@@ -106,7 +106,7 @@ export function OptionButton({
         {children}
       </span>
       {hint != null && (
-        <span className="mt-1 block text-[13px] leading-relaxed text-white/45">
+        <span className="mt-1.5 block text-sm leading-relaxed text-white/60">
           {hint}
         </span>
       )}

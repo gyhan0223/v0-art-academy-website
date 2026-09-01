@@ -35,7 +35,7 @@ function GainBadge({ result }: { result: SubjectResult }) {
 
   if (gain <= 0) {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full border border-white/15 px-2.5 py-1 text-[11px] font-medium text-white/45">
+      <span className="inline-flex items-center gap-1 rounded-full border border-white/15 px-2.5 py-1 text-[12px] font-medium text-white/55">
         <Minus size={11} />
         유지
       </span>
@@ -43,7 +43,7 @@ function GainBadge({ result }: { result: SubjectResult }) {
   }
 
   return (
-    <span className="inline-flex items-center rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-[11px] font-bold text-accent">
+    <span className="inline-flex items-center rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-[12px] font-bold text-accent">
       {gain}등급 ↑
     </span>
   );
@@ -60,10 +60,10 @@ function ResultCard({ item }: { item: WinterResultCase }) {
     <div className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-7">
       <div className="flex items-baseline gap-2">
         <p className="text-lg font-bold text-white">{item.name}</p>
-        <p className="text-xs text-white/45">{item.grade}</p>
+        <p className="text-[13px] text-white/55">{item.grade}</p>
       </div>
       {item.school && (
-        <p className="mt-1 text-xs text-white/35">{item.school}</p>
+        <p className="mt-1 text-[13px] text-white/50">{item.school}</p>
       )}
 
       <table className="mt-5 w-full border-t border-white/10 text-sm">
@@ -71,7 +71,7 @@ function ResultCard({ item }: { item: WinterResultCase }) {
           {item.name} 1주차 진단고사와 8주차 재측정 등급 비교
         </caption>
         <thead>
-          <tr className="text-[11px] tracking-widest text-white/35 uppercase">
+          <tr className="text-[12px] tracking-widest text-white/50 uppercase">
             <th scope="col" className="py-2.5 text-left font-normal">
               과목
             </th>
@@ -98,7 +98,7 @@ function ResultCard({ item }: { item: WinterResultCase }) {
               >
                 {row.subject}
               </th>
-              <td className="py-3 text-center text-white/45">
+              <td className="py-3 text-center text-white/55">
                 {row.diagnostic}등급
               </td>
               <td className="py-3 text-center text-base font-bold text-white">
@@ -113,7 +113,7 @@ function ResultCard({ item }: { item: WinterResultCase }) {
       </table>
 
       {item.quote && (
-        <p className="mt-5 border-t border-white/10 pt-5 text-sm leading-relaxed text-white/55 break-keep">
+        <p className="mt-5 border-t border-white/10 pt-5 text-[15px] leading-relaxed text-white/70 break-keep">
           “{item.quote}”
         </p>
       )}
@@ -177,7 +177,7 @@ export default function WinterResultsPage() {
                   </span>
                   이 {WINTER_COHORT.criterion}했습니다
                 </p>
-                <p className="mt-3 text-sm text-white/50 break-keep">
+                <p className="mt-3 text-sm text-white/60 break-keep">
                   {WINTER_COHORT.basis}
                 </p>
               </div>
@@ -187,22 +187,22 @@ export default function WinterResultsPage() {
               </p>
             </div>
 
-            <dl className="mt-7 grid gap-2 border-t border-white/10 pt-5 text-xs sm:grid-cols-3">
+            <dl className="mt-7 grid gap-3 border-t border-white/10 pt-5 text-[13px] sm:grid-cols-3">
               <div>
-                <dt className="text-white/40">비교 기준</dt>
+                <dt className="text-white/50">비교 기준</dt>
                 <dd className="mt-1 leading-relaxed text-white/70 break-keep">
                   1주차 진단고사 → 8주차 재측정
                 </dd>
               </div>
               <div>
-                <dt className="text-white/40">대상 과목</dt>
+                <dt className="text-white/50">대상 과목</dt>
                 <dd className="mt-1 leading-relaxed text-white/70 break-keep">
                   국어 · 영어 · 탐구 (미대 반영 3과목)
                 </dd>
               </div>
               {WINTER_COHORT.excluded && (
                 <div>
-                  <dt className="text-white/40">제외</dt>
+                  <dt className="text-white/50">제외</dt>
                   <dd className="mt-1 leading-relaxed text-white/70 break-keep">
                     {WINTER_COHORT.excluded}
                   </dd>
@@ -233,7 +233,7 @@ export default function WinterResultsPage() {
           />
 
           {published.length === 0 ? (
-            <p className="text-center text-sm text-white/45 break-keep">
+            <p className="text-center text-sm text-white/55 break-keep">
               공개 동의를 받은 사례를 준비하고 있습니다.
             </p>
           ) : (
@@ -252,7 +252,7 @@ export default function WinterResultsPage() {
             </div>
           )}
 
-          <p className="mx-auto mt-10 max-w-2xl text-center text-xs leading-relaxed text-white/35 break-keep">
+          <p className="mx-auto mt-10 max-w-2xl text-center text-[12px] leading-relaxed text-white/45 break-keep">
             모든 사례는 학생 및 학부모의 서면 동의를 받아 게시하며, 이름은
             이니셜로, 학교는 지역만 표기합니다. 등급은 미대 반영 3과목(국어·영어·
             탐구) 기준이며, 성적 향상 정도는 개인에 따라 다를 수 있습니다.

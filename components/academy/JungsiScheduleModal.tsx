@@ -158,8 +158,8 @@ function WeekRow({
             day == null
               ? ""
               : c === 0
-                ? "text-red-300/60"
-                : "text-white/55"
+                ? "text-red-300/70"
+                : "text-white/65"
           }`}
         >
           {day ?? ""}
@@ -170,7 +170,7 @@ function WeekRow({
           key={event.id}
           title={event.title}
           style={{ gridColumn: `${colStart} / ${colEnd}`, gridRow: 2 }}
-          className={`mx-0.5 flex h-5 min-w-0 items-center justify-center truncate rounded px-1 text-[10px] font-medium ${event.bar}`}
+          className={`mx-0.5 flex h-5 min-w-0 items-center justify-center truncate rounded px-1 text-[11px] font-medium ${event.bar}`}
         >
           {event.label}
         </span>
@@ -186,8 +186,8 @@ function MonthCalendar({ month }: { month: CalMonth }) {
         {WEEKDAYS.map((d, i) => (
           <span
             key={d}
-            className={`text-center text-[11px] ${
-              i === 0 ? "text-red-300/60" : "text-white/35"
+            className={`text-center text-[12px] ${
+              i === 0 ? "text-red-300/70" : "text-white/50"
             }`}
           >
             {d}
@@ -261,7 +261,7 @@ export default function JungsiScheduleModal() {
           <div className="relative max-h-[88vh] w-full max-w-xl overflow-y-auto rounded-xl border border-white/15 bg-[#0a0a0a] p-5 text-left shadow-2xl md:p-7">
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
-                <p className="mb-1 text-[11px] tracking-[0.25em] text-accent">
+                <p className="mb-1 text-[12px] tracking-[0.25em] text-accent">
                   2027학년도
                 </p>
                 <h2 className="text-lg font-bold leading-snug text-white">
@@ -342,7 +342,7 @@ export default function JungsiScheduleModal() {
 
             <MonthCalendar month={month} />
 
-            <p className="mt-4 border-t border-white/10 pt-4 text-[11px] leading-relaxed text-white/35">
+            <p className="mt-4 border-t border-white/10 pt-4 text-[12px] leading-relaxed text-white/50">
               2027학년도 대입전형 시행계획 기준 · 충원 합격 통보는 2. 17.(수)
               18시, 충원 등록은 2. 18.(목) 22시, 추가모집 등록은 2. 26.(금)
               22시까지 · 대학별 세부 일정은 각 대학 모집요강을 확인하세요.

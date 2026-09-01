@@ -49,7 +49,7 @@ const GUNS: Gun[] = ["가", "나", "다"];
 function DetailLevelBadge({ score }: { score: DetailedStudentScore }) {
   const level = scoreDetailLevel(score);
   return (
-    <span className="inline-block rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[12px] text-white/55">
+    <span className="inline-block rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[13px] text-white/65">
       {level === "detailed" ? "성적표 기준 분석" : "등급 기준 예상"}
     </span>
   );
@@ -80,12 +80,12 @@ function TargetGapView({
           지금 얼마나 남았을까요?
         </h2>
         <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.02] p-5">
-          <p className="text-[14px] leading-relaxed text-white/70">
+          <p className="text-[15px] leading-relaxed text-white/75">
             {university}는 최근 입시결과 공개 자료가 없어, 현재 데이터만으로
             정확한 등급 차이 산정이 어려워요.
           </p>
           {analysis.entries.length > 0 && (
-            <p className="mt-3 text-[13px] leading-relaxed text-white/50">
+            <p className="mt-3 text-sm leading-relaxed text-white/60">
               {university}는{" "}
               {[...new Set(analysis.entries.map((e) => `${e.gun}군`))].join(" · ")}
               에서 모집해요. 아래 일반 추천과 함께 지원권 기준으로
@@ -116,7 +116,7 @@ function TargetGapView({
       </h2>
 
       {reached && (
-        <p className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/[0.07] p-4 text-[14px] leading-relaxed text-emerald-200/90">
+        <p className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/[0.07] p-4 text-[15px] leading-relaxed text-emerald-200/90">
           수능 기준으로는 이미 목표권에 근접해 있어요. 이 위치를 유지하면서
           실기 완성도를 끌어올리는 게 다음 과제예요.
         </p>
@@ -136,7 +136,7 @@ function TargetGapView({
             />
             <span className="absolute left-[85%] top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/60 bg-transparent" />
           </div>
-          <div className="flex justify-between text-[12px] text-white/45">
+          <div className="flex justify-between text-[13px] text-white/55">
             <span>현재 위치</span>
             <span>{university} 목표권</span>
           </div>
@@ -157,7 +157,7 @@ function TargetGapView({
               <div className="flex items-baseline justify-between gap-3">
                 <p className="text-[15px] font-bold text-white">{s.label}</p>
                 {s.gapGrades != null && (
-                  <p className="text-[13px] text-white/55">
+                  <p className="text-[13px] text-white/65">
                     {s.gapGrades <= 0
                       ? "목표권"
                       : `약 ${
@@ -170,8 +170,8 @@ function TargetGapView({
                   </p>
                 )}
               </div>
-              <div className="mt-2 flex items-center gap-4 text-[14px]">
-                <span className="text-white/60">
+              <div className="mt-2.5 flex items-center gap-4 text-[15px]">
+                <span className="text-white/70">
                   현재{" "}
                   <span className="font-bold text-white">
                     {s.currentGrade != null ? `${s.currentGrade}등급` : "—"}
@@ -180,7 +180,7 @@ function TargetGapView({
                 <span aria-hidden className="text-white/25">
                   →
                 </span>
-                <span className="text-white/60">
+                <span className="text-white/70">
                   목표권 <span className="font-bold text-accent">{target}</span>
                 </span>
               </div>
@@ -189,7 +189,7 @@ function TargetGapView({
         })}
       </ul>
 
-      <p className="mt-4 text-[12px] leading-relaxed text-white/35">
+      <p className="mt-4 text-[13px] leading-relaxed text-white/50">
         목표권 등급은 공개된 입시결과 컷을 등급 구간으로 되돌린 근사 범위예요.
         과목별 실제 요구 수준은 대학 반영비율에 따라 달라질 수 있어요.
       </p>
@@ -234,7 +234,7 @@ function CustomBasisNote({
           <p className="text-[15px] font-bold text-white">
             자체 기준 전형도 검토 대상이에요
           </p>
-          <p className="mt-2 text-[13px] leading-relaxed text-white/65">
+          <p className="mt-2 text-sm leading-relaxed text-white/70">
             <span className="font-medium text-white/85">
               {topRefs.map(customRefName).join(" · ")}
             </span>
@@ -247,7 +247,7 @@ function CustomBasisNote({
         </div>
       )}
       {footnoteRefs.length > 0 && (
-        <p className="mt-3 text-[12px] leading-relaxed text-white/35">
+        <p className="mt-3 text-[13px] leading-relaxed text-white/50">
           {footnoteRefs.map(customRefName).join(" · ")}
           {"은(는) "}자체 기준 전형이라 환산 비교에서 제외했어요.
         </p>
@@ -330,7 +330,7 @@ export default function DiagnosisResult({
             <br />
             지원권 계산은 건너뛰었어요
           </h2>
-          <p className="mt-3 text-[14px] leading-relaxed text-white/60">
+          <p className="mt-3 text-[15px] leading-relaxed text-white/70">
             지금 단계에서는 실기 유형과 목표 대학을 기준으로 준비 방향을 잡는
             것으로 충분해요. 첫 모의고사 성적이 나오면 다시 진단해보세요 —
             지원 가능한 대학 조합까지 보여드릴 수 있어요.
@@ -400,7 +400,7 @@ export default function DiagnosisResult({
           <h2 className="text-[18px] font-bold leading-snug text-white">
             지금 성적 기준으로 보이는 조합
           </h2>
-          <p className="mt-1.5 text-[13px] text-white/50">
+          <p className="mt-2 text-sm text-white/60">
             목표와 별개로, 현재 위치를 가늠하는 참고 조합이에요.
           </p>
           <div className="mt-4 space-y-3">
@@ -410,12 +410,12 @@ export default function DiagnosisResult({
                   key={g}
                   className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3"
                 >
-                  <p className="min-w-0 text-[14px] text-white/80">
-                    <span className="mr-2 font-mono text-[12px] text-accent">
+                  <p className="min-w-0 text-[15px] text-white/85">
+                    <span className="mr-2 font-mono text-[13px] text-accent">
                       {g}군
                     </span>
                     {current.combo[g]!.entry.university}
-                    <span className="ml-1.5 text-[12px] text-white/45">
+                    <span className="ml-1.5 text-[13px] text-white/55">
                       {current.combo[g]!.entry.campus ?? ""}
                     </span>
                   </p>
@@ -440,20 +440,20 @@ export default function DiagnosisResult({
           trackDiagnosis("diagnosis_restart");
           onRestart();
         }}
-        className="mt-8 block min-h-[44px] w-full rounded-xl border border-white/12 px-5 py-3.5 text-center text-[14px] text-white/55 transition-colors hover:border-white/30 hover:text-white/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        className="mt-8 block min-h-[44px] w-full rounded-xl border border-white/12 px-5 py-3.5 text-center text-[14px] text-white/65 transition-colors hover:border-white/30 hover:text-white/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         처음부터 다시 진단하기
       </button>
 
       {/* 유의사항 */}
       <div className="mt-10 space-y-2 border-t border-white/10 pt-5">
-        <p className="text-[11px] leading-relaxed text-white/35">
+        <p className="text-[12px] leading-relaxed text-white/45">
           본 결과는 수능 성적과 공개된 대학별 전형·입시결과를 기반으로 한 지원
           전략 참고 자료입니다. 실기 성적, 경쟁률, 실제 수능 난이도 등에 따라
           결과는 달라질 수 있습니다.
         </p>
         {FUTURE_ADMISSION_GRADES.includes(grade) && (
-          <p className="text-[11px] leading-relaxed text-white/35">
+          <p className="text-[12px] leading-relaxed text-white/45">
             향후 입시를 준비하는 학생은 현재 공개된 최신 대학 전형 구조를
             기준으로 비교합니다. 실제 지원 연도의 모집요강은 변경될 수
             있습니다.

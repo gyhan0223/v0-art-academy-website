@@ -39,7 +39,7 @@ const SILGI_BADGE: Record<SilgiCategory, string> = {
 function SilgiBadge({ entry }: { entry: JungsiEntry }) {
   return (
     <span
-      className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium tracking-wide ${SILGI_BADGE[silgiCategory(entry)]}`}
+      className={`inline-flex items-center rounded px-2 py-0.5 text-[12px] font-medium tracking-wide ${SILGI_BADGE[silgiCategory(entry)]}`}
     >
       {silgiLabel(entry)}
     </span>
@@ -68,7 +68,7 @@ function RatioBar({ entry }: { entry: JungsiEntry }) {
           />
         ))}
       </div>
-      <div className="mt-1.5 flex gap-3 text-[11px] text-white/45">
+      <div className="mt-2 flex gap-3 text-[12px] text-white/55">
         {segments.map((s) => (
           <span key={s.key} className="flex items-center gap-1.5">
             <span
@@ -88,7 +88,56 @@ function fmtRate(rate: number | null) {
   return rate == null ? "—" : `${rate.toFixed(2)} : 1`;
 }
 
-/** 카드 상단: 실기내용 · 화지 · 시간 + 모집인원/경쟁률 요약 */
+/* ───────────── 문장 → label·value 재구성 (표현만, 데이터 불변) ───────────── */
+
+/**
+ * 전형방법 한 줄을 "라벨 → 값"으로 분해한다.
+ * 데이터 문자열은 그대로 두고, 훑어 읽을 수 있게 표시만 바꾼다.
+ */
+function parseMethodLine(line: string): { label: string; value: string } {
+  const bracket = line.match(/^\[([^\]]{1,8})\]\s*(.+)$/);
+  if (bracket) return { label: bracket[1], value: bracket[2] };
+  const stage = line.match(/^(\d단계)\s+(.+)$/);
+  if (stage) return { label: stage[1], value: stage[2] };
+  const region = line.match(/^수능 반영영역:\s*(.+)$/);
+  if (region) return { label: "수능 반영", value: region[1] };
+  if (line.includes("일괄합산")) {
+    const value = line
+      .replace(/\s*일괄합산\s*/, " ")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+    return { label: "일괄합산", value };
+  }
+  return { label: "전형", value: line };
+}
+
+/** 문장 속 "60%" 같은 비율 숫자만 밝게 — 숫자가 문장에 묻히지 않게 한다 */
+function ValueText({ text }: { text: string }) {
+  const parts = text.split(/(\d+(?:\.\d+)?%)/g);
+  return (
+    <>
+      {parts.map((p, i) =>
+        /^\d+(?:\.\d+)?%$/.test(p) ? (
+          <span key={i} className="font-semibold text-white">
+            {p}
+          </span>
+        ) : (
+          <span key={i}>{p}</span>
+        ),
+      )}
+    </>
+  );
+}
+
+/** 긴 참고 문단을 문장 단위로 잘라 훑기 좋은 bullet 덩어리로 만든다 */
+function splitSentences(text: string): string[] {
+  return text
+    .split(/(?<=(?:[다요]|\))\.)\s+(?=\S)/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/** 카드 중단: 실기 스펙(label→value 행) + 모집·경쟁률 key-value */
 function MajorSummary({ entry }: { entry: JungsiEntry }) {
   const majors = entry.majors ?? [];
   if (majors.length === 0 && !entry.practical) return null;
@@ -103,39 +152,57 @@ function MajorSummary({ entry }: { entry: JungsiEntry }) {
   const minRate = rates.length ? Math.min(...rates) : null;
   const maxRate = rates.length ? Math.max(...rates) : null;
 
-  const specParts = [entry.practical, entry.paper, entry.duration].filter(
-    (v): v is string => Boolean(v),
-  );
+  const specs: { label: string; value: string }[] = [
+    ...(entry.practical ? [{ label: "실기", value: entry.practical }] : []),
+    ...(entry.duration ? [{ label: "시간", value: entry.duration }] : []),
+    ...(entry.paper ? [{ label: "화지", value: entry.paper }] : []),
+  ];
 
   return (
-    <div className="mt-4 space-y-2">
-      {specParts.length > 0 && (
-        <p className="text-[12px] leading-relaxed text-white/55">
-          <span className="text-white/40">실기</span>{" "}
-          {specParts.join(" · ")}
-        </p>
+    <>
+      {specs.length > 0 && (
+        <div className="mt-4 space-y-1.5 border-t border-white/[0.06] pt-3.5">
+          {specs.map((s) => (
+            <div key={s.label} className="flex gap-3">
+              <span className="w-16 shrink-0 pt-px text-[12px] font-medium text-white/45">
+                {s.label}
+              </span>
+              <span className="min-w-0 flex-1 text-[13px] leading-relaxed text-white/80">
+                {s.value}
+              </span>
+            </div>
+          ))}
+        </div>
       )}
       {(totalQuota > 0 || minRate != null) && (
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px]">
+        <div className="mt-4 flex flex-wrap gap-x-10 gap-y-2">
           {totalQuota > 0 && (
-            <span className="text-white/70">
-              <span className="text-white/40">모집 </span>
-              <span className="font-mono text-white">{totalQuota}</span>명
-            </span>
+            <div>
+              <p className="text-[12px] text-white/45">모집</p>
+              <p className="mt-0.5 text-[15px] font-semibold tabular-nums text-white">
+                {totalQuota}
+                <span className="ml-0.5 text-[12px] font-normal text-white/55">
+                  명
+                </span>
+              </p>
+            </div>
           )}
           {minRate != null && (
-            <span className="text-white/70">
-              <span className="text-white/40">2025 경쟁률 </span>
-              <span className="font-mono text-accent">
+            <div>
+              <p className="text-[12px] text-white/45">2025 경쟁률</p>
+              <p className="mt-0.5 text-[15px] font-semibold tabular-nums text-accent">
                 {minRate === maxRate
-                  ? fmtRate(minRate)
-                  : `${minRate.toFixed(2)}~${maxRate!.toFixed(2)} : 1`}
-              </span>
-            </span>
+                  ? minRate.toFixed(2)
+                  : `${minRate.toFixed(2)} ~ ${maxRate!.toFixed(2)}`}
+                <span className="ml-1 text-[12px] font-normal text-white/55">
+                  : 1
+                </span>
+              </p>
+            </div>
           )}
         </div>
       )}
-    </div>
+    </>
   );
 }
 
@@ -144,7 +211,7 @@ function MajorTable({ majors }: { majors: Major[] }) {
   if (majors.length === 0) return null;
   return (
     <details className="group/major mt-3">
-      <summary className="flex cursor-pointer list-none items-center gap-1.5 text-[12px] font-medium text-white/55 transition-colors hover:text-accent">
+      <summary className="flex cursor-pointer list-none items-center gap-1.5 py-1 text-[13px] font-medium text-white/70 transition-colors hover:text-accent">
         <span className="text-accent transition-transform group-open/major:rotate-90">
           ▸
         </span>
@@ -152,41 +219,40 @@ function MajorTable({ majors }: { majors: Major[] }) {
       </summary>
       <ul className="mt-2 divide-y divide-white/5 rounded-md border border-white/10 bg-black/30">
         {majors.map((m) => (
-          <li
-            key={m.name}
-            className="flex items-center justify-between gap-3 px-3 py-2"
-          >
-            <span className="min-w-0 text-[12px] leading-tight text-white/80">
+          <li key={m.name} className="px-3.5 py-3">
+            <p className="text-[13px] font-medium leading-snug text-white/90">
               {m.name}
               {m.stageTag && (
-                <span className="ml-1.5 rounded-sm bg-white/8 px-1 py-0.5 align-middle text-[10px] text-white/45">
+                <span className="ml-1.5 rounded-sm bg-white/8 px-1 py-0.5 align-middle text-[11px] font-normal text-white/55">
                   {m.stageTag}
                 </span>
               )}
-              {(m.practical || m.duration) && (
-                <span className="mt-0.5 block text-[10px] text-white/35">
-                  {[m.practical, m.duration].filter(Boolean).join(" · ")}
+            </p>
+            <div className="mt-1.5 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-[12px]">
+              <span className="text-white/45">
+                모집{" "}
+                <span className="font-mono text-[13px] text-white/90">
+                  {m.quota != null ? `${m.quota}명` : m.quotaNote ?? "—"}
                 </span>
-              )}
-            </span>
-            <span className="shrink-0 text-right text-[11px] leading-tight text-white/50">
-              <span className="font-mono text-white/70">
-                {m.quota != null ? `${m.quota}명` : m.quotaNote ?? "—"}
               </span>
-              <span className="mt-0.5 block font-mono text-accent/80">
-                {fmtRate(m.rate)}
+              <span className="text-white/45">
+                경쟁률{" "}
+                <span className="font-mono text-[13px] text-accent/90">
+                  {fmtRate(m.rate)}
+                </span>
               </span>
               {m.applicants != null && (
-                <span className="mt-0.5 block font-mono text-[10px] text-white/35">
-                  지원 {m.applicants}명
-                </span>
+                <span className="text-white/40">지원 {m.applicants}명</span>
               )}
               {m.rateQuota != null && m.rateQuota !== m.quota && (
-                <span className="mt-0.5 block text-[10px] text-white/35">
-                  당시 {m.rateQuota}명 모집
-                </span>
+                <span className="text-white/40">당시 {m.rateQuota}명 모집</span>
               )}
-            </span>
+            </div>
+            {(m.practical || m.duration) && (
+              <p className="mt-1.5 text-[12px] leading-relaxed text-white/50">
+                {[m.practical, m.duration].filter(Boolean).join(" · ")}
+              </p>
+            )}
           </li>
         ))}
       </ul>
@@ -215,7 +281,7 @@ function UniversityCard({
   const slotName = entry.gun === "별도" ? "한예종 슬롯" : `${GUN_LABEL[entry.gun]} 카드`;
   return (
     <article
-      className={`flex flex-col rounded-lg border bg-[#0a0a0a] p-5 transition-colors ${
+      className={`flex flex-col rounded-lg border bg-[#0a0a0a] p-5 transition-colors md:p-6 ${
         selected
           ? "border-accent/70 shadow-[0_0_0_1px_rgba(245,136,70,0.25)]"
           : "border-white/10 hover:border-white/25"
@@ -223,31 +289,36 @@ function UniversityCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-base font-bold leading-tight text-white">
+          <h3 className="text-[17px] font-bold leading-tight text-white">
             {entry.university}
             {entry.campus && (
-              <span className="ml-1.5 text-xs font-medium text-white/45">
+              <span className="ml-1.5 text-[13px] font-medium text-white/55">
                 {entry.campus}
               </span>
             )}
           </h3>
-          <p className="mt-1 text-xs leading-relaxed text-white/55">
+          <p className="mt-1.5 text-sm leading-relaxed text-white/65">
             {entry.units}
           </p>
         </div>
         <SilgiBadge entry={entry} />
       </div>
 
-      <ul className="mt-3 space-y-1">
-        {entry.method.map((line) => (
-          <li
-            key={line}
-            className="text-[13px] leading-relaxed text-white/80 before:mr-2 before:text-accent before:content-['·']"
-          >
-            {line}
-          </li>
-        ))}
-      </ul>
+      <div className="mt-4 space-y-2">
+        {entry.method.map((line) => {
+          const { label, value } = parseMethodLine(line);
+          return (
+            <div key={line} className="flex gap-3">
+              <span className="w-16 shrink-0 pt-[3px] text-[12px] font-medium tracking-wide text-white/45">
+                {label}
+              </span>
+              <span className="min-w-0 flex-1 text-sm leading-relaxed text-white/75">
+                <ValueText text={value} />
+              </span>
+            </div>
+          );
+        })}
+      </div>
 
       <RatioBar entry={entry} />
 
@@ -264,18 +335,36 @@ function UniversityCard({
               {entry.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-sm bg-white/5 px-1.5 py-0.5 text-[11px] text-white/60"
+                  className="rounded-sm bg-white/5 px-1.5 py-0.5 text-[12px] text-white/65"
                 >
                   {tag}
                 </span>
               ))}
             </div>
           )}
-          {entry.note && (
-            <p className="mt-2 text-[11px] leading-relaxed text-white/40">
-              {entry.note}
-            </p>
-          )}
+          {entry.note &&
+            (() => {
+              const sentences = splitSentences(entry.note);
+              return sentences.length > 1 ? (
+                <ul className="mt-2.5 space-y-1.5">
+                  {sentences.map((s) => (
+                    <li
+                      key={s}
+                      className="flex gap-2 text-[12px] leading-relaxed text-white/55"
+                    >
+                      <span aria-hidden className="select-none text-white/25">
+                        ·
+                      </span>
+                      <span className="min-w-0">{s}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-2.5 text-[12px] leading-relaxed text-white/55">
+                  {entry.note}
+                </p>
+              );
+            })()}
         </div>
       )}
 
@@ -291,7 +380,7 @@ function UniversityCard({
             placement: "card",
           })
         }
-        className="mt-4 flex min-h-[44px] w-full items-center justify-between gap-2 rounded-md border border-accent/35 bg-accent/[0.06] px-3.5 py-2.5 text-left text-[13px] font-medium text-accent transition-colors hover:border-accent/70 hover:bg-accent/[0.12] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        className="mt-4 flex min-h-[44px] w-full items-center justify-between gap-2 rounded-md border border-accent/35 bg-accent/[0.06] px-3.5 py-2.5 text-left text-sm font-medium text-accent transition-colors hover:border-accent/70 hover:bg-accent/[0.12] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         <span className="break-keep leading-snug">
           내 성적으로 {entry.university} 가능성 확인
@@ -305,7 +394,7 @@ function UniversityCard({
         type="button"
         onClick={() => onToggle(entry)}
         aria-pressed={selected}
-        className={`mt-2 w-full rounded-md border py-2 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+        className={`mt-2 w-full rounded-md border py-2 text-[13px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
           selected
             ? "border-accent/60 bg-accent/15 text-accent hover:bg-accent/25"
             : "border-white/15 text-white/70 hover:border-accent/50 hover:text-accent"
@@ -723,7 +812,7 @@ function PlanTray({
       )}
       <div className="mx-auto max-w-4xl px-5 py-3">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] tracking-wider text-white/45">
+          <p className="text-[12px] tracking-wider text-white/55">
             내 원서 조합{" "}
             <span className="font-mono text-accent">{filledCount}</span>
             <span className="text-white/35"> / 3장</span>
@@ -733,7 +822,7 @@ function PlanTray({
               type="button"
               onClick={handleSaveImage}
               disabled={saving}
-              className="flex items-center gap-1 text-[11px] text-white/55 transition-colors hover:text-accent disabled:opacity-50"
+              className="flex items-center gap-1 text-[12px] text-white/65 transition-colors hover:text-accent disabled:opacity-50"
             >
               <svg aria-hidden width="12" height="12" viewBox="0 0 14 14" fill="none">
                 <path d="M7 1v8m0 0L4 6.2M7 9l3-2.8M1.5 10.5V12a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -743,7 +832,7 @@ function PlanTray({
             <button
               type="button"
               onClick={handleCopyLink}
-              className="flex items-center gap-1 text-[11px] text-white/55 transition-colors hover:text-accent"
+              className="flex items-center gap-1 text-[12px] text-white/65 transition-colors hover:text-accent"
             >
               <svg aria-hidden width="12" height="12" viewBox="0 0 14 14" fill="none">
                 <path d="M5.8 8.2a2.8 2.8 0 0 0 4 0l2-2a2.83 2.83 0 0 0-4-4l-1 1M8.2 5.8a2.8 2.8 0 0 0-4 0l-2 2a2.83 2.83 0 0 0 4 4l1-1" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -753,7 +842,7 @@ function PlanTray({
             <button
               type="button"
               onClick={onClear}
-              className="text-[11px] text-white/40 underline underline-offset-2 transition-colors hover:text-white/70"
+              className="text-[12px] text-white/50 underline underline-offset-2 transition-colors hover:text-white/80"
             >
               비우기
             </button>
@@ -775,7 +864,7 @@ function PlanTray({
                   {entry.university}
                   {entry.campus ? ` ${entry.campus}` : ""}
                 </span>
-                <span className="text-[10px] text-white/50">
+                <span className="text-[11px] text-white/60">
                   {silgiShort(entry)}
                 </span>
                 <button
@@ -823,7 +912,7 @@ function PlanTray({
           {/* 1~2장 상태는 트레이 높이를 최소화한다 — 모바일은 다음 질문 한
               줄만, 궁합 headline은 md 이상에서만 덧붙인다(detail은 공유
               이미지·상담 요약 텍스트에는 그대로 들어간다). */}
-          <p aria-live="polite" className="text-[12px] leading-snug">
+          <p aria-live="polite" className="text-[13px] leading-snug">
             {complete ? (
               <span className="font-bold text-accent">
                 ✓ 3장 완성! 이 조합, 1:1 상담에서 바로 점검받아 보세요.
@@ -835,7 +924,7 @@ function PlanTray({
                     {analysis.headline}{" "}
                   </span>
                 )}
-                <span className="text-white/55">
+                <span className="text-white/65">
                   선택한 대학, 내 성적에서도 현실적일까요?
                 </span>
               </>
@@ -873,7 +962,7 @@ function PlanTray({
                       picked.length === 1 ? picked[0].university : undefined,
                   })
                 }
-                className="flex-1 rounded-md bg-accent px-5 py-2.5 text-center text-xs font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:flex-none"
+                className="flex-1 rounded-md bg-accent px-5 py-2.5 text-center text-[13px] font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:flex-none"
               >
                 무료로 확인하기 →
               </Link>
@@ -883,7 +972,7 @@ function PlanTray({
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
                 onClick={handleCta}
-                className="shrink-0 py-2 text-[11px] text-white/50 underline underline-offset-2 transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="shrink-0 py-2 text-[12px] text-white/60 underline underline-offset-2 transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 1:1 전략 상담
               </a>
@@ -923,13 +1012,30 @@ export default function JungsiExplorer({
   const [cameFromScoreId, setCameFromScoreId] = useState<string | null>(null);
 
   const rootRef = useRef<HTMLDivElement>(null);
+  const tabBarRef = useRef<HTMLDivElement>(null);
+
+  // 사이트 헤더는 fixed인데 높이가 고정이 아니다 — 알림 띠(닫기 가능)와
+  // 반응형 네비 때문에 64~130px 사이를 오간다. 실제 높이를 측정해
+  // 스티키 탭바가 헤더 바로 아래 붙도록 top을 맞춘다.
+  const [headerH, setHeaderH] = useState(64);
+  useEffect(() => {
+    // 본문 히어로의 <header>가 아니라 fixed 사이트 헤더만 잰다
+    const header = document.querySelector("header.fixed");
+    if (!header) return;
+    const update = () =>
+      setHeaderH(Math.round(header.getBoundingClientRect().height));
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(header);
+    return () => ro.disconnect();
+  }, []);
 
   // 군 전환 시 목록을 아래까지 스크롤한 상태 그대로 두면 빈 화면·엉뚱한
   // 섹션이 보인다 — 탭바(스티키) 바로 아래 목록 시작점으로 복귀시킨다.
   const scrollToListTop = () => {
     const el = rootRef.current;
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 80;
+    const top = el.getBoundingClientRect().top + window.scrollY - headerH - 16;
     if (window.scrollY > top) window.scrollTo(0, Math.max(0, top));
   };
 
@@ -1009,8 +1115,10 @@ export default function JungsiExplorer({
     const el = document.getElementById(`uni-${focusId}`);
     if (!el) return;
     // scrollIntoView는 body 스크롤 컨테이너 때문에 뷰포트를 못 움직여서 window.scrollTo 사용.
-    // 스티키 헤더(64px)+군 탭바(약 110px) 아래로 오도록 오프셋 확보.
-    const top = el.getBoundingClientRect().top + window.scrollY - 176;
+    // 실측한 헤더 높이 + 스티키 군 탭바 높이 아래로 오도록 오프셋 확보.
+    const tabBarH = tabBarRef.current?.offsetHeight ?? 120;
+    const top =
+      el.getBoundingClientRect().top + window.scrollY - headerH - tabBarH - 12;
     // 네이티브 smooth는 reduced-motion 환경에서 no-op이 되므로 즉시 이동으로 확실히 처리
     window.scrollTo(0, Math.max(0, top));
     el.classList.add("ring-2", "ring-accent", "ring-offset-2", "ring-offset-black");
@@ -1026,7 +1134,7 @@ export default function JungsiExplorer({
     );
     setFocusId(null);
     return () => clearTimeout(t);
-  }, [focusId, filtered]);
+  }, [focusId, filtered, headerH]);
 
   const toggleEntry = (entry: JungsiEntry) => {
     setSelection((prev) =>
@@ -1057,11 +1165,13 @@ export default function JungsiExplorer({
     <div ref={rootRef}>
       {/* 군 탭 + 필터 */}
       <div
+        ref={tabBarRef}
         role="tablist"
         aria-label="모집군 선택"
-        className="sticky top-16 z-30 -mx-5 border-b border-white/10 bg-black/85 px-5 py-3 backdrop-blur-md"
+        style={{ top: headerH }}
+        className="sticky z-30 -mx-5 border-b border-white/10 bg-black/85 px-5 py-3 backdrop-blur-md"
       >
-        <div className="flex gap-2 overflow-x-auto">
+        <div className="scrollbar-hide flex gap-2 overflow-x-auto">
           {GUN_ORDER.map((g) => {
             const active = gun === g;
             return (
@@ -1109,13 +1219,13 @@ export default function JungsiExplorer({
               onChange={(e) => setQuery(e.target.value)}
               placeholder="대학·학과 검색"
               aria-label="대학 또는 학과 검색"
-              className="w-36 rounded-md border border-white/25 bg-white/[0.07] py-2 pl-8 pr-3 text-xs text-white placeholder:text-white/50 focus:border-accent/60 focus:bg-white/[0.1] focus:outline-none md:w-52"
+              className="w-36 rounded-md border border-white/25 bg-white/[0.07] py-2 pl-8 pr-3 text-[13px] text-white placeholder:text-white/50 focus:border-accent/60 focus:bg-white/[0.1] focus:outline-none md:w-52"
             />
           </div>
         </div>
 
-        <div className="mt-2.5 flex items-center gap-2 overflow-x-auto">
-          <span className="shrink-0 text-[11px] tracking-wider text-white/35">
+        <div className="scrollbar-hide mt-2.5 flex items-center gap-2 overflow-x-auto md:flex-wrap md:overflow-x-visible">
+          <span className="shrink-0 text-[12px] tracking-wider text-white/45">
             실기 종목
           </span>
           {SILGI_FILTERS.map((s) => {
@@ -1125,10 +1235,10 @@ export default function JungsiExplorer({
                 key={s}
                 onClick={() => setSilgi(s)}
                 aria-pressed={active}
-                className={`shrink-0 rounded-full border px-3 py-1 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                className={`shrink-0 rounded-full border px-3.5 py-1.5 text-[13px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                   active
                     ? "border-accent bg-accent/15 text-accent"
-                    : "border-white/15 text-white/55 hover:border-white/35 hover:text-white/85"
+                    : "border-white/15 text-white/60 hover:border-white/35 hover:text-white/85"
                 }`}
               >
                 {s === "전체" ? "전체" : SILGI_META[s].short}
@@ -1140,7 +1250,7 @@ export default function JungsiExplorer({
 
       {/* 사용 안내 (선택 전에만) */}
       {!hasSelection && (
-        <p className="mt-5 rounded-md border border-white/10 bg-white/[0.03] px-4 py-3 text-[13px] leading-relaxed text-white/55">
+        <p className="mt-5 rounded-md border border-white/10 bg-white/[0.03] px-4 py-3.5 text-sm leading-relaxed text-white/70">
           카드의 <span className="text-accent">담기</span> 버튼을 누르면 아래에
           원서 조합이 만들어집니다. 군마다 1곳씩, 3장을 채워 보세요 — 실기 종목
           궁합을 바로 알려드립니다.
@@ -1176,11 +1286,11 @@ export default function JungsiExplorer({
                   </span>
                   {GUN_LABEL[g]}
                 </h3>
-                <span className="text-xs text-white/40">
+                <span className="text-[13px] text-white/50">
                   {entries.length}개 대학
                 </span>
                 {g === "별도" && (
-                  <span className="text-xs text-white/40">
+                  <span className="text-[13px] text-white/50">
                     가나다군과 별개로 지원 가능
                   </span>
                 )}
@@ -1190,13 +1300,13 @@ export default function JungsiExplorer({
                   <div
                     key={entry.id}
                     id={`uni-${entry.id}`}
-                    className="scroll-mt-44 rounded-lg transition-shadow"
+                    className="scroll-mt-48 rounded-lg transition-shadow"
                   >
                     {cameFromScoreId === entry.id && (
                       <a
                         href="#score-finder"
                         onClick={() => setCameFromScoreId(null)}
-                        className="mb-1.5 inline-flex items-center gap-1.5 text-[12px] font-medium text-accent/90 transition-colors hover:text-accent"
+                        className="mb-1.5 inline-flex items-center gap-1.5 text-[13px] font-medium text-accent/90 transition-colors hover:text-accent"
                       >
                         <span aria-hidden>↑</span>
                         내 성적 추천 결과로 돌아가기
@@ -1218,8 +1328,8 @@ export default function JungsiExplorer({
       {/* 목록을 끝까지 본 사용자를 성적 기반 검색으로 안내 (페이지 내 1회) */}
       {filtered.length > 0 && (
         <div className="mt-10 flex flex-col gap-3 rounded-lg border border-white/10 bg-white/[0.03] p-5 md:flex-row md:items-center md:justify-between md:gap-6">
-          <p className="text-[13px] leading-relaxed text-white/60">
-            <span className="font-medium text-white/85">
+          <p className="text-sm leading-relaxed text-white/70">
+            <span className="font-medium text-white/90">
               일일이 비교하지 않아도 됩니다.
             </span>
             <br className="hidden md:block" /> 수능 백분위를 입력하면 대학마다
@@ -1227,7 +1337,7 @@ export default function JungsiExplorer({
           </p>
           <a
             href="#score-finder"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/50 px-5 py-2.5 text-[13px] font-medium text-accent transition-colors hover:border-accent hover:bg-accent/[0.08] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/50 px-5 py-2.5 text-sm font-medium text-accent transition-colors hover:border-accent hover:bg-accent/[0.08] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             내 성적으로 대학 찾기
             <span aria-hidden>→</span>
@@ -1244,9 +1354,9 @@ export default function JungsiExplorer({
           {pendingUniversities.map((p) => (
             <p
               key={p.university}
-              className="mt-2 text-[13px] leading-relaxed text-white/60"
+              className="mt-2.5 text-sm leading-relaxed text-white/65"
             >
-              <span className="font-medium text-white/85">
+              <span className="font-medium text-white/90">
                 {p.university} {p.units}
               </span>
               {" — "}

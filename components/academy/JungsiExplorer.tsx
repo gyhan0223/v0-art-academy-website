@@ -1012,13 +1012,30 @@ export default function JungsiExplorer({
   const [cameFromScoreId, setCameFromScoreId] = useState<string | null>(null);
 
   const rootRef = useRef<HTMLDivElement>(null);
+  const tabBarRef = useRef<HTMLDivElement>(null);
+
+  // 사이트 헤더는 fixed인데 높이가 고정이 아니다 — 알림 띠(닫기 가능)와
+  // 반응형 네비 때문에 64~130px 사이를 오간다. 실제 높이를 측정해
+  // 스티키 탭바가 헤더 바로 아래 붙도록 top을 맞춘다.
+  const [headerH, setHeaderH] = useState(64);
+  useEffect(() => {
+    // 본문 히어로의 <header>가 아니라 fixed 사이트 헤더만 잰다
+    const header = document.querySelector("header.fixed");
+    if (!header) return;
+    const update = () =>
+      setHeaderH(Math.round(header.getBoundingClientRect().height));
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(header);
+    return () => ro.disconnect();
+  }, []);
 
   // 군 전환 시 목록을 아래까지 스크롤한 상태 그대로 두면 빈 화면·엉뚱한
   // 섹션이 보인다 — 탭바(스티키) 바로 아래 목록 시작점으로 복귀시킨다.
   const scrollToListTop = () => {
     const el = rootRef.current;
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 80;
+    const top = el.getBoundingClientRect().top + window.scrollY - headerH - 16;
     if (window.scrollY > top) window.scrollTo(0, Math.max(0, top));
   };
 
@@ -1098,8 +1115,10 @@ export default function JungsiExplorer({
     const el = document.getElementById(`uni-${focusId}`);
     if (!el) return;
     // scrollIntoView는 body 스크롤 컨테이너 때문에 뷰포트를 못 움직여서 window.scrollTo 사용.
-    // 스티키 헤더(64px)+군 탭바(약 120px) 아래로 오도록 오프셋 확보.
-    const top = el.getBoundingClientRect().top + window.scrollY - 184;
+    // 실측한 헤더 높이 + 스티키 군 탭바 높이 아래로 오도록 오프셋 확보.
+    const tabBarH = tabBarRef.current?.offsetHeight ?? 120;
+    const top =
+      el.getBoundingClientRect().top + window.scrollY - headerH - tabBarH - 12;
     // 네이티브 smooth는 reduced-motion 환경에서 no-op이 되므로 즉시 이동으로 확실히 처리
     window.scrollTo(0, Math.max(0, top));
     el.classList.add("ring-2", "ring-accent", "ring-offset-2", "ring-offset-black");
@@ -1115,7 +1134,7 @@ export default function JungsiExplorer({
     );
     setFocusId(null);
     return () => clearTimeout(t);
-  }, [focusId, filtered]);
+  }, [focusId, filtered, headerH]);
 
   const toggleEntry = (entry: JungsiEntry) => {
     setSelection((prev) =>
@@ -1146,9 +1165,11 @@ export default function JungsiExplorer({
     <div ref={rootRef}>
       {/* 군 탭 + 필터 */}
       <div
+        ref={tabBarRef}
         role="tablist"
         aria-label="모집군 선택"
-        className="sticky top-16 z-30 -mx-5 border-b border-white/10 bg-black/85 px-5 py-3 backdrop-blur-md"
+        style={{ top: headerH }}
+        className="sticky z-30 -mx-5 border-b border-white/10 bg-black/85 px-5 py-3 backdrop-blur-md"
       >
         <div className="scrollbar-hide flex gap-2 overflow-x-auto">
           {GUN_ORDER.map((g) => {

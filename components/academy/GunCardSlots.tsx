@@ -297,7 +297,9 @@ export default function GunCardSlots() {
                             )}
                             {hasPlan && (
                               <span className="ml-2 rounded bg-accent/15 px-1.5 py-0.5 text-[10px] font-medium text-accent">
-                                2027 시행계획
+                                {UNIV_PLAN_2027[e.id].source.includes("시행계획")
+                                  ? "2027 시행계획"
+                                  : "2027 요강 확정"}
                               </span>
                             )}
                           </p>

@@ -35,11 +35,11 @@ export default function WinterConversion() {
           <p className="text-3xl font-bold text-accent">
             {measured}명 중 {improved}명
           </p>
-          <p className="mt-2 text-[14px] leading-relaxed text-white/70">
+          <p className="mt-2 text-[15px] leading-relaxed text-white/75">
             {term} 수료생 중 <span className="font-bold text-white">{summary.rate}</span>가{" "}
             {criterion}
           </p>
-          <p className="mt-1.5 text-[12px] text-white/40">
+          <p className="mt-1.5 text-[12px] text-white/50">
             {basis}
             {measured < total ? ` · 수료 ${total}명 중 ${measured}명 재측정` : ""}
           </p>

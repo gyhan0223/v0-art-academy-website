@@ -159,7 +159,7 @@ export default function WinterLanding() {
           <p className="mb-2.5 text-xs md:text-sm tracking-[0.3em] text-accent uppercase">
             최상위권 미대 전문
           </p>
-          <p className="mb-4 text-[11px] md:text-sm tracking-[0.2em] text-white/50">
+          <p className="mb-4 text-[13px] md:text-sm tracking-[0.2em] text-white/60">
             {CAMP_INFO.name} · 홍대 본원 기숙
           </p>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-tight text-white break-keep">
@@ -209,11 +209,11 @@ export default function WinterLanding() {
               <NaverTalkButton className="w-full px-4 py-4 text-base sm:w-auto sm:px-8" />
             </div>
           </div>
-          <p className="mt-3 text-xs text-white/45">
+          <p className="mt-3 text-[13px] text-white/55">
             신청은 1분 · 네이버 예약은 원하는 날짜·시간을 직접 고르실 수 있습니다
           </p>
 
-          <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs md:text-sm text-white/60">
+          <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[13px] md:text-sm text-white/70">
             {["홍대 본원", "학과 직강", "실기 주말 집중", "기숙"].map((chip) => (
               <li
                 key={chip}
@@ -246,10 +246,10 @@ export default function WinterLanding() {
                 key={info.label}
                 className="rounded-xl border border-white/10 bg-white/5 px-4 py-5"
               >
-                <p className="text-[11px] tracking-widest text-white/40 uppercase">
+                <p className="text-[12px] tracking-widest text-white/50 uppercase">
                   {info.label}
                 </p>
-                <p className="mt-1.5 text-sm font-semibold text-white break-keep">
+                <p className="mt-2 text-[15px] font-semibold leading-snug text-white break-keep">
                   {info.value}
                 </p>
               </div>
@@ -258,7 +258,7 @@ export default function WinterLanding() {
 
           <motion.p
             {...fadeUp}
-            className="mt-6 text-center text-sm text-white/50 break-keep"
+            className="mt-6 text-center text-[15px] leading-relaxed text-white/65 break-keep"
           >
             {CAMP_INFO.venueName}에서 진행하는 8주 기숙 과정입니다. 2월 말
             윈터스쿨이 끝나면 예비 고2·고3은 학교로 돌아가고, 재수생은 3월 문을
@@ -278,7 +278,7 @@ export default function WinterLanding() {
                 <p className="mt-2 text-base font-bold text-white break-keep md:text-lg">
                   1~2월에 미리 시작해, 3월에 끊기지 않고 이어갑니다
                 </p>
-                <p className="mt-1.5 text-sm text-white/55 break-keep">
+                <p className="mt-2 text-[15px] leading-relaxed text-white/70 break-keep">
                   겨울 8주 동안 국어·영어·탐구를 먼저 올려두고, 3월 문을 여는
                   파주 기숙학원 정규 과정으로 그대로 넘어갑니다. 재수 첫 달을
                   적응하는 데 쓰지 않아도 됩니다.
@@ -317,7 +317,7 @@ export default function WinterLanding() {
             <p className="mt-4 text-2xl md:text-3xl font-black text-white break-keep">
               겨울 8주는 비중의 문제입니다.
             </p>
-            <div className="mt-5 space-y-4 text-sm md:text-lg leading-[1.9] text-white/75 break-keep">
+            <div className="mt-5 space-y-4 text-[15px] md:text-lg leading-[1.9] text-white/80 break-keep">
               <p>
                 실기도 학과도 놓을 수 없습니다.{" "}
                 <br className="hidden md:block" />
@@ -337,7 +337,7 @@ export default function WinterLanding() {
                 <br className="hidden md:block" />
                 저희는 국어·영어·탐구에 전부 씁니다.
               </p>
-              <p className="text-xs md:text-sm leading-relaxed text-white/45">
+              <p className="text-[13px] md:text-sm leading-relaxed text-white/55">
                 수학이 필수인 곳은 서울대 디자인과처럼 일부이고, 이화여대·홍익대처럼
                 반영하는 대학도 국·수·탐 중 택2라 수학 없이 지원할 수 있습니다.
                 지망 대학에 수학이 필요하다면 상담 때 함께 확인합니다.
@@ -347,7 +347,7 @@ export default function WinterLanding() {
 
           <motion.div {...fadeUp} className="mt-6 grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10">
-              <p className="text-[11px] tracking-[0.25em] text-white/35 uppercase">
+              <p className="text-[12px] tracking-[0.25em] text-white/45 uppercase">
                 일반 미술학원의 겨울
               </p>
               <p className="mt-4 text-xl md:text-2xl font-bold text-white/60 leading-snug break-keep">
@@ -355,13 +355,13 @@ export default function WinterLanding() {
                 <br />
                 학과는 각자 알아서
               </p>
-              <p className="mt-3 text-sm leading-relaxed text-white/40 break-keep">
+              <p className="mt-3 text-[15px] leading-relaxed text-white/55 break-keep">
                 13:00~22:00을 그림에 씁니다. 그림은 늘지만 학과는 겨울 전보다
                 내려앉은 채 3월을 맞습니다.
               </p>
             </div>
             <div className="rounded-2xl border border-accent/30 bg-accent/[0.05] p-8 md:p-10">
-              <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
+              <p className="text-[12px] tracking-[0.25em] text-accent uppercase">
                 모다고 윈터스쿨
               </p>
               <p className="mt-4 text-xl md:text-2xl font-bold text-white leading-snug break-keep">
@@ -369,7 +369,7 @@ export default function WinterLanding() {
                 <br />
                 주말은 실기에 집중
               </p>
-              <p className="mt-3 text-sm leading-relaxed text-white/55 break-keep">
+              <p className="mt-3 text-[15px] leading-relaxed text-white/70 break-keep">
                 주말 이틀로 손과 감각은 8주 내내 이어 갑니다. 늘어난 평일
                 시간은 국어·영어·탐구에 씁니다.
               </p>
@@ -381,7 +381,7 @@ export default function WinterLanding() {
 
           <motion.p
             {...fadeUp}
-            className="mx-auto mt-8 max-w-2xl text-center text-sm md:text-base leading-relaxed text-white/60 break-keep"
+            className="mx-auto mt-8 max-w-2xl text-center text-[15px] md:text-base leading-relaxed text-white/70 break-keep"
           >
             겨울을 실기 특강으로만 채우면 하루의 대부분이 그림에 쓰여 학과
             공부는 흐름이 끊깁니다. 반대로 실기를 두 달 놓아 버리면 3월에 손을
@@ -430,14 +430,14 @@ export default function WinterLanding() {
               >
                 <div className="flex items-center gap-2.5">
                   <item.icon size={20} strokeWidth={1.5} className="text-accent" />
-                  <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-[11px] font-semibold tracking-wide text-accent">
+                  <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-[12px] font-semibold tracking-wide text-accent">
                     {item.step}
                   </span>
                 </div>
                 <h3 className="mt-4 text-lg md:text-xl font-bold text-white">
                   {item.title}
                 </h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-white/60 break-keep">
+                <p className="mt-3 text-[15px] leading-relaxed text-white/70 break-keep">
                   {item.desc}
                 </p>
               </motion.div>
@@ -450,13 +450,13 @@ export default function WinterLanding() {
             className="mt-12 rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-10"
           >
             <div className="mx-auto max-w-2xl text-center">
-              <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
+              <p className="text-[12px] tracking-[0.25em] text-accent uppercase">
                 Report
               </p>
               <h3 className="mt-3 text-2xl md:text-3xl font-bold text-white break-keep">
                 2주에 한 번, 숫자로 보내드립니다
               </h3>
-              <p className="mt-4 text-sm md:text-base leading-relaxed text-white/60 break-keep">
+              <p className="mt-4 text-[15px] md:text-base leading-relaxed text-white/70 break-keep">
                 모의고사 점수와 단어 시험 결과, 자기주도 학습 시간과 생활 상황을
                 정리해 격주로 학부모님께 발송합니다. 8주가 끝난 뒤에 결과를
                 받아보는 것이 아니라, 진행되는 동안 계속 확인하실 수 있습니다.
@@ -465,7 +465,7 @@ export default function WinterLanding() {
 
             <figure className="mt-8">
               <ReportSample />
-              <figcaption className="mt-3 text-center text-xs text-white/40 break-keep">
+              <figcaption className="mt-3 text-center text-[13px] text-white/50 break-keep">
                 {REPORT_SAMPLE.caption}
               </figcaption>
             </figure>
@@ -526,7 +526,7 @@ export default function WinterLanding() {
                       />
                     )}
                     <span className="flex-1">
-                      <span className="block text-[11px] tracking-[0.25em] text-white/35 uppercase">
+                      <span className="block text-[12px] tracking-[0.25em] text-white/45 uppercase">
                         {page.en}
                       </span>
                       <span className="mt-1.5 flex items-center gap-1.5 text-lg md:text-xl font-bold text-white">
@@ -536,7 +536,7 @@ export default function WinterLanding() {
                           className="text-white/30 transition-colors group-hover:text-accent"
                         />
                       </span>
-                      <span className="mt-2 block text-sm leading-relaxed text-white/55 break-keep">
+                      <span className="mt-2 block text-[15px] leading-relaxed text-white/70 break-keep">
                         {page.desc}
                       </span>
                     </span>
@@ -571,16 +571,16 @@ export default function WinterLanding() {
             {...fadeUp}
             className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-8 md:p-10 text-center"
           >
-            <p className="text-[11px] tracking-[0.25em] text-white/40 uppercase">
+            <p className="text-[12px] tracking-[0.25em] text-white/50 uppercase">
               8주 전 과정 수강료
             </p>
             <p className="mt-4 text-3xl md:text-4xl font-black text-white">
               {CAMP_INFO.tuition}
             </p>
-            <p className="mt-3 text-sm md:text-base text-white/60 break-keep">
+            <p className="mt-3 text-[15px] md:text-base leading-relaxed text-white/70 break-keep">
               {CAMP_INFO.tuitionIncludes}
             </p>
-            <p className="mt-2 text-sm text-white/45 break-keep">
+            <p className="mt-2.5 text-sm leading-relaxed text-white/60 break-keep">
               수강료는 학생별 과정 구성에 따라 달라져, 상담을 통해 정확히
               안내드립니다.
             </p>
@@ -624,7 +624,7 @@ export default function WinterLanding() {
 
             <Link
               href="/tuition"
-              className="mt-6 inline-block text-xs text-white/40 underline underline-offset-4 transition-colors hover:text-white/70"
+              className="mt-6 inline-block text-[13px] text-white/50 underline underline-offset-4 transition-colors hover:text-white/80"
             >
               교육청 등록 교습비 고지 보기 (학원등록번호 제02201000109호)
             </Link>
@@ -638,7 +638,7 @@ export default function WinterLanding() {
             <h3 className="text-base md:text-lg font-bold text-white">
               환불 규정 안내
             </h3>
-            <div className="mt-4 space-y-4 text-sm leading-relaxed text-white/60 break-keep">
+            <div className="mt-4 space-y-4 text-[15px] leading-relaxed text-white/70 break-keep">
               <p>
                 중도 퇴원(퇴소) 시 교육청 환불규정(제18조 제3호)에 따라 수강료를
                 반환합니다.
@@ -655,7 +655,7 @@ export default function WinterLanding() {
                         key={when}
                         className="border-b border-white/5 last:border-b-0"
                       >
-                        <td className="px-4 py-3 text-white/70">{when}</td>
+                        <td className="px-4 py-3 text-white/75">{when}</td>
                         <td className="px-4 py-3 text-white/90 font-medium">
                           {amount}
                         </td>
@@ -664,7 +664,7 @@ export default function WinterLanding() {
                   </tbody>
                 </table>
               </div>
-              <ul className="list-disc space-y-1.5 pl-5 text-white/55">
+              <ul className="list-disc space-y-2 pl-5 text-white/65">
                 <li>
                   개인 사정으로 인한 지각·결석은 수강료 반환 사유에서
                   제외됩니다.
@@ -684,7 +684,7 @@ export default function WinterLanding() {
               className="group inline-block"
               aria-label={`홍대 본원 전화 ${CAMP_INFO.phone}`}
             >
-              <p className="text-xs tracking-[0.3em] text-white/40 uppercase">
+              <p className="text-[13px] tracking-[0.3em] text-white/50 uppercase">
                 홍대 본원
               </p>
               <p className="mt-2 text-4xl md:text-6xl font-black tracking-tight text-white transition-colors group-hover:text-accent">
@@ -697,7 +697,7 @@ export default function WinterLanding() {
                 <MapPin size={15} className="text-accent" />
                 {CAMP_INFO.venueName}
               </p>
-              <p className="mt-2 text-sm text-white/55">{CAMP_INFO.address}</p>
+              <p className="mt-2 text-[15px] text-white/65">{CAMP_INFO.address}</p>
               <a
                 href={CAMP_INFO.mapUrl}
                 target="_blank"

@@ -162,7 +162,7 @@ export default function ReportSample({ className = "" }: { className?: string })
           </table>
         </Scroller>
 
-        <p className="mt-2 text-[10px] md:text-[11px] text-neutral-400 break-keep">
+        <p className="mt-2 text-[11px] md:text-[12px] text-neutral-500 break-keep">
           ※ {R.vocab.note}
         </p>
 
@@ -259,7 +259,7 @@ export default function ReportSample({ className = "" }: { className?: string })
           </table>
         </Scroller>
 
-        <p className="mt-2 text-[10px] md:text-[11px] text-neutral-400 break-keep">
+        <p className="mt-2 text-[11px] md:text-[12px] text-neutral-500 break-keep">
           ※ {R.mock.note}
         </p>
 
@@ -297,7 +297,7 @@ export default function ReportSample({ className = "" }: { className?: string })
           </table>
         </Scroller>
 
-        <p className="mt-2 text-[10px] md:text-[11px] text-neutral-400 break-keep">
+        <p className="mt-2 text-[11px] md:text-[12px] text-neutral-500 break-keep">
           ※ {R.life.note}
         </p>
 
@@ -305,17 +305,17 @@ export default function ReportSample({ className = "" }: { className?: string })
         <SectionTitle no="V">강사 코멘트 · 다음 2주 목표</SectionTitle>
 
         <div className="mt-3 border border-neutral-200 px-4 py-5 md:px-6">
-          <p className="text-[10px] md:text-[11px] text-neutral-400">
+          <p className="text-[11px] md:text-[12px] text-neutral-500">
             강사 코멘트
           </p>
-          <p className="mt-2 text-[11px] md:text-[13px] leading-relaxed text-neutral-800 break-keep">
+          <p className="mt-2 text-[12px] md:text-[13px] leading-relaxed text-neutral-800 break-keep">
             {R.comment}
           </p>
 
-          <p className="mt-5 text-[10px] md:text-[11px] text-neutral-400">
+          <p className="mt-5 text-[11px] md:text-[12px] text-neutral-500">
             다음 2주 목표
           </p>
-          <ol className="mt-2 flex flex-col gap-1 text-[11px] md:text-[13px] leading-relaxed text-neutral-800 md:flex-row md:flex-wrap md:gap-x-6">
+          <ol className="mt-2 flex flex-col gap-1.5 text-[12px] md:text-[13px] leading-relaxed text-neutral-800 md:flex-row md:flex-wrap md:gap-x-6">
             {R.goals.map((g, i) => (
               <li key={g}>
                 <span className="mr-1 font-semibold text-neutral-900">

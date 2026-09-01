@@ -48,14 +48,14 @@ export default function GradeSlopeChart() {
       className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-10"
     >
       <figcaption className="text-center">
-        <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
+        <p className="text-[12px] tracking-[0.25em] text-accent uppercase">
           Before / After
         </p>
         <p className="mt-3 text-xl md:text-3xl font-bold text-white break-keep">
           같은 {startGrade}등급으로 시작해도,
           <br className="md:hidden" /> 8주 뒤엔 이만큼 벌어집니다
         </p>
-        <p className="mt-2.5 text-sm text-white/50 break-keep">
+        <p className="mt-2.5 text-sm text-white/60 break-keep">
           {subjects} 기준
         </p>
       </figcaption>
@@ -68,7 +68,7 @@ export default function GradeSlopeChart() {
             <span
               key={g}
               style={{ top: `${y(g)}%` }}
-              className="absolute right-2 -translate-y-1/2 text-[11px] md:text-xs tabular-nums text-white/40"
+              className="absolute right-2 -translate-y-1/2 text-[12px] md:text-[13px] tabular-nums text-white/50"
             >
               {g}등급
             </span>
@@ -128,7 +128,7 @@ export default function GradeSlopeChart() {
               <span
                 style={{ left: `${END_X}%`, top: `${y(track.afterGrade)}%` }}
                 className={`absolute -translate-x-1/2 -translate-y-[165%] text-sm md:text-base font-bold tabular-nums whitespace-nowrap ${
-                  track.emphasis ? "text-accent" : "text-white/45"
+                  track.emphasis ? "text-accent" : "text-white/55"
                 }`}
               >
                 {track.afterGrade}등급
@@ -144,13 +144,13 @@ export default function GradeSlopeChart() {
         <div className="relative h-6 flex-1 border-t border-white/[0.07]">
           <span
             style={{ left: `${START_X}%` }}
-            className="absolute top-2.5 -translate-x-1/2 text-[11px] md:text-xs whitespace-nowrap text-white/45"
+            className="absolute top-2.5 -translate-x-1/2 text-[12px] md:text-[13px] whitespace-nowrap text-white/55"
           >
             {beforeLabel}
           </span>
           <span
             style={{ left: `${END_X}%` }}
-            className="absolute top-2.5 -translate-x-1/2 text-[11px] md:text-xs whitespace-nowrap text-white/45"
+            className="absolute top-2.5 -translate-x-1/2 text-[12px] md:text-[13px] whitespace-nowrap text-white/55"
           >
             {afterLabel}
           </span>
@@ -192,21 +192,21 @@ export default function GradeSlopeChart() {
                 >
                   {track.name}
                 </span>
-                <span className="text-xs text-white/35 break-keep">
+                <span className="text-[12px] text-white/50 break-keep">
                   {track.detail}
                 </span>
               </dt>
               <dd className="mt-2 flex items-baseline gap-2 pl-[18px]">
                 <span
                   className={`text-sm tabular-nums ${
-                    track.emphasis ? "text-white/80" : "text-white/50"
+                    track.emphasis ? "text-white/85" : "text-white/60"
                   }`}
                 >
                   {startGrade}등급 → {track.afterGrade}등급
                 </span>
                 <span
-                  className={`text-xs font-semibold ${
-                    diff > 0 ? "text-accent" : "text-white/40"
+                  className={`text-[12px] font-semibold ${
+                    diff > 0 ? "text-accent" : "text-white/50"
                   }`}
                 >
                   {diff > 0
@@ -221,7 +221,7 @@ export default function GradeSlopeChart() {
         })}
       </dl>
 
-      <p className="mt-5 text-center text-xs leading-relaxed text-white/35 break-keep">
+      <p className="mt-5 text-center text-[12px] leading-relaxed text-white/45 break-keep">
         세로축은 등급이며 위로 갈수록 높은 등급입니다.
         <br />※ {note}
       </p>

@@ -55,7 +55,7 @@ export function SectionHead({
         {ko}
       </h2>
       {sub && (
-        <p className="mt-4 text-white/60 text-sm md:text-base leading-relaxed break-keep">
+        <p className="mt-4 text-white/70 text-[15px] md:text-base leading-relaxed break-keep">
           {sub}
         </p>
       )}
@@ -79,7 +79,7 @@ export function SubPageHeader({
     <header className="text-center">
       <nav
         aria-label="현재 위치"
-        className="flex items-center justify-center gap-1.5 text-xs text-white/40"
+        className="flex items-center justify-center gap-1.5 text-[13px] text-white/50"
       >
         <Link href="/winter" className="transition-colors hover:text-white/70">
           윈터스쿨
@@ -95,7 +95,7 @@ export function SubPageHeader({
         {title}
       </h1>
       {sub && (
-        <p className="mx-auto mt-5 max-w-xl text-sm md:text-base leading-relaxed text-white/60 break-keep">
+        <p className="mx-auto mt-5 max-w-xl text-[15px] md:text-base leading-relaxed text-white/70 break-keep">
           {sub}
         </p>
       )}
@@ -153,10 +153,10 @@ export function WinterTabs({ className = "" }: { className?: string }) {
               href={tab.href}
               ref={active ? activeRef : undefined}
               aria-current={active ? "page" : undefined}
-              className={`shrink-0 whitespace-nowrap rounded-full px-3.5 py-2 text-xs transition-colors md:px-4 md:text-sm ${
+              className={`shrink-0 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] transition-colors md:px-4 md:text-sm ${
                 active
                   ? "bg-accent font-semibold text-black"
-                  : "border border-white/15 text-white/60 hover:border-white/40 hover:text-white"
+                  : "border border-white/15 text-white/70 hover:border-white/40 hover:text-white"
               }`}
             >
               {tab.label}
@@ -233,7 +233,7 @@ export function AccordionItem({
         aria-expanded={open}
         className="flex w-full items-center justify-between gap-4 py-5 text-left"
       >
-        <span className="text-sm md:text-base font-medium text-white/90 break-keep">
+        <span className="text-[15px] md:text-base font-medium leading-relaxed text-white/90 break-keep">
           {q}
         </span>
         <ChevronDown
@@ -247,7 +247,7 @@ export function AccordionItem({
         }`}
       >
         <div className="overflow-hidden">
-          <div className="pb-5 text-sm leading-relaxed text-white/60 break-keep">
+          <div className="pb-5 text-[15px] leading-[1.75] text-white/75 break-keep">
             {a}
           </div>
         </div>
@@ -261,7 +261,7 @@ export function AccordionItem({
 /** 아직 실제 데이터가 들어오지 않은 페이지에 띄우는 안내 */
 export function PlaceholderNotice({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mx-auto max-w-xl rounded-lg border border-dashed border-accent/40 bg-accent/[0.06] px-4 py-3 text-center text-xs leading-relaxed text-accent break-keep">
+    <p className="mx-auto max-w-xl rounded-lg border border-dashed border-accent/40 bg-accent/[0.06] px-4 py-3 text-center text-[13px] leading-relaxed text-accent break-keep">
       {children}
     </p>
   );

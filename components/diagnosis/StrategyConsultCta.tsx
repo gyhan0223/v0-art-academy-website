@@ -55,7 +55,7 @@ export default function StrategyConsultCta({
           </>
         )}
       </h2>
-      <p className="mt-3 text-[14px] leading-relaxed text-white/60 break-keep">
+      <p className="mt-3 text-[15px] leading-relaxed text-white/70 break-keep">
         {targetUniversity != null
           ? "자동 진단은 현재 위치를 보여줍니다. 실제 지원 전략은 성적 · 실기 · 다른 군의 대학까지 함께 봐야 합니다."
           : "자동 진단은 현재 위치를 보여줍니다. 실제 전략은 성적 · 실기 · 목표 대학을 함께 봐야 합니다."}
@@ -65,7 +65,7 @@ export default function StrategyConsultCta({
       </p>
 
       <div className="mt-5 flex items-baseline gap-3">
-        <p className="text-[13px] text-white/60">{CONSULTING_INFO.name}</p>
+        <p className="text-[13px] text-white/65">{CONSULTING_INFO.name}</p>
         <p className="text-xl font-bold text-white">
           {CONSULTING_INFO.priceLabel}
         </p>

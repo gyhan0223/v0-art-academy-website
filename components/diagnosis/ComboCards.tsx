@@ -68,7 +68,7 @@ export function ComboCard({
             <p className="text-lg font-bold leading-snug text-white">
               {pick.entry.university}
               {pick.entry.campus ? (
-                <span className="text-[14px] font-normal text-white/50">
+                <span className="text-[14px] font-normal text-white/60">
                   {" "}
                   {pick.entry.campus}
                 </span>
@@ -77,33 +77,33 @@ export function ComboCard({
             {/* 도전 상향 카드는 입결 비공개라도 '도전'으로 표기 */}
             <TierBadge tier={pick.stretch ? "도전" : pick.tier} />
           </div>
-          <p className="mt-1 text-[13px] leading-relaxed text-white/55">
+          <p className="mt-1.5 text-sm leading-relaxed text-white/65">
             {pick.entry.units}
           </p>
-          <p className="mt-1.5 text-[12px] text-white/40">
+          <p className="mt-1.5 text-[13px] text-white/55">
             {silgiShort(pick.entry)}
             {isSilgiFree(pick.entry) && " · 실기 무관"}
           </p>
           <details className="group mt-3">
-            <summary className="cursor-pointer list-none text-[13px] text-white/45 transition-colors hover:text-accent group-open:text-accent">
+            <summary className="cursor-pointer list-none text-[13px] text-white/60 transition-colors hover:text-accent group-open:text-accent">
               왜 추천했나요?
             </summary>
-            <div className="mt-2 space-y-1.5">
+            <div className="mt-2.5 space-y-2">
               {pick.entry.method.map((m) => (
                 <p
                   key={m}
-                  className="text-[12px] leading-relaxed text-white/55"
+                  className="text-[13px] leading-relaxed text-white/65"
                 >
                   {m}
                 </p>
               ))}
               {pick.cutoffLabel && (
-                <p className="text-[12px] text-white/40">
+                <p className="text-[13px] text-white/50">
                   참고 합격선: {pick.cutoffLabel}
                 </p>
               )}
               {!pick.cutoffLabel && (
-                <p className="text-[12px] text-white/40">
+                <p className="text-[13px] text-white/50">
                   이 대학은 최근 입시결과가 공개되지 않아 지원권 판정 없이
                   참고로 보여드려요.
                 </p>
@@ -112,7 +112,7 @@ export function ComboCard({
           </details>
         </>
       ) : (
-        <p className="mt-2 text-[14px] leading-relaxed text-white/45">
+        <p className="mt-2 text-[15px] leading-relaxed text-white/55">
           이 군에서는 조건에 맞는 추천 대학을 찾지 못했어요. 실기 유형이나
           성적 조건을 바꿔 다시 진단해보세요.
         </p>

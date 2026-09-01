@@ -33,11 +33,11 @@ export default function CtaBand({
           {headline}
         </p>
         {sub && (
-          <p className="mt-2.5 text-sm md:text-base text-white/60 break-keep">
+          <p className="mt-2.5 text-[15px] md:text-base leading-relaxed text-white/70 break-keep">
             {sub}
           </p>
         )}
-        <p className="mt-4 text-xs font-semibold tracking-wide text-accent">
+        <p className="mt-4 text-[13px] font-semibold tracking-wide text-accent">
           {seatLabel}
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
@@ -69,7 +69,7 @@ export default function CtaBand({
             <NaverTalkButton className="w-full px-3 py-4 text-base sm:w-auto sm:px-8" />
           </div>
         </div>
-        <p className="mt-4 text-xs text-white/40">
+        <p className="mt-4 text-[13px] text-white/50">
           신청은 1분이면 충분합니다 · 네이버 예약은 원하는 시간을 직접 고르실 수
           있습니다
         </p>

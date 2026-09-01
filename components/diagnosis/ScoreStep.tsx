@@ -38,7 +38,7 @@ function GradeSelect({
 }) {
   return (
     <fieldset>
-      <legend className="mb-2 block text-[13px] text-white/50">{label}</legend>
+      <legend className="mb-2 block text-[13px] text-white/65">{label}</legend>
       <div className="grid grid-cols-5 gap-1.5">
         {GRADES.map((g) => (
           <button
@@ -83,9 +83,9 @@ function NumInput({
   const invalid = value != null && (value < min || value > max);
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block text-[13px] text-white/50">
+      <label htmlFor={id} className="mb-2 block text-[13px] text-white/65">
         {label}
-        {optional && <span className="ml-1 text-white/30">선택 입력</span>}
+        {optional && <span className="ml-1 text-white/45">선택 입력</span>}
       </label>
       <input
         id={id}
@@ -99,7 +99,7 @@ function NumInput({
           onChange(raw === "" ? null : parseNum(raw));
         }}
         aria-invalid={invalid}
-        className={`w-full rounded-lg border bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-white/25 focus:outline-none ${
+        className={`w-full rounded-lg border bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-white/35 focus:outline-none ${
           invalid
             ? "border-red-400/60"
             : "border-white/12 focus:border-accent/60"
@@ -144,7 +144,7 @@ function NotTakenToggle({
   label: string;
 }) {
   return (
-    <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 text-[14px] text-white/55">
+    <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 text-[14px] text-white/70">
       <input
         type="checkbox"
         checked={checked}
@@ -302,9 +302,9 @@ export default function ScoreStep({
             <div>
               <label
                 htmlFor="inquiry1-subject"
-                className="mb-2 block text-[13px] text-white/50"
+                className="mb-2 block text-[13px] text-white/65"
               >
-                과목명<span className="ml-1 text-white/30">선택 입력</span>
+                과목명<span className="ml-1 text-white/45">선택 입력</span>
               </label>
               <input
                 id="inquiry1-subject"
@@ -318,7 +318,7 @@ export default function ScoreStep({
                     inquiry1: { ...value.inquiry1, subject: e.target.value },
                   })
                 }
-                className="w-full rounded-lg border border-white/12 bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-white/25 focus:border-accent/60 focus:outline-none disabled:opacity-40"
+                className="w-full rounded-lg border border-white/12 bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-white/35 focus:border-accent/60 focus:outline-none disabled:opacity-40"
               />
             </div>
             {!value.inquiry1.notTaken && (
@@ -345,9 +345,9 @@ export default function ScoreStep({
             <div>
               <label
                 htmlFor="inquiry2-subject"
-                className="mb-2 block text-[13px] text-white/50"
+                className="mb-2 block text-[13px] text-white/65"
               >
-                과목명<span className="ml-1 text-white/30">선택 입력</span>
+                과목명<span className="ml-1 text-white/45">선택 입력</span>
               </label>
               <input
                 id="inquiry2-subject"
@@ -361,7 +361,7 @@ export default function ScoreStep({
                     inquiry2: { ...value.inquiry2, subject: e.target.value },
                   })
                 }
-                className="w-full rounded-lg border border-white/12 bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-white/25 focus:border-accent/60 focus:outline-none disabled:opacity-40"
+                className="w-full rounded-lg border border-white/12 bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-white/35 focus:border-accent/60 focus:outline-none disabled:opacity-40"
               />
             </div>
             {!value.inquiry2.notTaken && (
@@ -388,9 +388,9 @@ export default function ScoreStep({
             {!value.math.notTaken && (
               <>
                 <div>
-                  <span className="mb-2 block text-[13px] text-white/50">
+                  <span className="mb-2 block text-[13px] text-white/65">
                     선택과목
-                    <span className="ml-1 text-white/30">선택 입력</span>
+                    <span className="ml-1 text-white/45">선택 입력</span>
                   </span>
                   <div className="grid grid-cols-3 gap-1.5">
                     {MATH_SUBJECTS.map((s) => (

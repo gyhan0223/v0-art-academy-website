@@ -66,7 +66,7 @@ function DayHead({
     >
       <p className="text-sm md:text-base font-bold text-white break-keep">
         {title}{" "}
-        <span className="text-[10px] md:text-xs font-medium text-white/40">{sub}</span>
+        <span className="text-[11px] md:text-xs font-medium text-white/50">{sub}</span>
       </p>
       <dl className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
         {shares.map((share) => (
@@ -74,10 +74,10 @@ function DayHead({
             <span
               className={`h-1.5 w-1.5 shrink-0 rounded-full ${SCHEDULE_STYLE[share.type].dot}`}
             />
-            <dt className="text-[9px] md:text-[11px] text-white/45">
+            <dt className="text-[10px] md:text-[12px] text-white/55">
               {SCHEDULE_STYLE[share.type].label}
             </dt>
-            <dd className="text-[9px] md:text-[11px] font-medium tabular-nums text-white/70">
+            <dd className="text-[10px] md:text-[12px] font-medium tabular-nums text-white/75">
               {durationLabel(share.minutes)}
             </dd>
           </div>
@@ -108,18 +108,18 @@ function SlotCell({ cell, column }: { cell: ScheduleCell; column: number }) {
       }}
     >
       <p
-        className={`text-[11px] md:text-sm font-semibold leading-snug break-keep ${style.title}`}
+        className={`text-[12px] md:text-sm font-semibold leading-snug break-keep ${style.title}`}
       >
         <span className="md:hidden">{cell.block.short}</span>
         <span className="hidden md:inline">{cell.block.label}</span>
       </p>
       <p
-        className={`mt-0.5 text-[9px] md:text-[11px] tabular-nums ${style.text}`}
+        className={`mt-0.5 text-[10px] md:text-[12px] tabular-nums ${style.text}`}
       >
         {durationLabel(durationOf(cell.block))}
       </p>
       {cell.block.note && (
-        <p className="mt-1 hidden md:block text-[11px] leading-relaxed text-white/40 break-keep">
+        <p className="mt-1 hidden md:block text-[12px] leading-relaxed text-white/50 break-keep">
           {cell.block.note}
         </p>
       )}
@@ -130,7 +130,7 @@ function SlotCell({ cell, column }: { cell: ScheduleCell; column: number }) {
 /** 평일과 주말을 한 표에 나란히 — 스크롤 없이 하루가 한눈에 들어오게 한다 */
 function ScheduleTable() {
   return (
-    <div className="grid auto-rows-[minmax(2.5rem,auto)] grid-cols-[38px_1fr_1fr] gap-x-1.5 gap-y-1 md:auto-rows-[minmax(3rem,auto)] md:grid-cols-[56px_1fr_1fr] md:gap-x-3 md:gap-y-1.5">
+    <div className="grid auto-rows-[minmax(2.5rem,auto)] grid-cols-[42px_1fr_1fr] gap-x-1.5 gap-y-1 md:auto-rows-[minmax(3rem,auto)] md:grid-cols-[56px_1fr_1fr] md:gap-x-3 md:gap-y-1.5">
       <DayHead title="평일" sub="월–금" blocks={WEEKDAY_SCHEDULE} column={2} />
       <DayHead title="주말" sub="토·일" blocks={WEEKEND_SCHEDULE} column={3} />
 
@@ -138,7 +138,7 @@ function ScheduleTable() {
       {ROW_TIMES.map((time, i) => (
         <span
           key={time}
-          className="pt-1.5 text-right font-mono text-[10px] md:text-xs tabular-nums text-white/35"
+          className="pt-1.5 text-right font-mono text-[11px] md:text-xs tabular-nums text-white/45"
           style={{ gridColumn: 1, gridRow: gridRowOf(i) }}
         >
           {time}
@@ -157,10 +157,10 @@ function ScheduleTable() {
         className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 rounded-lg border border-dashed border-white/15 bg-white/[0.02] px-2.5 py-2 md:px-3.5"
         style={{ gridColumn: "2 / span 2", gridRow: SLEEP_ROW }}
       >
-        <span className="text-[11px] md:text-sm font-semibold text-white/60">
+        <span className="text-[12px] md:text-sm font-semibold text-white/70">
           취침
         </span>
-        <span className="text-[10px] md:text-xs text-white/40 break-keep">
+        <span className="text-[11px] md:text-xs text-white/50 break-keep">
           다음 날 {WAKE_TIME} 기상까지 — 매일 {SLEEP_HOURS}시간 수면
         </span>
       </div>
@@ -192,7 +192,7 @@ export default function WinterSchedulePage() {
 
           <motion.p
             {...fadeUp}
-            className="mt-5 text-center text-xs leading-relaxed text-white/35 break-keep"
+            className="mt-5 text-center text-[13px] leading-relaxed text-white/50 break-keep"
           >
             ※ {WAKE_TIME} 기상부터 {SLEEP_TIME} 취침까지, 깨어 있는 하루{" "}
             {durationLabel(AWAKE_MINUTES)}입니다.
@@ -234,7 +234,7 @@ export default function WinterSchedulePage() {
                     {style.label}
                   </p>
                   {day.highlight && (
-                    <p className="mt-2 text-[10px] md:text-xs leading-snug text-white/50 break-keep">
+                    <p className="mt-2 text-[11px] md:text-xs leading-snug text-white/60 break-keep">
                       {day.highlight}
                     </p>
                   )}
@@ -253,10 +253,10 @@ export default function WinterSchedulePage() {
                 key={item.label}
                 className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-5"
               >
-                <dt className="text-[11px] tracking-widest text-accent uppercase">
+                <dt className="text-[12px] tracking-widest text-accent uppercase">
                   {item.label}
                 </dt>
-                <dd className="mt-2 text-sm leading-relaxed text-white/70 break-keep">
+                <dd className="mt-2.5 text-[15px] leading-relaxed text-white/75 break-keep">
                   {item.detail}
                 </dd>
               </div>
@@ -288,7 +288,7 @@ export default function WinterSchedulePage() {
                 <h3 className="mt-4 text-base md:text-lg font-bold text-white break-keep">
                   {item.title}
                 </h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-white/60 break-keep">
+                <p className="mt-3 text-[15px] leading-relaxed text-white/70 break-keep">
                   {item.desc}
                 </p>
               </motion.div>

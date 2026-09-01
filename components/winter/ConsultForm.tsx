@@ -37,7 +37,7 @@ function phoneError(value: string): string | null {
 const GRADE_OPTIONS = ["예비 고2", "예비 고3", "재수생"] as const;
 
 const INPUT_CLASS =
-  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3.5 text-sm text-white placeholder:text-white/30 outline-none transition-colors focus:border-accent";
+  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3.5 text-[15px] text-white placeholder:text-white/40 outline-none transition-colors focus:border-accent";
 
 export default function ConsultForm() {
   const [name, setName] = useState("");
@@ -94,7 +94,7 @@ export default function ConsultForm() {
         <p className="mt-5 text-xl md:text-2xl font-bold text-white">
           접수되었습니다.
         </p>
-        <p className="mt-2 text-sm md:text-base text-white/60">
+        <p className="mt-2 text-[15px] md:text-base text-white/70">
           곧 연락드리겠습니다.
         </p>
       </div>
@@ -106,13 +106,13 @@ export default function ConsultForm() {
       id="consult-form"
       className="scroll-mt-24 rounded-2xl border border-accent/40 bg-white/[0.03] p-7 md:p-10 text-left"
     >
-      <p className="text-[11px] tracking-[0.25em] text-accent uppercase">
+      <p className="text-[12px] tracking-[0.25em] text-accent uppercase">
         Consult
       </p>
       <h3 className="mt-2 text-xl md:text-2xl font-bold text-white">
         상담 신청
       </h3>
-      <p className="mt-2 text-sm text-white/50 break-keep">
+      <p className="mt-2 text-sm leading-relaxed text-white/65 break-keep">
         정원 {CAMP_INFO.capacityTotal}명 {CAMP_INFO.capacityNote} · 남겨주시면
         순서대로 연락드립니다.
       </p>
@@ -122,7 +122,7 @@ export default function ConsultForm() {
         <div>
           <label
             htmlFor="consult-name"
-            className="mb-2 block text-sm font-medium text-white/70"
+            className="mb-2 block text-sm font-medium text-white/80"
           >
             학생 이름 <span className="text-accent">*</span>
           </label>
@@ -138,7 +138,7 @@ export default function ConsultForm() {
 
         {/* 학년 */}
         <div>
-          <p className="mb-2 text-sm font-medium text-white/70">
+          <p className="mb-2 text-sm font-medium text-white/80">
             학년 <span className="text-accent">*</span>
           </p>
           <div
@@ -153,10 +153,10 @@ export default function ConsultForm() {
                 role="radio"
                 aria-checked={grade === g}
                 onClick={() => setGrade(g)}
-                className={`rounded-xl border py-3.5 text-sm font-medium transition-colors ${
+                className={`rounded-xl border py-3.5 text-[15px] font-medium transition-colors ${
                   grade === g
                     ? "border-accent bg-accent/10 text-accent"
-                    : "border-white/15 text-white/60 hover:border-white/40 hover:text-white"
+                    : "border-white/15 text-white/70 hover:border-white/40 hover:text-white"
                 }`}
               >
                 {g}
@@ -169,7 +169,7 @@ export default function ConsultForm() {
         <div>
           <label
             htmlFor="consult-phone"
-            className="mb-2 block text-sm font-medium text-white/70"
+            className="mb-2 block text-sm font-medium text-white/80"
           >
             연락처 <span className="text-accent">*</span>
           </label>
@@ -192,7 +192,7 @@ export default function ConsultForm() {
             <p
               id="consult-phone-error"
               role="alert"
-              className="mt-2 text-xs text-red-400 break-keep"
+              className="mt-2 text-[13px] text-red-400 break-keep"
             >
               {phoneMessage}
             </p>
@@ -203,10 +203,10 @@ export default function ConsultForm() {
         <div>
           <label
             htmlFor="consult-univ"
-            className="mb-2 block text-sm font-medium text-white/70"
+            className="mb-2 block text-sm font-medium text-white/80"
           >
             희망 대학{" "}
-            <span className="text-xs font-normal text-white/40">(선택)</span>
+            <span className="text-[12px] font-normal text-white/50">(선택)</span>
           </label>
           <input
             id="consult-univ"
@@ -230,7 +230,7 @@ export default function ConsultForm() {
             />
             <label
               htmlFor="consult-agree"
-              className="cursor-pointer text-sm text-white/70 break-keep"
+              className="cursor-pointer text-sm text-white/80 break-keep"
             >
               개인정보 수집·이용에 동의합니다{" "}
               <span className="text-accent">(필수)</span>
@@ -239,13 +239,13 @@ export default function ConsultForm() {
               type="button"
               onClick={() => setShowPrivacy(!showPrivacy)}
               aria-expanded={showPrivacy}
-              className="shrink-0 text-xs text-white/40 underline underline-offset-2 hover:text-white/70"
+              className="shrink-0 text-[12px] text-white/55 underline underline-offset-2 hover:text-white/80"
             >
               {showPrivacy ? "접기" : "자세히"}
             </button>
           </div>
           {showPrivacy && (
-            <div className="mt-3 space-y-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3.5 text-xs leading-relaxed text-white/50">
+            <div className="mt-3 space-y-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3.5 text-[13px] leading-relaxed text-white/60">
               <p>· 수집 항목: 학생 이름, 학년, 연락처, 희망 대학(선택)</p>
               <p>
                 · 이용 목적: 윈터스쿨 상담 회신 (그 외 목적으로 사용하지
@@ -284,7 +284,7 @@ export default function ConsultForm() {
           </p>
         )}
 
-        <p className="text-center text-xs text-white/40 break-keep">
+        <p className="text-center text-[13px] text-white/55 break-keep">
           밤에 남겨주셔도 괜찮습니다. 다음 날 연락드립니다.
         </p>
       </div>

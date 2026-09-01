@@ -59,7 +59,7 @@ export default function MobileActionBar() {
             className="flex flex-col items-center gap-1 rounded-xl border border-white/15 py-2 text-white"
           >
             <Phone size={17} />
-            <span className="text-[10px] font-medium">전화</span>
+            <span className="text-[11px] font-medium">전화</span>
           </a>
           <a
             href={SMS_HREF}
@@ -67,7 +67,7 @@ export default function MobileActionBar() {
             className="flex flex-col items-center gap-1 rounded-xl border border-white/15 py-2 text-white"
           >
             <MessageSquare size={17} />
-            <span className="text-[10px] font-medium">문자</span>
+            <span className="text-[11px] font-medium">문자</span>
           </a>
           {/* 이 바가 떠 있는 동안은 톡톡 플로팅 버튼이 숨는다(components/academy/NaverTalk.tsx) */}
           <a
@@ -78,7 +78,7 @@ export default function MobileActionBar() {
             className="flex flex-col items-center gap-1 rounded-xl border border-[#03C75A]/50 py-2 text-[#03C75A]"
           >
             <MessageCircle size={17} />
-            <span className="text-[10px] font-medium">톡톡</span>
+            <span className="text-[11px] font-medium">톡톡</span>
           </a>
           {/* 예약은 채워진 초록 — 톡톡(테두리)과 한눈에 구분된다 */}
           <a
@@ -89,7 +89,7 @@ export default function MobileActionBar() {
             className="flex flex-col items-center gap-1 rounded-xl bg-[#03C75A] py-2 text-white"
           >
             <CalendarCheck size={17} />
-            <span className="text-[10px] font-bold">예약</span>
+            <span className="text-[11px] font-bold">예약</span>
           </a>
           <Link
             href={CONSULT_HREF}
@@ -97,7 +97,7 @@ export default function MobileActionBar() {
             className="flex flex-col items-center gap-1 rounded-xl bg-accent py-2 text-black"
           >
             <PenLine size={17} />
-            <span className="text-[10px] font-bold">상담신청</span>
+            <span className="text-[11px] font-bold">상담신청</span>
           </Link>
         </motion.div>
       )}

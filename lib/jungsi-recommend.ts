@@ -65,11 +65,11 @@ const REFLECT: Record<string, ReflectSpec> = {
   "swu-ga": { kind: "pickTop", pool: ["국어", "영어", "수학", "탐구"], weights: [40, 40, 20] },
   "skuniv-ga": { kind: "pickTop", pool: ["국어", "수학", "탐구"], weights: [40, 40], plus: { 영어: 20 } },
   "syu-ga": { kind: "custom", label: "삼육대 자체 등급 환산점수" },
-  "konkuk-ga": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 45, 영어: 25 } },
   "konkuk-hyeondae-ga": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 45, 영어: 25 } },
   "gyeonggi-ga": { kind: "pickTop", pool: ["국어", "수학", "탐구"], weights: [35, 35], plus: { 영어: 30 } },
   "dongduk-ga": { kind: "pickTop", pool: ["국어", "수학"], weights: [35, 25], plus: { 영어: 20, 탐구: 20 } },
   "hansung-ga": { kind: "fixed", w: { 국어: 35, 수학: 25, 영어: 20, 탐구: 20 } },
+  "sungshin-ga": { kind: "pickTop", pool: ["국어", "수학", "영어", "탐구"], weights: [33.33, 33.33, 33.34] },
 
   // ── 나군 ──
   // 서울대: 표준점수 자체 환산을 백분위 가중합으로 근사(수·영·한 감점은 미반영).
@@ -112,6 +112,8 @@ const REFLECT: Record<string, ReflectSpec> = {
   "mju-da": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 35, 영어: 35 } },
   "mju-ai-da": { kind: "fixed", w: { 국어: 25, 수학: 35, 영어: 20, 탐구: 20 }, mathRequired: true },
   "konkuk-da": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 45, 영어: 25 } },
+  // 건국대 영상디자인학과(구 영상학과): 2027학년도 가→다군 이동
+  "konkuk-video-da": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 45, 영어: 25 } },
   "skuniv-mudae-da": { kind: "pickTop", pool: ["국어", "수학", "탐구"], weights: [40, 40], plus: { 영어: 20 } },
 };
 
@@ -136,7 +138,7 @@ const CUTOFFS: Record<string, { p: number; label: string }> = {
   "sookmyung-ga": { p: 77, label: "2026 50%컷 66~85 (학과별·어디가)" },
   "swu-ga": { p: 83, label: "2026 70%컷 환산 82.2~84.2" },
   "skuniv-ga": { p: 54, label: "2026 70%컷 환산 50~58 (실기 80%)" },
-  "konkuk-ga": { p: 77, label: "2026 70%컷 국어 66·탐구 93" },
+  "konkuk-video-da": { p: 77, label: "2026 70%컷 국어 66·탐구 93 (가군 영상학과 시절)" },
   "konkuk-hyeondae-ga": { p: 64, label: "2026 70%컷 국어 57·탐구 73.5" },
   "gyeonggi-ga": { p: 71, label: "2026 50%컷 환산 69.6~73.4" },
   "dongduk-ga": { p: 80.8, label: "2026 70%컷 80.8" },

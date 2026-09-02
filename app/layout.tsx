@@ -124,6 +124,26 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <GaPageView gaId="G-PNVLJBJ8NR" />
             </Suspense>
+
+            {/* Naver Analytics */}
+            <Script id="naver-analytics" strategy="afterInteractive">
+              {`
+    (function () {
+      window.wcs_add = window.wcs_add || {};
+      window.wcs_add["wa"] = "25d2caa9a7462c0";
+
+      var script = document.createElement("script");
+      script.src = "https://wcs.pstatic.net/wcslog.js";
+      script.onload = function () {
+        if (window.wcs) {
+          window.wcs_do();
+        }
+      };
+      document.head.appendChild(script);
+    })();
+  `}
+            </Script>
+
             {/* Microsoft Clarity — 히트맵·세션 레코딩 */}
             <Script id="ms-clarity" strategy="afterInteractive">
               {`(function(c,l,a,r,i,t,y){

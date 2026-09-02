@@ -487,11 +487,11 @@ export default function Page() {
             군별 대학 한눈에 보기
           </h2>
           <p className="mb-5 text-[15px] leading-relaxed text-white/70">
-            군 탭과 실기 종목 필터로 탐색하고, 마음에 드는 대학을{" "}
+            군 탭과 실기 종목 필터로 대학·학과를 한눈에 보고, 궁금한 항목을
+            눌러 전형방법·반영비율·실기·모집인원·경쟁률을 확인하세요. 여러
+            대학을 동시에 펼쳐 비교할 수 있습니다. 마음에 드는 대학은{" "}
             <span className="text-accent">담기</span>로 골라 나만의 원서 3장을
-            시뮬레이션해 보세요. 카드의 <span className="text-accent">학과별
-            모집 상세</span>를 펼치면 전공별 모집인원과 경쟁률까지 볼 수
-            있습니다. 비율 바는 실기 반영 단계 기준입니다.
+            구성해 보세요. 비율 바는 실기 반영 단계 기준입니다.
           </p>
           <JungsiExplorer ctaHref={CONSULTING_HREF} />
         </section>

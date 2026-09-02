@@ -269,7 +269,11 @@ const GUN_LABEL: Record<Gun, string> = {
   별도: "군 외",
 };
 
-function UniversityCard({
+/**
+ * 펼침 패널 본문 — 대학명·학과는 헤더 버튼에 이미 있으므로 여기서는
+ * 실기 배지부터 전형방법·비율·모집·경쟁률·참고·CTA·담기까지만 담당한다.
+ */
+function UniversityDetail({
   entry,
   selected,
   onToggle,
@@ -280,27 +284,8 @@ function UniversityCard({
 }) {
   const slotName = entry.gun === "별도" ? "한예종 슬롯" : `${GUN_LABEL[entry.gun]} 카드`;
   return (
-    <article
-      className={`flex flex-col rounded-lg border bg-[#0a0a0a] p-5 transition-colors md:p-6 ${
-        selected
-          ? "border-accent/70 shadow-[0_0_0_1px_rgba(245,136,70,0.25)]"
-          : "border-white/10 hover:border-white/25"
-      }`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="text-[17px] font-bold leading-tight text-white">
-            {entry.university}
-            {entry.campus && (
-              <span className="ml-1.5 text-[13px] font-medium text-white/55">
-                {entry.campus}
-              </span>
-            )}
-          </h3>
-          <p className="mt-1.5 text-sm leading-relaxed text-white/65">
-            {entry.units}
-          </p>
-        </div>
+    <div className="flex flex-col">
+      <div>
         <SilgiBadge entry={entry} />
       </div>
 
@@ -402,7 +387,95 @@ function UniversityCard({
       >
         {selected ? `${slotName}에서 빼기` : `${slotName}에 담기`}
       </button>
-    </article>
+    </div>
+  );
+}
+
+/**
+ * 목록 행 — 접힌 상태엔 대학명·학과만, 헤더 버튼을 누르면 바로 아래에 상세
+ * 패널이 열린다. 펼침 상태는 부모(JungsiExplorer)가 entry.id 단위로 관리하므로
+ * 여러 행을 동시에 열어 두고 비교할 수 있다.
+ */
+function UniversityAccordionItem({
+  entry,
+  open,
+  selected,
+  onToggleOpen,
+  onToggleSelect,
+}: {
+  entry: JungsiEntry;
+  open: boolean;
+  selected: boolean;
+  onToggleOpen: (id: string) => void;
+  onToggleSelect: (entry: JungsiEntry) => void;
+}) {
+  const headerId = `uni-header-${entry.id}`;
+  const panelId = `uni-panel-${entry.id}`;
+  return (
+    <div
+      className={`border-l-2 transition-colors ${
+        selected
+          ? "border-l-accent bg-accent/[0.05]"
+          : "border-l-transparent"
+      }`}
+    >
+      <h4 className="m-0">
+        <button
+          type="button"
+          id={headerId}
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => onToggleOpen(entry.id)}
+          className="flex min-h-[64px] w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-white/[0.03] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent md:px-5"
+        >
+          <span className="min-w-0 flex-1">
+            <span className="block text-[16px] font-bold leading-snug text-white md:text-[17px]">
+              {entry.university}
+              {entry.campus && (
+                <span className="ml-1.5 text-[13px] font-medium text-white/55">
+                  {entry.campus}
+                </span>
+              )}
+            </span>
+            <span className="mt-1 block text-[13px] leading-relaxed text-white/65">
+              {entry.units}
+            </span>
+          </span>
+          <svg
+            aria-hidden
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            className={`shrink-0 text-white/45 transition-transform duration-150 ${
+              open ? "rotate-180 text-accent" : ""
+            }`}
+          >
+            <path
+              d="M3.5 6l4.5 4.5L12.5 6"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </h4>
+      {open && (
+        <div
+          id={panelId}
+          role="region"
+          aria-labelledby={headerId}
+          className="border-t border-white/[0.06] px-4 pb-5 pt-4 md:px-5"
+        >
+          <UniversityDetail
+            entry={entry}
+            selected={selected}
+            onToggle={onToggleSelect}
+          />
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -1010,6 +1083,18 @@ export default function JungsiExplorer({
   const [focusId, setFocusId] = useState<string | null>(null);
   // 성적 추천기에서 넘어온 카드 — 결과로 돌아가는 링크를 카드 위에 유지
   const [cameFromScoreId, setCameFromScoreId] = useState<string | null>(null);
+  // 펼쳐 둔 항목(entry.id) — 여러 개를 동시에 열어 비교할 수 있게 Set으로 관리.
+  // 군·필터·검색 변경과는 독립이며, 그 코드에서 이 상태를 초기화하지 않는다.
+  const [openIds, setOpenIds] = useState<Set<string>>(() => new Set());
+
+  const toggleOpen = (id: string) =>
+    setOpenIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  const closeAllOpen = () => setOpenIds(new Set());
 
   const rootRef = useRef<HTMLDivElement>(null);
   const tabBarRef = useRef<HTMLDivElement>(null);
@@ -1047,6 +1132,13 @@ export default function JungsiExplorer({
       setGun(detail.gun);
       setSilgi("전체");
       setQuery("");
+      // 찾아간 대학은 바로 상세를 볼 수 있도록 자동으로 펼친다(기존 펼침은 유지)
+      setOpenIds((prev) => {
+        if (prev.has(detail.id)) return prev;
+        const next = new Set(prev);
+        next.add(detail.id);
+        return next;
+      });
       setFocusId(detail.id);
       setCameFromScoreId(detail.id);
     };
@@ -1121,15 +1213,10 @@ export default function JungsiExplorer({
       el.getBoundingClientRect().top + window.scrollY - headerH - tabBarH - 12;
     // 네이티브 smooth는 reduced-motion 환경에서 no-op이 되므로 즉시 이동으로 확실히 처리
     window.scrollTo(0, Math.max(0, top));
-    el.classList.add("ring-2", "ring-accent", "ring-offset-2", "ring-offset-black");
+    // 목록 컨테이너가 overflow-hidden이라 바깥 ring은 잘린다 — 안쪽 ring으로 강조
+    el.classList.add("ring-2", "ring-inset", "ring-accent");
     const t = setTimeout(
-      () =>
-        el.classList.remove(
-          "ring-2",
-          "ring-accent",
-          "ring-offset-2",
-          "ring-offset-black",
-        ),
+      () => el.classList.remove("ring-2", "ring-inset", "ring-accent"),
       1800,
     );
     setFocusId(null);
@@ -1251,9 +1338,10 @@ export default function JungsiExplorer({
       {/* 사용 안내 (선택 전에만) */}
       {!hasSelection && (
         <p className="mt-5 rounded-md border border-white/10 bg-white/[0.03] px-4 py-3.5 text-sm leading-relaxed text-white/70">
-          카드의 <span className="text-accent">담기</span> 버튼을 누르면 아래에
-          원서 조합이 만들어집니다. 군마다 1곳씩, 3장을 채워 보세요 — 실기 종목
-          궁합을 바로 알려드립니다.
+          대학·학과를 누르면 전형방법·반영비율·실기·모집인원·경쟁률이 열립니다.
+          여러 대학을 동시에 펼쳐 비교해 보세요. 마음에 드는 대학은{" "}
+          <span className="text-accent">담기</span>로 원서 조합에 추가됩니다 —
+          군마다 1곳씩, 3장을 채우면 실기 종목 궁합을 바로 알려드립니다.
         </p>
       )}
 
@@ -1277,9 +1365,10 @@ export default function JungsiExplorer({
       ) : (
         visibleGuns.map((g) => {
           const entries = filtered.filter((e) => e.gun === g);
+          const anyOpen = entries.some((e) => openIds.has(e.id));
           return (
             <section key={g} className="pt-10" aria-label={GUN_LABEL[g]}>
-              <div className="mb-4 flex items-baseline gap-3">
+              <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <h3 className="text-lg font-bold text-white">
                   <span className="mr-2 font-mono text-accent">
                     {g === "별도" ? "+" : g}
@@ -1294,28 +1383,39 @@ export default function JungsiExplorer({
                     가나다군과 별개로 지원 가능
                   </span>
                 )}
+                {anyOpen && (
+                  <button
+                    type="button"
+                    onClick={closeAllOpen}
+                    className="ml-auto text-[12px] text-white/45 underline underline-offset-2 transition-colors hover:text-white/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  >
+                    펼친 항목 모두 닫기
+                  </button>
+                )}
               </div>
-              <div className="grid gap-4">
+              <div className="divide-y divide-white/[0.08] overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]">
                 {entries.map((entry) => (
                   <div
                     key={entry.id}
                     id={`uni-${entry.id}`}
-                    className="scroll-mt-48 rounded-lg transition-shadow"
+                    className="scroll-mt-48 transition-shadow"
                   >
                     {cameFromScoreId === entry.id && (
                       <a
                         href="#score-finder"
                         onClick={() => setCameFromScoreId(null)}
-                        className="mb-1.5 inline-flex items-center gap-1.5 text-[13px] font-medium text-accent/90 transition-colors hover:text-accent"
+                        className="inline-flex items-center gap-1.5 px-4 pt-3 text-[13px] font-medium text-accent/90 transition-colors hover:text-accent md:px-5"
                       >
                         <span aria-hidden>↑</span>
                         내 성적 추천 결과로 돌아가기
                       </a>
                     )}
-                    <UniversityCard
+                    <UniversityAccordionItem
                       entry={entry}
+                      open={openIds.has(entry.id)}
                       selected={selection[entry.gun] === entry.id}
-                      onToggle={toggleEntry}
+                      onToggleOpen={toggleOpen}
+                      onToggleSelect={toggleEntry}
                     />
                   </div>
                 ))}

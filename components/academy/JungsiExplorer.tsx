@@ -189,7 +189,7 @@ function MajorSummary({ entry }: { entry: JungsiEntry }) {
           )}
           {minRate != null && (
             <div>
-              <p className="text-[12px] text-white/45">2025 경쟁률</p>
+              <p className="text-[12px] text-white/45">2026 경쟁률</p>
               <p className="mt-0.5 text-[15px] font-semibold tabular-nums text-accent">
                 {minRate === maxRate
                   ? minRate.toFixed(2)

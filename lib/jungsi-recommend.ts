@@ -88,7 +88,8 @@ const REFLECT: Record<string, ReflectSpec> = {
   "seoultech-nonsilgi-na": { kind: "fixed", w: { 국어: 30, 수학: 25, 영어: 25, 탐구: 20 }, mathRequired: true },
   "sejong-fine-na": { kind: "fixed", w: { 국어: 70, 영어: 30 } },
   "sejong-na": { kind: "fixed", w: { 국어: 70, 영어: 30 } },
-  "sejong-sw-na": { kind: "fixed", w: { 국어: 35, 수학: 35, 영어: 20, 탐구: 10 }, mathRequired: true },
+  // 성신여대 공예과: 2027학년도 나군 정시 부활 (디자인과와 동일 구조)
+  "sungshin-na": { kind: "pickTop", pool: ["국어", "수학", "영어", "탐구"], weights: [33.33, 33.33, 33.34] },
   "khu-na": { kind: "fixed", w: { 국어: 60, 탐구: 40 } },
   "dgu-na": { kind: "fixed", w: { 국어: 45, 영어: 15, 탐구: 40 } },
   "cau-na": { kind: "fixed", w: { 국어: 50, 탐구: 50 } },
@@ -111,6 +112,8 @@ const REFLECT: Record<string, ReflectSpec> = {
   "sungshin-da": { kind: "pickTop", pool: ["국어", "수학", "영어", "탐구"], weights: [33.33, 33.33, 33.34] },
   "mju-da": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 35, 영어: 35 } },
   "mju-ai-da": { kind: "fixed", w: { 국어: 25, 수학: 35, 영어: 20, 탐구: 20 }, mathRequired: true },
+  // 세종대 창의소프트학부: 2027학년도 나→다군 이동
+  "sejong-sw-da": { kind: "fixed", w: { 국어: 35, 수학: 35, 영어: 20, 탐구: 10 }, mathRequired: true },
   "konkuk-da": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 45, 영어: 25 } },
   // 건국대 영상디자인학과(구 영상학과): 2027학년도 가→다군 이동
   "konkuk-video-da": { kind: "pickTop", pool: ["수학", "탐구"], weights: [30], plus: { 국어: 45, 영어: 25 } },
@@ -147,7 +150,7 @@ const CUTOFFS: Record<string, { p: number; label: string }> = {
   "seoultech-nonsilgi-na": { p: 87.8, label: "2026 산업 70%컷 87.8 (시각·금속 비공개)" },
   "sejong-fine-na": { p: 67, label: "2026 컷 67 (어디가)" },
   "sejong-na": { p: 77, label: "2026 70%컷 77 (국어 백분위 기준)" },
-  "sejong-sw-na": { p: 83.5, label: "2026 컷 80·87 (전공별 · 각 2명 모집)" },
+  "sejong-sw-da": { p: 83.5, label: "2026 컷 80·87 (전공별 · 각 2명 모집 · 나군 시절)" },
   "dgu-na": { p: 71, label: "2026 상위80% 평균 백분위 70.9" },
   "konkuk-na": { p: 78, label: "2026 70%컷 국어 67~77·탐구 81~88.5" },
   "konkuk-uisang-inmun-na": { p: 86, label: "2026 70%컷 국98·수76·탐75.5" },

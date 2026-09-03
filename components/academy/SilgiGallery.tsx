@@ -9,11 +9,28 @@ type GalleryImage = { src: string; alt: string };
 export default function SilgiGallery({
   images,
   aspectClass,
+  mobileScrollable = false,
 }: {
   images: GalleryImage[];
   aspectClass: string;
+  /**
+   * true면 모바일(sm 미만)에서 2열 그리드 대신 가로 스와이프(scroll-snap) 갤러리로
+   * 보여준다 — 한 장이 크게, 다음 장이 살짝 보이는 구성. sm 이상은 기존 그리드 그대로.
+   * 부모 카드의 좌우 padding(p-5)만큼 -mx-5 로 빼서 카드 끝까지 스크롤 영역을 쓴다.
+   */
+  mobileScrollable?: boolean;
 }) {
   const [idx, setIdx] = useState<number | null>(null);
+
+  const listClass = mobileScrollable
+    ? "scrollbar-hide -mx-5 flex snap-x snap-mandatory gap-2 overflow-x-auto overscroll-x-contain scroll-px-5 px-5 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-5"
+    : "grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5";
+  const itemClass = mobileScrollable
+    ? "w-[74%] max-w-[300px] shrink-0 snap-start sm:w-auto sm:max-w-none"
+    : "";
+  const sizes = mobileScrollable
+    ? "(max-width: 640px) 74vw, (max-width: 1024px) 30vw, 170px"
+    : "(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 170px";
 
   useEffect(() => {
     if (idx == null) return;
@@ -35,20 +52,20 @@ export default function SilgiGallery({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+      <div className={listClass}>
         {images.map((ex, i) => (
           <button
             key={ex.src}
             type="button"
             onClick={() => setIdx(i)}
             aria-label={`${ex.alt} 크게 보기`}
-            className={`group relative ${aspectClass} cursor-zoom-in overflow-hidden rounded-md border border-white/10 bg-black transition-colors hover:border-accent/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent`}
+            className={`group relative ${aspectClass} ${itemClass} cursor-zoom-in overflow-hidden rounded-md border border-white/10 bg-black transition-colors hover:border-accent/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent`}
           >
             <Image
               src={ex.src}
               alt={ex.alt}
               fill
-              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 170px"
+              sizes={sizes}
               className="object-cover transition-transform duration-200 group-hover:scale-[1.03]"
             />
           </button>

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import GunCardSlots from "@/components/academy/GunCardSlots";
 import JungsiExplorer from "@/components/academy/JungsiExplorer";
@@ -92,16 +91,21 @@ type FeaturedType = "기초디자인" | "기초조형·소양평가";
 const FEATURED_EXAMPLES: Record<
   FeaturedType,
   {
-    badge: string;
+    /* 카드 표면에 노출하는 핵심 평가 요소 칩 (2개) */
+    keys: [string, string];
+    /* 카드 표면에 노출하는 대표 대학 */
+    universities: string;
     /* 원본 이미지와 같은 가로/세로 비율 (잘림 방지) */
     aspectClass: string;
     images: { src: string; alt: string }[];
-    caption: React.ReactNode;
+    /* "시험 방식 보기"를 눌렀을 때만 펼쳐지는 설명 — 종목 설명 + 예시작 해설을 합친 1~2문장 */
+    howItWorks: string;
     moreUrl?: string;
   }
 > = {
   기초디자인: {
-    badge: "구성·묘사 평가",
+    keys: ["구성력", "묘사력"],
+    universities: "건국대 · 경희대 · 동덕여대 외",
     aspectClass: "aspect-[966/725]",
     images: [
       { src: "/images/silgi/gicho-design-1.jpg", alt: "유리구슬·부채·노끈을 얽어 화면을 구성한 기초디자인 예시작" },
@@ -110,17 +114,13 @@ const FEATURED_EXAMPLES: Record<
       { src: "/images/silgi/gicho-design-4.jpg", alt: "부채와 유리구슬을 방사형으로 구성한 기초디자인 예시작" },
       { src: "/images/silgi/gicho-design-5.jpg", alt: "유리구슬·금속판·나무막대를 사선으로 구성한 기초디자인 예시작" },
     ],
-    caption: (
-      <>
-        위 그림처럼 유리구슬·부채·금속 같은{" "}
-        <span className="text-white/70">사물이 주어지고</span>, 정해진 조건에 맞춰{" "}
-        <span className="text-white/70">화면을 완성도 있게 구성</span>하는 시험입니다.
-      </>
-    ),
+    howItWorks:
+      "위 그림처럼 유리구슬·부채·금속 같은 사물이 주어지고, 정해진 조건에 맞춰 화면을 완성도 있게 구성하는 시험입니다. 묘사력·구성력·완성도를 보며, 서울권 여러 대학이 채택해 한 종목으로 지원 폭이 넓습니다.",
     moreUrl: "https://blog.naver.com/modago-/221152752551",
   },
   "기초조형·소양평가": {
-    badge: "관찰·발상 평가",
+    keys: ["관찰력", "발상력"],
+    universities: "국민대 · 성균관대",
     aspectClass: "aspect-[966/1288]",
     images: [
       { src: "/images/silgi/gicho-soyang-1.jpg", alt: "기초조형·소양평가 예시작 1" },
@@ -129,58 +129,114 @@ const FEATURED_EXAMPLES: Record<
       { src: "/images/silgi/gicho-soyang-4.jpg", alt: "기초조형·소양평가 예시작 4" },
       { src: "/images/silgi/gicho-soyang-5.jpg", alt: "기초조형·소양평가 예시작 5" },
     ],
-    caption: (
-      <>
-        제시된 대상·주제를 <span className="text-white/70">관찰하고 발상</span>해, 똑같이 그리기보다{" "}
-        <span className="text-white/70">자기만의 화면으로 재구성</span>하는 시험입니다.
-      </>
-    ),
+    howItWorks:
+      "제시된 대상·주제를 관찰하고 발상해, 똑같이 그리기보다 자기만의 화면으로 재구성하는 시험입니다. 국민대(기초조형평가)·성균관대(기초실기소양평가)가 대표적이며, 잘 그리는 손보다 관찰력과 발상을 봅니다.",
     moreUrl: "https://blog.naver.com/modago-/221160292640",
   },
 };
 
-/* 이미지로 함께 보여줄 나머지 종목(1장씩). src 를 채우면 카드에 예시작이 붙습니다. */
-const SILGI_EXAMPLE: Partial<
-  Record<(typeof SILGI_CATEGORY_ORDER)[number], { src: string; alt: string }>
-> = {
-  // 발상과표현: { src: "/images/silgi/balsang-1.jpg", alt: "…" },
-  // "수채화·수묵담채": { src: "/images/silgi/hoehwa-1.jpg", alt: "…" },
-};
+/* 접이식 행의 화살표 — 부모 <details>의 named group(open) 상태에 따라 회전 */
+function Chevron({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`shrink-0 transition-transform ${className}`}
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
 
-/* 대표 유형 카드 — 라벨·배지·설명·예시작 5장·해설·(선택)더보기 링크 */
+/* 대표 유형 카드 — 종목명 · 핵심 칩 2개 · 예시작 5장 · 대표 대학 · (접힌)시험 방식 · 더보기 링크.
+   긴 설명은 카드 하단 <details> 안에만 두어 기본 상태에서는 작품이 먼저 보이게 한다. */
 function FeaturedTypeCard({ type }: { type: FeaturedType }) {
   const cfg = FEATURED_EXAMPLES[type];
   return (
     <div className="mb-4 rounded-lg border border-white/10 bg-[#0a0a0a] p-5 md:p-6">
-      <div className="flex items-baseline justify-between gap-3">
-        <p className="text-base font-bold text-white">{SILGI_META[type].label}</p>
-        <span className="shrink-0 rounded-full border border-accent/40 bg-accent/10 px-2.5 py-0.5 text-[11px] font-medium text-accent">
-          {cfg.badge}
-        </span>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <h3 className="text-base font-bold text-white">{SILGI_META[type].label}</h3>
+        <ul className="flex gap-1.5" aria-label="핵심 평가 요소">
+          {cfg.keys.map((k) => (
+            <li
+              key={k}
+              className="rounded-full border border-accent/40 bg-accent/10 px-2.5 py-0.5 text-[11px] font-medium text-accent"
+            >
+              {k}
+            </li>
+          ))}
+        </ul>
       </div>
-      <p className="mt-2.5 text-sm leading-relaxed text-white/70">
-        {SILGI_META[type].description}
+
+      <div className="mt-3.5">
+        <SilgiGallery
+          images={cfg.images}
+          aspectClass={cfg.aspectClass}
+          mobileScrollable
+        />
+      </div>
+
+      <p className="mt-3 text-[13px] text-white/50">
+        대표 대학
+        <span className="ml-2 text-white/80">{cfg.universities}</span>
       </p>
-      <figure className="mt-4">
-        <SilgiGallery images={cfg.images} aspectClass={cfg.aspectClass} />
-        <figcaption className="mt-3 text-[13px] leading-relaxed text-white/60">
-          {cfg.caption}
-        </figcaption>
-      </figure>
-      {cfg.moreUrl && (
-        <a
-          href={cfg.moreUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2 text-sm font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-        >
-          {SILGI_META[type].label} 예시작 더 보기
-          <span aria-hidden>→</span>
-        </a>
-      )}
+
+      {/* flex-wrap: 닫힌 상태엔 한 줄(왼쪽 시험 방식 · 오른쪽 더보기), 펼치면 설명이
+          한 줄을 통째로 차지하고 더보기 링크는 아래로 내려간다. */}
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2.5 border-t border-white/[0.07] pt-3">
+        <details className="group/how min-w-0 max-w-full">
+          <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-[13px] text-white/60 transition-colors hover:text-white [&::-webkit-details-marker]:hidden">
+            <span className="group-open/how:hidden">시험 방식 보기</span>
+            <span className="hidden group-open/how:inline">시험 방식 접기</span>
+            <Chevron className="group-open/how:rotate-180" />
+          </summary>
+          <p className="mt-2 text-[13px] leading-relaxed text-white/65">
+            {cfg.howItWorks}
+          </p>
+        </details>
+        {cfg.moreUrl && (
+          <a
+            href={cfg.moreUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-[13px] font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            예시작 더 보기
+            <span aria-hidden>→</span>
+          </a>
+        )}
+      </div>
     </div>
   );
 }
+
+/* 최상위권 통합·자체실기 — 표면엔 대학·핵심 키워드만, 상세는 "자세히 보기" 안 */
+const OWN_SILGI_ROWS: { university: string; key: string; detail: string }[] = [
+  {
+    university: "서울대학교",
+    key: "발상·재료 해석",
+    detail:
+      "주어진 주제를 제시된 재료로 표현 — 사물 구성보다 발상과 재료 해석이 관건",
+  },
+  {
+    university: "서울시립대학교",
+    key: "두 문제 연계",
+    detail:
+      "한 장에 두 문제를 연계해 해결 — 문제를 읽고 풀어내는 방식 자체가 다름",
+  },
+  {
+    university: "이화여자대학교",
+    key: "2절 화면·5시간",
+    detail: "대상·주제를 다양한 재료로 표현 — 2절 화면을 5시간 동안 운용",
+  },
+];
 
 export default function Page() {
   return (
@@ -284,51 +340,100 @@ export default function Page() {
               </span>
             </summary>
 
-            <div className="pt-2">
-          <p className="mb-6 text-[15px] leading-relaxed text-white/70">
-어느 대학에 갈 수 있는지는 결국 성적이 정하지만, 어느 대학을 노려볼 수 있는지는 준비한 실기 종목이 먼저 가릅니다. 종목이 다르면 준비 방식이 완전히 달라 중간에 갈아타기 어렵습니다. 실제 시험 종목 기준으로 정리했으니, 대표 종목 두 가지를 예시작과 함께 보고 나머지 종목까지 확인한 뒤 군별 대학 표를 보면 지원 전략이 훨씬 선명해집니다.{" "}
-            <span className="text-white/80">
-              모다고는 창의력을 중심으로 실기를 훈련합니다.
-            </span>
+            <div className="pt-3">
+          <p className="mb-4 text-[13px] leading-relaxed text-white/50">
+            대학별 실기 종목을 실제 작품으로 비교해보세요.
           </p>
           {/* 대표 종목 — 예시작 갤러리 카드 */}
           {/* 기초조형(학원 강점 종목)을 기초디자인보다 먼저 노출한다 */}
           <FeaturedTypeCard type="기초조형·소양평가" />
           <FeaturedTypeCard type="기초디자인" />
 
-          {/* 나머지 종목 */}
-          <div className="grid gap-4 md:grid-cols-2">
+          {/* 나머지 종목 — 예시작이 없으므로 종목명만 보이는 작은 접이식 목록.
+              각 <details>가 독립이라 여러 종목을 동시에 펼칠 수 있다. */}
+          <div className="grid gap-2 md:grid-cols-2 md:items-start">
             {SILGI_CATEGORY_ORDER.filter(
               (type) => type !== "기초디자인" && type !== "기초조형·소양평가",
-            ).map((type) => {
-              const ex = SILGI_EXAMPLE[type];
-              return (
-                <div
-                  key={type}
-                  className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]"
+            ).map((type) => (
+              <details
+                key={type}
+                className="group/item rounded-md border border-white/10 bg-[#0a0a0a]"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-sm font-medium text-white/85 transition-colors hover:text-white [&::-webkit-details-marker]:hidden">
+                  {SILGI_META[type].label}
+                  <Chevron className="text-white/50 group-open/item:rotate-180" />
+                </summary>
+                <p className="px-4 pb-3.5 text-[13px] leading-relaxed text-white/65">
+                  {SILGI_META[type].description}
+                </p>
+              </details>
+            ))}
+          </div>
+
+          {/* 최상위권 통합·자체실기 안내 — 표면엔 대학·핵심 키워드만, 대학별 상세는 "자세히 보기" 안 */}
+          <div className="mt-4 rounded-lg border border-white/10 bg-[#0a0a0a] p-5 md:p-6">
+            <p className="text-xs tracking-[0.25em] text-accent">통합·자체실기</p>
+            <h3 className="mt-2 text-base font-bold leading-snug text-white">
+              최상위권 미대는 &lsquo;같은 실기&rsquo;로 준비하지 않습니다
+            </h3>
+            <ul className="mt-3.5 divide-y divide-white/[0.07] border-y border-white/[0.07]">
+              {OWN_SILGI_ROWS.map((row) => (
+                <li
+                  key={row.university}
+                  className="flex items-baseline justify-between gap-4 py-2.5"
                 >
-                  {ex && (
-                    <div className="relative aspect-[16/9] border-b border-white/10 bg-black">
-                      <Image
-                        src={ex.src}
-                        alt={ex.alt}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 400px"
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="p-5">
-                    <p className="text-[15px] font-bold text-white">
-                      {SILGI_META[type].label}
-                    </p>
-                    <p className="mt-2.5 text-sm leading-relaxed text-white/70">
-                      {SILGI_META[type].description}
-                    </p>
-                  </div>
+                  <span className="text-sm font-bold text-white">
+                    {row.university}
+                  </span>
+                  <span className="shrink-0 text-[13px] text-accent/90">
+                    {row.key}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3.5 text-sm leading-relaxed text-white/70">
+              대학별 출제 방식에 맞춘 별도 훈련이 필요합니다.
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
+              <details className="group/own min-w-0 max-w-full">
+                <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-[13px] text-white/60 transition-colors hover:text-white [&::-webkit-details-marker]:hidden">
+                  <span className="group-open/own:hidden">자세히 보기</span>
+                  <span className="hidden group-open/own:inline">접기</span>
+                  <Chevron className="group-open/own:rotate-180" />
+                </summary>
+                <div className="mt-2.5 space-y-2.5 text-[13px] leading-relaxed text-white/65">
+                  <p>
+                    서울대·서울시립대·이화여대 등 일부 최상위권 미대는
+                    기초디자인이 아니라 대학이 직접 출제하는 통합·자체실기로
+                    선발합니다. 문제 유형과 평가 방식이 달라, 기초디자인
+                    준비만으로는 대응하기 어렵습니다.
+                  </p>
+                  <ul className="space-y-1.5">
+                    {OWN_SILGI_ROWS.map((row) => (
+                      <li key={row.university}>
+                        <span className="font-medium text-white/85">
+                          {row.university}
+                        </span>{" "}
+                        <span className="text-accent/90">통합실기</span> ·{" "}
+                        {row.detail}
+                      </li>
+                    ))}
+                  </ul>
+                  <p>
+                    목표 대학이 정해져 있다면 대학별 출제 방식에 맞춘 별도
+                    훈련이 필요합니다. 모두다른고양이는 일반 미대 실기뿐 아니라
+                    최상위권 미대 통합·자체실기를 학교별로 따로 준비합니다.
+                  </p>
                 </div>
-              );
-            })}
+              </details>
+              <Link
+                href="/winter"
+                className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2 text-[13px] font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              >
+                최상위권 미대 준비 방식 보기
+                <span aria-hidden>→</span>
+              </Link>
+            </div>
           </div>
 
           {/* 실기 종목 섹션 CTA — 종목 선택은 전략 판단이라 1:1 컨설팅으로 연결 */}
@@ -351,66 +456,6 @@ export default function Page() {
           </div>
             </div>
           </details>
-
-          {/* 최상위권 통합·자체실기 안내 — 문제 인식 단계, 대학별 상세는 아래 탐색기에 위임 */}
-          <div className="mt-8 rounded-lg border border-white/10 bg-[#0a0a0a] p-5 md:p-6">
-            <p className="text-xs tracking-[0.25em] text-accent">통합·자체실기</p>
-            <h3 className="mt-2 text-base font-bold leading-snug text-white md:text-lg">
-              최상위권 미대는 &lsquo;같은 실기&rsquo;로 준비하지 않습니다
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed text-white/70">
-              서울대·서울시립대·이화여대 등 일부 최상위권 미대는 기초디자인이
-              아니라 대학이 직접 출제하는 통합·자체실기로 선발합니다. 문제
-              유형과 평가 방식이 달라, 기초디자인 준비만으로는 대응하기
-              어렵습니다.
-            </p>
-            <ul className="mt-4 divide-y divide-white/[0.07] border-y border-white/[0.07]">
-              {[
-                {
-                  university: "서울대학교",
-                  type: "통합실기",
-                  diff: "주어진 주제를 제시된 재료로 표현 — 사물 구성보다 발상과 재료 해석이 관건",
-                },
-                {
-                  university: "서울시립대학교",
-                  type: "통합실기",
-                  diff: "한 장에 두 문제를 연계해 해결 — 문제를 읽고 풀어내는 방식 자체가 다름",
-                },
-                {
-                  university: "이화여자대학교",
-                  type: "통합실기",
-                  diff: "대상·주제를 다양한 재료로 표현 — 2절 화면을 5시간 동안 운용",
-                },
-              ].map((row) => (
-                <li
-                  key={row.university}
-                  className="flex flex-col gap-1.5 py-3.5 sm:flex-row sm:items-baseline sm:gap-4"
-                >
-                  <span className="flex shrink-0 items-baseline gap-2 sm:w-40">
-                    <span className="text-sm font-bold text-white">
-                      {row.university}
-                    </span>
-                    <span className="text-[12px] text-accent/90">{row.type}</span>
-                  </span>
-                  <span className="text-[13px] leading-relaxed text-white/65">
-                    {row.diff}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-4 text-sm leading-relaxed text-white/70">
-              목표 대학이 정해져 있다면 대학별 출제 방식에 맞춘 별도 훈련이
-              필요합니다. 모두다른고양이는 일반 미대 실기뿐 아니라 최상위권
-              미대 통합·자체실기를 학교별로 따로 준비합니다.
-            </p>
-            <Link
-              href="/winter"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2.5 text-sm font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-            >
-              최상위권 미대 준비 방식 보기
-              <span aria-hidden>→</span>
-            </Link>
-          </div>
         </section>
 
         {/* 성적 기반 추천 */}

@@ -12,13 +12,33 @@ import {
 } from "@/lib/winter-camp";
 import { CAMPUSES } from "@/lib/contact";
 import { CONSULTING_INFO } from "@/lib/consulting";
+import {
+  FINAL_ANNOUNCEMENT_TEXT,
+  FINAL_IS_RECRUITING,
+  FINAL_PROGRAM,
+} from "@/lib/final-program";
 
 const remainingTotal = getRemainingTotal();
-const ANNOUNCEMENT_TEXT =
+const WINTER_ANNOUNCEMENT_TEXT =
   remainingTotal <= 0
     ? "2027 모다고 윈터스쿨 · 마감"
     : `2027 모다고 윈터스쿨 · ${getCapacityLabel({ short: true })} · 홍대 본원 기숙`;
-const ANNOUNCEMENT_KEY = "modago-winter-announcement-closed";
+
+// 최상단 공지 띠 — 수능 파이널 모집 기간(lib/final-program.ts의 FINAL_IS_RECRUITING)에는
+// 파이널 안내가 우선하고, 모집이 끝나면 윈터스쿨 안내로 돌아간다.
+// 닫힘 상태 저장 키도 공지별로 다르게 둬서, 윈터 공지를 닫았던 사람에게도
+// 파이널 공지는 한 번 보인다.
+const ANNOUNCEMENT = FINAL_IS_RECRUITING
+  ? {
+      text: FINAL_ANNOUNCEMENT_TEXT,
+      href: FINAL_PROGRAM.href,
+      key: "modago-final-announcement-closed",
+    }
+  : {
+      text: WINTER_ANNOUNCEMENT_TEXT,
+      href: "/winter",
+      key: "modago-winter-announcement-closed",
+    };
 
 // 전화번호·상담 예약 주소는 lib/contact.ts의 CAMPUSES 하나만 고치면 된다.
 const [CAMPUS_HONGDAE, CAMPUS_ILSAN] = CAMPUSES;
@@ -97,6 +117,17 @@ const navItems: NavItem[] = [
   // 같은 이름으로 걸려 있어 메뉴가 중복돼 보였다. 학원 전체 사례 페이지
   // (/grade-up)는 그대로 살아 있고 /winter/results 하단 링크와 사이트맵에서
   // 연결된다.
+  // 2027 수능 파이널 집중반 — 9평 이후~수능 전 모집 기간에만 메뉴에 노출한다.
+  // 노출 스위치는 lib/final-program.ts의 FINAL_IS_RECRUITING 하나뿐이다.
+  ...(FINAL_IS_RECRUITING
+    ? [
+        {
+          label: "수능 파이널",
+          href: FINAL_PROGRAM.href,
+          badge: "모집중",
+        } satisfies NavItem,
+      ]
+    : []),
   {
     label: "윈터스쿨",
     href: "/winter",
@@ -145,13 +176,13 @@ export default function SiteNav() {
 
   // 알림 띠: sessionStorage로 닫힘 상태 유지 (hydration 불일치 방지를 위해 mount 후 판단)
   useEffect(() => {
-    if (SHOW_ANNOUNCEMENT && sessionStorage.getItem(ANNOUNCEMENT_KEY) !== "1") {
+    if (SHOW_ANNOUNCEMENT && sessionStorage.getItem(ANNOUNCEMENT.key) !== "1") {
       setShowAnnouncement(true);
     }
   }, []);
 
   const closeAnnouncement = () => {
-    sessionStorage.setItem(ANNOUNCEMENT_KEY, "1");
+    sessionStorage.setItem(ANNOUNCEMENT.key, "1");
     setShowAnnouncement(false);
   };
 
@@ -190,12 +221,13 @@ export default function SiteNav() {
     };
   }, []);
 
-  // /diagnosis 온보딩과 /consulting 전환 랜딩은 자체 상단 바를 쓴다 —
-  // 일반 네비·공지 띠를 숨긴다.
+  // /diagnosis 온보딩과 /consulting 전환 랜딩, /final 수능 파이널 랜딩은
+  // 자체 상단 바를 쓴다 — 일반 네비·공지 띠를 숨긴다.
   // (모든 hook 호출 뒤의 early return이라 hook 순서는 깨지지 않는다)
   if (
     pathname?.startsWith("/diagnosis") ||
-    pathname?.startsWith("/consulting")
+    pathname?.startsWith("/consulting") ||
+    pathname?.startsWith("/final")
   )
     return null;
 
@@ -214,10 +246,10 @@ export default function SiteNav() {
         {showAnnouncement && (
           <div className="relative bg-accent text-black">
             <Link
-              href="/winter"
+              href={ANNOUNCEMENT.href}
               className="block px-10 py-2 text-center text-xs md:text-sm font-semibold tracking-wide"
             >
-              {ANNOUNCEMENT_TEXT}
+              {ANNOUNCEMENT.text}
             </Link>
             <button
               type="button"

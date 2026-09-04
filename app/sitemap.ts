@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { IS_PLACEHOLDER as GRADE_CASES_PLACEHOLDER } from "@/lib/grade-cases";
 import { IS_PLACEHOLDER as TEACHERS_PLACEHOLDER } from "@/lib/teachers";
 import { IS_PLACEHOLDER as WINTER_RESULTS_PLACEHOLDER } from "@/lib/winter-results";
+import { FINAL_IS_RECRUITING, FINAL_PROGRAM } from "@/lib/final-program";
 
 const baseUrl = "https://www.modago.me";
 
@@ -12,6 +13,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1.0,
+    },
+    // 2027 수능 파이널 집중반 랜딩 — 9평 이후~수능 전 모집 기간에는 자주 갱신되므로 weekly
+    {
+      url: `${baseUrl}${FINAL_PROGRAM.href}`,
+      lastModified: new Date(),
+      changeFrequency: FINAL_IS_RECRUITING ? "weekly" : "monthly",
+      priority: 0.95,
     },
     {
       url: `${baseUrl}/winter`,

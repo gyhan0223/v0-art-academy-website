@@ -80,7 +80,13 @@ export default function NaverTalkFab() {
   // /diagnosis 온보딩은 한 화면 한 질문에 집중해야 한다 — 플로팅 버튼도 숨긴다.
   // /consulting 전환 랜딩도 하단 sticky CTA와 겹치므로 숨긴다 —
   // 보조 문의 수단은 랜딩 폼 아래 인라인 톡톡 버튼이 담당한다.
-  if (pathname.startsWith("/diagnosis") || pathname.startsWith("/consulting"))
+  // /final 수능 파이널 랜딩은 마지막 상담 섹션에만 전화·네이버 예약 두 버튼을
+  // 두는 것이 원칙이라 떠다니는 톡톡 버튼도 숨긴다.
+  if (
+    pathname.startsWith("/diagnosis") ||
+    pathname.startsWith("/consulting") ||
+    pathname.startsWith("/final")
+  )
     return null;
 
   // /winter*는 모바일 하단 액션 바(MobileActionBar)가 이미 자리를 쓰고

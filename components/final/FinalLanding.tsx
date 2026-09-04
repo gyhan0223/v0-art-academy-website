@@ -19,7 +19,6 @@
  * 사이트 전체가 다크 테마라 색은 전부 이 파일 안에서 직접 지정한다.
  */
 
-import Image from "next/image";
 import Link from "next/link";
 import {
   Accordion,
@@ -208,22 +207,6 @@ function Hero() {
             </div>
           ))}
         </dl>
-
-        <figure className="mt-12">
-          <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/5">
-            <Image
-              src="/images/winter/classroom-lecture.jpg"
-              alt="모다고 수업 현장"
-              fill
-              sizes="(max-width: 768px) 100vw, 768px"
-              className="object-cover"
-              priority
-            />
-          </div>
-          <figcaption className="mt-3 text-[15px] text-black/50">
-            모다고 수업 현장
-          </figcaption>
-        </figure>
       </Container>
     </section>
   );

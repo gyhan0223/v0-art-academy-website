@@ -497,32 +497,6 @@ export default function Page() {
               약 1분 · 회원가입 없음
             </p>
           </div>
-
-          {/* 윈터스쿨 메인 CTA — 지원 가능 대학 확인 직후가 핵심 전환 지점 */}
-          <div className="mt-8 rounded-lg border border-accent/40 bg-gradient-to-br from-accent/[0.12] via-accent/[0.05] to-transparent p-6 md:p-8">
-            <p className="text-xs tracking-[0.25em] text-accent">
-              2027 미대 기숙 윈터스쿨
-            </p>
-            <h3 className="mt-3 text-lg font-bold leading-snug text-white md:text-xl">
-              갈 수 있는 대학을 알았다면,
-              <br className="md:hidden" /> 이제 만드는 일만 남았습니다.
-            </h3>
-            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/75">
-              정시는 지원 전략만으로 끝나지 않습니다. 겨울 동안 수능 성적, 실기
-              완성도, 하루 루틴을 얼마나 끌어올리느냐에 따라 실제 지원 가능한
-              대학이 달라집니다.
-            </p>
-            <p className="mt-2.5 text-sm text-white/55">
-              수능 + 실기 + 생활관리 집중 과정
-            </p>
-            <Link
-              href="/winter"
-              className="mt-6 inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-accent px-6 py-3.5 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:w-auto"
-            >
-              윈터스쿨 커리큘럼 보기
-              <span aria-hidden>→</span>
-            </Link>
-          </div>
         </section>
 
         {/* 대학 탐색기 */}

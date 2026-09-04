@@ -275,40 +275,21 @@ export default function Page() {
           <JungsiScheduleModal />
 
           {/* 두 가지 탐색 경로 — 직접 둘러보기 · 성적으로 찾기 */}
-          <div className="mx-auto mt-10 flex max-w-md flex-col justify-center gap-2.5 sm:flex-row">
+          <div className="mx-auto mt-10 flex max-w-2xl flex-col justify-center gap-2.5 sm:flex-row">
             <a
               href="#explorer"
-              className="inline-flex items-center justify-center gap-1.5 rounded-md border border-white/15 px-5 py-2.5 text-sm font-medium text-white/85 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="inline-flex items-center whitespace-nowrap justify-center gap-1.5 rounded-md border border-white/15 px-5 py-2.5 text-sm font-medium text-white/85 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               가나다군 대학 둘러보기
               <span aria-hidden>↓</span>
             </a>
             <a
               href="#score-finder"
-              className="inline-flex items-center justify-center gap-1.5 rounded-md border border-accent/50 bg-accent/[0.08] px-5 py-2.5 text-sm font-medium text-accent transition-colors hover:border-accent hover:bg-accent/[0.15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="inline-flex items-center whitespace-nowrap justify-center gap-1.5 rounded-md border border-accent/50 bg-accent/[0.08] px-5 py-2.5 text-sm font-medium text-accent transition-colors hover:border-accent hover:bg-accent/[0.15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               내 성적으로 지원 가능 대학 찾기
               <span aria-hidden>↓</span>
             </a>
-          </div>
-
-          {/* 윈터스쿨 slim CTA — 정보 탐색 단계이므로 /winter 내부 링크로 연결 */}
-          <div className="mx-auto mt-6 flex max-w-xl flex-col items-center gap-4 rounded-lg border border-white/10 bg-white/[0.03] px-5 py-4 text-center md:flex-row md:justify-between md:gap-6 md:text-left">
-            <div>
-              <p className="text-sm font-medium leading-relaxed text-white/85">
-                2027 미대 정시, 겨울에 어디까지 준비하느냐가 달라집니다.
-              </p>
-              <p className="mt-1.5 text-[13px] leading-relaxed text-white/55">
-                수능 · 실기 · 생활관리를 한 번에 잡는 미대 기숙 집중 과정
-              </p>
-            </div>
-            <Link
-              href="/winter"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/50 px-4 py-2.5 text-sm font-medium text-accent transition-colors hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-            >
-              2027 기숙 윈터스쿨 보기
-              <span aria-hidden>→</span>
-            </Link>
           </div>
         </header>
 

@@ -34,12 +34,25 @@ export const FINAL_PROGRAM = {
 } as const;
 
 /**
- * 모집 노출 여부.
+ * 페이지 공개 여부 — 홈페이지에서 수능 파이널을 아예 보이지 않게 하는 스위치.
+ * false — /final은 404를 돌려주고(noindex), 사이트맵에서 빠지며, 메뉴·공지 띠에도
+ *         나오지 않는다. 코드는 그대로 남아 있어 true로 되돌리면 전부 복구된다.
+ * true  — 페이지가 열리고 아래 FINAL_RECRUITING에 따라 메뉴·공지가 결정된다.
+ *
+ * 2026-09-04 — 과정 준비가 끝나지 않아 코드만 유지한 채 닫아 둔다.
+ */
+export const FINAL_IS_PUBLISHED = false;
+
+/**
+ * 모집 노출 여부(페이지가 공개된 동안에만 의미가 있다).
  * true  — 네비게이션 메뉴 "수능 파이널" 항목과 상단 공지 띠가 /final을 가리킨다
  * false — 메뉴·공지에서 빠지고 공지 띠는 윈터스쿨 안내로 돌아간다
  *         (/final 페이지 자체는 그대로 접근 가능)
  */
-export const FINAL_IS_RECRUITING = true;
+const FINAL_RECRUITING = true;
+
+/** 실제로 메뉴·공지·사이트맵 빈도에 쓰는 값 — 비공개면 항상 false */
+export const FINAL_IS_RECRUITING = FINAL_IS_PUBLISHED && FINAL_RECRUITING;
 
 /** 상단 공지 띠 문구 — 짧게. 마감 임박·잔여 좌석 같은 자극 표현은 쓰지 않는다 */
 export const FINAL_ANNOUNCEMENT_TEXT = `9평 이후, 수능까지 · ${FINAL_PROGRAM.shortName} 모집`;

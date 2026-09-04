@@ -9,17 +9,25 @@
  * · 상담·전화·예약 버튼은 마지막 상담 섹션(FinalConsult) 한 곳에만 둔다.
  *   첫 화면·본문 중간·헤더·FAQ·하단 고정 바 어디에도 CTA를 넣지 않는다.
  * · 마지막 CTA는 "전화 상담"과 "네이버 상담 예약" 둘뿐이다(톡톡 추가 금지).
+ *   네이버 예약이 중단(NAVER_BOOKING_PAUSED)된 동안에는 예약 버튼이 전화 안내
+ *   화면으로 갈 뿐이라 전화 버튼 하나만 보여준다 — 같은 결과로 이어지는
+ *   선택지 두 개를 나란히 두지 않는다.
  * · 팝업·카운트다운·마감 임박·잔여 좌석 같은 자극 장치를 쓰지 않는다.
  * · 확인되지 않은 개강일·수업 시간·정원·수강료·수업 횟수는 만들지 않는다.
  * · 성적 근거는 lib/winter-results.ts에서만 가져오고, 윈터스쿨 결과를
  *   이 과정의 성과처럼 보이게 쓰지 않는다.
+ * · 사진·일러스트를 넣지 않는다. 텍스트·숫자·구분선·여백만으로 구성한다
+ *   (윈터스쿨 사진을 재사용하면 과정이 혼동되고 보고서 같은 흐름이 끊긴다).
  * ─────────────────────────────────────────────────────────────
+ *
+ * 읽는 순서: 문제 제기(Hero) → 자가진단(SelfCheck) → 세 가지 판단(Decisions)
+ * → 운영 방식 + 프로그램 핵심 정보(Method) → 성적 근거(Evidence) → 적합한 학생(Fit)
+ * → FAQ → 상담(FinalConsult).
  *
  * 밝은 편집 디자인: 아이보리 배경 · 검은 본문 · 브랜드 주황은 숫자와 구분선에만.
  * 사이트 전체가 다크 테마라 색은 전부 이 파일 안에서 직접 지정한다.
  */
 
-import Image from "next/image";
 import Link from "next/link";
 import {
   Accordion,
@@ -93,6 +101,7 @@ export default function FinalLanding() {
       <FinalHeader />
       <main>
         <Hero />
+        <SelfCheck />
         <Decisions />
         <Method />
         {!IS_PLACEHOLDER && <Evidence />}
@@ -107,31 +116,24 @@ export default function FinalLanding() {
 
 /* ------------------------------ 전용 최소 헤더 ------------------------------ */
 
+/** 홈 링크는 로고 하나뿐 — 별도 "홈으로"를 두면 같은 링크가 두 번 반복된다. */
 function FinalHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-black/10 bg-[#fbfaf8]/95 backdrop-blur-sm">
-      <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-5 py-4 md:px-6">
-        <div className="flex min-w-0 items-baseline gap-3">
-          <Link
-            href="/"
-            aria-label="모두다른고양이 홈으로"
-            className={`shrink-0 text-[15px] font-black tracking-tight ${FOCUS_RING}`}
-          >
-            모두다른고양이
-          </Link>
-          <span aria-hidden="true" className="text-black/25">
-            |
-          </span>
-          <p className="truncate text-[15px] font-semibold text-black/70">
-            {FINAL_PROGRAM.shortName}
-          </p>
-        </div>
+      <div className="mx-auto flex w-full max-w-3xl items-baseline gap-3 px-5 py-4 md:px-6">
         <Link
           href="/"
-          className={`shrink-0 rounded-md px-2 py-1.5 text-[15px] text-black/60 transition-colors hover:text-black ${FOCUS_RING}`}
+          aria-label="모두다른고양이 홈으로"
+          className={`shrink-0 text-[15px] font-black tracking-tight ${FOCUS_RING}`}
         >
-          홈으로
+          모두다른고양이
         </Link>
+        <span aria-hidden="true" className="text-black/25">
+          |
+        </span>
+        <p className="truncate text-[15px] font-semibold text-black/70">
+          {FINAL_PROGRAM.shortName}
+        </p>
       </div>
     </header>
   );
@@ -186,44 +188,65 @@ function Hero() {
             </li>
           ))}
         </ol>
+      </Container>
+    </section>
+  );
+}
 
-        {/* 확인된 운영 정보만 — 나머지는 개별 상담 후 안내 */}
-        <dl className="mt-10 border-t border-black/10">
-          {[
-            ["과정", FINAL_PROGRAM.name],
-            ["대상", FINAL_PROGRAM.target],
-            ["기간", `9월 모의평가 이후부터 2026년 ${FINAL_PROGRAM.examDateLabel} 전까지`],
-            ["과목", FINAL_PROGRAM.subjects.join(" · ")],
-            ["장소", FINAL_PROGRAM.venue],
-            ["개강일 · 수업 시간 · 정원 · 수강료", "개별 상담 후 안내"],
-          ].map(([label, value]) => (
-            <div
-              key={label}
-              className="grid grid-cols-1 gap-x-6 gap-y-1 border-b border-black/10 py-4 md:grid-cols-[12rem_1fr]"
+/* --------------------------------- 자가진단 --------------------------------- */
+
+/**
+ * 히어로 바로 뒤에서 "내 상황이다"를 확인하게 하는 구간.
+ * 번호 체계(01~06)에는 넣지 않는다 — 문제 제기의 연장이지 본문 논리의 한 단계가 아니다.
+ * 체크박스·카드 같은 인터랙션 없이 구분선 목록으로만 보여주고, CTA는 두지 않는다.
+ */
+const SELF_CHECK_ITEMS = [
+  "등급만 확인했고, 틀린 이유는 아직 나누지 않았다.",
+  "희망 대학은 있지만 어느 과목을 먼저 올려야 하는지 모른다.",
+  "모든 과목을 비슷한 비중으로 공부하고 있다.",
+  "실기 일정 때문에 학과 계획이 계속 밀린다.",
+  "계획은 세우지만 다시 측정하고 수정하는 과정이 없다.",
+];
+
+function SelfCheck() {
+  return (
+    <section aria-labelledby="final-selfcheck-title" className="pb-16 md:pb-24">
+      <Container>
+        <div className="border-t border-black/10 pt-8 md:pt-10">
+          <h2
+            id="final-selfcheck-title"
+            className="text-[1.5rem] font-black leading-[1.4] tracking-tight break-keep md:text-3xl md:leading-[1.35]"
+          >
+            9평 이후, 이런 상태라면 계획을 다시 봐야 합니다.
+          </h2>
+          <p className="mt-5 max-w-2xl text-base leading-[1.85] break-keep text-black/75 md:text-lg">
+            아래 항목 중 두 가지 이상이 해당된다면, 문제는 점수보다 다음 계획이
+            아직 정리되지 않았다는 데 있습니다.
+          </p>
+        </div>
+
+        <ul className="mt-8 border-t border-black/10">
+          {SELF_CHECK_ITEMS.map((text, i) => (
+            <li
+              key={text}
+              className="grid grid-cols-[2rem_1fr] gap-x-3 border-b border-black/10 py-4 md:grid-cols-[2.5rem_1fr] md:py-5"
             >
-              <dt className="text-[15px] text-black/50 md:text-base">{label}</dt>
-              <dd className="text-base font-medium leading-relaxed break-keep md:text-lg">
-                {value}
-              </dd>
-            </div>
+              <span
+                aria-hidden="true"
+                className="pt-0.5 font-mono text-[15px] font-semibold text-[#f58846] md:text-base"
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="text-base font-medium leading-[1.75] break-keep md:text-lg">
+                {text}
+              </span>
+            </li>
           ))}
-        </dl>
+        </ul>
 
-        <figure className="mt-12">
-          <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/5">
-            <Image
-              src="/images/winter/classroom-lecture.jpg"
-              alt="모다고 수업 현장"
-              fill
-              sizes="(max-width: 768px) 100vw, 768px"
-              className="object-cover"
-              priority
-            />
-          </div>
-          <figcaption className="mt-3 text-[15px] text-black/50">
-            모다고 수업 현장
-          </figcaption>
-        </figure>
+        <p className="mt-8 text-lg font-semibold leading-[1.7] break-keep md:text-xl">
+          9평은 결과표가 아니라, 수능까지의 계획을 줄이는 자료여야 합니다.
+        </p>
       </Container>
     </section>
   );
@@ -309,6 +332,14 @@ const METHOD_STEPS = [
   },
 ];
 
+/** 확정된 프로그램 정보 네 가지 — 값은 lib/final-program.ts 하나에서만 온다 */
+const PROGRAM_FACTS: [string, string][] = [
+  ["대상", FINAL_PROGRAM.target],
+  ["기간", `9월 모의평가 이후부터 2026년 ${FINAL_PROGRAM.examDateLabel} 전까지`],
+  ["과목", FINAL_PROGRAM.subjects.join(" · ")],
+  ["장소", FINAL_PROGRAM.venue],
+];
+
 function Method() {
   return (
     <section aria-labelledby="final-method-title" className="pb-16 md:pb-24">
@@ -342,6 +373,31 @@ function Method() {
             </li>
           ))}
         </ol>
+
+        {/* 프로그램 핵심 정보 — 운영 방식을 이해한 뒤에야 의미가 있으므로 여기 둔다.
+            확정된 네 가지만 적고, 개강일·시간·정원·수강료처럼 미확정인 항목은
+            행으로 나열하지 않는다(준비되지 않은 과정처럼 보인다). */}
+        <div className="mt-14 border-t border-black/10 pt-8 md:mt-16 md:pt-10">
+          <h3 className="text-xl font-bold tracking-tight break-keep md:text-2xl">
+            {FINAL_PROGRAM.shortName} 집중반
+          </h3>
+          <dl className="mt-5 border-t border-black/10">
+            {PROGRAM_FACTS.map(([label, value]) => (
+              <div
+                key={label}
+                className="grid grid-cols-[4.5rem_1fr] gap-x-4 border-b border-black/10 py-4 md:grid-cols-[7rem_1fr] md:gap-x-6"
+              >
+                <dt className="text-[15px] text-black/50 md:text-base">{label}</dt>
+                <dd className="text-base font-medium leading-relaxed break-keep md:text-lg">
+                  {value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-4 text-[15px] leading-[1.8] break-keep text-black/60 md:text-base">
+            세부 운영은 9평 결과와 현재 실기 일정을 확인한 뒤 개별적으로 안내합니다.
+          </p>
+        </div>
       </Container>
     </section>
   );
@@ -626,11 +682,11 @@ function Faq() {
 /* ---------------------- 06 · 마지막 상담 섹션 (유일한 CTA) ---------------------- */
 
 function FinalConsult() {
-  // 네이버 예약이 검수 중(NAVER_BOOKING_PAUSED)이면 /booking/hongdae가 전화 안내
-  // 화면으로 넘기므로 버튼 문구도 그에 맞게 정직하게 바꾼다. 스위치는 건드리지 않는다.
-  const bookingLabel = NAVER_BOOKING_PAUSED
-    ? "예약 안내 확인하기"
-    : "네이버로 상담 예약하기";
+  // 네이버 예약이 검수 중(NAVER_BOOKING_PAUSED)이면 /booking/hongdae는 실제 예약이
+  // 아니라 전화 안내 화면으로 넘어간다. 그 상태에서 예약 버튼까지 두면 결과가
+  // 같은 선택지 두 개를 나란히 보여주는 셈이라, 전화 버튼 하나만 남기고
+  // 예약은 "준비 중" 안내 문장으로만 알린다. 스위치 값은 여기서 건드리지 않는다.
+  const bookingAvailable = !NAVER_BOOKING_PAUSED;
 
   return (
     <section
@@ -665,23 +721,25 @@ function FinalConsult() {
               {CAMPUS_HONGDAE.label} {CAMPUS_HONGDAE.phone}
             </span>
           </a>
-          <a
-            href={CAMPUS_HONGDAE.bookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${bookingLabel} (네이버 예약, 새 창)`}
-            style={{ borderColor: NAVER_GREEN, color: NAVER_GREEN }}
-            className={`inline-flex min-h-14 flex-1 flex-col items-center justify-center rounded-md border-2 bg-white px-6 py-3.5 text-center transition-colors hover:bg-[#03C75A]/5 ${FOCUS_RING}`}
-          >
-            <span className="text-base font-bold md:text-lg">{bookingLabel}</span>
-            <span className="mt-0.5 text-[15px] text-black/50">네이버 예약 · 홍대 본원</span>
-          </a>
+          {bookingAvailable && (
+            <a
+              href={CAMPUS_HONGDAE.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="네이버로 상담 예약하기 (네이버 예약, 새 창)"
+              style={{ borderColor: NAVER_GREEN, color: NAVER_GREEN }}
+              className={`inline-flex min-h-14 flex-1 flex-col items-center justify-center rounded-md border-2 bg-white px-6 py-3.5 text-center transition-colors hover:bg-[#03C75A]/5 ${FOCUS_RING}`}
+            >
+              <span className="text-base font-bold md:text-lg">네이버로 상담 예약하기</span>
+              <span className="mt-0.5 text-[15px] text-black/50">네이버 예약 · 홍대 본원</span>
+            </a>
+          )}
         </div>
 
-        {NAVER_BOOKING_PAUSED && (
+        {!bookingAvailable && (
           <p className="mt-4 text-[15px] leading-[1.8] break-keep text-black/60 md:text-base">
-            네이버 예약 상품이 검수 중인 동안에는 예약 페이지 대신 전화 안내
-            화면으로 연결될 수 있습니다.
+            네이버 상담 예약은 현재 준비 중입니다. 지금은 전화로 상담을 접수할 수
+            있습니다.
           </p>
         )}
       </Container>

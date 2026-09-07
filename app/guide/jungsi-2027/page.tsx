@@ -254,23 +254,6 @@ export default function Page() {
             2027학년도 대학별 정시 모집요강(가·나·다군) 기준 · 2026년 9월
             갱신
           </p>
-          <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-white/70">
-            정시는 군마다 1곳, 총 3장의 카드로 승부합니다.
-            <br className="hidden md:block" /> 주요 미대 26곳의 핵심 정보를 한
-            페이지에 담았습니다.
-          </p>
-          <ul className="mx-auto mt-4 flex max-w-xl flex-wrap justify-center gap-2">
-            {["모집군", "전형방법", "수능 반영영역", "실기 종목", "통합·자체실기 대학", "학과별 모집인원", "경쟁률"].map(
-              (item) => (
-                <li
-                  key={item}
-                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[13px] text-white/65"
-                >
-                  {item}
-                </li>
-              ),
-            )}
-          </ul>
           <GunCardSlots />
           <JungsiScheduleModal />
 

@@ -10,6 +10,7 @@
  * 창구. 데이터가 부족한 분기(중3·성적 없음·입결 미공개 목표 대학)에서도
  * 막다른 길이 되지 않게 하는 역할을 겸한다.
  *
+ * 유료임이 헷갈리지 않도록 상품명·가격을 항상 버튼 위에 노출한다.
  * 가격·상품명은 lib/consulting.ts 단일 소스를 그대로 쓴다.
  * 개인 성적 원문은 URL·analytics로 보내지 않는다 — from=diagnosis와
  * (jungsi에서 온 진단이면) whitelist된 origin만 붙인다.
@@ -23,6 +24,7 @@ export default function StrategyConsultCta({
   showMiddleSchoolNote = false,
   targetUniversity = null,
   entrySource = null,
+  planCount = 0,
 }: {
   /** 중3 이하 학생에게 "예비 고1부터 지도" 안내를 붙일지 */
   showMiddleSchoolNote?: boolean;
@@ -31,7 +33,11 @@ export default function StrategyConsultCta({
   /** 진단의 최초 유입 경로(whitelist 통과값, 예: "jungsi") —
       /consulting?origin=으로 이어 붙여 최초 origin이 컨설팅 이벤트까지 남는다 */
   entrySource?: string | null;
+  /** 정시 가이드 원서 트레이 조합(?pick=)으로 들어온 진단이면 담은 장 수 —
+      무료 조합 점검을 본 뒤의 "사람이 이어받는 다음 단계"로 카피를 바꾼다 */
+  planCount?: number;
 }) {
+  const hasPlan = planCount > 0;
   const params = new URLSearchParams({ from: "diagnosis" });
   if (entrySource) params.set("origin", entrySource);
   const consultingHref = `/consulting?${params.toString()}`;
@@ -41,7 +47,13 @@ export default function StrategyConsultCta({
       className="rounded-2xl border border-accent/30 bg-accent/[0.05] p-6"
     >
       <h2 className="break-keep text-[22px] font-bold leading-snug text-white">
-        {targetUniversity != null ? (
+        {hasPlan ? (
+          <>
+            {planCount === 3 ? "세 장을" : "이 조합을"} 실제 원서 전략까지
+            <br />
+            정하고 싶다면
+          </>
+        ) : targetUniversity != null ? (
           <>
             {targetUniversity}가 목표라면,
             <br />
@@ -56,9 +68,11 @@ export default function StrategyConsultCta({
         )}
       </h2>
       <p className="mt-3 text-[15px] leading-relaxed text-white/70 break-keep">
-        {targetUniversity != null
-          ? "자동 진단은 현재 위치를 보여줍니다. 실제 지원 전략은 성적 · 실기 · 다른 군의 대학까지 함께 봐야 합니다."
-          : "자동 진단은 현재 위치를 보여줍니다. 실제 전략은 성적 · 실기 · 목표 대학을 함께 봐야 합니다."}
+        {hasPlan
+          ? "자동 점검은 공개 데이터로 볼 수 있는 범위까지입니다. 현재 성적 · 실기 · 희망 대학을 함께 보고 가·나·다군 지원 방향을 사람이 1:1로 정리합니다."
+          : targetUniversity != null
+            ? "자동 진단은 현재 위치를 보여줍니다. 실제 지원 전략은 성적 · 실기 · 다른 군의 대학까지 함께 봐야 합니다."
+            : "자동 진단은 현재 위치를 보여줍니다. 실제 전략은 성적 · 실기 · 목표 대학을 함께 봐야 합니다."}
         {showMiddleSchoolNote && (
           <> 모다고는 예비 고1(현재 중3)부터 지도해요.</>
         )}
@@ -77,13 +91,16 @@ export default function StrategyConsultCta({
           trackDiagnosis("diagnosis_consult_click", {
             target_university: targetUniversity ?? undefined,
             entry_source: entrySource ?? undefined,
+            plan_filled_count: hasPlan ? planCount : undefined,
           })
         }
         className="mt-4 block min-h-[48px] rounded-xl bg-accent px-5 py-3.5 text-center text-[15px] font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
-        {targetUniversity != null
-          ? "내 지원 전략 1:1로 분석받기"
-          : "내 결과 1:1로 분석받기"}
+        {hasPlan
+          ? "전문가와 상담하기 →"
+          : targetUniversity != null
+            ? "내 지원 전략 1:1로 분석받기"
+            : "내 결과 1:1로 분석받기"}
       </Link>
     </section>
   );

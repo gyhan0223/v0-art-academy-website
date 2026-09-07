@@ -21,7 +21,12 @@ export type DiagnosisEventName =
   | "diagnosis_restart"
   // /guide/jungsi-2027 → /diagnosis micro-conversion (대학 카드·원서 트레이)
   | "jungsi_university_diagnosis_click"
-  | "jungsi_plantray_diagnosis_click";
+  | "jungsi_plantray_diagnosis_click"
+  // 원서 트레이 가·나·다 3장이 모두 채워진 순간 (트레이 CTA 노출 시점)
+  | "jungsi_plan_complete"
+  // 트레이 조합(?pick=)을 들고 /diagnosis에 들어온 시점 · 그 조합 점검 결과를 본 시점
+  | "diagnosis_jungsi_plan_view"
+  | "diagnosis_jungsi_plan_result_view";
 
 export type DiagnosisEventParams = {
   grade_group?: string;
@@ -36,6 +41,10 @@ export type DiagnosisEventParams = {
   gun?: string;
   /** 원서 트레이에서 채워진 가·나·다 슬롯 수 */
   plan_filled_count?: number;
+  /** 원서 트레이 조합의 entry id 목록(콤마 구분) — lib/jungsi-data.ts 공개 id */
+  plan_ids?: string;
+  /** 원서 트레이 조합의 대학명 목록(콤마 구분) — 공개 대학명만 */
+  plan_universities?: string;
   /** 진단 CTA 노출 위치 — "card"(대학 카드) | "detail_modal"(군 팝업 상세) */
   placement?: string;
 };

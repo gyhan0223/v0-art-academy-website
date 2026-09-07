@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import DiagnosisFlow from "@/components/diagnosis/DiagnosisFlow";
 import {
   normalizeDiagnosisEntrySource,
+  normalizeDiagnosisPlan,
   normalizeDiagnosisTarget,
 } from "@/lib/diagnosis/entry-params";
 
@@ -23,6 +24,8 @@ export const metadata: Metadata = {
  * ?from=jungsi&target=건국대학교 형태로 들어오면 target 대학 기준으로
  * 첫 화면·결과를 개인화한다. target은 실존 대학명일 때만 통과시키고
  * (entry-params.ts), 아니면 기존 일반 진단 그대로다.
+ * ?from=jungsi&pick=id,id,id 는 정시 가이드 원서 트레이에서 담은 가·나·다
+ * 조합 — 실존 entry id만 통과시켜 첫 화면·결과에서 그 조합을 먼저 점검한다.
  */
 export default async function Page({
   searchParams,
@@ -36,6 +39,7 @@ export default async function Page({
     <DiagnosisFlow
       initialTarget={normalizeDiagnosisTarget(first(params.target))}
       entrySource={normalizeDiagnosisEntrySource(first(params.from))}
+      initialPlan={normalizeDiagnosisPlan(first(params.pick))}
     />
   );
 }

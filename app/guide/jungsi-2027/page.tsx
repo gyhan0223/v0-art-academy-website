@@ -254,8 +254,8 @@ export default function Page() {
             2027학년도 대학별 정시 모집요강(가·나·다군) 기준 · 2026년 9월
             갱신
           </p>
-          <GunCardSlots />
           <JungsiScheduleModal />
+          <GunCardSlots />
 
           {/* 두 가지 탐색 경로 — 직접 둘러보기 · 성적으로 찾기 */}
           <div className="mx-auto mt-10 flex max-w-2xl flex-col justify-center gap-2.5 sm:flex-row">

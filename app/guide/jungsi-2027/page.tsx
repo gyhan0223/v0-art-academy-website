@@ -578,26 +578,6 @@ export default function Page() {
           </ul>
         </section>
 
-        {/* 만든 사람 */}
-        <section
-          className="mt-14 rounded-lg border border-white/10 bg-[#0a0a0a] p-6"
-          aria-label="이 자료를 만든 사람"
-        >
-          <p className="text-xs font-medium tracking-wide text-white/50">
-            이 자료를 만든 사람
-          </p>
-          <p className="mt-3 text-[15px] font-bold text-white">
-            모두다른고양이 미술학원 원장
-          </p>
-          <p className="mt-2.5 text-sm leading-relaxed text-white/70">
-            이 페이지의 26개 대학 모집요강 대조와 환산식 정리는 원장이 직접
-            했습니다. 모두다른고양이는 원장이 수업과 입시 상담을 직접 맡는
-            소수정예 학원으로, 학생마다 성적과 성향에 맞춰 실기 종목과
-            가·나·다군 조합을 함께 설계합니다. 1:1 입시 전략 컨설팅도 원장이
-            직접 진행합니다.
-          </p>
-        </section>
-
         {/* 최종 CTA — Primary: 윈터스쿨(/winter) · Secondary: 1:1 전략 컨설팅(/consulting) */}
         <section className="mt-16 text-center">
           <p className="text-xs tracking-[0.25em] text-accent">

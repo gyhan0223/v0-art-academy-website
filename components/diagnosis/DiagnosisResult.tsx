@@ -8,13 +8,16 @@
  * target은 온보딩의 희망 대학 단계뿐 아니라 /guide/jungsi-2027 대학 카드
  * (?target=) 진입으로도 채워진다 — 사용자가 처음 던진 "이 대학 가능할까?"에
  * 결과 화면이 먼저 답하도록, target 분석을 모든 분기에서 최상단에 둔다.
+ * 정시 가이드 원서 트레이에서 조합(?pick=)을 들고 온 학생에게는 "내가 고른
+ * 가·나·다 조합" 점검(PlanCheck)을 그보다도 먼저 보여준다 — 무료로 답을 먼저
+ * 주고, 유료 컨설팅은 그 아래에서 사람이 이어받는 다음 단계로만 둔다.
  * 윈터스쿨은 두 분기 모두에서 컨설팅 아래의 보조 선택지로 내려간다.
  * 컨설팅 CTA는 분기 조건상 정확히 한 번만 렌더된다.
  */
 
 import { useEffect, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
-import type { Gun } from "@/lib/jungsi-data";
+import type { Gun, JungsiEntry } from "@/lib/jungsi-data";
 import {
   analyzeTarget,
   customBasisFromRanked,
@@ -37,6 +40,7 @@ import {
 } from "@/lib/diagnosis/types";
 import { trackDiagnosis } from "@/lib/diagnosis/analytics";
 import { ComboCard, TierBadge } from "./ComboCards";
+import PlanCheck from "./PlanCheck";
 import StrategyConsultCta from "./StrategyConsultCta";
 import GradeUpComparison from "./GradeUpComparison";
 import WinterConversion from "./WinterConversion";
@@ -264,6 +268,7 @@ export default function DiagnosisResult({
   silgi,
   score,
   target,
+  plan = [],
   entrySource = null,
   onRestart,
 }: {
@@ -272,6 +277,8 @@ export default function DiagnosisResult({
   silgi: DiagnosisSilgi[];
   score: DetailedStudentScore;
   target: string | null;
+  /** 정시 가이드 원서 트레이에서 담아 온 가·나·다 대학(검증된 entry) — 있으면 최상단에서 먼저 점검 */
+  plan?: JungsiEntry[];
   /** 검증된 유입 경로 (예: "jungsi") — 애널리틱스에만 쓴다 */
   entrySource?: string | null;
   onRestart: () => void;
@@ -310,8 +317,9 @@ export default function DiagnosisResult({
       result_branch: branch === "target" && target ? "target" : branch,
       entry_source: entrySource ?? undefined,
       target_university: target ?? undefined,
+      plan_filled_count: plan.length > 0 ? plan.length : undefined,
     });
-  }, [grade, gender, silgi, score, branch, target, entrySource]);
+  }, [grade, gender, silgi, score, branch, target, entrySource, plan]);
 
   const showCombo = !scoreless && (branch === "simulation" || target == null);
 
@@ -338,6 +346,14 @@ export default function DiagnosisResult({
         </section>
       )}
 
+      {/* 내가 고른 가·나·다 조합 점검 — 원서 트레이(?pick=)로 들어온 학생이
+          처음 던진 "이 조합 괜찮나?"에 다른 어떤 섹션보다 먼저 답한다 */}
+      {plan.length > 0 && (
+        <div className="mt-6">
+          <PlanCheck plan={plan} score={score} gender={gender} silgi={silgi} />
+        </div>
+      )}
+
       {/* 희망 대학 거리 — 온보딩에서 골랐든 정시 가이드 카드(?target=)로
           들어왔든, target이 있으면 학년 분기와 무관하게 가장 먼저 답한다 */}
       {target != null && (
@@ -356,6 +372,7 @@ export default function DiagnosisResult({
             showMiddleSchoolNote={grade === "중3 이하"}
             targetUniversity={target}
             entrySource={entrySource}
+            planCount={plan.length}
           />
         </div>
       )}
@@ -390,6 +407,7 @@ export default function DiagnosisResult({
           <StrategyConsultCta
             targetUniversity={target}
             entrySource={entrySource}
+            planCount={plan.length}
           />
         </div>
       )}

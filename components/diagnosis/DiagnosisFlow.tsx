@@ -6,9 +6,13 @@
  * 시작 → 학년 → 성별 → 실기 → 성적 → 확인 → (고1·중3 이하: 희망 대학)
  * → 분석 → 결과. 뒤로 가도 입력값은 유지된다(React state — 새로고침 시 초기화).
  * V1에서는 성적을 서버·저장소에 보내지 않는다.
+ *
+ * /guide/jungsi-2027 원서 트레이에서 ?pick=으로 담아 온 가·나·다 조합(initialPlan)은
+ * 다시 고르게 하지 않는다 — 시작 화면·확인 화면에서 작게 보여주고, 결과에서
+ * 그 조합을 먼저 점검한다.
  */
 
-import { useCallback, useReducer } from "react";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -22,6 +26,7 @@ import {
 } from "@/lib/diagnosis/types";
 import { trackDiagnosis } from "@/lib/diagnosis/analytics";
 import type { DiagnosisEntrySource } from "@/lib/diagnosis/entry-params";
+import type { JungsiEntry } from "@/lib/jungsi-data";
 import { hasAnyScore } from "@/lib/diagnosis/score-engine";
 import DiagnosisProgress from "./DiagnosisProgress";
 import GradeStep from "./GradeStep";
@@ -53,6 +58,8 @@ type FlowState = {
   silgi: DiagnosisSilgi[];
   score: DetailedStudentScore;
   target: string | null;
+  /** 정시 가이드에서 담아 온 가·나·다 조합(검증된 entry). 다시 진단하면 비운다 */
+  plan: JungsiEntry[];
   /** 확인 화면에서 수정하러 갔다가 돌아오는 중인지 */
   returnToConfirm: boolean;
 };
@@ -67,14 +74,18 @@ type Action =
   | { type: "EDIT_FROM_CONFIRM"; step: Step }
   | { type: "RESTART" };
 
-function initialState(initialTarget: string | null): FlowState {
+function initialState(init: {
+  target: string | null;
+  plan: JungsiEntry[];
+}): FlowState {
   return {
     step: "intro",
     grade: null,
     gender: null,
     silgi: [],
     score: createEmptyScore(),
-    target: initialTarget,
+    target: init.target,
+    plan: init.plan,
     returnToConfirm: false,
   };
 }
@@ -96,8 +107,8 @@ function reducer(state: FlowState, action: Action): FlowState {
     case "EDIT_FROM_CONFIRM":
       return { ...state, step: action.step, returnToConfirm: true };
     case "RESTART":
-      // 처음부터 다시 = 일반 진단으로 초기화 (query target도 버린다)
-      return { ...initialState(null), step: "grade" };
+      // 처음부터 다시 = 일반 진단으로 초기화 (query target·pick 조합도 버린다)
+      return { ...initialState({ target: null, plan: [] }), step: "grade" };
   }
 }
 
@@ -116,22 +127,55 @@ function progressOf(state: FlowState): { current: number; total: number } {
 
 function IntroStep({
   target,
+  plan,
   onStart,
 }: {
   /** /guide/jungsi-2027 대학 카드에서 넘어온 canonical 대학명 (없으면 일반 진입) */
   target: string | null;
+  /** /guide/jungsi-2027 원서 트레이에서 담아 온 가·나·다 조합 (없으면 빈 배열) */
+  plan: JungsiEntry[];
   onStart: () => void;
 }) {
   const fade = useFadeProps();
+  const hasPlan = plan.length > 0;
+  const planCount = plan.length === 3 ? "3장" : `${plan.length}장`;
   return (
     <motion.div
       {...fade}
       className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-5 pb-24 pt-10"
     >
       <p className="text-[13px] tracking-wider text-white/50">
-        서울 주요 미대 전형 데이터 기준
+        {hasPlan
+          ? `선택한 가·나·다군 ${planCount}을 기준으로 점검합니다`
+          : "서울 주요 미대 전형 데이터 기준"}
       </p>
-      {target != null ? (
+      {hasPlan ? (
+        <>
+          <h1 className="mt-4 break-keep text-[28px] font-bold leading-snug text-white">
+            고른 {planCount} 조합,
+            <br />내 성적으로 현실적일까요?
+          </h1>
+          {/* 담아 온 조합 — 카드 없이 한 줄씩만. 여기서 다시 고르게 하지 않는다 */}
+          <ul className="mt-5 space-y-1.5" aria-label="점검할 조합">
+            {plan.map((e) => (
+              <li key={e.id} className="flex items-baseline gap-3 text-[15px]">
+                <span className="w-8 shrink-0 font-mono text-[13px] text-accent">
+                  {e.gun}군
+                </span>
+                <span className="min-w-0 text-white/85">
+                  {e.university}
+                  {e.campus ? (
+                    <span className="ml-1 text-[13px] text-white/50">{e.campus}</span>
+                  ) : null}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 break-keep text-[15px] leading-relaxed text-white/65">
+            현재 성적과 준비 중인 실기를 넣으면 이 조합을 함께 되짚어드려요.
+          </p>
+        </>
+      ) : target != null ? (
         <>
           <h1 className="mt-4 break-keep text-[28px] font-bold leading-snug text-white">
             {target},
@@ -158,7 +202,11 @@ function IntroStep({
       )}
       <div className="mt-10">
         <PrimaryButton onClick={onStart}>
-          {target != null ? `${target} 가능성 확인하기` : "무료로 진단하기"}
+          {hasPlan
+            ? "무료로 이 조합 점검하기"
+            : target != null
+              ? `${target} 가능성 확인하기`
+              : "무료로 진단하기"}
         </PrimaryButton>
         <p className="mt-3 text-center text-[13px] text-white/50">
           약 1분 · 회원가입 없음
@@ -172,15 +220,35 @@ function IntroStep({
 
 export default function DiagnosisFlow({
   initialTarget = null,
+  initialPlan = [],
   entrySource = null,
 }: {
   /** query에서 검증된 canonical 대학명 — 있으면 첫 화면·결과를 개인화 */
   initialTarget?: string | null;
+  /** query ?pick=에서 검증된 가·나·다 조합 — 있으면 첫 화면·결과에서 그 조합을 먼저 점검 */
+  initialPlan?: JungsiEntry[];
   /** 검증된 유입 경로 (예: "jungsi") — 애널리틱스에만 쓴다 */
   entrySource?: DiagnosisEntrySource | null;
 }) {
-  const [state, dispatch] = useReducer(reducer, initialTarget, initialState);
-  const { step, grade, gender, silgi, score, target } = state;
+  const [state, dispatch] = useReducer(
+    reducer,
+    { target: initialTarget, plan: initialPlan },
+    initialState,
+  );
+  const { step, grade, gender, silgi, score, target, plan } = state;
+
+  // 조합을 들고 진단에 들어온 시점 — 한 번만 집계
+  const planViewed = useRef(false);
+  useEffect(() => {
+    if (planViewed.current || initialPlan.length === 0) return;
+    planViewed.current = true;
+    trackDiagnosis("diagnosis_jungsi_plan_view", {
+      entry_source: entrySource ?? undefined,
+      plan_filled_count: initialPlan.length,
+      plan_ids: initialPlan.map((e) => e.id).join(","),
+      plan_universities: initialPlan.map((e) => e.university).join(","),
+    });
+  }, [initialPlan, entrySource]);
 
   const goto = useCallback((s: Step) => dispatch({ type: "GOTO", step: s }), []);
 
@@ -220,10 +288,12 @@ export default function DiagnosisFlow({
             <IntroStep
               key="intro"
               target={initialTarget}
+              plan={plan}
               onStart={() => {
                 trackDiagnosis("diagnosis_start", {
                   entry_source: entrySource ?? undefined,
                   target_university: initialTarget ?? undefined,
+                  plan_filled_count: plan.length > 0 ? plan.length : undefined,
                 });
                 goto("grade");
               }}
@@ -303,6 +373,7 @@ export default function DiagnosisFlow({
               gender={gender}
               silgi={silgi}
               score={score}
+              plan={plan}
               onEditProfile={() => dispatch({ type: "EDIT_FROM_CONFIRM", step: "grade" })}
               onEditSilgi={() => dispatch({ type: "EDIT_FROM_CONFIRM", step: "silgi" })}
               onEditScore={() => dispatch({ type: "EDIT_FROM_CONFIRM", step: "score" })}
@@ -362,6 +433,7 @@ export default function DiagnosisFlow({
               silgi={silgi}
               score={score}
               target={target}
+              plan={plan}
               entrySource={entrySource}
               onRestart={() => dispatch({ type: "RESTART" })}
             />

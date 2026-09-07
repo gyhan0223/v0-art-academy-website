@@ -476,11 +476,15 @@ export default function Page() {
             <span className="text-accent">담기</span>로 골라 나만의 원서 3장을
             구성해 보세요. 비율 바는 실기 반영 단계 기준입니다.
           </p>
-          <JungsiExplorer ctaHref={CONSULTING_HREF} />
+          {/* 트레이의 3장 완성 CTA는 유료 컨설팅이 아니라 무료 진단(/diagnosis?pick=)
+              으로 보낸다 — 유료 컨설팅은 아래 가격이 명시된 섹션이 담당한다 */}
+          <JungsiExplorer />
         </section>
 
         {/* 대학 정보를 충분히 본 직후 — "그래서 나는 어디를 써야 하지?" 지점의
-            1:1 전략 컨설팅 CTA. 무료 진단은 전 단계로 함께 안내한다. */}
+            1:1 전략 컨설팅 CTA. 무료 진단(자동 점검)과 역할이 겹쳐 보이지 않게
+            "사람이 1:1로 판단한다"는 점과 가격을 앞세우고, 무료 진단은
+            아직 안 해본 사람을 위한 낮은 강조의 보조 링크로만 둔다. */}
         <section
           className="mt-16 rounded-lg border border-accent/40 bg-accent/[0.06] p-6 md:p-8"
           aria-label="1:1 입시 전략 컨설팅 안내"
@@ -493,25 +497,26 @@ export default function Page() {
             <br className="md:hidden" /> 내 세 장은 어떻게 써야 할까요?
           </h2>
           <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/75 break-keep">
-            현재 성적 · 실기 · 희망 대학을 함께 보고 가·나·다군 지원 방향을
-            1:1로 정리합니다.
+            무료 진단이 성적·실기 기준으로 대학과 조합을 자동으로 점검한다면,
+            컨설팅은 사람이 현재 성적 · 실기 · 희망 대학을 함께 보고 지금 상황의
+            우선순위와 실제 가·나·다군 지원 방향을 1:1로 정리합니다.
           </p>
           <p className="mt-2.5 text-sm text-white/55">
-            {CONSULTING_INFO.name} · {CONSULTING_INFO.priceLabel}
+            유료 · {CONSULTING_INFO.name} · {CONSULTING_INFO.priceLabel}
           </p>
-          <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+          <div className="mt-6 flex flex-col items-start gap-3">
             <Link
               href={CONSULTING_HREF}
               className="inline-flex items-center justify-center gap-1.5 rounded-md bg-accent px-6 py-3.5 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              내 지원 전략 상담받기
+              전문가와 상담하기
               <span aria-hidden>→</span>
             </Link>
             <Link
               href="/diagnosis"
-              className="inline-flex items-center justify-center rounded-md border border-white/20 px-6 py-3.5 text-sm font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="text-[13px] text-white/60 underline underline-offset-4 transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              무료 성적 진단 먼저 해보기
+              아직 진단 전이라면 — 무료 성적 진단 먼저 해보기 (회원가입 없음)
             </Link>
           </div>
         </section>

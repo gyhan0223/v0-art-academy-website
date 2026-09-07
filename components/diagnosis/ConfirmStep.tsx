@@ -2,6 +2,7 @@
 
 /** 분석 전 입력 요약 — 각 행에서 바로 수정으로 돌아갈 수 있다 */
 
+import type { JungsiEntry } from "@/lib/jungsi-data";
 import type {
   DetailedStudentScore,
   DiagnosisGender,
@@ -52,6 +53,7 @@ export default function ConfirmStep({
   gender,
   silgi,
   score,
+  plan = [],
   onEditProfile,
   onEditSilgi,
   onEditScore,
@@ -62,6 +64,8 @@ export default function ConfirmStep({
   gender: DiagnosisGender;
   silgi: DiagnosisSilgi[];
   score: DetailedStudentScore;
+  /** 정시 가이드에서 담아 온 가·나·다 조합 — 다시 고르게 하지 않고 확인용으로만 보여준다 */
+  plan?: JungsiEntry[];
   onEditProfile: () => void;
   onEditSilgi: () => void;
   onEditScore: () => void;
@@ -147,9 +151,26 @@ export default function ConfirmStep({
         )}
       </ul>
 
+      {plan.length > 0 && (
+        <p className="mt-4 break-keep text-[13px] leading-relaxed text-white/55">
+          점검할 조합 ·{" "}
+          {plan.map((e, i) => (
+            <span key={e.id}>
+              {i > 0 && " · "}
+              <span className="font-mono text-accent">{e.gun}</span>{" "}
+              <span className="text-white/80">{e.university}</span>
+            </span>
+          ))}
+        </p>
+      )}
+
       <div className="mt-8">
         <PrimaryButton onClick={onNext}>
-          {hasAnyScore(score) ? "이 성적으로 분석하기" : "입력한 정보로 진단하기"}
+          {plan.length > 0
+            ? "이 성적으로 조합 점검하기"
+            : hasAnyScore(score)
+              ? "이 성적으로 분석하기"
+              : "입력한 정보로 진단하기"}
         </PrimaryButton>
       </div>
     </StepLayout>

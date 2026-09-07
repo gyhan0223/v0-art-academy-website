@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { trackDiagnosis } from "@/lib/diagnosis/analytics";
 import { jungsiDiagnosisHref } from "@/lib/diagnosis/entry-params";
+import { analyzeSelection } from "@/lib/jungsi-plan";
 import {
   GUN_ORDER,
   SILGI_CATEGORY_ORDER,
@@ -483,65 +484,8 @@ function UniversityAccordionItem({
 
 type Selection = Partial<Record<Gun, string>>;
 
-function analyzeSelection(picked: JungsiEntry[]): {
-  headline: string;
-  detail: string;
-} {
-  const main = picked.filter((e) => e.gun !== "별도");
-  const hasKarts = picked.some((e) => e.gun === "별도");
-  const silgiPicks = picked.filter((e) => e.subjects.length > 0);
-  const nonSilgiPicks = main.filter((e) => e.subjects.length === 0);
-
-  if (
-    silgiPicks.some((e) => e.subjects.includes("통합·자체실기")) ||
-    (hasKarts && main.length > 0)
-  ) {
-    return {
-      headline: "자체 실기 대비가 들어가는 조합",
-      detail:
-        "서울대·이화여대·한예종급 자체실기는 대학 기출에 맞춘 별도 준비가 필요합니다. 나머지 카드의 종목과 시간 배분을 함께 설계해야 합니다.",
-    };
-  }
-
-  // 선택한 실기 대학들이 공유하는 종목 (택1 대학은 응시 가능 종목 전체로 판정)
-  const common =
-    silgiPicks.length > 0
-      ? silgiPicks[0].subjects.filter((s) =>
-          silgiPicks.every((e) => e.subjects.includes(s)),
-        )
-      : [];
-
-  if (silgiPicks.length >= 2 && common.length === 0) {
-    const names = [
-      ...new Set(silgiPicks.map((e) => SILGI_META[silgiCategory(e)].short)),
-    ];
-    return {
-      headline: "실기 두 갈래를 병행하는 조합",
-      detail: `선택한 대학들의 실기 종목이 겹치지 않아 ${names.join("·")} 종목을 각각 준비해야 합니다. 남은 기간의 시간 배분이 합격을 가릅니다.`,
-    };
-  }
-  if (nonSilgiPicks.length > 0 && silgiPicks.length > 0) {
-    return {
-      headline: "실기 + 수능·서류를 병행하는 조합",
-      detail:
-        "비실기 카드는 그림 대신 수능·서류 관리가 승부처입니다. 나머지 카드의 실기와 시간 배분이 필요합니다.",
-    };
-  }
-  if (main.length > 0 && silgiPicks.length === 0) {
-    return {
-      headline: "실기 없이 가는 조합",
-      detail:
-        "실기고사 부담이 없는 대신, 수능 성적과 서류 완성도가 당락을 결정합니다.",
-    };
-  }
-  if (silgiPicks.length > 0) {
-    return {
-      headline: "한 종목으로 끝나는 조합",
-      detail: `${SILGI_META[common[0]].label} 하나로 선택한 실기 대학을 모두 지원할 수 있어, 실기 준비를 한 갈래에 집중할 수 있는 조합입니다.`,
-    };
-  }
-  return { headline: "", detail: "" };
-}
+// 실기 궁합 판정은 lib/jungsi-plan.ts(analyzeSelection) 단일 소스를 쓴다 —
+// /diagnosis 조합 점검 결과와 같은 문구·판정을 공유하기 위함.
 
 /* ─────────────────────────── 공유 · 저장 ─────────────────────────── */
 
@@ -552,30 +496,6 @@ function slotLine(entry: JungsiEntry) {
     ? `${entry.university} ${entry.campus}`
     : entry.university;
   return { name, silgi: silgiLabel(entry) };
-}
-
-/** 상담 예약 요청사항에 붙여넣을 조합 요약 텍스트 */
-function buildDiagnosisText(
-  selection: Selection,
-  byId: Map<string, JungsiEntry>,
-  analysis: { headline: string },
-) {
-  const lines: string[] = ["[정시 원서 조합 진단 요청]"];
-  for (const g of MAIN_GUNS) {
-    const entry = selection[g] ? byId.get(selection[g]!) : undefined;
-    if (entry) {
-      const s = slotLine(entry);
-      lines.push(`${g}군: ${s.name} (${s.silgi})`);
-    } else {
-      lines.push(`${g}군: 미정`);
-    }
-  }
-  const extra = selection["별도"] ? byId.get(selection["별도"]!) : undefined;
-  if (extra) lines.push(`별도: ${extra.university}`);
-  if (analysis.headline) lines.push(`조합 유형: ${analysis.headline}`);
-  if (typeof window !== "undefined")
-    lines.push(`조합 보기: ${window.location.href}`);
-  return lines.join("\n");
 }
 
 async function copyText(text: string) {
@@ -793,20 +713,45 @@ async function shareOrDownloadImage(
 
 /* ─────────────────────────── 원서 트레이 ─────────────────────────── */
 
+/**
+ * 원서 트레이 → /diagnosis 진입 링크 + 이벤트 파라미터.
+ * 1장: 기존 ?target= 개인화(희망 대학 거리 보기)를 그대로 쓴다.
+ * 2~3장: ?pick=id,id(,id) 로 담은 조합을 넘겨 진단 결과가 그 조합을 먼저 점검한다.
+ * URL 생성은 lib/diagnosis/entry-params.ts jungsiDiagnosisHref 단일 소스만 쓴다.
+ */
+function planDiagnosisLink(picked: JungsiEntry[]) {
+  const main = MAIN_GUNS.map((g) => picked.find((e) => e.gun === g)).filter(
+    (e): e is JungsiEntry => e != null,
+  );
+  const single = picked.length === 1 ? picked[0] : null;
+  const ids = main.map((e) => e.id);
+  return {
+    href:
+      single != null
+        ? jungsiDiagnosisHref(single.university)
+        : jungsiDiagnosisHref(undefined, { pick: ids }),
+    params: {
+      plan_filled_count: main.length,
+      target_university: single?.university,
+      plan_ids: ids.length > 1 ? ids.join(",") : undefined,
+      plan_universities:
+        ids.length > 1 ? main.map((e) => e.university).join(",") : undefined,
+    },
+  };
+}
+
 function PlanTray({
   selection,
   byId,
   onRemove,
   onGoGun,
   onClear,
-  ctaHref,
 }: {
   selection: Selection;
   byId: Map<string, JungsiEntry>;
   onRemove: (gun: Gun) => void;
   onGoGun: (gun: Gun) => void;
   onClear: () => void;
-  ctaHref: string;
 }) {
   const mainGuns: Gun[] = ["가", "나", "다"];
   const picked = (Object.keys(selection) as Gun[])
@@ -815,6 +760,22 @@ function PlanTray({
   const filledCount = mainGuns.filter((g) => selection[g]).length;
   const complete = filledCount === 3;
   const analysis = analyzeSelection(picked);
+  const diagnosis = planDiagnosisLink(picked);
+
+  // 가·나·다 3장이 처음 다 채워진 순간을 한 번 집계 (비웠다 다시 채우면 다시).
+  // params는 ref로 읽어 complete 전환 시점에만 이벤트가 나가게 한다.
+  const completeTracked = useRef(false);
+  const diagnosisParams = useRef(diagnosis.params);
+  diagnosisParams.current = diagnosis.params;
+  useEffect(() => {
+    if (!complete) {
+      completeTracked.current = false;
+      return;
+    }
+    if (completeTracked.current) return;
+    completeTracked.current = true;
+    trackDiagnosis("jungsi_plan_complete", diagnosisParams.current);
+  }, [complete]);
 
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -856,16 +817,6 @@ function PlanTray({
     } finally {
       setSaving(false);
     }
-  };
-
-  // 상담 신청으로 넘어가기 전에 조합 요약을 복사해 두면
-  // 신청서에 붙여넣기만 하면 됨 → 상담 리드에 조합 정보가 따라붙음
-  const handleCta = async () => {
-    const ok = await copyText(buildDiagnosisText(selection, byId, analysis));
-    if (ok)
-      showToast(
-        "조합 내용을 복사했어요 — 신청서 '지금 가장 고민되는 점'란에 붙여넣어 주세요.",
-      );
   };
 
   return (
@@ -982,14 +933,23 @@ function PlanTray({
         </div>
 
         <div className="mt-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          {/* 1~2장 상태는 트레이 높이를 최소화한다 — 모바일은 다음 질문 한
-              줄만, 궁합 headline은 md 이상에서만 덧붙인다(detail은 공유
-              이미지·상담 요약 텍스트에는 그대로 들어간다). */}
+          {/* 트레이의 역할은 "대학 선택 → 조합 완성 → 내 성적으로 검증"까지다.
+              유료 컨설팅 CTA는 여기 두지 않는다 — 가격이 명시된 본문 섹션과
+              /diagnosis 결과 하단이 담당한다. 문구는 담은 장 수에 따라
+              질문의 강도만 바뀌고, 목적지는 항상 무료 진단(/diagnosis)이다.
+              모바일은 한두 줄로 유지하고, 궁합 headline은 md 이상에서만
+              덧붙인다(공유 이미지에는 그대로 들어간다). */}
           <p aria-live="polite" className="text-[13px] leading-snug">
             {complete ? (
-              <span className="font-bold text-accent">
-                ✓ 3장 완성! 이 조합, 1:1 상담에서 바로 점검받아 보세요.
-              </span>
+              <>
+                <span className="font-bold text-accent">
+                  ✓ 가·나·다군 3장 완성
+                </span>{" "}
+                <span className="break-keep text-white/65">
+                  선택한 세 학교가 현재 성적에서도 현실적인 조합인지
+                  확인해보세요.
+                </span>
+              </>
             ) : (
               <>
                 {analysis.headline && (
@@ -997,60 +957,27 @@ function PlanTray({
                     {analysis.headline}{" "}
                   </span>
                 )}
-                <span className="text-white/65">
-                  선택한 대학, 내 성적에서도 현실적일까요?
+                <span className="break-keep text-white/65">
+                  {filledCount >= 2
+                    ? "이 두 학교를 함께 준비해도 괜찮을까요?"
+                    : "선택한 대학, 내 성적에서도 현실적일까요?"}
                 </span>
               </>
             )}
           </p>
-          {/* CTA 강도는 engagement에 맞춘다 —
-              1~2장: 유료 상담을 요구하기엔 이르다. "이 선택이 내 성적에서
-              현실적인가?"가 자연스러운 다음 질문이라 무료 진단을 primary로,
-              전략 상담은 낮은 강조의 secondary로 둔다.
-              3장 완성: 전략 의도가 충분히 강하므로 기존 강한 상담 CTA 유지.
-              내부 경로(/consulting 등)는 같은 탭에서, 외부 예약 주소만 새 탭에서 연다 */}
-          {complete ? (
-            <a
-              href={ctaHref}
-              {...(/^https?:/.test(ctaHref)
-                ? { target: "_blank", rel: "noopener noreferrer" }
-                : {})}
-              onClick={handleCta}
-              className="w-full shrink-0 rounded-md bg-accent px-6 py-3 text-center text-sm font-bold text-black shadow-[0_0_0_3px_rgba(255,255,255,0.12)] transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-auto"
-            >
-              이 3장 조합으로 전략 상담받기
-            </a>
-          ) : (
-            <div className="flex shrink-0 items-center gap-3">
-              <Link
-                href={
-                  picked.length === 1
-                    ? jungsiDiagnosisHref(picked[0].university)
-                    : jungsiDiagnosisHref()
-                }
-                onClick={() =>
-                  trackDiagnosis("jungsi_plantray_diagnosis_click", {
-                    plan_filled_count: filledCount,
-                    target_university:
-                      picked.length === 1 ? picked[0].university : undefined,
-                  })
-                }
-                className="flex-1 rounded-md bg-accent px-5 py-2.5 text-center text-[13px] font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:flex-none"
-              >
-                무료로 확인하기 →
-              </Link>
-              <a
-                href={ctaHref}
-                {...(/^https?:/.test(ctaHref)
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
-                onClick={handleCta}
-                className="shrink-0 py-2 text-[12px] text-white/60 underline underline-offset-2 transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-              >
-                1:1 전략 상담
-              </a>
-            </div>
-          )}
+          <Link
+            href={diagnosis.href}
+            onClick={() =>
+              trackDiagnosis("jungsi_plantray_diagnosis_click", diagnosis.params)
+            }
+            className={`w-full shrink-0 rounded-md bg-accent text-center font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:w-auto ${
+              complete
+                ? "px-6 py-3 text-sm shadow-[0_0_0_3px_rgba(255,255,255,0.12)]"
+                : "px-5 py-2.5 text-[13px]"
+            }`}
+          >
+            {complete ? "내 성적으로 이 조합 점검하기 →" : "무료로 확인하기 →"}
+          </Link>
         </div>
       </div>
     </div>
@@ -1071,11 +998,7 @@ function matchesSilgiFilter(e: JungsiEntry, filter: SilgiCategory | "전체") {
   return e.subjects.includes(filter);
 }
 
-export default function JungsiExplorer({
-  ctaHref = "#",
-}: {
-  ctaHref?: string;
-}) {
+export default function JungsiExplorer() {
   const [gun, setGun] = useState<Gun>("가");
   const [silgi, setSilgi] = useState<SilgiCategory | "전체">("전체");
   const [query, setQuery] = useState("");
@@ -1466,8 +1389,9 @@ export default function JungsiExplorer({
         </div>
       )}
 
-      {/* 트레이가 본문을 가리지 않도록 여백 확보 */}
-      {hasSelection && <div aria-hidden className="h-44 md:h-36" />}
+      {/* 트레이가 본문을 가리지 않도록 여백 확보 — 모바일 3장 완성 상태
+          (헤드라인 + 보조 문구 두 줄)의 실측 높이 약 190px에 맞춘다 */}
+      {hasSelection && <div aria-hidden className="h-52 md:h-36" />}
 
       {hasSelection && (
         <PlanTray
@@ -1476,7 +1400,6 @@ export default function JungsiExplorer({
           onRemove={removeGun}
           onGoGun={goGun}
           onClear={() => setSelection({})}
-          ctaHref={ctaHref}
         />
       )}
     </div>

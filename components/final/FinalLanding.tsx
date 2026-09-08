@@ -7,9 +7,9 @@
  *
  * ── 네 구간, 구간마다 새 정보 하나 ────────────────────────────
  *   A 첫 화면   관점 — 남은 시간은 같아도 필요한 공부는 다르다
- *   B 학생 비교 시각화 — 쌓아온 공부가 같아도 보완할 곳이 다르다 (StudentCompare)
- *   C 학원의 역할 방법 — 과목 선생님과 해온 공부를 직접 짚어본다 (+ 과정 정보 ·
- *               윈터스쿨 참고 기록 · 소형 FAQ)
+ *   B 학생 비교 시각화 — 개념·기출을 공부했어도 어려운 곳이 다르다 (StudentCompare)
+ *   C 학원의 역할 방법 — 과목 선생님과 해온 공부를 직접 짚어본다. 제목/설명 좌우
+ *               분할 뒤, 윈터스쿨 참고 기록과 소형 FAQ는 중앙 40rem 폭으로 모은다
  *   D 상담·예약  원장님과 우선순위를 살펴본다 → 전화 · 네이버 예약 (유일한 CTA)
  * "성적·목표·우선순위" 논리는 D에서 한 번만 말한다. 목록·도식으로 반복하지 않는다.
  *
@@ -176,10 +176,8 @@ function Approach() {
           </h2>
           <div>
             <p className="text-[17px] leading-[1.8] break-keep text-black/80 md:text-lg">
-              과정 중에는 국어·영어·사회탐구 선생님과 사용한 교재, 진도, 어려운
-              부분을 이야기하며 학습 상태를 살펴볼 수 있습니다. 시험지 위의
-              점수만 보는 것이 아니라, 그 점수가 나온 과정을 선생님이 듣고 함께
-              확인하는 방식입니다.
+              과정 중에는 국어·영어·사회탐구 선생님과 사용한 교재와 진도, 어려운
+              부분을 이야기하며 학습 상태를 살펴봅니다.
             </p>
             <dl className="mt-8 grid grid-cols-[3.5rem_1fr] gap-x-4 gap-y-2 text-[15px] md:text-base">
               {PROGRAM_META.map(([label, value]) => (
@@ -192,13 +190,16 @@ function Approach() {
           </div>
         </div>
 
-        {!IS_PLACEHOLDER && <Evidence />}
+        {/* 실적·FAQ — 위의 넓은 2열에서 중앙의 좁은 본문 폭(40rem)으로 모은다.
+            텍스트는 왼쪽 정렬, 래퍼만 가운데. 새 배경·카드 없음 */}
+        <div className="mx-auto mt-12 max-w-[40rem] md:mt-16">
+          {!IS_PLACEHOLDER && <Evidence />}
 
-        <Accordion
-          type="single"
-          collapsible
-          className="mt-12 max-w-[40rem] border-t border-black/10 md:mt-16"
-        >
+          <Accordion
+            type="single"
+            collapsible
+            className="mt-10 border-t border-black/10 md:mt-12"
+          >
           {FAQ_ITEMS.map((item, i) => (
             <AccordionItem
               key={item.q}
@@ -215,7 +216,8 @@ function Approach() {
               </AccordionContent>
             </AccordionItem>
           ))}
-        </Accordion>
+          </Accordion>
+        </div>
       </div>
     </section>
   );
@@ -242,9 +244,10 @@ function GradeChange({ item, subject }: { item: WinterResultCase; subject: strin
 
 /**
  * 윈터스쿨 결과는 이 과정의 성과가 아니라 "학습 상태를 확인하며 운영한 과정"의
- * 참고 기록이다. 출처·비교 기준이 붙은 두 문장만 펼쳐 두고, 사례 표는
- * <details>로 접는다. 노출 조건(IS_PLACEHOLDER·isValid·서면 동의)은
- * lib/winter-results.ts 그대로다.
+ * 참고 기록이다. 출처 → "N명 중 M명" 한 줄 → 무슨 변화인지 → 비교 기준·
+ * 면책 순서로 짧게 두고, 사례 표는 <details>로 접는다. 비율(rate)은 표로
+ * 펼쳤을 때 한 번만 보여 같은 결과를 두 번 강조하지 않는다.
+ * 노출 조건(IS_PLACEHOLDER·isValid·서면 동의)은 lib/winter-results.ts 그대로다.
  */
 function Evidence() {
   const cohort = WINTER_COHORT;
@@ -255,18 +258,21 @@ function Evidence() {
   const allMeasured = cohort.measured === cohort.total;
 
   return (
-    <div className="mt-12 max-w-[40rem] border-t border-black/10 pt-8 md:mt-16">
+    <div className="border-t border-black/10 pt-8">
       <p className="text-[15px] text-black/55 md:text-base">참고 · {cohort.term} 운영 결과</p>
+      <p className="mt-2 text-[1.5rem] font-semibold leading-tight tracking-tight tabular-nums md:text-[1.75rem]">
+        {cohort.measured}명 중 {cohort.improved}명
+      </p>
       <p className="mt-2 text-[17px] leading-[1.7] break-keep md:text-lg">
-        8주 수료 {cohort.total}명 중{" "}
-        {allMeasured ? "전원이" : `${cohort.measured}명이`} 재측정에 참여했고,{" "}
-        <span className="font-semibold">{cohort.improved}명</span>이 {cohort.criterion}
-        했습니다 ({summary.rate}).
+        {cohort.criterion}
       </p>
       <p className="mt-2 text-[15px] leading-relaxed break-keep text-black/55 md:text-base">
         {cohort.basis}
-        {cohort.excluded ? ` · ${cohort.excluded}` : ""}. 이번 파이널 집중반의 성과나
-        보장 수치가 아니며, 학생별 출발점과 결과는 다릅니다.
+        {allMeasured
+          ? ` · 8주 수료 ${cohort.total}명 전원 재측정 참여`
+          : ` · 8주 수료 ${cohort.total}명 중 ${cohort.measured}명 재측정 참여`}
+        . 이번 파이널 집중반의 성과나 보장 수치가 아니며, 학생별 출발점과
+        결과는 다릅니다.
       </p>
 
       {cases.length > 0 && (
@@ -340,7 +346,10 @@ function Evidence() {
                 })}
               </tbody>
             </table>
-            <p className="mt-2 text-[14px] text-black/50">1주차 진단고사 등급 → 8주차 재측정 등급</p>
+            <p className="mt-2 text-[14px] text-black/50">
+              1주차 진단고사 등급 → 8주차 재측정 등급 · 상승 비율 {summary.rate}
+              {cohort.excluded ? ` · ${cohort.excluded}` : ""}
+            </p>
           </div>
         </details>
       )}

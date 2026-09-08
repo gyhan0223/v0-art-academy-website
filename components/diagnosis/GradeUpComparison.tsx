@@ -1,8 +1,9 @@
 "use client";
 
 /**
- * "성적이 한 등급씩 오른다면?" 비교 섹션.
- * 모바일: 현재 → 상승 후 세로 배치 / 데스크톱: 좌우 비교.
+ * "성적이 한 등급씩 오른다면?" 섹션.
+ * 현재 추천은 위 섹션에 이미 나오므로 여기서는 상승 후 결과만 보여준다.
+ * (현재 추천을 한 번 더 보여주면 같은 학교가 두 번 나와 헷갈린다.)
  * 새로 지원권에 들어온 대학은 accent로 강조하되,
  * 합격을 단정하는 카피는 쓰지 않는다.
  */
@@ -95,11 +96,7 @@ export default function GradeUpComparison({
         국어·영어·탐구가 각각 한 등급 상승한 수준으로 시뮬레이션했어요.
       </p>
 
-      <div className="mt-6 grid gap-6 md:grid-cols-2">
-        <ComboColumn title="지금" combo={current} />
-        <div className="md:hidden" aria-hidden>
-          <p className="text-center text-lg text-white/30">↓</p>
-        </div>
+      <div className="mt-6">
         <ComboColumn
           title={<span className="text-accent">한 등급 상승 수준</span>}
           combo={gradeUp}

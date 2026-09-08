@@ -76,8 +76,8 @@ export default function FinalConversion({
       </Link>
 
       <p className="mt-4 break-keep text-[13px] leading-relaxed text-white/55">
-        등록부터 권하지 않아요. 9평 성적표와 목표 대학을 가져오면, 남은 기간에
-        실제로 바꿀 수 있는 과목부터 함께 확인합니다.
+        9평 성적표와 희망 대학을 가져오면, 지금까지 해온 공부를 함께 보고
+        남은 기간에 유지할 공부와 먼저 보완할 부분부터 확인합니다.
       </p>
     </section>
   );

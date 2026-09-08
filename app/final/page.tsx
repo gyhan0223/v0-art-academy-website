@@ -16,7 +16,7 @@ import { FINAL_IS_PUBLISHED, FINAL_PROGRAM } from "@/lib/final-program";
 
 const PAGE_TITLE = `${FINAL_PROGRAM.name} | 모두다른고양이 미술학원`;
 const PAGE_DESCRIPTION =
-  "9월 모의평가 이후부터 수능 전까지, 미대 정시를 준비하는 고3·N수생을 위한 국어·영어·사회탐구 집중 과정. 9평 진단과 목표 대학 반영 방식을 기준으로 남은 기간의 우선순위를 정합니다. 홍대 본원.";
+  "수능까지 남은 시간은 같아도 필요한 공부는 다릅니다. 미대 정시를 준비하는 고3·N수생이 지금까지 해온 공부와 희망 대학을 함께 살펴보고, 남은 기간에 유지할 공부와 먼저 보완할 부분을 정하는 국어·영어·사회탐구 집중 과정. 홍대 본원.";
 
 export const metadata: Metadata = {
   title: PAGE_TITLE,

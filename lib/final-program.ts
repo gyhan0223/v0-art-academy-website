@@ -40,8 +40,11 @@ export const FINAL_PROGRAM = {
  * true  — 페이지가 열리고 아래 FINAL_RECRUITING에 따라 메뉴·공지가 결정된다.
  *
  * 2026-09-04 — 과정 준비가 끝나지 않아 코드만 유지한 채 닫아 둔다.
+ * 2026-09-08 — 진단 결과(고3·N수생)가 /final로 이어지도록 다시 연다.
+ *              components/diagnosis/FinalConversion.tsx가 이 페이지로 보내므로
+ *              닫을 때는 그 카드도 함께 손봐야 한다(404로 보내면 안 된다).
  */
-export const FINAL_IS_PUBLISHED = false;
+export const FINAL_IS_PUBLISHED = true;
 
 /**
  * 모집 노출 여부(페이지가 공개된 동안에만 의미가 있다).

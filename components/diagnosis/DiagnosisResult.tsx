@@ -2,17 +2,19 @@
 
 /**
  * 진단 결과 화면.
- * - 고2·고3·N수: (target이 있으면 목표 대학 분석 먼저) → 현재 가·나·다 조합
- *   → 한 등급 상승 비교 → 1:1 컨설팅 CTA
- * - 고1·중3 이하: 희망 대학까지의 거리(정량화 가능할 때만) → 1:1 컨설팅 CTA
+ * - 고3·N수(FINAL_TRACK_GRADES): (target이 있으면 목표 대학 분석 먼저)
+ *   → 현재 가·나·다 조합 → 한 등급 상승 비교 → 수능 파이널 집중반(/final) 카드
+ * - 고2: 같은 흐름이되 마지막이 윈터스쿨 안내
+ * - 고1·중3 이하: 희망 대학까지의 거리(정량화 가능할 때만) → 윈터스쿨 안내
  * target은 온보딩의 희망 대학 단계뿐 아니라 /guide/jungsi-2027 대학 카드
  * (?target=) 진입으로도 채워진다 — 사용자가 처음 던진 "이 대학 가능할까?"에
  * 결과 화면이 먼저 답하도록, target 분석을 모든 분기에서 최상단에 둔다.
  * 정시 가이드 원서 트레이에서 조합(?pick=)을 들고 온 학생에게는 "내가 고른
- * 가·나·다 조합" 점검(PlanCheck)을 그보다도 먼저 보여준다 — 무료로 답을 먼저
- * 주고, 유료 컨설팅은 그 아래에서 사람이 이어받는 다음 단계로만 둔다.
- * 윈터스쿨은 두 분기 모두에서 컨설팅 아래의 보조 선택지로 내려간다.
- * 컨설팅 CTA는 분기 조건상 정확히 한 번만 렌더된다.
+ * 가·나·다 조합" 점검(PlanCheck)을 그보다도 먼저 보여준다.
+ *
+ * 유료 1:1 컨설팅 CTA는 어느 학년에게도 보여주지 않는다 — 무료 진단 직후에
+ * 유료 상품을 붙이면 진단 자체가 영업으로 읽힌다(2026-09-08 제거).
+ * 다음 단계 카드는 학년당 정확히 하나만 렌더된다: 고3·N수는 파이널, 나머지는 윈터스쿨.
  */
 
 import { useEffect, useMemo, useRef } from "react";
@@ -31,6 +33,7 @@ import type { Ranked } from "@/lib/jungsi-recommend";
 import { simulateOneGradeUp } from "@/lib/diagnosis/grade-up-simulation";
 import {
   FUTURE_ADMISSION_GRADES,
+  isFinalTrack,
   resultBranchOf,
   scoreDetailLevel,
   type DetailedStudentScore,
@@ -41,7 +44,7 @@ import {
 import { trackDiagnosis } from "@/lib/diagnosis/analytics";
 import { ComboCard, TierBadge } from "./ComboCards";
 import PlanCheck from "./PlanCheck";
-import StrategyConsultCta from "./StrategyConsultCta";
+import FinalConversion from "./FinalConversion";
 import GradeUpComparison from "./GradeUpComparison";
 import WinterConversion from "./WinterConversion";
 import { useFadeProps } from "./step-ui";
@@ -285,6 +288,8 @@ export default function DiagnosisResult({
 }) {
   const fade = useFadeProps();
   const branch = resultBranchOf(grade);
+  // 고3·N수생 — 다음 단계는 수능 파이널 하나뿐. 컨설팅·윈터스쿨은 렌더하지 않는다.
+  const finalTrack = isFinalTrack(grade);
   const filters = useMemo<DiagnosisFilters>(
     () => ({ gender, silgi }),
     [gender, silgi],
@@ -362,21 +367,6 @@ export default function DiagnosisResult({
         </div>
       )}
 
-      {/* 1:1 전략 컨설팅 CTA — 모든 분기에서 정확히 한 번만 노출한다.
-          성적 없음·희망 대학 분석 분기는 결과 바로 아래(여기),
-          지원권 조합 분기는 한 등급 상승 비교 뒤(아래쪽)에 둔다.
-          데이터가 부족한 분기에서 사람이 이어받는 창구 역할도 겸한다. */}
-      {(scoreless || (branch === "target" && target != null)) && (
-        <div className="mt-6">
-          <StrategyConsultCta
-            showMiddleSchoolNote={grade === "중3 이하"}
-            targetUniversity={target}
-            entrySource={entrySource}
-            planCount={plan.length}
-          />
-        </div>
-      )}
-
       {/* 현재 지원권 조합 */}
       {showCombo && (
         <section aria-label="현재 지원권 조합" className="mt-6">
@@ -401,13 +391,13 @@ export default function DiagnosisResult({
         </div>
       )}
 
-      {/* 1:1 전략 컨설팅 CTA — 지원권 조합을 본 학생용 (위 분기와 중복되지 않는다) */}
-      {!scoreless && !(branch === "target" && target != null) && (
+      {/* 수능 파이널 집중반 카드 — 고3·N수생의 유일한 다음 단계.
+          한 등급 상승 비교 바로 아래에 둔다(성적이 없으면 안내문 아래). */}
+      {finalTrack && (
         <div className="mt-12">
-          <StrategyConsultCta
-            targetUniversity={target}
+          <FinalConversion
+            hasGradeUp={gradeUp != null}
             entrySource={entrySource}
-            planCount={plan.length}
           />
         </div>
       )}
@@ -446,10 +436,12 @@ export default function DiagnosisResult({
         </section>
       )}
 
-      {/* 윈터스쿨 전환 */}
-      <div className="mt-12">
-        <WinterConversion />
-      </div>
+      {/* 윈터스쿨 전환 — 고3·N수생에게는 절대 보여주지 않는다 */}
+      {!finalTrack && (
+        <div className="mt-12">
+          <WinterConversion />
+        </div>
+      )}
 
       {/* 다시 진단 */}
       <button

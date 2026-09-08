@@ -36,6 +36,17 @@ export function resultBranchOf(grade: DiagnosisGrade): ResultBranch {
   return SIMULATION_BRANCH_GRADES.includes(grade) ? "simulation" : "target";
 }
 
+/**
+ * 결과 화면의 다음 단계가 수능 파이널(/final)인 학년 — 고3·N수생.
+ * 이 학년에게는 1:1 컨설팅 CTA와 윈터스쿨 안내를 절대 보여주지 않고
+ * 수능 파이널 집중반으로만 이끈다(components/diagnosis/DiagnosisResult.tsx).
+ */
+export const FINAL_TRACK_GRADES: DiagnosisGrade[] = ["고3", "N수생"];
+
+export function isFinalTrack(grade: DiagnosisGrade): boolean {
+  return FINAL_TRACK_GRADES.includes(grade);
+}
+
 /** 고2 이하는 2027보다 이후 입시 대상 — 결과 하단 안내문 분기에 사용 */
 export const FUTURE_ADMISSION_GRADES: DiagnosisGrade[] = [
   "중3 이하",

@@ -17,7 +17,6 @@ export type DiagnosisEventName =
   | "diagnosis_gradeup_view"
   | "diagnosis_winter_cta_click"
   | "diagnosis_winter_results_click"
-  | "diagnosis_consult_click"
   // 고3·N수생 결과 → /final 수능 파이널 집중반 CTA 클릭
   | "diagnosis_final_cta_click"
   | "diagnosis_restart"

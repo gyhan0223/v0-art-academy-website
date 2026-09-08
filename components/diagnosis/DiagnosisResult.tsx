@@ -13,6 +13,10 @@
  * 주고, 유료 컨설팅은 그 아래에서 사람이 이어받는 다음 단계로만 둔다.
  * 윈터스쿨은 두 분기 모두에서 컨설팅 아래의 보조 선택지로 내려간다.
  * 컨설팅 CTA는 분기 조건상 정확히 한 번만 렌더된다.
+ *
+ * 단, 고3·N수생(FINAL_TRACK_GRADES)에게는 1:1 컨설팅과 윈터스쿨을 절대
+ * 보여주지 않는다 — 컨설팅 CTA 자리에는 수능 파이널 집중반(/final) 카드
+ * (FinalConversion)를 넣고, 윈터스쿨 블록은 통째로 뺀다.
  */
 
 import { useEffect, useMemo, useRef } from "react";
@@ -31,6 +35,7 @@ import type { Ranked } from "@/lib/jungsi-recommend";
 import { simulateOneGradeUp } from "@/lib/diagnosis/grade-up-simulation";
 import {
   FUTURE_ADMISSION_GRADES,
+  isFinalTrack,
   resultBranchOf,
   scoreDetailLevel,
   type DetailedStudentScore,
@@ -42,6 +47,7 @@ import { trackDiagnosis } from "@/lib/diagnosis/analytics";
 import { ComboCard, TierBadge } from "./ComboCards";
 import PlanCheck from "./PlanCheck";
 import StrategyConsultCta from "./StrategyConsultCta";
+import FinalConversion from "./FinalConversion";
 import GradeUpComparison from "./GradeUpComparison";
 import WinterConversion from "./WinterConversion";
 import { useFadeProps } from "./step-ui";
@@ -285,6 +291,8 @@ export default function DiagnosisResult({
 }) {
   const fade = useFadeProps();
   const branch = resultBranchOf(grade);
+  // 고3·N수생 — 다음 단계는 수능 파이널 하나뿐. 컨설팅·윈터스쿨은 렌더하지 않는다.
+  const finalTrack = isFinalTrack(grade);
   const filters = useMemo<DiagnosisFilters>(
     () => ({ gender, silgi }),
     [gender, silgi],
@@ -368,12 +376,16 @@ export default function DiagnosisResult({
           데이터가 부족한 분기에서 사람이 이어받는 창구 역할도 겸한다. */}
       {(scoreless || (branch === "target" && target != null)) && (
         <div className="mt-6">
-          <StrategyConsultCta
-            showMiddleSchoolNote={grade === "중3 이하"}
-            targetUniversity={target}
-            entrySource={entrySource}
-            planCount={plan.length}
-          />
+          {finalTrack ? (
+            <FinalConversion entrySource={entrySource} />
+          ) : (
+            <StrategyConsultCta
+              showMiddleSchoolNote={grade === "중3 이하"}
+              targetUniversity={target}
+              entrySource={entrySource}
+              planCount={plan.length}
+            />
+          )}
         </div>
       )}
 
@@ -404,11 +416,18 @@ export default function DiagnosisResult({
       {/* 1:1 전략 컨설팅 CTA — 지원권 조합을 본 학생용 (위 분기와 중복되지 않는다) */}
       {!scoreless && !(branch === "target" && target != null) && (
         <div className="mt-12">
-          <StrategyConsultCta
-            targetUniversity={target}
-            entrySource={entrySource}
-            planCount={plan.length}
-          />
+          {finalTrack ? (
+            <FinalConversion
+              hasGradeUp={gradeUp != null}
+              entrySource={entrySource}
+            />
+          ) : (
+            <StrategyConsultCta
+              targetUniversity={target}
+              entrySource={entrySource}
+              planCount={plan.length}
+            />
+          )}
         </div>
       )}
 
@@ -446,10 +465,12 @@ export default function DiagnosisResult({
         </section>
       )}
 
-      {/* 윈터스쿨 전환 */}
-      <div className="mt-12">
-        <WinterConversion />
-      </div>
+      {/* 윈터스쿨 전환 — 고3·N수생에게는 절대 보여주지 않는다 */}
+      {!finalTrack && (
+        <div className="mt-12">
+          <WinterConversion />
+        </div>
+      )}
 
       {/* 다시 진단 */}
       <button

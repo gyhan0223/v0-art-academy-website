@@ -13,7 +13,7 @@
  *   C 접근 방식      해온 공부 → 희망 대학 → 남은 준비 (유지할 것·보완할 것)
  *     (+ 보조 근거)  윈터스쿨 결과 — 파이널 성과처럼 보이지 않게 짧게, 표는 접어둔다
  *   D 상담에서 확인  원장님과 현재 성적·희망 대학·남은 준비 방향을 이야기한다
- *   E 상담 안내·CTA  전화 상담 · (예약 가능할 때만) 네이버 예약
+ *   E 상담 안내·CTA  전화 상담 · 네이버 예약(파이널 전용 상품, /booking/final)
  *
  * ── 반드시 지킬 것 ──────────────────────────────────────────
  * · 상담·전화·예약 버튼은 마지막 상담 섹션(FinalConsult) 한 곳에만 둔다.
@@ -27,7 +27,8 @@
  * · 성적 근거는 lib/winter-results.ts에서만 가져오고, 윈터스쿨 결과를 이 과정의
  *   성과처럼 쓰지 않는다. IS_PLACEHOLDER·서면 동의 노출 조건을 그대로 따른다.
  * · 사진·생성 이미지를 넣지 않는다. 텍스트·구분선·여백·HTML 시각화만 쓴다.
- * · 예약 상태(NAVER_BOOKING_PAUSED)와 연락처는 lib/contact.ts 단일 소스만 쓴다.
+ * · 예약 주소와 연락처는 lib/contact.ts 단일 소스만 쓴다. 파이널 상담은 전용
+ *   예약 상품이라 홍대 일반 상담 차단 스위치(NAVER_BOOKING_PAUSED)를 타지 않는다.
  *
  * 밝은 편집 디자인: 아이보리 배경 · 검은 본문 · 브랜드 주황은 시각화의 보완
  * 지점과 번호·구분선 강조에만. 사이트 전체가 다크 테마라 색은 이 파일과
@@ -41,7 +42,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { CAMPUSES, NAVER_BOOKING_PAUSED, NAVER_GREEN } from "@/lib/contact";
+import { CAMPUSES, NAVER_BOOKING_FINAL_URL, NAVER_GREEN } from "@/lib/contact";
 import { FINAL_PROGRAM } from "@/lib/final-program";
 import {
   IS_PLACEHOLDER,
@@ -567,12 +568,11 @@ const CONSULT_PREP: [string, string][] = [
 ];
 
 function FinalConsult() {
-  // 네이버 예약이 검수 중(NAVER_BOOKING_PAUSED)이면 /booking/hongdae는 실제 예약이
-  // 아니라 전화 안내 화면으로 넘어간다. 그 상태에서 예약 버튼까지 두면 결과가
-  // 같은 선택지 두 개를 나란히 보여주는 셈이라, 전화 버튼 하나만 남기고
-  // 예약은 "준비 중" 안내 문장으로만 알린다. 스위치 값은 여기서 건드리지 않는다.
-  const bookingAvailable = !NAVER_BOOKING_PAUSED;
-
+  // 수능 파이널 상담은 전용 네이버 예약 상품(NAVER_BOOKING_FINAL_URL)을 쓴다.
+  // 윈터스쿨·컨설팅과 같은 검수 통과 사업자의 상품이라 홍대 일반 상담의
+  // 차단 스위치(NAVER_BOOKING_PAUSED)와 무관하게 항상 실제 예약으로 이어진다.
+  // 홍대 일반 상담 예약(CAMPUS_HONGDAE.bookingUrl)을 여기에 걸지 말 것 —
+  // 그쪽은 검수 중이라 전화 안내 화면으로 빠진다.
   return (
     <section
       aria-labelledby="final-consult-title"
@@ -619,27 +619,18 @@ function FinalConsult() {
               {CAMPUS_HONGDAE.label} {CAMPUS_HONGDAE.phone}
             </span>
           </a>
-          {bookingAvailable && (
-            <a
-              href={CAMPUS_HONGDAE.bookingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="네이버로 상담 예약하기 (네이버 예약, 새 창)"
-              style={{ borderColor: NAVER_GREEN, color: NAVER_GREEN }}
-              className={`inline-flex min-h-14 flex-1 flex-col items-center justify-center rounded-md border-2 bg-white px-6 py-3.5 text-center transition-colors hover:bg-[#03C75A]/5 ${FOCUS_RING}`}
-            >
-              <span className="text-base font-bold md:text-lg">네이버로 상담 예약하기</span>
-              <span className="mt-0.5 text-[15px] text-black/50">네이버 예약 · 홍대 본원</span>
-            </a>
-          )}
+          <a
+            href={NAVER_BOOKING_FINAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="네이버로 상담 예약하기 (네이버 예약, 새 창)"
+            style={{ borderColor: NAVER_GREEN, color: NAVER_GREEN }}
+            className={`inline-flex min-h-14 flex-1 flex-col items-center justify-center rounded-md border-2 bg-white px-6 py-3.5 text-center transition-colors hover:bg-[#03C75A]/5 ${FOCUS_RING}`}
+          >
+            <span className="text-base font-bold md:text-lg">네이버로 상담 예약하기</span>
+            <span className="mt-0.5 text-[15px] text-black/50">네이버 예약 · 홍대 본원</span>
+          </a>
         </div>
-
-        {!bookingAvailable && (
-          <p className="mt-4 text-[15px] leading-[1.8] break-keep text-black/60 md:text-base">
-            네이버 상담 예약은 현재 준비 중입니다. 지금은 전화로 상담을 접수할 수
-            있습니다.
-          </p>
-        )}
       </Container>
     </section>
   );

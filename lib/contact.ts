@@ -68,6 +68,20 @@ export const NAVER_BOOKING_CONSULTING_ITEM =
 export const NAVER_BOOKING_CONSULTING_URL = "/booking/consulting";
 
 /**
+ * 네이버 예약 — "2027 수능 파이널 집중반" 상담 예약 전용 상품의 실제 주소.
+ * 윈터스쿨·컨설팅과 같은 검수 통과 사업자(biz 1727058)의 신규 상품이라
+ * 차단 스위치(NAVER_BOOKING_PAUSED)를 타지 않는다.
+ * 버튼에는 아래 NAVER_BOOKING_FINAL_URL(내부 리다이렉트)을 걸 것 —
+ * startDate를 클릭한 날짜로 채워야 하기 때문(hongdae와 같은 이유).
+ * 지도 진입용 장식 파라미터(theme·area 등)는 예약에 필요 없어 뺐다.
+ */
+export const NAVER_BOOKING_FINAL_ITEM =
+  "https://m.booking.naver.com/booking/6/bizes/1727058/items/8030236";
+
+/** 수능 파이널 상담 예약 버튼이 실제로 거는 주소 (app/booking/final/route.ts) */
+export const NAVER_BOOKING_FINAL_URL = "/booking/final";
+
+/**
  * 네이버 예약 — 일산 캠퍼스 상담 예약 상품의 실제 주소
  * (예약 상품이 달라 biz/item 번호가 홍대와 다르다).
  * 버튼에 직접 걸지 말 것 — 차단 스위치(NAVER_BOOKING_PAUSED)를 태우려면

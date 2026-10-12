@@ -77,7 +77,7 @@ export default function Scene4() {
             {CAMPUSES.map((campus) => (
               <BookingButton
                 key={campus.label}
-                label={`${campus.label} 네이버 예약`}
+                label={campus.bookingLabel}
                 href={campus.bookingUrl}
               />
             ))}

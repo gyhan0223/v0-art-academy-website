@@ -9,11 +9,11 @@ export const NAVER_TALK_URL = "https://talk.naver.com/profile/w44x0x";
 /**
  * [임시] 네이버 예약 차단 스위치.
  * 네이버 예약 상품이 검수 중이라 예약 진입을 잠시 막아둔다.
- * true인 동안 홍대·일산 상담 예약 리다이렉트가 네이버 대신
+ * true인 동안 일산 상담 예약 리다이렉트가 네이버 대신
  * 준비 중 안내 페이지(NAVER_BOOKING_PAUSED_URL)로 보내 전화 예약을 안내한다.
  * 윈터스쿨·1:1 컨설팅은 검수를 통과한 신규 상품(biz 1727058)이라
  * 이 스위치를 타지 않고 바로 네이버로 간다.
- * 검수가 끝나면 이 값만 false로 되돌리면 전부 원상복구된다.
+ * 홍대 상담은 윈터스쿨 모집 기간에 전용 상품으로 연결한다.
  */
 export const NAVER_BOOKING_PAUSED = true;
 
@@ -34,13 +34,12 @@ export const NAVER_BOOKING_HONGDAE_ITEM =
   "https://booking.naver.com/booking/6/bizes/1713916/items/7946327";
 
 /**
- * 네이버 예약 — 홍대 본원 상담 예약 (일반 입학 상담).
+ * 네이버 예약 — 기존 홍대 상담 주소. 현재 윈터스쿨 상품으로 연결한다.
  * 정적 페이지에 네이버 주소를 그대로 박으면 startDate가 빌드 날짜로
  * 굳어버리므로, 클릭할 때마다 오늘 날짜를 붙여 보내는 내부 리다이렉트
  * (app/booking/hongdae/route.ts)를 가리킨다.
  *
- * 윈터스쿨 상담은 전용 상품(NAVER_BOOKING_WINTER_URL)이 따로 있다 —
- * 윈터스쿨 쪽 버튼에 이 주소를 쓰지 말 것.
+ * 신규 윈터스쿨 버튼은 NAVER_BOOKING_WINTER_URL을 직접 사용한다.
  */
 export const NAVER_BOOKING_URL = "/booking/hongdae";
 
@@ -101,11 +100,13 @@ export const NAVER_BOOKING_URL_ILSAN = "/booking/ilsan";
 export const CAMPUSES = [
   {
     label: "홍대 본원",
+    bookingLabel: "홍대 본원 윈터스쿨 상담",
     phone: "02-338-3302",
-    bookingUrl: NAVER_BOOKING_URL,
+    bookingUrl: NAVER_BOOKING_WINTER_URL,
   },
   {
     label: "일산 캠퍼스",
+    bookingLabel: "일산 캠퍼스 상담 신청",
     phone: "031-916-8885",
     bookingUrl: NAVER_BOOKING_URL_ILSAN,
   },

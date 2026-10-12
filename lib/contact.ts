@@ -15,7 +15,7 @@ export const NAVER_TALK_URL = "https://talk.naver.com/profile/w44x0x";
  * 이 스위치를 타지 않고 바로 네이버로 간다.
  * 홍대 상담은 윈터스쿨 모집 기간에 전용 상품으로 연결한다.
  */
-export const NAVER_BOOKING_PAUSED = true;
+export const NAVER_BOOKING_PAUSED = false;
 
 /** 예약 차단 중 안내 페이지 — 전화 예약을 안내한다 (app/booking/paused/page.tsx) */
 export const NAVER_BOOKING_PAUSED_URL = "/booking/paused";

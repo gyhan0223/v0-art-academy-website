@@ -444,7 +444,7 @@ export default function SiteNav() {
                         className="block border-b border-white/5 px-4 py-3.5 transition-colors last:border-b-0 hover:bg-white/5"
                       >
                         <span className="block text-sm font-medium text-white/90">
-                          {campus.label} 상담 신청
+                          {campus.bookingLabel}
                         </span>
                         <span className="mt-0.5 block text-xs text-white/40">
                           네이버 예약 · {campus.phone}
@@ -590,7 +590,7 @@ export default function SiteNav() {
                   rel="noopener noreferrer"
                   className="block rounded-md bg-accent px-4 py-3 text-center text-sm font-medium text-black"
                 >
-                  {campus.label} 상담 신청
+                  {campus.bookingLabel}
                 </a>
               ))}
             </li>

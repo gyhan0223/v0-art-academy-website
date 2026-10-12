@@ -36,6 +36,7 @@ export default function WinterBanner() {
       >
         <Link
           href="/winter"
+          data-winter-placement="home_banner"
           className="group relative block overflow-hidden rounded-3xl border border-accent/25 bg-gradient-to-r from-accent/[0.08] via-white/[0.03] to-transparent p-8 transition-colors hover:border-accent/50 md:p-12"
         >
           <Snowflake

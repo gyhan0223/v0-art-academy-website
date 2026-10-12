@@ -182,7 +182,7 @@ export default function WinterLanding() {
           </div>
 
           {/* CTA — 모바일 첫 화면 안에 반드시 노출 */}
-          <div className="mt-7 flex w-full flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+          <div data-winter-placement="winter_hero" className="mt-7 flex w-full flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
             <Link
               href={CONSULT_HREF}
               onClick={goToConsult}
@@ -549,7 +549,7 @@ export default function WinterLanding() {
       </section>
 
       {/* ============ [6] 상담 신청 ============ */}
-      <section id="contact" className="px-6 py-24 md:py-32">
+      <section data-winter-placement="winter_contact_section" id="contact" className="px-6 py-24 md:py-32">
         <div className="mx-auto max-w-3xl">
           <SectionHead
             en="Apply"

@@ -278,6 +278,7 @@ export default function SiteNav() {
 
           {/* Desktop nav */}
           <nav
+            data-winter-placement="nav_desktop"
             ref={menuRef}
             className="hidden md:flex items-center gap-4 lg:gap-6"
             aria-label="주 메뉴"
@@ -484,6 +485,7 @@ export default function SiteNav() {
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
           aria-label="모바일 메뉴"
+          data-winter-placement="nav_mobile"
         >
           <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
             <span className="font-black text-sm tracking-tight text-white">

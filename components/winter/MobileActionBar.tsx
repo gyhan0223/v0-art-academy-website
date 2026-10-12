@@ -51,6 +51,7 @@ export default function MobileActionBar() {
           exit={{ y: 100 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
           // 칸이 다섯이라 좁다 — 여백과 글자를 한 단계씩 줄여 한 줄을 유지한다
+          data-winter-placement="winter_mobile_bar"
           className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-5 gap-1.5 border-t border-white/10 bg-black/90 px-3 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2.5 backdrop-blur-md md:hidden"
         >
           <a

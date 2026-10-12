@@ -21,7 +21,7 @@ export default function CtaBand({
   const seatLabel = getCapacityLabel();
 
   return (
-    <section className="px-6 py-14 md:py-16">
+    <section data-winter-placement="winter_cta_band" className="px-6 py-14 md:py-16">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}

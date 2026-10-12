@@ -8,6 +8,7 @@
 
 import { useState } from "react";
 import { Loader2, CheckCircle2 } from "lucide-react";
+import { trackWinter } from "@/lib/winter-analytics";
 import { CAMP_INFO } from "@/lib/winter-camp";
 
 /** 010-1234-5678 형태로 자동 하이픈 */
@@ -66,6 +67,7 @@ export default function ConsultForm() {
   const handleSubmit = async () => {
     if (!canSubmit) return;
     setStatus("submitting");
+    trackWinter("winter_consult_submit", { placement: "winter_form" });
     try {
       const res = await fetch("/api/consult", {
         method: "POST",
@@ -79,8 +81,10 @@ export default function ConsultForm() {
       });
       if (!res.ok) throw new Error("consult request failed");
       setStatus("done");
+      trackWinter("winter_consult_success", { placement: "winter_form" });
     } catch {
       setStatus("error");
+      trackWinter("winter_consult_error", { placement: "winter_form" });
     }
   };
 

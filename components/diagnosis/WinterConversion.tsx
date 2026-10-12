@@ -23,6 +23,7 @@ export default function WinterConversion() {
   return (
     <section
       aria-label="윈터스쿨 안내"
+      data-winter-placement="diagnosis_result"
       className="rounded-2xl border border-white/10 bg-white/[0.02] p-6"
     >
       <h2 className="text-[20px] font-bold leading-snug text-white">

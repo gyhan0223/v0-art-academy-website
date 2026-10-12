@@ -392,6 +392,7 @@ export default function Page() {
               </details>
               <Link
                 href="/winter"
+                data-winter-placement="jungsi_middle"
                 className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2 text-[13px] font-medium text-white/85 transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 최상위권 미대 준비 방식 보기
@@ -599,6 +600,7 @@ export default function Page() {
           <div className="mx-auto mt-8 flex max-w-md flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
             <Link
               href="/winter"
+              data-winter-placement="jungsi_bottom"
               className="inline-flex items-center justify-center gap-1.5 rounded-md bg-accent px-8 py-3.5 text-sm font-bold text-black transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               윈터스쿨 자세히 보기

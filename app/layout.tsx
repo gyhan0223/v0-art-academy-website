@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"; // 💡 Viewport 임포트 추�
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 import { Suspense } from "react";
+import WinterClickTracker from "@/components/analytics/WinterClickTracker";
 import GaPageView from "@/components/analytics/GaPageView";
 import SiteNav from "@/components/academy/SiteNav";
 import NaverTalkFab from "@/components/academy/NaverTalk";
@@ -107,6 +108,7 @@ export default function RootLayout({
         {process.env.NODE_ENV === "production" && (
           <>
             <Analytics />
+            <WinterClickTracker />
             {/* Google Analytics 4 (gtag.js) */}
             <Script
               src="https://www.googletagmanager.com/gtag/js?id=G-PNVLJBJ8NR"

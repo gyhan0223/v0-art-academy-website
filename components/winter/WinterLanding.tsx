@@ -45,7 +45,7 @@ import {
 } from "@/lib/winter-camp";
 import { REPORT_SAMPLE } from "@/lib/winter-report";
 import CtaBand from "@/components/winter/CtaBand";
-import GradeSlopeChart from "@/components/winter/GradeSlopeChart";
+import ManagementOverview from "@/components/winter/ManagementOverview";
 import {
   WINTER_CONSULT_LABEL,
   WINTER_CONSULT_DESCRIPTION,
@@ -167,9 +167,9 @@ export default function WinterLanding() {
             {CAMP_INFO.name} · 홍대 본원 기숙
           </p>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-tight text-white break-keep">
-            1년을 시작할 상태로
+            학과·실기·생활을
             <br />
-            돌려보냅니다
+            함께 관리하는 8주
           </h1>
           <p className="mt-5 text-base md:text-xl text-white/75 break-keep">
             예비 고2·고3과 재수생 선행반의 겨울 8주.
@@ -311,123 +311,24 @@ export default function WinterLanding() {
             en="Why Balance"
             ko={
               <>
-                실기는 그대로 가져가고,
+                수업부터 생활까지,
                 <br />
-                학과를 끌어올리는 8주
+                아이의 하루를 연결합니다
               </>
             }
           />
 
-          <motion.div
-            {...fadeUp}
-            className="mx-auto max-w-3xl rounded-2xl border border-accent/40 bg-accent/[0.06] px-7 py-9 md:px-12 md:py-12 text-center"
-          >
-            <p className="text-xs tracking-[0.25em] text-accent uppercase">
-              Why Modago
-            </p>
-            <p className="mt-4 text-2xl md:text-3xl font-black text-white break-keep">
-              겨울 8주는 비중의 문제입니다.
-            </p>
-            <div className="mt-5 space-y-4 text-[15px] md:text-lg leading-[1.9] text-white/80 break-keep">
-              <p>
-                실기도 학과도 놓을 수 없습니다.{" "}
-                <br className="hidden md:block" />이 겨울에 무엇을 더 많이
-                두느냐가 다를 뿐입니다.
-              </p>
-              <p>
-                두 달을 실기로만 채우면 그림은 늘지만{" "}
-                <br className="hidden md:block" />
-                학과 성적은 그 자리에 멈춥니다.{" "}
-                <br className="hidden md:block" />
-                저희는 평일을 학과에 두고, 주말마다 실기를 이어 갑니다.
-              </p>
-              <p>
-                미대 정시는 대부분 수학을 반영하지 않습니다.{" "}
-                <br className="hidden md:block" />
-                일반 기숙학원이 수학에 쓰는 8주를,{" "}
-                <br className="hidden md:block" />
-                저희는 국어·영어·탐구에 전부 씁니다.
-              </p>
-              <p className="text-[13px] md:text-sm leading-relaxed text-white/55">
-                수학이 필수인 곳은 서울대 디자인과처럼 일부이고,
-                이화여대·홍익대처럼 반영하는 대학도 국·수·탐 중 택2라 수학 없이
-                지원할 수 있습니다. 지망 대학에 수학이 필요하다면 상담 때 함께
-                확인합니다.
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div {...fadeUp} className="mt-6 grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10">
-              <p className="text-[12px] tracking-[0.25em] text-white/45 uppercase">
-                일반 미술학원의 겨울
-              </p>
-              <p className="mt-4 text-xl md:text-2xl font-bold text-white/60 leading-snug break-keep">
-                두 달 내내 실기 특강,
-                <br />
-                학과는 각자 알아서
-              </p>
-              <p className="mt-3 text-[15px] leading-relaxed text-white/55 break-keep">
-                13:00~22:00을 그림에 씁니다. 그림은 늘지만 학과는 겨울 전보다
-                내려앉은 채 3월을 맞습니다.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-accent/30 bg-accent/[0.05] p-8 md:p-10">
-              <p className="text-[12px] tracking-[0.25em] text-accent uppercase">
-                모다고 윈터스쿨
-              </p>
-              <p className="mt-4 text-xl md:text-2xl font-bold text-white leading-snug break-keep">
-                평일은 학과에 전부,
-                <br />
-                주말은 실기에 집중
-              </p>
-              <p className="mt-3 text-[15px] leading-relaxed text-white/70 break-keep">
-                주말 이틀로 손과 감각은 8주 내내 이어 갑니다. 늘어난 평일 시간은
-                국어·영어·탐구에 씁니다.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* 두 카드의 차이를 숫자로 — 같은 등급에서 갈라지는 8주 */}
-          <GradeSlopeChart />
-
-          <motion.p
-            {...fadeUp}
-            className="mx-auto mt-8 max-w-2xl text-center text-[15px] md:text-base leading-relaxed text-white/70 break-keep"
-          >
-            겨울을 실기 특강으로만 채우면 하루의 대부분이 그림에 쓰여 학과
-            공부는 흐름이 끊깁니다. 반대로 실기를 두 달 놓아 버리면 3월에 손을
-            되찾는 데만 몇 주가 듭니다. 그래서 주말 실기는 8주 내내 그대로 두고,
-            평일을 학과에 씁니다. 학과는 강사가 직접 가르치고, 취침·기상까지
-            정해진 일과로 운영되어 학생은 공부와 그림에만 집중합니다.{" "}
-            <Link
-              href="/winter/schedule"
-              className="text-accent underline underline-offset-4 hover:text-white"
-            >
-              하루 일과표 보기
-            </Link>
-          </motion.p>
-
-          {/* "강사 직강"이라고만 쓰면 확인할 방법이 없다 — 강사진 페이지로 보낸다 */}
-          <motion.div {...fadeUp} className="mt-6 text-center">
-            <Link
-              href="/winter/teachers"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-opacity hover:opacity-75"
-            >
-              누가 가르치는지 보기
-              <ArrowRight size={15} />
-            </Link>
-          </motion.div>
+          <ManagementOverview />
         </div>
       </section>
 
       {/* ============ [4] 1주차 진단 → 8주차 재측정 ============ */}
-      <section className="border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
+      <section id="report-preview" className="scroll-mt-36 border-y border-white/5 bg-[#05050a] px-6 py-24 md:py-32">
         <div className="mx-auto max-w-5xl">
           <SectionHead
             en="Diagnose & Retest"
             ko="1주차에 재고, 8주차에 다시 잽니다"
-            sub="느낌이 아니라 같은 기준의 시험으로 8주의 변화를 확인합니다."
+            sub="진단으로 계획을 세우고, 기록과 피드백으로 다음 학습을 조정합니다."
           />
 
           <div className="grid gap-4 md:grid-cols-3">
@@ -491,7 +392,7 @@ export default function WinterLanding() {
                 href="/winter/results"
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
               >
-                실제 성적 향상 사례 보기
+                학습·생활 관리 자세히 보기
                 <ArrowRight size={15} />
               </Link>
             </div>
@@ -503,8 +404,8 @@ export default function WinterLanding() {
       <CtaBand
         headline={
           <>
-            학과까지 직강하는 미술학원은
-            <br className="md:hidden" /> 흔치 않습니다
+            아이에게 필요한 관리가 무엇인지
+            <br className="md:hidden" /> 먼저 함께 확인합니다
           </>
         }
         sub="우리 아이에게 맞는 과정인지, 상담으로 확인해 보세요."
@@ -516,7 +417,7 @@ export default function WinterLanding() {
           <SectionHead
             en="More"
             ko="더 자세히 보기"
-            sub="일과·강사진·공간·결과는 각 페이지에서 확인하실 수 있습니다."
+            sub="일과·강사진·공간·관리 방식은 각 페이지에서 확인하실 수 있습니다."
           />
 
           <div className="grid gap-4 md:grid-cols-2">

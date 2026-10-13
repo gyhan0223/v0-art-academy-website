@@ -122,9 +122,9 @@ export const WINTER_PAGES = [
   },
   {
     href: "/winter/results",
-    label: "성적 향상 사례",
-    en: "Results",
-    desc: "1주차 진단 → 8주차 재측정",
+    label: "학습·생활 관리",
+    en: "Learning & Care",
+    desc: "학습 점검 · 생활 관리 · 격주 리포트",
   },
 ] as const;
 

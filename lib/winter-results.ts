@@ -29,7 +29,7 @@ export const SUBJECT_ORDER: Subject[] = SUBJECTS;
  * true  — 페이지 상단에 "샘플" 안내 표시 · noindex · 사이트맵 제외
  * false — 실제 집계 결과로 정식 공개
  */
-export const IS_PLACEHOLDER = false;
+export const IS_PLACEHOLDER = true;
 
 /* ------------------------------- 집계(분모) ------------------------------- */
 
@@ -50,16 +50,8 @@ export interface WinterCohort {
   excluded?: string;
 }
 
-// 2026 윈터스쿨 집계 — 여 12명 · 남 3명, 중도 퇴소 없음, 전원 재측정 응시.
-export const WINTER_COHORT: WinterCohort = {
-  term: "2026 윈터스쿨",
-  total: 15,
-  measured: 15,
-  improved: 13,
-  criterion: "국어·영어·탐구 중 1과목 이상 1등급 상승",
-  basis: "1주차 진단고사 → 8주차 재측정 (평가원 기출 동일 난이도 기준)",
-  excluded: "중도 퇴소 없음 (전원 8주 수료 · 전원 재측정 응시)",
-};
+/* Verified winter cohort data is not available for publication. */
+export const WINTER_COHORT: WinterCohort = { term: "2027 윈터스쿨", total: 0, measured: 0, improved: 0, criterion: "국어·영어·탐구 학습 변화", basis: "진단고사와 재측정 기록" };
 
 /* --------------------------------- 사례 --------------------------------- */
 
@@ -91,43 +83,7 @@ export interface WinterResultCase {
   featured?: boolean;
 }
 
-// 2026 윈터스쿨 15명 중 서면 동의를 받아 공개하는 3건.
-export const WINTER_RESULT_CASES: WinterResultCase[] = [
-  {
-    id: "2026-choi-01",
-    name: "최○○",
-    grade: "예비 고3",
-    results: [
-      { subject: "국어", diagnostic: 5, retest: 4 },
-      { subject: "영어", diagnostic: 4, retest: 2 },
-      { subject: "탐구", diagnostic: 5, retest: 2 },
-    ],
-    consent: true,
-    featured: true,
-  },
-  {
-    id: "2026-hwang-02",
-    name: "황○○",
-    grade: "예비 고3",
-    results: [
-      { subject: "국어", diagnostic: 2, retest: 2 },
-      { subject: "영어", diagnostic: 2, retest: 2 },
-      { subject: "탐구", diagnostic: 5, retest: 2 },
-    ],
-    consent: true,
-  },
-  {
-    id: "2026-yun-03",
-    name: "윤○○",
-    grade: "예비 고2",
-    results: [
-      { subject: "국어", diagnostic: 6, retest: 3 },
-      { subject: "영어", diagnostic: 5, retest: 4 },
-      { subject: "탐구", diagnostic: 6, retest: 3 },
-    ],
-    consent: true,
-  },
-];
+export const WINTER_RESULT_CASES: WinterResultCase[] = [];
 
 /* --------------------------------- 파생값 -------------------------------- */
 

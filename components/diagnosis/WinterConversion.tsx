@@ -54,14 +54,14 @@ export default function WinterConversion() {
           onClick={() => trackDiagnosis("diagnosis_winter_cta_click")}
           className="block rounded-xl border border-accent/50 px-6 py-4 text-center text-[15px] font-bold text-accent transition-colors hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
-          윈터스쿨에서 한 등급 올리는 방법 보기
+          윈터스쿨 학과·실기 운영 방식 보기
         </Link>
         <Link
           href="/winter/results"
           onClick={() => trackDiagnosis("diagnosis_winter_results_click")}
           className="block rounded-xl border border-white/15 px-6 py-4 text-center text-[15px] font-medium text-white/80 transition-colors hover:border-accent/50 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
-          지난 윈터스쿨 성적 결과 확인하기
+          학습·생활 관리와 리포트 보기
         </Link>
       </div>
     </section>

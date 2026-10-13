@@ -7,7 +7,7 @@ import { X, Menu, ChevronDown } from "lucide-react";
 import {
   SHOW_ANNOUNCEMENT,
   WINTER_PAGES,
-  getCapacityLabel,
+  getRemainingLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
 import { WINTER_CONSULT_LABEL } from "@/lib/winter-consultation";
@@ -15,7 +15,6 @@ import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 import { CAMPUSES } from "@/lib/contact";
 import { CONSULTING_INFO } from "@/lib/consulting";
 import {
-  FINAL_ANNOUNCEMENT_TEXT,
   FINAL_IS_RECRUITING,
   FINAL_PROGRAM,
 } from "@/lib/final-program";
@@ -24,23 +23,15 @@ const remainingTotal = getRemainingTotal();
 const WINTER_ANNOUNCEMENT_TEXT =
   remainingTotal <= 0
     ? "2027 모다고 윈터스쿨 · 마감"
-    : `2027 모다고 윈터스쿨 · ${getCapacityLabel({ short: true })} · 홍대 본원 기숙`;
+    : `2027 모다고 윈터스쿨 · ${getRemainingLabel()} · 홍대 본원 기숙`;
 
-// 최상단 공지 띠 — 수능 파이널 모집 기간(lib/final-program.ts의 FINAL_IS_RECRUITING)에는
-// 파이널 안내가 우선하고, 모집이 끝나면 윈터스쿨 안내로 돌아간다.
-// 닫힘 상태 저장 키도 공지별로 다르게 둬서, 윈터 공지를 닫았던 사람에게도
-// 파이널 공지는 한 번 보인다.
-const ANNOUNCEMENT = FINAL_IS_RECRUITING
-  ? {
-      text: FINAL_ANNOUNCEMENT_TEXT,
-      href: FINAL_PROGRAM.href,
-      key: "modago-final-announcement-closed",
-    }
-  : {
-      text: WINTER_ANNOUNCEMENT_TEXT,
-      href: "/winter",
-      key: "modago-winter-announcement-closed",
-    };
+// 최상단 모집 배너는 윈터스쿨로 고정한다.
+// 새 안내는 이전 윈터 공지를 닫은 방문자에게도 보여준다.
+const ANNOUNCEMENT = {
+  text: WINTER_ANNOUNCEMENT_TEXT,
+  href: "/winter",
+  key: "modago-winter-announcement-2026-10-13-closed",
+};
 
 // 전화번호·상담 예약 주소는 lib/contact.ts의 CAMPUSES 하나만 고치면 된다.
 const [CAMPUS_HONGDAE, CAMPUS_ILSAN] = CAMPUSES;

@@ -10,6 +10,8 @@ import {
   getCapacityLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
+import { WINTER_CONSULT_LABEL } from "@/lib/winter-consultation";
+import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 import { CAMPUSES } from "@/lib/contact";
 import { CONSULTING_INFO } from "@/lib/consulting";
 import {
@@ -173,6 +175,8 @@ export default function SiteNav() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const isWinterPage =
+    pathname === "/winter" || pathname.startsWith("/winter/");
 
   // 알림 띠: sessionStorage로 닫힘 상태 유지 (hydration 불일치 방지를 위해 mount 후 판단)
   useEffect(() => {
@@ -334,7 +338,10 @@ export default function SiteNav() {
                     >
                       <ul className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/40">
                         {item.children.map((child) => {
-                          const childActive = isChildActive(pathname, child.href);
+                          const childActive = isChildActive(
+                            pathname,
+                            child.href,
+                          );
                           return (
                             <li key={child.href}>
                               <Link
@@ -405,56 +412,66 @@ export default function SiteNav() {
             {/* 상담 예약이 캠퍼스마다 다른 네이버 예약 상품이라 버튼 하나로는
                 엉뚱한 캠퍼스로 접수된다 — 눌렀을 때 캠퍼스를 먼저 고르게 한다.
                 버튼 두 개를 나란히 두면 헤더가 좁아져 메뉴가 두 줄로 접힌다. */}
-            <div
-              className="relative"
-              onMouseEnter={() => setConsultOpen(true)}
-              onMouseLeave={() => setConsultOpen(false)}
-            >
-              <button
-                type="button"
-                onClick={() => setConsultOpen(!consultOpen)}
-                aria-expanded={consultOpen}
-                aria-haspopup="true"
-                className="flex items-center gap-1 whitespace-nowrap rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
+            {isWinterPage ? (
+              <Link
+                href={CONSULT_HREF}
+                onClick={goToConsult}
+                className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
               >
-                상담 신청
-                <ChevronDown
-                  size={14}
-                  strokeWidth={2.5}
-                  className={`transition-transform duration-200 ${
-                    consultOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
+                아이에게 맞는지 상담
+              </Link>
+            ) : (
               <div
-                className={`absolute right-0 top-full z-50 w-64 pt-3 transition-all duration-200 ${
-                  consultOpen
-                    ? "visible opacity-100 translate-y-0"
-                    : "invisible opacity-0 -translate-y-1"
-                }`}
+                className="relative"
+                onMouseEnter={() => setConsultOpen(true)}
+                onMouseLeave={() => setConsultOpen(false)}
               >
-                <ul className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/40">
-                  {CAMPUSES.map((campus) => (
-                    <li key={campus.label}>
-                      <a
-                        href={campus.bookingUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block border-b border-white/5 px-4 py-3.5 transition-colors last:border-b-0 hover:bg-white/5"
-                      >
-                        <span className="block text-sm font-medium text-white/90">
-                          {campus.bookingLabel}
-                        </span>
-                        <span className="mt-0.5 block text-xs text-white/40">
-                          네이버 예약 · {campus.phone}
-                        </span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+                <button
+                  type="button"
+                  onClick={() => setConsultOpen(!consultOpen)}
+                  aria-expanded={consultOpen}
+                  aria-haspopup="true"
+                  className="flex items-center gap-1 whitespace-nowrap rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
+                >
+                  상담 신청
+                  <ChevronDown
+                    size={14}
+                    strokeWidth={2.5}
+                    className={`transition-transform duration-200 ${
+                      consultOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                <div
+                  className={`absolute right-0 top-full z-50 w-64 pt-3 transition-all duration-200 ${
+                    consultOpen
+                      ? "visible opacity-100 translate-y-0"
+                      : "invisible opacity-0 -translate-y-1"
+                  }`}
+                >
+                  <ul className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/40">
+                    {CAMPUSES.map((campus) => (
+                      <li key={campus.label}>
+                        <a
+                          href={campus.bookingUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block border-b border-white/5 px-4 py-3.5 transition-colors last:border-b-0 hover:bg-white/5"
+                        >
+                          <span className="block text-sm font-medium text-white/90">
+                            {campus.bookingLabel}
+                          </span>
+                          <span className="mt-0.5 block text-xs text-white/40">
+                            네이버 예약 · {campus.phone}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            </div>
+            )}
           </nav>
 
           {/* Mobile hamburger */}
@@ -534,7 +551,10 @@ export default function SiteNav() {
                     >
                       <ul className="overflow-hidden bg-white/[0.03]">
                         {item.children.map((child) => {
-                          const childActive = isChildActive(pathname, child.href);
+                          const childActive = isChildActive(
+                            pathname,
+                            child.href,
+                          );
                           return (
                             <li key={child.href}>
                               <Link
@@ -582,17 +602,30 @@ export default function SiteNav() {
             })}
             {/* 모바일은 폭이 넉넉하니 고르는 단계 없이 캠퍼스별 버튼을 바로 둔다 */}
             <li className="space-y-2 px-6 pt-5">
-              {CAMPUSES.map((campus) => (
-                <a
-                  key={campus.label}
-                  href={campus.bookingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              {isWinterPage ? (
+                <Link
+                  href={CONSULT_HREF}
+                  onClick={(e) => {
+                    setIsOpen(false);
+                    goToConsult(e);
+                  }}
                   className="block rounded-md bg-accent px-4 py-3 text-center text-sm font-medium text-black"
                 >
-                  {campus.bookingLabel}
-                </a>
-              ))}
+                  {WINTER_CONSULT_LABEL}
+                </Link>
+              ) : (
+                CAMPUSES.map((campus) => (
+                  <a
+                    key={campus.label}
+                    href={campus.bookingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded-md bg-accent px-4 py-3 text-center text-sm font-medium text-black"
+                  >
+                    {campus.bookingLabel}
+                  </a>
+                ))
+              )}
             </li>
           </ul>
 

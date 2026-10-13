@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Phone, PenLine } from "lucide-react";
+import {
+  WINTER_CONSULT_LABEL,
+  WINTER_CONSULT_DESCRIPTION,
+} from "@/lib/winter-consultation";
 import { CAMP_INFO, getCapacityLabel } from "@/lib/winter-camp";
 import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 import { NaverTalkButton } from "@/components/academy/NaverTalk";
@@ -21,7 +25,10 @@ export default function CtaBand({
   const seatLabel = getCapacityLabel();
 
   return (
-    <section data-winter-placement="winter_cta_band" className="px-6 py-14 md:py-16">
+    <section
+      data-winter-placement="winter_cta_band"
+      className="px-6 py-14 md:py-16"
+    >
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -48,12 +55,13 @@ export default function CtaBand({
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-8 py-4 text-base font-bold text-black transition-opacity hover:opacity-85 sm:w-auto"
           >
             <PenLine size={16} />
-            상담 신청하기
+            {WINTER_CONSULT_LABEL}
           </Link>
           {/* 폼을 채우고 연락을 기다리는 대신, 방문 날짜를 바로 고르는 길 */}
           <NaverBookingButton
             className="w-full px-8 py-4 text-base sm:w-auto"
             href={NAVER_BOOKING_WINTER_URL}
+            label="방문 일정 예약하기"
           />
           {/* 전화·톡톡은 한 덩어리로 묶어 둔다 — 좁아지면 둘이 함께 다음 줄로 내려가,
               어디서 보든 "신청·예약 / 문의" 두 줄로 정리된다 */}
@@ -66,12 +74,14 @@ export default function CtaBand({
               {CAMP_INFO.phone}
             </a>
             {/* 아직 신청까지는 아닌 분들 — 톡톡으로 먼저 물을 수 있게 */}
-            <NaverTalkButton className="w-full px-3 py-4 text-base sm:w-auto sm:px-8" />
+            <NaverTalkButton
+              label="짧게 물어보기"
+              className="w-full px-3 py-4 text-base sm:w-auto sm:px-8"
+            />
           </div>
         </div>
         <p className="mt-4 text-[13px] text-white/50">
-          신청은 1분이면 충분합니다 · 네이버 예약은 원하는 시간을 직접 고르실 수
-          있습니다
+          {WINTER_CONSULT_DESCRIPTION}
         </p>
       </motion.div>
     </section>

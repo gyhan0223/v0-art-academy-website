@@ -46,6 +46,10 @@ import {
 import { REPORT_SAMPLE } from "@/lib/winter-report";
 import CtaBand from "@/components/winter/CtaBand";
 import GradeSlopeChart from "@/components/winter/GradeSlopeChart";
+import {
+  WINTER_CONSULT_LABEL,
+  WINTER_CONSULT_DESCRIPTION,
+} from "@/lib/winter-consultation";
 import ConsultForm from "@/components/winter/ConsultForm";
 import MobileActionBar from "@/components/winter/MobileActionBar";
 import ReportSample from "@/components/winter/ReportSample";
@@ -169,7 +173,8 @@ export default function WinterLanding() {
           </h1>
           <p className="mt-5 text-base md:text-xl text-white/75 break-keep">
             예비 고2·고3과 재수생 선행반의 겨울 8주.
-            <br className="md:hidden" /> 평일은 학과 직강, 주말은 대학교 유형 실기.
+            <br className="md:hidden" /> 평일은 학과 직강, 주말은 대학교 유형
+            실기.
           </p>
 
           {/* 긴급성 — D-day + 정원 */}
@@ -182,18 +187,22 @@ export default function WinterLanding() {
           </div>
 
           {/* CTA — 모바일 첫 화면 안에 반드시 노출 */}
-          <div data-winter-placement="winter_hero" className="mt-7 flex w-full flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+          <div
+            data-winter-placement="winter_hero"
+            className="mt-7 flex w-full flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center"
+          >
             <Link
               href={CONSULT_HREF}
               onClick={goToConsult}
               className="w-full rounded-full bg-accent px-8 py-4 text-center text-base font-bold text-black transition-opacity hover:opacity-85 sm:w-auto"
             >
-              상담 신청하기
+              {WINTER_CONSULT_LABEL}
             </Link>
             {/* 연락을 기다리지 않고 방문 날짜까지 바로 잡고 싶은 분들 */}
             <NaverBookingButton
               className="w-full px-8 py-4 text-base sm:w-auto"
               href={NAVER_BOOKING_WINTER_URL}
+              label="방문 일정 예약하기"
             />
             {/* 전화·톡톡은 보조 동선 — 모바일에서는 두 칸으로 붙여 첫 화면을 덜 밀어낸다 */}
             <div className="grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto sm:gap-3">
@@ -210,18 +219,20 @@ export default function WinterLanding() {
             </div>
           </div>
           <p className="mt-3 text-[13px] text-white/55">
-            신청은 1분 · 네이버 예약은 원하는 날짜·시간을 직접 고르실 수 있습니다
+            {WINTER_CONSULT_DESCRIPTION}
           </p>
 
           <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[13px] md:text-sm text-white/70">
-            {["홍대 본원", "학과 직강", "실기 주말 집중", "기숙"].map((chip) => (
-              <li
-                key={chip}
-                className="rounded-full border border-white/15 px-3.5 py-1.5"
-              >
-                {chip}
-              </li>
-            ))}
+            {["홍대 본원", "학과 직강", "실기 주말 집중", "기숙"].map(
+              (chip) => (
+                <li
+                  key={chip}
+                  className="rounded-full border border-white/15 px-3.5 py-1.5"
+                >
+                  {chip}
+                </li>
+              ),
+            )}
           </ul>
         </div>
       </section>
@@ -320,8 +331,8 @@ export default function WinterLanding() {
             <div className="mt-5 space-y-4 text-[15px] md:text-lg leading-[1.9] text-white/80 break-keep">
               <p>
                 실기도 학과도 놓을 수 없습니다.{" "}
-                <br className="hidden md:block" />
-                이 겨울에 무엇을 더 많이 두느냐가 다를 뿐입니다.
+                <br className="hidden md:block" />이 겨울에 무엇을 더 많이
+                두느냐가 다를 뿐입니다.
               </p>
               <p>
                 두 달을 실기로만 채우면 그림은 늘지만{" "}
@@ -338,9 +349,10 @@ export default function WinterLanding() {
                 저희는 국어·영어·탐구에 전부 씁니다.
               </p>
               <p className="text-[13px] md:text-sm leading-relaxed text-white/55">
-                수학이 필수인 곳은 서울대 디자인과처럼 일부이고, 이화여대·홍익대처럼
-                반영하는 대학도 국·수·탐 중 택2라 수학 없이 지원할 수 있습니다.
-                지망 대학에 수학이 필요하다면 상담 때 함께 확인합니다.
+                수학이 필수인 곳은 서울대 디자인과처럼 일부이고,
+                이화여대·홍익대처럼 반영하는 대학도 국·수·탐 중 택2라 수학 없이
+                지원할 수 있습니다. 지망 대학에 수학이 필요하다면 상담 때 함께
+                확인합니다.
               </p>
             </div>
           </motion.div>
@@ -370,8 +382,8 @@ export default function WinterLanding() {
                 주말은 실기에 집중
               </p>
               <p className="mt-3 text-[15px] leading-relaxed text-white/70 break-keep">
-                주말 이틀로 손과 감각은 8주 내내 이어 갑니다. 늘어난 평일
-                시간은 국어·영어·탐구에 씁니다.
+                주말 이틀로 손과 감각은 8주 내내 이어 갑니다. 늘어난 평일 시간은
+                국어·영어·탐구에 씁니다.
               </p>
             </div>
           </motion.div>
@@ -429,7 +441,11 @@ export default function WinterLanding() {
                 className="rounded-2xl border border-white/10 bg-white/[0.03] p-7 md:p-8"
               >
                 <div className="flex items-center gap-2.5">
-                  <item.icon size={20} strokeWidth={1.5} className="text-accent" />
+                  <item.icon
+                    size={20}
+                    strokeWidth={1.5}
+                    className="text-accent"
+                  />
                   <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-[12px] font-semibold tracking-wide text-accent">
                     {item.step}
                   </span>
@@ -549,11 +565,15 @@ export default function WinterLanding() {
       </section>
 
       {/* ============ [6] 상담 신청 ============ */}
-      <section data-winter-placement="winter_contact_section" id="contact" className="px-6 py-24 md:py-32">
+      <section
+        data-winter-placement="winter_contact_section"
+        id="contact"
+        className="px-6 py-24 md:py-32"
+      >
         <div className="mx-auto max-w-3xl">
           <SectionHead
             en="Apply"
-            ko="상담 신청"
+            ko="우리 아이에게 맞는지 함께 확인하세요"
             sub={
               <>
                 접수 마감 {CAMP_INFO.deadline} · 정원 {CAMP_INFO.capacity} (
@@ -606,7 +626,7 @@ export default function WinterLanding() {
               {/* 수강료는 상담에서만 안내한다 → 방문 날짜를 바로 잡을 수 있게 */}
               <NaverBookingButton
                 className="px-7 py-3.5 text-sm"
-                label="네이버 예약"
+                label="방문 일정 예약"
                 href={NAVER_BOOKING_WINTER_URL}
               />
               {/* 문자 문의 — 데스크톱은 문자 앱이 없어 모바일에서만 노출 */}
@@ -697,7 +717,9 @@ export default function WinterLanding() {
                 <MapPin size={15} className="text-accent" />
                 {CAMP_INFO.venueName}
               </p>
-              <p className="mt-2 text-[15px] text-white/65">{CAMP_INFO.address}</p>
+              <p className="mt-2 text-[15px] text-white/65">
+                {CAMP_INFO.address}
+              </p>
               <a
                 href={CAMP_INFO.mapUrl}
                 target="_blank"

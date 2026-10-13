@@ -1,44 +1,29 @@
 "use client";
 
-/**
- * 윈터스쿨 상담 신청 폼.
- * 폼은 /winter(개요) 한 곳에만 두고, 하위 페이지의 버튼은
- * /winter#consult-form으로 보내 동선을 하나로 유지한다.
- */
-
-import { useState } from "react";
+import { useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { trackWinter } from "@/lib/winter-analytics";
-import { CAMP_INFO } from "@/lib/winter-camp";
+import { CAMP_INFO, SMS_HREF } from "@/lib/winter-camp";
+import {
+  CONSULT_CONCERNS,
+  CONTACT_TIMES,
+  CONSULT_GRADES,
+  PHONE_PATTERN,
+  WINTER_CONSULT_LABEL,
+  WINTER_CONSULT_DESCRIPTION,
+} from "@/lib/winter-consultation";
+import { NaverTalkButton } from "@/components/academy/NaverTalk";
 
-/** 010-1234-5678 형태로 자동 하이픈 */
 function formatPhone(value: string) {
-  const d = value.replace(/\D/g, "").slice(0, 11);
-  if (d.length < 4) return d;
-  if (d.length < 8) return `${d.slice(0, 3)}-${d.slice(3)}`;
-  if (d.length < 11) return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`;
-  return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+  if (digits.length < 4) return digits;
+  if (digits.length < 8) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  const split = digits.length < 11 ? 6 : 7;
+  return `${digits.slice(0, 3)}-${digits.slice(3, split)}-${digits.slice(split)}`;
 }
-
-/**
- * 휴대폰 번호 자릿수 검증.
- * 010은 11자리, 그 외 이동통신 국번(011·016·017·018·019)은 10~11자리.
- */
-const PHONE_PATTERN = /^(010\d{8}|01[16789]\d{7,8})$/;
-
-function phoneError(value: string): string | null {
-  const d = value.replace(/\D/g, "");
-  if (d.length === 0) return null; // 입력 전에는 오류를 띄우지 않는다
-  if (!d.startsWith("01")) return "휴대폰 번호를 010으로 시작해 입력해 주세요.";
-  if (!PHONE_PATTERN.test(d))
-    return `번호 자릿수가 맞지 않습니다. (현재 ${d.length}자리 · 010-0000-0000 형식)`;
-  return null;
-}
-
-const GRADE_OPTIONS = ["예비 고2", "예비 고3", "재수생"] as const;
-
 const INPUT_CLASS =
-  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3.5 text-[15px] text-white placeholder:text-white/40 outline-none transition-colors focus:border-accent";
+  "w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3.5 text-[15px] text-white placeholder:text-white/40 outline-none focus:border-accent";
 
 export default function ConsultForm() {
   const [name, setName] = useState("");
@@ -46,17 +31,17 @@ export default function ConsultForm() {
   const [phone, setPhone] = useState("");
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [university, setUniversity] = useState("");
+  const [concern, setConcern] = useState("");
+  const [contactTime, setContactTime] = useState("any");
   const [agreed, setAgreed] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [status, setStatus] = useState<
     "idle" | "submitting" | "done" | "error"
   >("idle");
-
-  const phoneMessage = phoneError(phone);
-  const phoneValid = phone !== "" && phoneMessage === null;
-  /** 입력 중에는 방해하지 않고, 포커스를 벗어난 뒤부터 오류를 보여준다 */
-  const showPhoneError = phoneTouched && phoneMessage !== null;
-
+  const submitting = useRef(false);
+  const nameInput = useRef<HTMLInputElement>(null);
+  const selected = CONSULT_CONCERNS.find((c) => c.id === concern);
+  const phoneValid = PHONE_PATTERN.test(phone.replace(/\D/g, ""));
   const canSubmit =
     name.trim().length > 0 &&
     grade !== "" &&
@@ -64,8 +49,10 @@ export default function ConsultForm() {
     agreed &&
     status !== "submitting";
 
-  const handleSubmit = async () => {
-    if (!canSubmit) return;
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!canSubmit || submitting.current) return;
+    submitting.current = true;
     setStatus("submitting");
     trackWinter("winter_consult_submit", { placement: "winter_form" });
     try {
@@ -77,164 +64,277 @@ export default function ConsultForm() {
           grade,
           phone,
           university: university.trim(),
+          concern,
+          contactTime,
         }),
       });
-      if (!res.ok) throw new Error("consult request failed");
+      const result = await res.json();
+      if (!res.ok || result.ok !== true)
+        throw new Error("consult request failed");
       setStatus("done");
       trackWinter("winter_consult_success", { placement: "winter_form" });
     } catch {
       setStatus("error");
       trackWinter("winter_consult_error", { placement: "winter_form" });
+    } finally {
+      submitting.current = false;
     }
-  };
+  }
 
-  if (status === "done") {
+  if (status === "done")
     return (
       <div
         id="consult-form"
-        className="scroll-mt-24 rounded-2xl border border-accent/30 bg-accent/[0.05] px-8 py-14 text-center"
+        role="status"
+        className="scroll-mt-24 rounded-2xl border border-accent/30 bg-accent/[0.05] px-7 py-12 text-center"
       >
         <CheckCircle2 size={40} className="mx-auto text-accent" />
-        <p className="mt-5 text-xl md:text-2xl font-bold text-white">
-          접수되었습니다.
+        <h3 className="mt-5 text-xl font-bold text-white">
+          상담 요청을 받았습니다.
+        </h3>
+        <p className="mt-3 text-[15px] leading-relaxed text-white/75">
+          윈터스쿨 상담 담당자가 남겨주신 번호로 전화드립니다.
+          <br />
+          선택하신 고민과 연락 희망 시간을 참고해 순서대로 연락드립니다.
         </p>
-        <p className="mt-2 text-[15px] md:text-base text-white/70">
-          곧 연락드리겠습니다.
+        <p className="mt-3 text-sm text-white/60">
+          밤에 남겨주신 요청은 다음 날 연락드립니다.
+          <br />
+          희망 시간은 확정 예약이 아닙니다.
+        </p>
+        {selected && (
+          <p className="mt-5 text-sm text-accent">
+            상담에서 먼저 확인할 내용: {selected.label}
+          </p>
+        )}
+        <p className="mt-5 text-sm text-white/70">
+          먼저 문의하실 내용이 있다면{" "}
+          <a href={CAMP_INFO.phoneTel} className="underline underline-offset-4">
+            {CAMP_INFO.phone}
+          </a>
+          로 연락해 주세요.
         </p>
       </div>
     );
-  }
 
   return (
-    <div
+    <section
       id="consult-form"
-      className="scroll-mt-24 rounded-2xl border border-accent/40 bg-white/[0.03] p-7 md:p-10 text-left"
+      aria-labelledby="consult-title"
+      className="scroll-mt-24 rounded-2xl border border-accent/40 bg-white/[0.03] p-6 text-left md:p-10"
     >
-      <p className="text-[12px] tracking-[0.25em] text-accent uppercase">
-        Consult
-      </p>
-      <h3 className="mt-2 text-xl md:text-2xl font-bold text-white">
-        상담 신청
+      <h3
+        id="consult-title"
+        tabIndex={-1}
+        className="text-xl font-bold text-white outline-none md:text-2xl"
+      >
+        {WINTER_CONSULT_LABEL}
       </h3>
-      <p className="mt-2 text-sm leading-relaxed text-white/65 break-keep">
-        정원 {CAMP_INFO.capacityTotal}명 {CAMP_INFO.capacityNote} · 남겨주시면
-        순서대로 연락드립니다.
+      <p className="mt-3 text-[15px] leading-relaxed text-white/75 break-keep">
+        {WINTER_CONSULT_DESCRIPTION}
       </p>
-
-      <div className="mt-7 space-y-5">
-        {/* 학생 이름 */}
+      <p className="mt-2 text-sm text-white/55">
+        학부모님이 남겨주시면 됩니다. 학생도 직접 문의할 수 있습니다.
+      </p>
+      <fieldset className="mt-7" disabled={status === "submitting"}>
+        <legend className="text-sm font-semibold text-white">
+          가장 궁금한 점{" "}
+          <span className="font-normal text-white/50">(선택)</span>
+        </legend>
+        <p className="mt-2 text-sm text-white/60">
+          하나를 고르면 관련 안내를 먼저 볼 수 있습니다. 선택하지 않고 바로
+          요청하셔도 됩니다.
+        </p>
+        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+          {CONSULT_CONCERNS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              aria-pressed={concern === item.id}
+              onClick={() => {
+                const next = concern === item.id ? "" : item.id;
+                setConcern(next);
+                if (next)
+                  trackWinter("winter_concern_select", {
+                    placement: "winter_form",
+                    concern: next,
+                  });
+              }}
+              className={`min-h-12 rounded-xl border px-3 py-3 text-left text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${concern === item.id ? "border-accent bg-accent/10 text-accent" : "border-white/20 text-white/80 hover:border-white/40"}`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <div aria-live="polite">
+          {selected && (
+            <div className="mt-4 rounded-xl border border-accent/25 bg-accent/[0.05] p-4">
+              <p className="text-[15px] leading-relaxed text-white/80">
+                {selected.description}
+              </p>
+              <Link
+                href={selected.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-block text-sm text-accent underline underline-offset-4"
+              >
+                {selected.linkLabel} <span className="text-xs">(새 창)</span>
+              </Link>
+              <p className="mt-3 text-xs text-white/55">
+                선택하신 내용을 상담 담당자에게 함께 전달합니다.
+              </p>
+            </div>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setConcern("");
+            nameInput.current?.focus();
+          }}
+          className="mt-4 text-sm text-white/75 underline underline-offset-4"
+        >
+          안내 선택 없이 바로 상담 요청하기
+        </button>
+      </fieldset>
+      <form onSubmit={handleSubmit} className="mt-7 space-y-5">
         <div>
           <label
             htmlFor="consult-name"
             className="mb-2 block text-sm font-medium text-white/80"
           >
-            학생 이름 <span className="text-accent">*</span>
+            문의자 이름 <span className="text-accent">*</span>
           </label>
           <input
+            ref={nameInput}
             id="consult-name"
+            name="name"
             type="text"
+            autoComplete="name"
+            required
+            maxLength={50}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="이름을 입력해 주세요"
+            placeholder="연락받으실 분의 이름"
             className={INPUT_CLASS}
           />
         </div>
-
-        {/* 학년 */}
-        <div>
-          <p className="mb-2 text-sm font-medium text-white/80">
-            학년 <span className="text-accent">*</span>
+        <fieldset>
+          <legend className="mb-2 text-sm font-medium text-white/80">
+            자녀 학년 <span className="text-accent">*</span>
+          </legend>
+          <p className="mb-3 text-xs text-white/50">
+            2027년 과정 입소 기준입니다. 학생이 직접 문의하면 본인 학년을 선택해
+            주세요.
           </p>
-          <div
-            role="radiogroup"
-            aria-label="학년 선택"
-            className="grid grid-cols-3 gap-2"
-          >
-            {GRADE_OPTIONS.map((g) => (
-              <button
+          <div className="grid grid-cols-3 gap-2">
+            {CONSULT_GRADES.map((g) => (
+              <label
                 key={g}
-                type="button"
-                role="radio"
-                aria-checked={grade === g}
-                onClick={() => setGrade(g)}
-                className={`rounded-xl border py-3.5 text-[15px] font-medium transition-colors ${
-                  grade === g
-                    ? "border-accent bg-accent/10 text-accent"
-                    : "border-white/15 text-white/70 hover:border-white/40 hover:text-white"
-                }`}
+                className={`flex min-h-12 cursor-pointer items-center justify-center gap-1.5 rounded-xl border px-1 py-3 text-sm ${grade === g ? "border-accent bg-accent/10 text-accent" : "border-white/20 text-white/75"}`}
               >
+                <input
+                  type="radio"
+                  name="grade"
+                  required
+                  value={g}
+                  checked={grade === g}
+                  onChange={() => setGrade(g)}
+                  className="accent-accent"
+                />
                 {g}
-              </button>
+              </label>
             ))}
           </div>
-        </div>
-
-        {/* 연락처 */}
+        </fieldset>
         <div>
           <label
             htmlFor="consult-phone"
             className="mb-2 block text-sm font-medium text-white/80"
           >
-            연락처 <span className="text-accent">*</span>
+            회신 연락처 <span className="text-accent">*</span>
           </label>
           <input
             id="consult-phone"
+            name="phone"
             type="tel"
-            inputMode="numeric"
+            inputMode="tel"
             autoComplete="tel"
+            required
             value={phone}
             onChange={(e) => setPhone(formatPhone(e.target.value))}
             onBlur={() => setPhoneTouched(true)}
             placeholder="010-0000-0000"
-            aria-invalid={showPhoneError}
-            aria-describedby={showPhoneError ? "consult-phone-error" : undefined}
-            className={`${INPUT_CLASS} ${
-              showPhoneError ? "border-red-400/70 focus:border-red-400" : ""
-            }`}
+            aria-invalid={phoneTouched && !phoneValid}
+            aria-describedby="consult-phone-note"
+            className={INPUT_CLASS}
           />
-          {showPhoneError && (
-            <p
-              id="consult-phone-error"
-              role="alert"
-              className="mt-2 text-[13px] text-red-400 break-keep"
-            >
-              {phoneMessage}
-            </p>
-          )}
+          <p
+            id="consult-phone-note"
+            className={`mt-2 text-xs ${phoneTouched && !phoneValid ? "text-red-400" : "text-white/55"}`}
+          >
+            {phoneTouched && !phoneValid
+              ? "연락 가능한 휴대폰 번호를 확인해 주세요."
+              : "담당자가 이 번호로 전화드립니다."}
+          </p>
         </div>
-
-        {/* 희망 대학 (선택) */}
+        <div>
+          <label
+            htmlFor="consult-time"
+            className="mb-2 block text-sm font-medium text-white/80"
+          >
+            연락 희망 시간{" "}
+            <span className="font-normal text-white/50">(선택)</span>
+          </label>
+          <select
+            id="consult-time"
+            name="contactTime"
+            value={contactTime}
+            onChange={(e) => setContactTime(e.target.value)}
+            className={`${INPUT_CLASS} [&>option]:bg-black`}
+          >
+            {CONTACT_TIMES.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.label}
+              </option>
+            ))}
+          </select>
+          <p className="mt-2 text-xs text-white/55">
+            가능한 시간대를 참고해 연락드립니다. 확정 예약은 아닙니다.
+          </p>
+        </div>
         <div>
           <label
             htmlFor="consult-univ"
             className="mb-2 block text-sm font-medium text-white/80"
           >
-            희망 대학{" "}
-            <span className="text-[12px] font-normal text-white/50">(선택)</span>
+            희망 대학 <span className="font-normal text-white/50">(선택)</span>
           </label>
           <input
             id="consult-univ"
+            name="university"
             type="text"
+            maxLength={100}
             value={university}
             onChange={(e) => setUniversity(e.target.value)}
-            placeholder="예: 홍익대, 국민대"
+            placeholder="아직 정하지 않으셨다면 비워 두세요"
             className={INPUT_CLASS}
           />
         </div>
-
-        {/* 개인정보 동의 */}
         <div>
           <div className="flex items-start gap-2.5">
             <input
               id="consult-agree"
+              name="agreed"
               type="checkbox"
+              required
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-accent"
+              className="mt-0.5 h-4 w-4 accent-accent"
             />
             <label
               htmlFor="consult-agree"
-              className="cursor-pointer text-sm text-white/80 break-keep"
+              className="flex-1 text-sm text-white/80"
             >
               개인정보 수집·이용에 동의합니다{" "}
               <span className="text-accent">(필수)</span>
@@ -243,55 +343,75 @@ export default function ConsultForm() {
               type="button"
               onClick={() => setShowPrivacy(!showPrivacy)}
               aria-expanded={showPrivacy}
-              className="shrink-0 text-[12px] text-white/55 underline underline-offset-2 hover:text-white/80"
+              aria-controls="consult-privacy"
+              className="shrink-0 text-xs text-white/60 underline underline-offset-2"
             >
               {showPrivacy ? "접기" : "자세히"}
             </button>
           </div>
           {showPrivacy && (
-            <div className="mt-3 space-y-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3.5 text-[13px] leading-relaxed text-white/60">
-              <p>· 수집 항목: 학생 이름, 학년, 연락처, 희망 대학(선택)</p>
+            <div
+              id="consult-privacy"
+              className="mt-3 space-y-2 rounded-lg border border-white/10 p-4 text-xs leading-relaxed text-white/65"
+            >
               <p>
-                · 이용 목적: 윈터스쿨 상담 회신 (그 외 목적으로 사용하지
-                않습니다)
+                수집 항목: 문의자 이름, 자녀 학년, 회신 연락처, 희망 대학·상담
+                고민·연락 희망 시간(선택)
               </p>
+              <p>이용 목적: 윈터스쿨 상담 준비와 회신</p>
+              <p>보유 기간: 상담 완료 후 지체 없이 파기</p>
               <p>
-                · 보유 기간: [상담 완료 후 지체 없이 파기]
-                {/* TODO: 원장님 확인 */}
+                동의를 거부할 수 있으나, 연락처를 남기는 상담 요청은 제한됩니다.
+                전화·톡톡 문의는 이용하실 수 있습니다.
               </p>
-              <p>· 동의를 거부할 수 있으나, 거부 시 상담 신청이 제한됩니다.</p>
             </div>
           )}
         </div>
-
-        {/* 제출 */}
         <button
-          type="button"
-          onClick={handleSubmit}
+          type="submit"
           disabled={!canSubmit}
-          className="w-full rounded-full bg-accent py-4 text-base font-bold text-black transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-full bg-accent px-4 py-4 text-base font-bold text-black disabled:cursor-not-allowed disabled:opacity-40"
         >
           {status === "submitting" ? (
             <span className="flex items-center justify-center gap-2">
               <Loader2 size={17} className="animate-spin" />
-              접수 중...
+              요청 중...
             </span>
           ) : (
-            "상담 신청하기"
+            "이 내용으로 상담 요청하기"
           )}
         </button>
-
         {status === "error" && (
-          <p className="text-center text-sm text-red-400 break-keep">
-            일시적인 오류로 접수하지 못했습니다. 잠시 후 다시 시도하시거나
-            전화({CAMP_INFO.phone})로 연락해 주세요.
+          <p role="alert" className="text-center text-sm text-red-400">
+            접수하지 못했습니다. 입력 내용은 유지되어 있습니다. 다시
+            요청하시거나{" "}
+            <a href={CAMP_INFO.phoneTel} className="underline">
+              {CAMP_INFO.phone}
+            </a>
+            로 연락해 주세요.
           </p>
         )}
-
-        <p className="text-center text-[13px] text-white/55 break-keep">
+        <p className="text-center text-xs leading-relaxed text-white/55">
+          윈터스쿨 상담 담당자가 전화드립니다.
+          <br />
           밤에 남겨주셔도 괜찮습니다. 다음 날 연락드립니다.
         </p>
+      </form>
+      <div className="mt-6 border-t border-white/10 pt-5">
+        <p className="mb-3 text-sm text-white/60">짧게 물어보고 싶다면</p>
+        <div className="flex flex-wrap gap-3">
+          <NaverTalkButton
+            label="톡톡으로 물어보기"
+            className="px-4 py-3 text-sm"
+          />
+          <a
+            href={SMS_HREF}
+            className="rounded-full border border-white/20 px-4 py-3 text-sm text-white/75 md:hidden"
+          >
+            문자로 물어보기
+          </a>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

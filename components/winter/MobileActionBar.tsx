@@ -9,15 +9,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Phone,
-  MessageSquare,
-  MessageCircle,
-  CalendarCheck,
-  PenLine,
-} from "lucide-react";
-import { CAMP_INFO, SMS_HREF } from "@/lib/winter-camp";
-import { NAVER_TALK_URL, NAVER_BOOKING_WINTER_URL } from "@/lib/contact";
+import { Phone, CalendarCheck, PenLine } from "lucide-react";
+import { CAMP_INFO } from "@/lib/winter-camp";
+import { NAVER_BOOKING_WINTER_URL } from "@/lib/contact";
 import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 
 export default function MobileActionBar() {
@@ -50,10 +44,20 @@ export default function MobileActionBar() {
           animate={{ y: 0 }}
           exit={{ y: 100 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          // 칸이 다섯이라 좁다 — 여백과 글자를 한 단계씩 줄여 한 줄을 유지한다
+          // 상담·전화·방문 예약의 세 경로. 톡톡·문자는 상담 영역에서 제공한다.
           data-winter-placement="winter_mobile_bar"
-          className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-5 gap-1.5 border-t border-white/10 bg-black/90 px-3 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2.5 backdrop-blur-md md:hidden"
+          aria-label="윈터스쿨 상담과 방문 예약"
+          className="fixed bottom-0 left-0 right-0 z-40 grid grid-cols-[1.6fr_0.8fr_1fr] gap-2 border-t border-white/10 bg-black/90 px-3 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2.5 backdrop-blur-md md:hidden"
         >
+          <Link
+            href={CONSULT_HREF}
+            onClick={goToConsult}
+            aria-label="우리 아이에게 맞는지 상담하기"
+            className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl bg-accent px-1 py-2 text-black"
+          >
+            <PenLine size={17} />
+            <span className="text-xs font-bold">아이에게 맞는지 상담</span>
+          </Link>
           <a
             href={CAMP_INFO.phoneTel}
             aria-label={`전화 문의 ${CAMP_INFO.phone}`}
@@ -62,44 +66,17 @@ export default function MobileActionBar() {
             <Phone size={17} />
             <span className="text-[11px] font-medium">전화</span>
           </a>
-          <a
-            href={SMS_HREF}
-            aria-label="문자 문의"
-            className="flex flex-col items-center gap-1 rounded-xl border border-white/15 py-2 text-white"
-          >
-            <MessageSquare size={17} />
-            <span className="text-[11px] font-medium">문자</span>
-          </a>
-          {/* 이 바가 떠 있는 동안은 톡톡 플로팅 버튼이 숨는다(components/academy/NaverTalk.tsx) */}
-          <a
-            href={NAVER_TALK_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="네이버 톡톡으로 문의하기"
-            className="flex flex-col items-center gap-1 rounded-xl border border-[#03C75A]/50 py-2 text-[#03C75A]"
-          >
-            <MessageCircle size={17} />
-            <span className="text-[11px] font-medium">톡톡</span>
-          </a>
           {/* 예약은 채워진 초록 — 톡톡(테두리)과 한눈에 구분된다 */}
           <a
             href={NAVER_BOOKING_WINTER_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="네이버 예약으로 상담 예약하기"
+            aria-label="네이버에서 방문 일정 예약하기"
             className="flex flex-col items-center gap-1 rounded-xl bg-[#03C75A] py-2 text-white"
           >
             <CalendarCheck size={17} />
-            <span className="text-[11px] font-bold">예약</span>
+            <span className="text-xs font-bold">방문 예약</span>
           </a>
-          <Link
-            href={CONSULT_HREF}
-            onClick={goToConsult}
-            className="flex flex-col items-center gap-1 rounded-xl bg-accent py-2 text-black"
-          >
-            <PenLine size={17} />
-            <span className="text-[11px] font-bold">상담신청</span>
-          </Link>
         </motion.div>
       )}
     </AnimatePresence>

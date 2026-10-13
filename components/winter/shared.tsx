@@ -28,11 +28,20 @@ export const CONSULT_HREF = "/winter#consult-form";
  * 없으면 기본 동작(= /winter#consult-form 이동)을 그대로 둔다.
  */
 export function goToConsult(e?: React.MouseEvent) {
+  if (e && (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0))
+    return;
   if (typeof document === "undefined") return;
   const el = document.getElementById("consult-form");
   if (!el) return;
   e?.preventDefault();
-  el.scrollIntoView({ behavior: "smooth", block: "start" });
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  el.scrollIntoView({
+    behavior: reducedMotion ? "auto" : "smooth",
+    block: "start",
+  });
+  document.getElementById("consult-title")?.focus({ preventScroll: true });
 }
 
 /* ------------------------------- 섹션 제목 -------------------------------- */

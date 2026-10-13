@@ -5,6 +5,7 @@
 | 이벤트 | 의미 |
 | --- | --- |
 | winter_link_click | 윈터스쿨 개요·상세 페이지로 이동하는 링크 클릭 |
+| winter_concern_select | 선택형 상담 고민 선택 (고정된 분류 ID만 전송) |
 | winter_contact_click | 상담 폼 이동·네이버 예약·전화·문자·톡톡 클릭 |
 | winter_consult_submit | 유효한 폼의 접수 요청 시작 |
 | winter_consult_success | 접수 API의 성공 응답 |

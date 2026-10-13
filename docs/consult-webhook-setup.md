@@ -40,10 +40,12 @@ function doPost(e) {
     sheet = ss.insertSheet(SHEET_NAME);
   }
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(["접수시각", "이름", "학년", "연락처", "희망대학"]);
+    sheet.appendRow(["접수시각", "문의자 이름", "자녀 학년", "회신 연락처", "희망대학·상담내용", "상담 고민", "연락 희망 시간"]);
     sheet.setFrozenRows(1);
   }
-  sheet.appendRow([new Date(), data.name, data.grade, data.phone, data.university]);
+  // 기존 다섯 열은 유지하고 추가 항목은 오른쪽에 붙인다.
+  sheet.appendRow([new Date(), data.name, data.grade, data.phone, data.university,
+    data.concernLabel || "선택하지 않음", data.contactTimeLabel || "시간 무관"]);
 
   // 2) 이메일 알림
   MailApp.sendEmail({
@@ -52,10 +54,10 @@ function doPost(e) {
     body: [
       "새 상담 신청이 접수되었습니다.",
       "",
-      `이름: ${data.name}`,
-      `학년: ${data.grade}`,
-      `연락처: ${data.phone}`,
-      `희망 대학: ${data.university}`,
+      `문의자 이름: ${data.name}`,
+      `자녀 학년: ${data.grade}`,
+      `회신 연락처: ${data.phone}`,
+      data.university,
       "",
       `시트 바로가기: ${ss.getUrl()}`,
     ].join("\n"),
@@ -104,11 +106,20 @@ CONSULT_WEBHOOK_TOKEN=2단계에서_정한_TOKEN과_동일한_문자열
 
 ## 동작 방식 / 장애 시 동작
 
-- 웹훅 전송에 실패하면 사용자 화면에 "전화로 연락해 주세요" 안내가 표시되고,
-  서버 로그에 신청 내용이 남아 수동 복구가 가능합니다.
+- 웹훅 전송 또는 성공 응답 확인에 실패하면 사용자 화면에 재요청·전화 안내가 표시됩니다.
+  입력은 유지됩니다. 서버 로그에는 실패 원인만 남기며 입력 개인정보는 기록하지 않습니다.
 - 운영 환경에서 `CONSULT_WEBHOOK_URL`이 비어 있으면 접수가 실패 처리됩니다
   (조용히 데이터가 유실되는 것을 막기 위한 의도된 동작).
 - 휴대폰 푸시 알림을 받으려면 알림 이메일 계정을 스마트폰 Gmail 앱에 등록해 두세요.
+
+## 학부모 상담 개선 후 전달 항목
+
+- `name`은 학생 실명이 아닌 문의자 이름입니다. `grade`는 2027년 입소 기준 자녀 학년입니다.
+- 선택 항목 `concernLabel`과 `contactTimeLabel`은 상담 고민과 연락 희망 시간입니다. 시간은 확정 예약이 아닙니다.
+- 기존 Apps Script가 추가 항목을 무시해도 내용이 사라지지 않도록 서버는 기존 `university` 필드에 희망 대학·고민·시간을 합친 읽기 쉬운 요약을 보냅니다. 기존 시트의 희망대학 열과 알림 이메일에서 확인할 수 있습니다.
+- 위 새 스크립트로 재배포하면 오른쪽 추가 열에도 따로 저장됩니다. 기존 시트 헤더의 이름/학년/연락처/희망대학은 문의자 이름/자녀 학년/회신 연락처/희망대학·상담내용으로 변경하고, F1/G1에 상담 고민/연락 희망 시간을 적어 주세요. 기존 열의 순서는 유지합니다.
+- 서버는 HTTP 200뿐 아니라 JSON 응답의 `ok:true`도 확인합니다. 토큰 오류·로그인 HTML·잘못된 응답은 성공으로 표시하지 않습니다. 웹훅 미설정이면 개발 환경에서도 가짜 접수 성공을 표시하지 않습니다.
+- 실제 수신 시트는 배포된 Apps Script의 연결 스프레드시트, 수신 이메일은 해당 스크립트의 `NOTIFY_EMAIL`로 결정됩니다. 저장소에는 실제 시트 ID·이메일·운영 웹훅 주소가 없어 대상 계정과 실제 수신 완료는 별도 확인이 필요합니다.
 
 ## 자주 묻는 문제
 

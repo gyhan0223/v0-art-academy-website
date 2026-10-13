@@ -37,7 +37,9 @@ export function NaverBookingButton({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={ARIA_LABEL}
+      aria-label={
+        label === "네이버 예약하기" ? ARIA_LABEL : `네이버에서 ${label}`
+      }
       className={`inline-flex items-center justify-center gap-2 rounded-full bg-[#03C75A] font-bold text-white transition-opacity hover:opacity-85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#03C75A] ${className}`}
     >
       <CalendarCheck size={16} />

@@ -1,4 +1,8 @@
 import { NextResponse } from "next/server";
+import {
+  parseConsultationInput,
+  consultationPayload,
+} from "@/lib/winter-consultation";
 
 /**
  * 윈터스쿨 상담 신청 접수.
@@ -11,49 +15,33 @@ import { NextResponse } from "next/server";
  *  - CONSULT_WEBHOOK_URL   : Apps Script 웹 앱 배포 URL
  *  - CONSULT_WEBHOOK_TOKEN : Apps Script 코드의 TOKEN과 동일한 임의 문자열
  */
-/** 휴대폰 번호 자릿수 검증 — 010은 11자리, 그 외 이동통신 국번은 10~11자리 */
-const PHONE_PATTERN = /^(010\d{8}|01[16789]\d{7,8})$/;
-
 export async function POST(request: Request) {
-  const data = await request.json();
-
-  const { name, grade, phone, university } = data ?? {};
-  if (!name || !grade || !phone) {
+  let data: unknown;
+  try {
+    data = await request.json();
+  } catch {
     return NextResponse.json(
-      { ok: false, error: "필수 항목이 누락되었습니다." },
+      { ok: false, error: "입력 내용을 확인해 주세요." },
       { status: 400 },
     );
   }
-
-  // 클라이언트 검증을 우회한 잘못된 번호가 시트에 쌓이지 않도록 서버에서도 확인한다.
-  if (!PHONE_PATTERN.test(String(phone).replace(/\D/g, ""))) {
+  const input = parseConsultationInput(data);
+  if (!input) {
     return NextResponse.json(
-      { ok: false, error: "연락처 형식이 올바르지 않습니다." },
+      { ok: false, error: "이름·학년·연락처와 선택 항목을 확인해 주세요." },
       { status: 400 },
     );
   }
-
-  const payload = {
-    token: process.env.CONSULT_WEBHOOK_TOKEN ?? "",
-    name: String(name).slice(0, 50),
-    grade: String(grade).slice(0, 20),
-    phone: String(phone).slice(0, 20),
-    university: String(university || "").slice(0, 100) || "(미입력)",
-    receivedAt: new Date().toISOString(),
-  };
+  const payload = consultationPayload(
+    input,
+    process.env.CONSULT_WEBHOOK_TOKEN ?? "",
+  );
 
   const webhookUrl = process.env.CONSULT_WEBHOOK_URL;
 
   if (!webhookUrl) {
-    // 웹훅 미설정 — 데이터가 유실되므로 개발 환경에서만 통과시킨다.
-    if (process.env.NODE_ENV === "development") {
-      console.warn(
-        "[상담 신청] CONSULT_WEBHOOK_URL 미설정 — 콘솔에만 출력합니다.",
-        payload,
-      );
-      return NextResponse.json({ ok: true });
-    }
-    console.error("[상담 신청] CONSULT_WEBHOOK_URL 미설정 — 접수 실패", payload);
+    // Missing destination must never produce a fake successful consultation.
+    console.error("[상담 요청] 접수 시스템 미설정");
     return NextResponse.json(
       { ok: false, error: "접수 시스템 설정 오류" },
       { status: 500 },
@@ -69,9 +57,12 @@ export async function POST(request: Request) {
       signal: AbortSignal.timeout(15_000),
     });
     if (!res.ok) throw new Error(`webhook responded ${res.status}`);
+    // Apps Script may return HTTP 200 with {ok:false}, e.g. token mismatch.
+    const acknowledgement = await res.json();
+    if (acknowledgement?.ok !== true)
+      throw new Error("webhook did not acknowledge consultation");
   } catch (error) {
-    // 전송 실패 시 최소한 서버 로그에 남겨 수동 복구가 가능하게 한다.
-    console.error("[상담 신청] 웹훅 전송 실패 — 수동 확인 필요", payload, error);
+    console.error("[상담 요청] 웹훅 접수 확인 실패", error);
     return NextResponse.json(
       { ok: false, error: "접수 전송에 실패했습니다." },
       { status: 502 },

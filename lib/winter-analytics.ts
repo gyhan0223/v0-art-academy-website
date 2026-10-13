@@ -1,5 +1,6 @@
 /** Fixed labels only: do not send form values, link text, phone numbers or query strings. */
 export type WinterEvent =
+  | "winter_concern_select"
   | "winter_link_click"
   | "winter_contact_click"
   | "winter_consult_submit"

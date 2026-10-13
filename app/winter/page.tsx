@@ -5,7 +5,7 @@ import { CAMP_INFO } from "@/lib/winter-camp";
 const PAGE_TITLE =
   "2027 모다고 윈터스쿨 | 미대입시 8주 기숙 집중과정";
 const PAGE_DESCRIPTION =
-  "모다고(모두다른고양이) 2027 윈터스쿨. 예비 고2·고3·재수생 대상 8주 기숙 과정입니다. 평일 학과 직강과 주말 미대 실기를 병행하며 홍대 본원에서 운영합니다.";
+  "모다고(모두다른고양이) 2027 윈터스쿨. 예비 고2·고3·재수생 대상 8주 기숙 과정입니다. 홍대 본원에서 평일 학과·주말 실기·생활 관리를 함께 운영하고 격주 리포트로 학부모님께 안내합니다.";
 
 export const metadata: Metadata = {
   title: PAGE_TITLE,

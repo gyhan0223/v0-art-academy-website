@@ -3,14 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, Menu, ChevronDown } from "lucide-react";
+import { X, Menu } from "lucide-react";
 import {
   SHOW_ANNOUNCEMENT,
+  WINTER_AUDIENCE_PAGES,
   WINTER_PAGES,
   getRemainingLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
-import { WINTER_CONSULT_LABEL } from "@/lib/winter-consultation";
 import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 import { CAMPUSES } from "@/lib/contact";
 import { CONSULTING_INFO } from "@/lib/consulting";
@@ -41,6 +41,7 @@ type NavChild = {
   href: string;
   desc?: string;
   badge?: string;
+  groupHeading?: string;
 };
 
 type NavItem = {
@@ -132,12 +133,19 @@ const navItems: NavItem[] = [
         desc: "대상·정원·기간과 8주 운영 방식",
         badge: "모집중",
       },
+      ...WINTER_AUDIENCE_PAGES.map((page, index) => ({
+        label: page.label,
+        href: page.href,
+        desc: page.description,
+        groupHeading: index === 0 ? "학년별 겨울 준비" : undefined,
+      })),
       // 하위 페이지는 lib/winter-camp.ts의 WINTER_PAGES 하나만 고치면 여기와
       // /winter 하단 카드가 함께 바뀐다
-      ...WINTER_PAGES.map((page) => ({
+      ...WINTER_PAGES.map((page, index) => ({
         label: page.label,
         href: page.href,
         desc: page.desc,
+        groupHeading: index === 0 ? "과정 안내" : undefined,
       })),
     ],
   },
@@ -154,6 +162,7 @@ const navItems: NavItem[] = [
  * 한 단계 아래 경로일 때만 활성으로 본다.
  */
 function isChildActive(pathname: string, href: string): boolean {
+  if (href === "/winter") return pathname === href;
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -311,13 +320,6 @@ export default function SiteNav() {
                       }`}
                     >
                       {item.label}
-                      <ChevronDown
-                        size={14}
-                        strokeWidth={2}
-                        className={`transition-transform duration-200 ${
-                          open ? "rotate-180" : ""
-                        }`}
-                      />
                     </button>
 
                     <div
@@ -327,7 +329,7 @@ export default function SiteNav() {
                           : "invisible opacity-0 -translate-y-1"
                       }`}
                     >
-                      <ul className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/40">
+                      <ul className="max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-lg border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/40">
                         {item.children.map((child) => {
                           const childActive = isChildActive(
                             pathname,
@@ -335,8 +337,14 @@ export default function SiteNav() {
                           );
                           return (
                             <li key={child.href}>
+                              {child.groupHeading && (
+                                <span className="block border-t border-white/10 px-4 pb-1 pt-4 text-[10px] font-semibold tracking-widest text-accent/80">
+                                  {child.groupHeading}
+                                </span>
+                              )}
                               <Link
                                 href={child.href}
+                                aria-current={childActive ? "page" : undefined}
                                 className={`block px-4 py-3.5 transition-colors border-b border-white/5 last:border-b-0 hover:bg-white/5 ${
                                   childActive ? "bg-white/5" : ""
                                 }`}
@@ -409,7 +417,7 @@ export default function SiteNav() {
                 onClick={goToConsult}
                 className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
               >
-                아이에게 맞는지 상담
+                무료 상담 예약
               </Link>
             ) : (
               <div
@@ -425,13 +433,6 @@ export default function SiteNav() {
                   className="flex items-center gap-1 whitespace-nowrap rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
                 >
                   상담 신청
-                  <ChevronDown
-                    size={14}
-                    strokeWidth={2.5}
-                    className={`transition-transform duration-200 ${
-                      consultOpen ? "rotate-180" : ""
-                    }`}
-                  />
                 </button>
 
                 <div
@@ -495,7 +496,7 @@ export default function SiteNav() {
           aria-label="모바일 메뉴"
           data-winter-placement="nav_mobile"
         >
-          <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+          <div className="flex shrink-0 items-center justify-between px-6 py-5 border-b border-white/10">
             <span className="font-black text-sm tracking-tight text-white">
               모두다른고양이
             </span>
@@ -508,7 +509,7 @@ export default function SiteNav() {
             </button>
           </div>
 
-          <ul className="flex flex-col py-4 flex-1">
+          <ul className="flex min-h-0 flex-1 flex-col overflow-y-auto py-4">
             {navItems.map((item, idx) => {
               if (item.children) {
                 const open = expanded === item.href;
@@ -524,13 +525,6 @@ export default function SiteNav() {
                         0{idx + 1}
                       </span>
                       {item.label}
-                      <ChevronDown
-                        size={16}
-                        strokeWidth={2}
-                        className={`ml-auto text-white/40 transition-transform duration-200 ${
-                          open ? "rotate-180" : ""
-                        }`}
-                      />
                     </button>
 
                     <div
@@ -548,8 +542,14 @@ export default function SiteNav() {
                           );
                           return (
                             <li key={child.href}>
+                              {child.groupHeading && (
+                                <span className="block border-t border-white/10 pb-1 pl-14 pr-6 pt-4 text-[10px] font-semibold tracking-widest text-accent/80">
+                                  {child.groupHeading}
+                                </span>
+                              )}
                               <Link
                                 href={child.href}
+                                aria-current={childActive ? "page" : undefined}
                                 className={`block py-3.5 pl-14 pr-6 text-sm border-b border-white/5 transition-colors hover:bg-white/5 ${
                                   childActive
                                     ? "text-accent"
@@ -602,7 +602,7 @@ export default function SiteNav() {
                   }}
                   className="block rounded-md bg-accent px-4 py-3 text-center text-sm font-medium text-black"
                 >
-                  {WINTER_CONSULT_LABEL}
+                  무료 상담 예약하기
                 </Link>
               ) : (
                 CAMPUSES.map((campus) => (
@@ -620,7 +620,7 @@ export default function SiteNav() {
             </li>
           </ul>
 
-          <div className="px-6 py-6 border-t border-white/10 space-y-3">
+          <div className="shrink-0 px-6 py-6 border-t border-white/10 space-y-3">
             <a href={`tel:${CAMPUS_HONGDAE.phone}`} className="block">
               <span className="block text-white/50 text-xs tracking-widest">
                 {CAMPUS_HONGDAE.phone}

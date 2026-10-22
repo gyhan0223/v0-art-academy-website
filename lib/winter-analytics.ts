@@ -26,6 +26,10 @@ export function getWinterLinkEvent(href: string, pageUrl: string) {
     if (link.pathname === "/winter" && link.hash === "#consult-form") {
       return { event: "winter_contact_click" as const, action: "consult_form", target: "/winter#consult-form" };
     }
+    // In-page reading/navigation is not a new visit to a winter page.
+    if (link.pathname === page.pathname && (link.hash || href.startsWith("#"))) {
+      return null;
+    }
     if (link.pathname === "/booking/winter") {
       return { event: "winter_contact_click" as const, action: "naver_booking", target: "/booking/winter" };
     }

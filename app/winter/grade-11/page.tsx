@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Grade11Landing from "@/components/winter/Grade11Landing";
 import RetakeMotion from "@/components/winter/RetakeMotion";
-import Grade11TimeControls from "@/components/winter/Grade11TimeControls";
 import "../retake/retake.css";
 import "../grade-12/grade12.css";
 import "./grade11.css";
@@ -13,4 +12,4 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function Grade11Page() { return <><Grade11Landing/><Grade11TimeControls/><RetakeMotion/></>; }
+export default function Grade11Page() { return <><Grade11Landing/><RetakeMotion/></>; }

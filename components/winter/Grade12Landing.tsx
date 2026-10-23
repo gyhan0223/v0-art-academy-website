@@ -4,9 +4,9 @@ import { Grade12Routine, Grade12Report } from "@/components/winter/Grade12Progra
 import WinterAudienceNav from "@/components/winter/WinterAudienceNav";
 
 const priorities = [
-  { key: "study", label: "학과", image: "academic-study", alt: "워크북을 살펴보는 미대입시 준비생의 AI 일러스트", title: <>지금 성적에서,<br/>무엇부터 보완할까?</>, records: "최근 성적표 · 오답 · 학습 기록", detail: "과목별 성적과 공부한 내용을 함께 살펴보고, 먼저 보완할 과목과 문제 유형을 짚습니다." },
-  { key: "art", label: "실기", image: "art-practice", alt: "정물 소묘를 연습하는 미대입시 준비생의 AI 일러스트", title: <>희망 대학에 맞는<br/>실기 훈련일까?</>, records: "최근 실기작 · 준비 종목 · 목표 전공", detail: "현재 작품과 실기 준비 기간, 희망 대학·전공을 함께 놓고 필요한 훈련 방향을 살펴봅니다." },
-  { key: "balance", label: "준비의 균형", image: "admissions-strategy", alt: "여러 준비 방향을 비교하는 미대입시 준비생의 AI 일러스트", title: <>학과와 실기,<br/>시간은 어떻게 나눌까?</>, records: "주간 일과 · 과제 수행 · 공부 시간", detail: "수업과 연습, 자습에 쓰는 시간을 돌아보고 정한 과제를 꾸준히 이어갈 일과를 정리합니다." },
+  { key: "study", label: "학과", image: "academic-study", alt: "워크북을 살펴보는 미대입시 준비생의 일러스트", title: <>지금 성적에서,<br/>무엇부터 보완할까?</>, records: "최근 성적표 · 오답 · 학습 기록", detail: "과목별 성적과 공부한 내용을 함께 살펴보고, 먼저 보완할 과목과 문제 유형을 짚습니다." },
+  { key: "art", label: "실기", image: "art-practice", alt: "정물 소묘를 연습하는 미대입시 준비생의 일러스트", title: <>희망 대학에 맞는<br/>실기 훈련일까?</>, records: "최근 실기작 · 준비 종목 · 목표 전공", detail: "현재 작품과 실기 준비 기간, 희망 대학·전공을 함께 놓고 필요한 훈련 방향을 살펴봅니다." },
+  { key: "balance", label: "준비의 균형", image: "admissions-strategy", alt: "여러 준비 방향을 비교하는 미대입시 준비생의 일러스트", title: <>학과와 실기,<br/>시간은 어떻게 나눌까?</>, records: "주간 일과 · 과제 수행 · 공부 시간", detail: "수업과 연습, 자습에 쓰는 시간을 돌아보고 정한 과제를 꾸준히 이어갈 일과를 정리합니다." },
 ];
 
 const faqs = [
@@ -22,25 +22,24 @@ export default function Grade12Landing() {
     <section className="rt-hero">
       <div className="rt-wrap rt-hero-grid">
         <div className="rt-hero-copy"><p className="rt-kicker">2028학년도 미대입시를 준비하는 예비 고3에게</p><h1 className="g12-hero-title">고3이 되기 전,<br/><em>준비의 순서를<br/>정합니다.</em></h1><p className="rt-lead">성적·실기·희망 대학을 함께 살펴보고,<br/>이번 겨울에 먼저 보완할 과제를 찾습니다.</p><div className="rt-actions"><a className="rt-button" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade12_hero">무료 심층 상담 예약하기 ↗</a><a className="rt-textlink" href="#priorities">겨울 준비 과정 살펴보기 ↓</a></div><p className="rt-hero-note">무료 원장 상담 · 수강 시작 시 상담 내용을 실제 수업에 반영</p></div>
-        <figure className="rt-plan-visual rt-hero-illustration g12-hero-illustration"><img src="/images/grade12/grade12-hero.webp" alt="워크북과 실기 스케치북을 함께 살펴보며 다음 준비를 생각하는 예비 고3 학생의 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/><figcaption><span>고3의 준비, 겨울부터 구체적으로.</span><small>AI 일러스트</small></figcaption></figure>
+        <figure className="rt-plan-visual rt-hero-illustration g12-hero-illustration"><img src="/images/grade12/grade12-hero.webp" alt="워크북과 실기 스케치북을 함께 살펴보며 다음 준비를 생각하는 예비 고3 학생의 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/><figcaption><span>고3의 준비, 겨울부터 구체적으로.</span></figcaption></figure>
       </div>
     </section>
 
     <section className="rt-section rt-causes g12-priorities" id="priorities"><div className="rt-wrap">
       <div className="rt-centered"><p className="rt-kicker">01 · 지금 준비에서 먼저 볼 것</p><h2>해야 할 일은 많은데,<br/>무엇이 먼저일까요?</h2><p className="rt-intro">잘하고 있는 부분과 먼저 보완할 부분을 구분합니다.<br/>각 항목을 눌러 함께 살펴볼 기록을 확인해 보세요.</p></div>
       <div className="rt-concern-grid g12-priority-grid">{priorities.map(item => <details className="rt-concern g12-priority-card" key={item.key}><summary><div className="rt-concern-visual"><img src={`/images/retake/${item.image}.webp`} alt={item.alt} width={1200} height={800} loading="lazy" decoding="async"/></div><div className="g12-priority-label">{item.label}</div><div className="rt-concern-title"><h3>{item.title}</h3><span className="rt-expand" aria-hidden="true">+</span></div><p className="rt-concern-foot">{item.records}</p></summary><div className="rt-concern-body"><p>{item.detail}</p></div></details>)}</div>
-      <p className="rt-illustration-caption">이해를 돕기 위한 AI 일러스트입니다.</p>
     </div></section>
 
     <section className="rt-section rt-method g12-direction" id="direction"><div className="rt-wrap">
       <div className="rt-section-heading"><div><p className="rt-kicker">02 · 상담에서 수업까지</p><h2>성적과 실기,<br/><em>함께 보고 방향을 정합니다.</em></h2></div><p className="rt-intro">현재 상태와 희망 대학을 함께 놓고,<br/>겨울에 우선 보완할 과제를 짚습니다.</p></div>
-      <div className="rt-method-row g12-direction-row"><figure className="rt-method-material rt-consult-illustration"><img src="/images/retake/consultation.webp" alt="학생과 지도자가 성적과 실기 자료를 함께 살펴보는 AI 일러스트" width={1200} height={800} loading="lazy" decoding="async"/><figcaption>준비 방향을 함께 살펴보는 장면 · AI 일러스트</figcaption></figure><div className="rt-method-copy"><h3>정한 방향이<br/>실제 준비로 이어지도록.</h3><p>원장님과의 무료 심층 상담으로 현재 성적과 실기 준비, 희망 대학과 전공을 살펴봅니다.</p><p>수강을 시작하면 상담에서 확인한 보완 사항을 학과 수업과 실기 훈련에 반영합니다.</p><a className="rt-textlink" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade12_direction">무료 상담으로 준비 방향 찾기 ↗</a></div></div>
+      <div className="rt-method-row g12-direction-row"><figure className="rt-method-material rt-consult-illustration"><img src="/images/retake/consultation.webp" alt="학생과 지도자가 성적과 실기 자료를 함께 살펴보는 일러스트" width={1200} height={800} loading="lazy" decoding="async"/><figcaption>준비 방향을 함께 살펴보는 장면</figcaption></figure><div className="rt-method-copy"><h3>정한 방향이<br/>실제 준비로 이어지도록.</h3><p>원장님과의 무료 심층 상담으로 현재 성적과 실기 준비, 희망 대학과 전공을 살펴봅니다.</p><p>수강을 시작하면 상담에서 확인한 보완 사항을 학과 수업과 실기 훈련에 반영합니다.</p><a className="rt-textlink" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade12_direction">무료 상담으로 준비 방향 찾기 ↗</a></div></div>
       <ol className="g12-preparation-path"><li><span>상담에서</span><strong>우선 보완할 과제 정리</strong></li><li><span>수강을 시작하면</span><strong>학습·실기 훈련에 반영</strong></li><li><span>실행한 뒤</span><strong>수행 기록으로 다음 준비 점검</strong></li></ol>
     </div></section>
 
     <section className="rt-section rt-spaces g12-habits" id="habits"><div className="rt-wrap">
       <div className="rt-section-heading"><div><p className="rt-kicker">03 · 겨울부터 연습할 하루</p><h2>겨울에 연습한 하루가,<br/>고3의 준비로 이어지도록.</h2></div><p className="rt-intro">윈터스쿨은 앞으로 이어갈 준비 방식과<br/>학습·생활 습관을 미리 연습하는 단계입니다.</p></div>
-      <div className="g12-habit-layout"><figure className="g12-habit-illustration"><img src="/images/retake/study-routine.webp" alt="학생과 지도자가 일과와 학습 계획을 확인하는 AI 일러스트" width={1200} height={800} loading="lazy" decoding="async"/><figcaption>학습 계획을 함께 살펴보는 장면 · AI 일러스트</figcaption></figure><div className="g12-habit-list"><div><span>START</span><h3>정해진 시간에 시작하고</h3><p>의욕이 생길 때를 기다리기보다, 공부를 시작할 시간을 일과에 둡니다.</p></div><div><span>CONTINUE</span><h3>학과와 실기를 함께 이어가고</h3><p>필요한 공부와 연습을 주간 일정에 나누어 배치합니다.</p></div><div><span>CHECK</span><h3>실행한 과제를 돌아봅니다</h3><p>계획과 실제 수행을 비교하며 다음에 보완할 부분을 찾습니다.</p></div></div></div>
+      <div className="g12-habit-layout"><figure className="g12-habit-illustration"><img src="/images/retake/study-routine.webp" alt="학생과 지도자가 일과와 학습 계획을 확인하는 일러스트" width={1200} height={800} loading="lazy" decoding="async"/><figcaption>학습 계획을 함께 살펴보는 장면</figcaption></figure><div className="g12-habit-list"><div><span>START</span><h3>정해진 시간에 시작하고</h3><p>의욕이 생길 때를 기다리기보다, 공부를 시작할 시간을 일과에 둡니다.</p></div><div><span>CONTINUE</span><h3>학과와 실기를 함께 이어가고</h3><p>필요한 공부와 연습을 주간 일정에 나누어 배치합니다.</p></div><div><span>CHECK</span><h3>실행한 과제를 돌아봅니다</h3><p>계획과 실제 수행을 비교하며 다음에 보완할 부분을 찾습니다.</p></div></div></div>
       <div className="g12-year-note"><strong>고3이 되어서도 이어갈 준비를,<br/>겨울부터 익힙니다.</strong><p>겨울 동안 연습한 습관을 새 학기에도 이어가는 것이 목표입니다.</p></div>
     </div></section>
 

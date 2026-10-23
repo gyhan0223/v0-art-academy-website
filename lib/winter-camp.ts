@@ -19,6 +19,9 @@ export const CAMP_INFO = {
   phoneTel: "tel:02-338-3302",
 
   period: "2027년 1월 4일 ~ 2027년 2월 26일 (약 8주)",
+  /** 기간 시각화 계산용 날짜 — 모집 기간 변경 시 period와 함께 갱신합니다. */
+  startDateISO: "2027-01-04",
+  endDateISO: "2027-02-26",
   // 대상 표기는 여기서만 고친다 — 랜딩 카드·메타 설명·상담 폼이 모두 이 값을 따른다
   target: "예비 고2 · 예비 고3 · 재수생 선행반",
   capacity: "여 8명 · 남 6명",
@@ -96,6 +99,25 @@ export function getRemainingTotal(): number {
 }
 
 /* ------------------------------- 하위 페이지 ------------------------------- */
+
+/** 학년별 겨울 준비 — 전체 메뉴와 각 학년 랜딩에서 함께 사용하는 안내 링크. */
+export const WINTER_AUDIENCE_PAGES = [
+  {
+    href: "/winter/grade-11",
+    label: "예비 고2",
+    description: "현재 성적과 목표에 맞춰 준비 방향을 정하는 겨울",
+  },
+  {
+    href: "/winter/grade-12",
+    label: "예비 고3",
+    description: "성적·실기를 함께 보고 준비의 순서 정하기",
+  },
+  {
+    href: "/winter/retake",
+    label: "N수생",
+    description: "지난 준비를 점검하고 달라질 방법 찾기",
+  },
+] as const;
 
 /**
  * 윈터스쿨 하위 페이지 — 네비게이션 드롭다운과 /winter 하단 카드가

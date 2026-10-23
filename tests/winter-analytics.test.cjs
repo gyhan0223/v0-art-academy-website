@@ -37,6 +37,18 @@ test('internal winter links and contact channels are distinct; query values neve
   assert.equal(classify('https://example.com/winter', page), null);
 });
 
+test('reading anchors do not inflate winter link clicks; real contact actions still count', () => {
+  const { getWinterLinkEvent: classify } = load();
+  const page = 'https://www.modago.me/winter/retake';
+  for (const href of ['#causes', '#camp', '#routine', '#consult', '#', '/winter/retake#camp']) {
+    assert.equal(classify(href, page), null);
+  }
+  assert.equal(classify('/winter', page).event, 'winter_link_click');
+  assert.equal(classify('/booking/winter', page).event, 'winter_contact_click');
+  assert.equal(classify('tel:023383302', page).action, 'phone');
+  assert.equal(classify('#consult-form', 'https://www.modago.me/winter').action, 'consult_form');
+});
+
 test('nested icon clicks use closest placement and fire only one event', () => {
   const calls = [];
   const window = { location: { href: 'https://www.modago.me/guide/jungsi-2027', pathname: '/guide/jungsi-2027' }, gtag: (...args) => calls.push(args) };

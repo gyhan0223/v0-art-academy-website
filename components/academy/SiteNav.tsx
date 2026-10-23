@@ -417,7 +417,7 @@ export default function SiteNav() {
                 onClick={goToConsult}
                 className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
               >
-                무료 상담 예약
+                상담 예약
               </Link>
             ) : (
               <div
@@ -602,7 +602,7 @@ export default function SiteNav() {
                   }}
                   className="block rounded-md bg-accent px-4 py-3 text-center text-sm font-medium text-black"
                 >
-                  무료 상담 예약하기
+                  상담 예약하기
                 </Link>
               ) : (
                 CAMPUSES.map((campus) => (

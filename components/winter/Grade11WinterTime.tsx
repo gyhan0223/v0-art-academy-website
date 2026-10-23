@@ -1,5 +1,41 @@
 import { getGrade11WinterTime } from "@/lib/grade11-winter-time";
 
+function VacationScene({ routine }: { routine: boolean }) {
+  return (
+    <svg className="g11-comparison-scene" viewBox="0 0 160 100" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <path d="M16 88H146" opacity=".25"/>
+      {routine ? <>
+        <circle cx="35" cy="25" r="12" opacity=".6"/>
+        <path d="M35 17V25H28"/>
+        <path d="M24 65H145M38 65V88M134 65V88"/>
+        <path d="M62 49V78H88M68 78V88M86 78V88" opacity=".55"/>
+        <circle cx="86" cy="26" r="9" fill="currentColor" fillOpacity=".12"/>
+        <path d="M80 39Q91 36 98 51L109 57L104 62L89 56L84 47L83 65H66L70 49Q72 42 80 39Z" fill="currentColor" fillOpacity=".14"/>
+        <path d="M70 65L87 75L100 86M83 65L100 72L107 86"/>
+        <path d="M108 53L122 56L135 52V63L122 66L108 63Z" fill="currentColor" fillOpacity=".1"/>
+        <path d="M122 56V65M107 58L113 50"/>
+        <path d="M139 25L144 30M133 34H140" opacity=".4"/>
+      </> : <>
+        <rect x="21" y="14" width="32" height="28" rx="4" opacity=".35"/>
+        <path d="M37 14V42M21 28H53" opacity=".25"/>
+        <rect x="24" y="51" width="113" height="25" rx="8" opacity=".4"/>
+        <path d="M22 63Q15 63 18 76L21 82H140L144 76V67Q144 60 137 62V74H25V67Q25 63 22 63Z" fill="currentColor" fillOpacity=".08"/>
+        <path d="M31 82V88M132 82V88"/>
+        <circle cx="103" cy="40" r="9" fill="currentColor" fillOpacity=".12"/>
+        <path d="M96 51L78 59L57 49L51 57L74 70L99 61Q107 58 106 52Z" fill="currentColor" fillOpacity=".14"/>
+        <path d="M53 55L41 68H29M100 54L116 50L124 41"/>
+        <rect x="121" y="27" width="9" height="16" rx="2" transform="rotate(16 121 27)"/>
+        <path d="M75 16L80 12H72L77 8" opacity=".35"/>
+      </>}
+    </svg>
+  );
+}
+
+const vacationScenarios = [
+  { routine: false, label: "집에서 쉬기만 한다면", lead: "공부는", title: "내일부터.", lines: ["해야 할 일을 미루며", "하루가 지나가고"] },
+  { routine: true, label: "모다고의 일과로 보낸다면", lead: "오늘 할 준비를", title: "지금부터.", lines: ["정한 시간에 시작해", "해보고, 점검하고"] },
+];
+
 export default function Grade11WinterTime() {
   const time = getGrade11WinterTime();
   return (
@@ -16,10 +52,18 @@ export default function Grade11WinterTime() {
             <p className="g11-time-total"><strong>{time.totalHours.toLocaleString("ko-KR")}</strong><span>시간</span></p>
             <p className="g11-time-includes">수업·자습·실기·식사·휴식·생활 포함</p>
             <p className="g11-time-equation"><strong>{time.days}일</strong><span aria-hidden="true">×</span><span className="sr-only">곱하기</span>하루 <strong>{time.dailyHours}시간</strong></p>
-            <div className="g11-time-days" aria-hidden="true">
-              {Array.from({ length: time.days }, (_, index) => <span key={index}>{String(index + 1).padStart(2, "0")}</span>)}
+            <div className="g11-time-comparison" aria-label="쉬기만 하는 방학과 일과에 따라 준비하는 방학의 비교">
+              <p className="g11-comparison-heading">같은 {time.days}일, 어떤 하루를 반복할까요?</p>
+              <div className="g11-comparison-grid">
+                {vacationScenarios.map(scenario => <article className={`g11-comparison-card ${scenario.routine ? "g11-comparison-routine" : "g11-comparison-rest"}`} key={scenario.label}>
+                  <span className="g11-comparison-label">{scenario.label}</span>
+                  <VacationScene routine={scenario.routine}/>
+                  <h3>{scenario.lead}<br/><strong>{scenario.title}</strong></h3>
+                  <p>{scenario.lines[0]}<br/>{scenario.lines[1]}</p>
+                </article>)}
+                <span className="g11-comparison-vs" aria-hidden="true">VS</span>
+              </div>
             </div>
-            <p className="g11-time-caption"><span>한 칸은 하루.</span> 시작일부터 종료일까지 {time.days}일의 반복입니다.</p>
           </div>
           <div className="g11-time-detail">
             <div className="g11-time-period">

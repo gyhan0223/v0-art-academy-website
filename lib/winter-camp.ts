@@ -102,7 +102,7 @@ export const WINTER_AUDIENCE_PAGES = [
   {
     href: "/winter/grade-11",
     label: "예비 고2",
-    description: "공부와 실기의 기초를 쌓는 겨울",
+    description: "현재 성적과 목표에 맞춰 준비 방향을 정하는 겨울",
   },
   {
     href: "/winter/grade-12",

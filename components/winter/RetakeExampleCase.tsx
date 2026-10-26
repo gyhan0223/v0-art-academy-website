@@ -29,7 +29,7 @@ export function RetakeExampleCase() {
       </figure>
       <div className="rt-example-story"><span>이 예시에서 가정한 상황</span><p>모의평가 성적은 올랐지만, 수능이 다가올수록 기상·취침 시간이 흔들리고 계획한 공부에 집중하기 어려운 날이 늘어났습니다.</p></div>
       <div className="rt-example-question"><span>다시 준비할 때 살펴볼 것</span><strong>공부할 내용과 함께,<br/>끝까지 이어갈 하루도 준비했을까?</strong></div>
-      <p className="rt-example-note">이해를 돕기 위한 가상의 성적과 상황입니다. 등급 변화만으로 실제 성적 하락의 원인을 판단할 수는 없습니다.</p>
+      <p className="rt-example-note">이전 수능 체제의 6월·9월 모의평가 일정을 가정한 가상 사례입니다. 2028학년도부터 하반기 모의평가는 8월에 실시됩니다. 등급 변화만으로 실제 성적 하락의 원인을 판단할 수는 없습니다.</p>
     </article>
   );
 }

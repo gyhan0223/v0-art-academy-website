@@ -4,6 +4,7 @@ import { WEEKDAY_SCHEDULE, WEEKEND_SCHEDULE } from "@/lib/winter-schedule";
 import { NAVER_BOOKING_WINTER_URL } from "@/lib/contact";
 import { RetakeExampleCase, RetakeExampleInterview, RetakeWinterFoundation } from "@/components/winter/RetakeExampleCase";
 import WinterAudienceNav from "@/components/winter/WinterAudienceNav";
+import RetakeExamReform from "@/components/winter/RetakeExamReform";
 
 function Needed({ children, className = "" }: { children: string; className?: string }) {
   return <div className={`rt-needed ${className}`}><span className="rt-needed-label">필요한 자료</span><p>(필요한 자료: {children})</p></div>;
@@ -22,13 +23,14 @@ export default function RetakeLanding() {
       <WinterAudienceNav current="/winter/retake"/>
       <section className="rt-hero">
         <div className="rt-wrap rt-hero-grid">
-          <div className="rt-hero-copy"><p className="rt-kicker">다시 준비하는 학생과 학부모에게</p><h1 className="rt-counsel-title">부족했던 이유를 찾고,<br/><em>달라질 준비를<br/>시작합니다.</em></h1><p className="rt-lead">심층 상담으로 부족했던 원인을 짚고,<br/>수강을 시작하면 실제 수업에서 보완합니다.</p><div className="rt-actions"><a className="rt-button" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="retake_hero">원장 심층 상담 예약하기 ↗</a><a className="rt-textlink" href="#camp">윈터스쿨 과정 보기 ↗</a></div><p className="rt-hero-note">재도전을 결정했거나 검토 중인 N수생·학부모를 위한 안내</p></div>
+          <div className="rt-hero-copy"><p className="rt-kicker">2028학년도 미대입시를 준비하는 N수생에게</p><h1 className="rt-counsel-title">수능이 바뀌는 재도전,<br/><em>준비의 기준부터<br/>다시 잡습니다.</em></h1><p className="rt-lead">국어·수학 선택과목 폐지, 탐구는 통합사회·통합과학으로.<br/>바뀐 시험과 목표 미대의 반영 기준부터 살펴봅니다.</p><div className="rt-actions"><a className="rt-button" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="retake_hero">원장 심층 상담 예약하기 ↗</a><a className="rt-textlink" href="#exam-2028">달라지는 수능 확인하기 ↓</a></div><p className="rt-hero-note">2028학년도 수능 · 2027년 11월 18일 시행</p></div>
           <figure className="rt-plan-visual rt-hero-illustration" id="preparation-plan">
             <img src="/images/retake/hero-new-start-glasses.webp" alt="얇은 안경과 오렌지 니트를 착용한 N수생이 스케치북을 살펴보며 다시 준비하는 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/>
-            <figcaption><span>다시 준비하는 겨울.</span></figcaption>
+            <figcaption><span>새로운 기준으로 준비하는 겨울.</span></figcaption>
           </figure>
         </div>
       </section>
+      <RetakeExamReform/>
       <section className="rt-section rt-evidence" id="records"><div className="rt-wrap">
         <div className="rt-section-heading"><div><p className="rt-kicker">01 · 다시 준비하기 전, 살펴볼 장면</p><h2>올라간 성적을,<br/>수능까지 이어가려면.</h2></div><p className="rt-intro">성적의 변화와 함께,<br/>준비를 끝까지 이어가는 방식도 살펴봅니다.</p></div>
         <div className="rt-case-layout">

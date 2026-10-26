@@ -1,4 +1,5 @@
 import { NAVER_BOOKING_WINTER_URL } from "@/lib/contact";
+import University2028Comparison from "@/components/winter/University2028Comparison";
 
 const sources = {
   structure: "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=102385&lev=0&m=020402",
@@ -60,6 +61,8 @@ export default function Exam2028Preparation({ audience = "retake" }: { audience?
             <p>하반기 모의평가가 8월로 바뀝니다. 이에 맞춰 개념 정리와 실전 점검의 순서도 다시 잡습니다.</p>
           </article>
         </div>
+
+        {!isGrade12 && <University2028Comparison/>}
 
         <details className="rt-reform-official">
           <summary>공식 변경사항과 출처 확인<span aria-hidden="true">+</span></summary>

@@ -2,6 +2,7 @@ import { CAMP_INFO } from "@/lib/winter-camp";
 import { NAVER_BOOKING_WINTER_URL } from "@/lib/contact";
 import { Grade12Routine, Grade12Report } from "@/components/winter/Grade12Program";
 import WinterAudienceNav from "@/components/winter/WinterAudienceNav";
+import Exam2028Preparation from "@/components/winter/Exam2028Preparation";
 
 const priorities = [
   { key: "study", label: "학과", image: "academic-study", alt: "워크북을 살펴보는 미대입시 준비생의 일러스트", title: <>지금 성적에서,<br/>무엇부터 보완할까?</>, records: "최근 성적표 · 오답 · 학습 기록", detail: "과목별 성적과 공부한 내용을 함께 살펴보고, 먼저 보완할 과목과 문제 유형을 짚습니다." },
@@ -21,10 +22,12 @@ export default function Grade12Landing() {
 
     <section className="rt-hero">
       <div className="rt-wrap rt-hero-grid">
-        <div className="rt-hero-copy"><p className="rt-kicker">2028학년도 미대입시를 준비하는 예비 고3에게</p><h1 className="g12-hero-title">고3이 되기 전,<br/><em>준비의 순서를<br/>정합니다.</em></h1><p className="rt-lead">성적·실기·희망 대학을 함께 살펴보고,<br/>이번 겨울에 먼저 보완할 과제를 찾습니다.</p><div className="rt-actions"><a className="rt-button" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade12_hero">원장 심층 상담 예약하기 ↗</a><a className="rt-textlink" href="#priorities">겨울 준비 과정 살펴보기 ↓</a></div><p className="rt-hero-note">원장 심층 상담 · 수강 시작 시 상담 내용을 실제 수업에 반영</p></div>
-        <figure className="rt-plan-visual rt-hero-illustration g12-hero-illustration"><img src="/images/grade12/grade12-hero.webp" alt="워크북과 실기 스케치북을 함께 살펴보며 다음 준비를 생각하는 예비 고3 학생의 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/><figcaption><span>고3의 준비, 겨울부터 구체적으로.</span></figcaption></figure>
+        <div className="rt-hero-copy"><p className="rt-kicker">2028학년도 미대입시를 준비하는 예비 고3에게</p><h1 className="g12-hero-title g12-reform-hero-title">2028 개편 수능,<br/><em>목표 미대에 맞춰<br/>준비합니다.</em></h1><p className="rt-lead">바뀐 출제 범위와 목표 미대의 반영 기준을 함께 보고,<br/>겨울의 학과 수업·실기·학습 점검으로 연결합니다.</p><div className="rt-actions"><a className="rt-button" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade12_hero">원장 심층 상담 예약하기 ↗</a><a className="rt-textlink" href="#exam-2028">2028 개편 대비 살펴보기 ↓</a></div><p className="rt-hero-note">새 출제 범위 확인 · 학과·실기 연계 · 격주 학습 점검</p></div>
+        <figure className="rt-plan-visual rt-hero-illustration g12-hero-illustration"><img src="/images/grade12/grade12-hero.webp" alt="워크북과 실기 스케치북을 함께 살펴보며 다음 준비를 생각하는 예비 고3 학생의 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/><figcaption><span>새로운 수능의 기준으로 준비하는 고3.</span></figcaption></figure>
       </div>
     </section>
+
+    <Exam2028Preparation audience="grade12"/>
 
     <section className="rt-section rt-causes g12-priorities" id="priorities"><div className="rt-wrap">
       <div className="rt-centered"><p className="rt-kicker">01 · 지금 준비에서 먼저 볼 것</p><h2>해야 할 일은 많은데,<br/>무엇이 먼저일까요?</h2><p className="rt-intro">잘하고 있는 부분과 먼저 보완할 부분을 구분합니다.<br/>각 항목을 눌러 함께 살펴볼 기록을 확인해 보세요.</p></div>

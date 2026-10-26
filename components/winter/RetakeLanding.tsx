@@ -4,7 +4,7 @@ import { WEEKDAY_SCHEDULE, WEEKEND_SCHEDULE } from "@/lib/winter-schedule";
 import { NAVER_BOOKING_WINTER_URL } from "@/lib/contact";
 import { RetakeExampleCase, RetakeExampleInterview, RetakeWinterFoundation } from "@/components/winter/RetakeExampleCase";
 import WinterAudienceNav from "@/components/winter/WinterAudienceNav";
-import RetakeExamReform from "@/components/winter/RetakeExamReform";
+import Exam2028Preparation from "@/components/winter/Exam2028Preparation";
 
 function Needed({ children, className = "" }: { children: string; className?: string }) {
   return <div className={`rt-needed ${className}`}><span className="rt-needed-label">필요한 자료</span><p>(필요한 자료: {children})</p></div>;
@@ -30,7 +30,7 @@ export default function RetakeLanding() {
           </figure>
         </div>
       </section>
-      <RetakeExamReform/>
+      <Exam2028Preparation audience="retake"/>
       <section className="rt-section rt-evidence" id="records"><div className="rt-wrap">
         <div className="rt-section-heading"><div><p className="rt-kicker">01 · 다시 준비하기 전, 살펴볼 장면</p><h2>올라간 성적을,<br/>수능까지 이어가려면.</h2></div><p className="rt-intro">성적의 변화와 함께,<br/>준비를 끝까지 이어가는 방식도 살펴봅니다.</p></div>
         <div className="rt-case-layout">

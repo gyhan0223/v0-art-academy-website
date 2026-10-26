@@ -7,23 +7,31 @@ const sources = {
   participation: "https://www.korea.kr/news/policyNewsView.do?newsId=148943916",
 };
 
-const preparationExample = [
+const retakePreparationExample = [
   { weeks: "1", title: "새 범위 진단", detail: "공개 예시문항으로 낯선 단원과 문항을 확인합니다.", output: "이어갈 공부 · 새로 채울 내용" },
   { weeks: "2–3", title: "기초를 다시 연결", detail: "이전 학습과 새 범위를 대조하고, 보완할 개념부터 정리합니다.", output: "개념 정리 · 단원별 연습" },
   { weeks: "4–6", title: "문항에 적용", detail: "통합사회·통합과학의 자료 해석과 문제 풀이를 연습합니다.", output: "공개 예시문항 · 오답 점검" },
   { weeks: "7–8", title: "시간 안에 점검", detail: "탐구 과목별 25문항·40분 형식으로 연습하고 다시 점검합니다.", output: "시간 배분 · 다음 학습 계획" },
 ];
 
-export default function RetakeExamReform() {
+const grade12PreparationExample = [
+  { weeks: "1", title: "수능형 문항으로 진단", detail: "학교에서 배운 개념을 공개 예시문항에 적용하며 부족한 단원과 유형을 확인합니다.", output: "현재 개념 이해 · 문항 적용 상태" },
+  { weeks: "2–3", title: "배운 개념을 단단하게", detail: "국어와 통합탐구에서 약한 개념을 정리하고 단원별 문제에 적용합니다.", output: "취약 개념 보완 · 단원별 연습" },
+  ...retakePreparationExample.slice(2),
+];
+
+export default function Exam2028Preparation({ audience = "retake" }: { audience?: "retake" | "grade12" }) {
+  const isGrade12 = audience === "grade12";
+  const preparationExample = isGrade12 ? grade12PreparationExample : retakePreparationExample;
   return (
     <section className="rt-section rt-exam-reform" id="exam-2028" aria-labelledby="rt-reform-title">
       <div className="rt-wrap">
         <div className="rt-section-heading">
           <div>
             <p className="rt-kicker">2028 수능 · 바뀐 기준부터 확인</p>
-            <h2 id="rt-reform-title">같은 공부를 반복하기 전,<br/><em>무엇이 달라지는지 봅니다.</em></h2>
+            <h2 id="rt-reform-title">{isGrade12 ? "처음 맞는 2028 수능," : "같은 공부를 반복하기 전,"}<br/><em>{isGrade12 ? "기준을 알고 준비합니다." : "무엇이 달라지는지 봅니다."}</em></h2>
           </div>
-          <p className="rt-intro">이전 공부에서 이어갈 부분과 새로 채울 부분.<br/>바뀐 시험과 희망 미대의 전형을 함께 봐야 합니다.</p>
+          <p className="rt-intro">{isGrade12 ? "학교에서 배운 개념을 수능형 문항으로 연결합니다." : "이전 공부에서 이어갈 부분과 새로 채울 부분."}<br/>{isGrade12 ? "출제 범위와 목표 미대의 반영 기준을 함께 봅니다." : "바뀐 시험과 희망 미대의 전형을 함께 봐야 합니다."}</p>
         </div>
 
         <div className="rt-reform-changes">
@@ -33,7 +41,7 @@ export default function RetakeExamReform() {
               <span className="rt-reform-before">공통 + 선택</span><span className="rt-reform-arrow" aria-hidden="true">↓</span><strong>공통 출제</strong>
             </div>
             <h3>선택과목 없이,<br/>공통 범위로 출제됩니다.</h3>
-            <p>국어·수학의 선택과목이 없어집니다. 이전에 공부한 내용과 새 범위를 비교해 준비할 부분을 정합니다.</p>
+            <p>국어·수학의 선택과목이 없어집니다. {isGrade12 ? "새 교육과정에서 배운 내용이 수능 문항에 어떻게 연결되는지 확인합니다." : "이전에 공부한 내용과 새 범위를 비교해 준비할 부분을 정합니다."}</p>
           </article>
           <article className="rt-reform-card">
             <span className="rt-card-eyebrow">사회 · 과학탐구</span>
@@ -85,12 +93,12 @@ export default function RetakeExamReform() {
                 {preparationExample.map(step => <li key={step.weeks}><span className="rt-reform-week"><b>{step.weeks}</b>주</span><h4>{step.title}</h4><p>{step.detail}</p><small>{step.output}</small></li>)}
               </ol>
               <div className="rt-reform-material-example">
-                <div><span>자료 구성 예시</span><strong>이전 학습 → 새 출제 범위 → 이번 주 준비</strong><p>국어 · 기존 독서·문학 학습과 새 화법·언어 범위를 대조<br/>탐구 · 통합사회·통합과학의 익숙한 개념과 낯선 단원을 구분<br/>목표 미대 · 응시 영역과 실제 반영 기준을 별도로 확인</p></div>
+                <div><span>자료 구성 예시</span><strong>{isGrade12 ? "학교에서 배운 개념 → 수능형 문항 → 이번 주 보완" : "이전 학습 → 새 출제 범위 → 이번 주 준비"}</strong><p>{isGrade12 ? "국어 · 화법과 언어·독서와 작문·문학의 개념을 문항에 적용" : "국어 · 기존 독서·문학 학습과 새 화법·언어 범위를 대조"}<br/>{isGrade12 ? "탐구 · 통합사회·통합과학의 개념 이해와 자료 해석을 함께 점검" : "탐구 · 통합사회·통합과학의 익숙한 개념과 낯선 단원을 구분"}<br/>목표 미대 · 응시 영역과 실제 반영 기준을 별도로 확인</p></div>
                 <p className="rt-reform-needed">(필요한 자료: 통합사회·통합과학 담당 강사, 확정 주차별 수업계획·교재, 개편형 진단·평가 문항)</p>
               </div>
             </div>
           </details>
-          <div className="rt-reform-contact"><p>지난 공부에서 이어갈 것과 새로 준비할 것,<br/><strong>현재 상태에 맞춰 함께 정합니다.</strong></p><a className="rt-textlink" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="retake_reform">2028학년도 준비 상담하기 ↗</a></div>
+          <div className="rt-reform-contact"><p>{isGrade12 ? "학교에서 배운 내용을 수능의 실력으로," : "지난 공부에서 이어갈 것과 새로 준비할 것,"}<br/><strong>{isGrade12 ? "목표 미대에 맞춰 함께 준비합니다." : "현재 상태에 맞춰 함께 정합니다."}</strong></p><a className="rt-textlink" href={NAVER_BOOKING_WINTER_URL} data-winter-placement={isGrade12 ? "grade12_reform" : "retake_reform"}>2028학년도 준비 상담하기 ↗</a></div>
         </div>
       </div>
     </section>

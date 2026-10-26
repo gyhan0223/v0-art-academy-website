@@ -4,8 +4,8 @@ import RetakeMotion from "@/components/winter/RetakeMotion";
 import "./retake.css";
 
 export const metadata: Metadata = {
-  title: "2028 수능 재도전, 공부·실기·생활을 겨울 8주부터 | 모두다른고양이",
-  description: "2028학년도 수능을 준비하는 N수생의 겨울 8주. 바뀐 출제 범위와 목표 미대의 실기를 함께 살펴보고, 수능까지 이어갈 학습·생활 습관을 연습합니다.",
+  title: "다시 선택한 1년, 이번에는 후회 없이 | 모두다른고양이",
+  description: "지난 준비의 아쉬움을 짚고 달라지는 2028 수능에 맞춰 다시 준비합니다. 모다고의 겨울 8주에서 수능까지 이어갈 공부와 습관을 시작합니다.",
   alternates: { canonical: "/winter/retake" },
   robots: { index: false, follow: true },
 };

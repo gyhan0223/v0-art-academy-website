@@ -23,7 +23,7 @@ export default function RetakeLanding() {
       <WinterAudienceNav current="/winter/retake"/>
       <section className="rt-hero">
         <div className="rt-wrap rt-hero-grid">
-          <div className="rt-hero-copy"><p className="rt-kicker">2028학년도 미대입시를 준비하는 N수생에게</p><h1 className="rt-counsel-title">다시 선택한 1년,<br/><em>이번에는 후회 없이.</em></h1><p className="rt-lead">지난 준비의 아쉬움을 짚고,<br/>달라지는 2028 수능에 맞춰 다시 준비합니다.<br/>모다고의 겨울 8주에서, 수능까지 이어갈 공부와 습관을 시작합니다.</p><div className="rt-actions"><a className="rt-button" href="#exam-2028">이번 재도전, 무엇이 달라야 할까요? ↓</a></div><p className="rt-hero-note">2028학년도 수능 · 2027년 11월 18일 시행</p></div>
+          <div className="rt-hero-copy"><p className="rt-kicker">2028학년도 미대입시를 준비하는 N수생에게</p><h1 className="rt-counsel-title">다시 선택한 1년,<br/><em>이번에는 후회 없이.</em></h1><p className="rt-lead">지난 준비의 아쉬움을 짚고,<br/>달라지는 2028 수능에 맞춰 다시 준비합니다.<br/>모다고의 겨울 8주에서, 수능까지 이어갈 공부와 습관을 시작합니다.</p><div className="rt-actions"><a className="rt-button" href="#exam-2028">미대 입시생을 위한 2028 개편안 보기 ↓</a></div><p className="rt-hero-note">2028학년도 수능 · 2027년 11월 18일 시행</p></div>
           <figure className="rt-plan-visual rt-hero-illustration" id="preparation-plan">
             <img src="/images/retake/hero-new-start-glasses.webp" alt="얇은 안경과 오렌지 니트를 착용한 N수생이 스케치북을 살펴보며 다시 준비하는 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/>
             <figcaption><span>다시 도전할 1년, 겨울 8주부터.</span></figcaption>

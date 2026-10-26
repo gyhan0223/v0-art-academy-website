@@ -28,10 +28,10 @@ export default function Exam2028Preparation({ audience = "retake" }: { audience?
       <div className="rt-wrap">
         <div className="rt-section-heading">
           <div>
-            <p className="rt-kicker">2028 수능 · 바뀐 기준부터 확인</p>
-            <h2 id="rt-reform-title">{isGrade12 ? "처음 맞는 2028 수능," : "같은 공부를 반복하기 전,"}<br/><em>{isGrade12 ? "기준을 알고 준비합니다." : "무엇이 달라지는지 봅니다."}</em></h2>
+            <p className="rt-kicker">{isGrade12 ? "2028 수능 · 바뀐 기준부터 확인" : "미대 입시생을 위한 2028 개편안"}</p>
+            <h2 id="rt-reform-title">{isGrade12 ? "처음 맞는 2028 수능," : "2028 개편 수능,"}<br/><em>{isGrade12 ? "기준을 알고 준비합니다." : "목표 미대에 맞춰 살펴봅니다."}</em></h2>
           </div>
-          <p className="rt-intro">{isGrade12 ? "학교에서 배운 개념을 수능형 문항으로 연결합니다." : "이전 공부에서 이어갈 부분과 새로 채울 부분."}<br/>{isGrade12 ? "출제 범위와 목표 미대의 반영 기준을 함께 봅니다." : "바뀐 시험과 희망 미대의 전형을 함께 봐야 합니다."}</p>
+          <p className="rt-intro">{isGrade12 ? "학교에서 배운 개념을 수능형 문항으로 연결합니다." : "무엇이 바뀌는지, 목표 미대에서는 무엇을 반영하는지."}<br/>{isGrade12 ? "출제 범위와 목표 미대의 반영 기준을 함께 봅니다." : "응시 과목과 대학의 반영 영역을 구분해 준비 방향을 잡습니다."}</p>
         </div>
 
         <div className="rt-reform-changes">

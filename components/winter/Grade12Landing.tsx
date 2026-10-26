@@ -22,7 +22,7 @@ export default function Grade12Landing() {
 
     <section className="rt-hero">
       <div className="rt-wrap rt-hero-grid">
-        <div className="rt-hero-copy"><p className="rt-kicker">2028학년도 미대입시를 준비하는 예비 고3에게</p><h1 className="g12-hero-title g12-reform-hero-title">2028 개편 수능,<br/><em>목표 미대에 맞춰<br/>준비합니다.</em></h1><p className="rt-lead">바뀐 출제 범위와 목표 미대의 반영 기준을 함께 보고,<br/>겨울의 학과 수업·실기·학습 점검으로 연결합니다.</p><div className="rt-actions"><a className="rt-button" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade12_hero">원장 심층 상담 예약하기 ↗</a><a className="rt-textlink" href="#exam-2028">2028 개편 대비 살펴보기 ↓</a></div><p className="rt-hero-note">새 출제 범위 확인 · 학과·실기 연계 · 격주 학습 점검</p></div>
+        <div className="rt-hero-copy"><p className="rt-kicker">2028학년도 미대입시를 준비하는 예비 고3에게</p><h1 className="g12-hero-title g12-reform-hero-title">2028 개편 수능,<br/><em>목표 미대에 맞춰<br/>준비합니다.</em></h1><p className="rt-lead">바뀐 출제 범위와 목표 미대의 반영 기준을 함께 보고,<br/>겨울의 학과 수업·실기·학습 점검으로 연결합니다.</p><div className="rt-actions"><a className="rt-button" href="#exam-2028">미대 입시생을 위한 2028 개편안 보기 ↓</a></div><p className="rt-hero-note">새 출제 범위 확인 · 학과·실기 연계 · 격주 학습 점검</p></div>
         <figure className="rt-plan-visual rt-hero-illustration g12-hero-illustration"><img src="/images/grade12/grade12-hero.webp" alt="워크북과 실기 스케치북을 함께 살펴보며 다음 준비를 생각하는 예비 고3 학생의 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/><figcaption><span>새로운 수능의 기준으로 준비하는 고3.</span></figcaption></figure>
       </div>
     </section>
@@ -57,6 +57,6 @@ export default function Grade12Landing() {
     <section className="rt-section rt-consult g12-consult" id="consult"><div className="rt-wrap rt-consult-layout"><div><div className="rt-director rt-director-type"><span className="rt-director-seal" aria-hidden="true">모다고</span><div><strong>한동희 원장</strong><span>모두다른고양이 미술학원</span></div></div><p className="rt-kicker">07 · 예비 고3 원장 심층 상담</p><h2>무엇부터 준비할지,<br/><em>함께 짚어보세요.</em></h2><p className="rt-intro">현재 성적과 실기 준비, 희망 대학을 바탕으로<br/>이번 겨울에 먼저 보완할 과제부터 살펴봅니다.</p><div className="rt-actions"><a className="rt-button" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade12_consult">원장 심층 상담 예약하기 ↗</a><a className="rt-textlink" href={CAMP_INFO.phoneTel} data-winter-placement="grade12_consult">전화 {CAMP_INFO.phone}</a></div><p className="rt-micro">상담에서 짚고, 수강 후 실제 수업에서 보완합니다.</p></div><div className="rt-consult-prep"><span className="rt-card-eyebrow">상담 전에 준비하면 좋은 자료</span><div><span>01</span><p>최근 내신·모의고사 성적표</p></div><div><span>02</span><p>최근 실기작과 준비 종목</p></div><div><span>03</span><p>희망 대학·전공과 궁금한 점</p></div><div><span>04</span><p>현재 학과·실기 주간 일과</p></div><p className="rt-micro">갖고 있는 자료를 중심으로 상담합니다.<br/>예약 시 예비 고3 상담임을 알려주세요.</p></div></div></section>
 
     <footer className="rt-footer"><div className="rt-wrap"><strong>모두다른고양이 미술학원</strong><p>{CAMP_INFO.address}<br/>{CAMP_INFO.phone}</p><a href="/winter/retake">N수생 겨울 준비 ↗</a><a href="#">맨 위로 ↑</a></div></footer>
-    <div className="rt-mobile-action"><a href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade12_sticky">원장 심층 상담 예약하기 ↗</a></div>
+    <div className="rt-mobile-action" data-show-after="direction"><a href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade12_sticky">원장 심층 상담 예약하기 ↗</a></div>
   </main>;
 }

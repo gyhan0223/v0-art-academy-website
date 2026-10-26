@@ -44,7 +44,7 @@ export function Grade11Routine() {
       <div className="rt-wrap">
         <div className="rt-section-heading">
           <div>
-            <p className="rt-kicker">04 · 방향을 실행하는 하루의 일과</p>
+            <p className="rt-kicker">05 · 모다고에서 실행하는 하루의 일과</p>
             <h2>
               평일에는 학과를,
               <br />
@@ -127,7 +127,7 @@ export function Grade11Report() {
     <section className="rt-section rt-report-section" id="report">
       <div className="rt-wrap rt-report-layout">
         <div className="rt-report-copy">
-          <p className="rt-kicker">05 · 고2의 준비를 살피는 기록</p>
+          <p className="rt-kicker">06 · 고2의 준비를 살피는 기록</p>
           <h2>
             “잘하고 있어요”보다,
             <br />

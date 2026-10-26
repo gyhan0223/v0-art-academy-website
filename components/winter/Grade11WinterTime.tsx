@@ -42,9 +42,9 @@ export default function Grade11WinterTime() {
     <section className="rt-section g11-winter-time" id="winter-time" aria-labelledby="g11-winter-time-title">
       <div className="rt-wrap">
         <div className="rt-centered">
-          <p className="rt-kicker">01 · 겨울의 시간으로 만드는 하루의 습관</p>
-          <h2 id="g11-winter-time-title">고2의 하루를,<br/>이번 겨울부터 연습합니다.</h2>
-          <p className="rt-intro">윈터스쿨 시작일부터 종료일까지, 기상부터 취침 전까지.<br/>공부와 실기, 식사와 휴식까지 같은 일과로 반복합니다.</p>
+          <p className="rt-kicker">04 · 정한 방향을 겨울부터 실행하기</p>
+          <h2 id="g11-winter-time-title">정한 준비 방향을,<br/>겨울의 하루로 옮겨봅니다.</h2>
+          <p className="rt-intro">준비 방향을 정했다면, 실제로 지킬 수 있는 하루도 필요합니다.<br/>모다고 윈터스쿨의 기간과 일과 안에서 학습·생활 리듬을 연습합니다.</p>
         </div>
         <div className="g11-time-card">
           <div className="g11-time-visual">

@@ -23,8 +23,8 @@ export default function Grade11Landing() {
     <WinterAudienceNav current="/winter/grade-11"/>
 
     <section className="rt-hero"><div className="rt-wrap rt-hero-grid">
-      <div className="rt-hero-copy"><p className="rt-kicker">2029학년도 미대입시를 준비하는 예비 고2에게</p><h1 className="g11-hero-title">고2의 첫 단추,<br/><em>희망 대학을 향한<br/>방향부터 잡습니다.</em></h1><p className="rt-lead">내신·모의고사 성적과 희망 대학·학과를 함께 살펴보고,<br/>수시·정시의 가능성을 열어두며,<br/>지금부터 무엇을 어떻게 준비할지 방향을 잡습니다.</p><div className="rt-actions"><a className="rt-button" href="#why-grade2">미대입시, 왜 고2부터 준비할까요? ↓</a></div><p className="rt-hero-note">고2에 쌓을 준비 · 목표와 현재 상태 점검 · 겨울부터 실행</p></div>
-      <figure className="rt-plan-visual rt-hero-illustration g12-hero-illustration"><img src="/images/grade11/grade11-hero.webp" alt="기초 소묘를 연습하며 공부와 실기 준비의 바탕을 쌓는 예비 고2 학생의 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/><figcaption><span>고2의 준비, 방향을 정하는 것부터.</span></figcaption></figure>
+      <div className="rt-hero-copy"><p className="rt-kicker">2029학년도 미대입시를 준비하는 예비 고2에게</p><h1 className="g11-hero-title">고2의 첫 단추,<br/><em>희망 대학을 향한<br/>방향부터 잡습니다.</em></h1><p className="rt-lead">내신·모의고사 성적과 희망 대학·학과를 함께 살펴보고,<br/>수시·정시의 가능성을 열어두며,<br/>지금부터 무엇을 어떻게 준비할지 방향을 잡습니다.</p><div className="rt-actions"><a className="rt-button" href="#why-grade2">미대입시, 왜 고2부터 준비할까요? ↓</a></div></div>
+      <figure className="rt-plan-visual rt-hero-illustration g12-hero-illustration"><img src="/images/grade11/grade11-hero.webp" alt="기초 소묘를 연습하며 공부와 실기 준비의 바탕을 쌓는 예비 고2 학생의 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/></figure>
     </div></section>
 
     <Grade11PreparationWhy/>

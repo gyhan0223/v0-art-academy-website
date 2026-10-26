@@ -1,6 +1,6 @@
 const preparations = [
   { id: "study", label: "공부의 기초", title: "배운 내용을 이해하고,", next: "문제에 적용할 힘을 쌓습니다.", now: "개념 이해 · 취약 부분 보완", later: "수능·내신 문제에 적용", body: "어디에서 막히는지 알아야 다음 공부도 이어집니다. 고2에는 부족한 기초를 확인하고, 배우는 내용을 자기 실력으로 만드는 준비가 필요합니다." },
-  { id: "school", label: "학교생활과 기록", title: "수업과 활동에 참여하며,", next: "관심과 배움을 이어갑니다.", now: "수업 참여 · 관심 분야 탐색", later: "쌓아온 배움과 과정 활용", body: "학생부에 담길 배움과 활동은 실제 학교생활에서 쌓입니다. 희망 전공을 탐색하며 어떤 수업과 활동에 참여할지도 미리 살펴봅니다." },
+  { id: "school", label: "학교생활과 기록", title: "수업과 활동의 과정이,", next: "생기부에 담길 수 있도록.", now: "전공 관심과 연결한 수업·활동", later: "학생부에 쌓인 과정 활용", body: "생기부에 담길 내용은 실제 수업과 활동에서 시작됩니다. 고2에는 관심 전공과 연결되는 탐구·미술 활동을 계획하고 참여하며, 배운 내용과 성장 과정을 돌아봅니다." },
   { id: "art", label: "실기의 경험", title: "직접 그리고 피드백받으며,", next: "표현의 바탕을 쌓습니다.", now: "관찰 · 표현 · 피드백", later: "목표 대학에 맞춘 훈련", body: "현재 경험과 기초 수준을 확인하고, 연습과 피드백을 반복합니다. 목표 대학의 실기 유형을 살피며 필요한 경험을 차근차근 쌓아갑니다." },
 ];
 
@@ -12,11 +12,11 @@ function PreparationIcon({ kind }: { kind: string }) {
 
 export default function Grade11PreparationWhy() {
   return <section className="rt-section g11-why" id="why-grade2" aria-labelledby="g11-why-title"><div className="rt-wrap">
-    <div className="rt-centered"><p className="rt-kicker">01 · 미대입시, 고2에 쌓아갈 준비</p><h2 id="g11-why-title">고3에 펼칠 전략,<br/><em>고2에 쌓는 준비에서 시작됩니다.</em></h2><p className="rt-intro">목표 미대에 따라 공부·실기·학생부의 준비는 달라집니다.<br/>그 선택을 뒷받침할 실력과 경험을, 고2부터 쌓아갑니다.</p></div>
+    <div className="rt-centered"><p className="rt-kicker">01 · 왜 고2부터 준비해야 할까요?</p><h2 id="g11-why-title">고3에 펼칠 전략,<br/><em>고2에 쌓는 준비에서 시작됩니다.</em></h2><p className="rt-intro">목표 미대에 따라 공부·실기·학생부의 준비는 달라집니다.<br/>그 선택을 뒷받침할 실력과 경험을, 고2부터 쌓아갑니다.</p></div>
     <div className="g11-why-grid">{preparations.map(item => <article className="g11-why-card" key={item.id}>
       <div className="g11-why-icon"><PreparationIcon kind={item.id}/><span>{item.label}</span></div>
       <h3>{item.title}<br/><em>{item.next}</em></h3>
-      <div className="g11-why-progress"><div><span>고2 · 쌓아갈 준비</span><strong>{item.now}</strong></div><span className="g11-why-arrow" aria-hidden="true">↓</span><div><span>고3 · 이어갈 준비</span><strong>{item.later}</strong></div></div>
+      <div className="g11-why-progress"><div><span>고2</span><strong>{item.now}</strong></div><span className="g11-why-arrow" aria-hidden="true">↓</span><div><span>고3</span><strong>{item.later}</strong></div></div>
       <p>{item.body}</p>
     </article>)}</div>
     <details className="g11-why-evidence"><summary>실제 미대 전형에서는 무엇을 볼까요?<span aria-hidden="true">+</span></summary><div>

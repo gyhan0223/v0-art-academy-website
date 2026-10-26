@@ -18,7 +18,7 @@
 위치: `jungsi_middle`, `jungsi_bottom`, `diagnosis_result`, `home_banner`,
 `nav_desktop`, `nav_mobile`, `winter_hero`, `winter_cta_band`,
 `winter_mobile_bar`, `winter_contact_section`, `winter_form`, `retake_hero`, `retake_consult`, `retake_sticky`. 위치 표시가 없으면 `other`입니다.
-N수생 안내의 첫 화면·하단 상담·모바일 고정 버튼은 각각 `retake_hero`·`retake_consult`·`retake_sticky`로 구분합니다. 네이버 예약 버튼 클릭을 수집하며, 예약 완료를 뜻하지 않습니다.
+N수생 안내의 첫 화면은 `#exam-2028` 내용으로 이동하며 상담 클릭으로 수집하지 않습니다. 기존 `retake_hero`는 과거 데이터 구분용입니다. 하단 상담·모바일 고정 버튼은 각각 `retake_consult`·`retake_sticky`로 구분합니다. 모바일 고정 버튼은 준비 방법(`#method`)을 읽기 시작한 뒤 나타납니다. 네이버 예약 버튼 클릭을 수집하며, 예약 완료를 뜻하지 않습니다.
 2028 수능 개편 안내 뒤 상담 버튼은 `retake_reform`으로 구분합니다. 공식 출처와 수업 설계 예시 펼치기, 같은 페이지 내 이동은 상담 예약 클릭으로 세지 않습니다.
 예비 고3 안내(`/winter/grade-12`)는 `grade12_hero`, `grade12_direction`, `grade12_camp`, `grade12_consult`, `grade12_sticky`로 상담 버튼 위치를 구분합니다. 페이지 안의 안내 링크와 시간표 펼치기는 예약 클릭으로 세지 않습니다.
 예비 고2 안내(`/winter/grade-11`)는 `grade11_hero`, `grade11_direction`, `grade11_camp`, `grade11_consult`, `grade11_sticky`로 상담 버튼 위치를 구분합니다. 버튼 클릭은 상담 예약 완료를 뜻하지 않습니다.

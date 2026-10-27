@@ -24,6 +24,6 @@ export default function Grade11PreparationWhy() {
       <div className="g11-why-evidence-grid"><p><strong>수시 · 미술우수자전형</strong><span>학생부교과 · 서류 · 면접<br/>수능최저학력기준 적용</span></p><p><strong>정시 · 수능우수자전형</strong><span>1단계 수능 → 2단계 수능·서류<br/>서류: 학생부·미술활동보고서</span></p></div>
       <p className="g11-why-source-note">여러 준비가 함께 쓰이는 전형의 예시입니다. 예비 고2가 지원할 2029학년도 세부 전형은 추후 공식 발표를 확인합니다. <a href="https://www.hongik.ac.kr/kr/admission/notice-admission.do?articleNo=151353&attachNo=90076&mode=download" target="_blank" rel="noopener noreferrer">홍익대 공식 시행계획 · 6·11~12·19~20쪽 ↗</a></p>
     </div></details>
-    <div className="g11-why-bridge"><p>고3에 기초 보완과 목표 탐색, 실기 준비를 한꺼번에 시작하면<br/><strong>해야 할 일이 겹칠 수 있습니다.</strong></p><p>고2에는 수시·정시의 가능성을 살피면서,<br/>지금부터 쌓아갈 준비의 순서를 잡습니다.</p><a className="rt-textlink" href="#foundations">현재 상태와 목표부터 살펴보기 ↓</a></div>
+    <div className="g11-why-bridge"><p><strong>그럼, 지금 무엇부터 준비할까요?</strong></p><a className="rt-textlink" href="#foundations">현재 상태와 목표부터 살펴보기 ↓</a></div>
   </div></section>;
 }

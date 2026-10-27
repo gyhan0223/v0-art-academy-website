@@ -12,7 +12,7 @@ function PreparationIcon({ kind }: { kind: string }) {
 
 export default function Grade11PreparationWhy() {
   return <section className="rt-section g11-why" id="why-grade2" aria-labelledby="g11-why-title"><div className="rt-wrap">
-    <div className="rt-centered"><p className="rt-kicker">01 · 왜 고2부터 준비해야 할까요?</p><h2 id="g11-why-title">고3에 준비가 한꺼번에 몰리지 않도록,<br/><em>고2부터 하나씩 시작합니다.</em></h2><p className="rt-intro">목표 미대에 따라 공부·실기·학생부의 준비는 달라집니다.<br/>그 선택을 뒷받침할 실력과 경험을, 고2부터 쌓아갑니다.</p></div>
+    <div className="rt-centered"><p className="rt-kicker">01 · 왜 고2부터 준비해야 할까요?</p><h2 id="g11-why-title">고3에 준비가 한꺼번에 몰리지 않도록,<br/><em>고2부터 하나씩 시작합니다.</em></h2><p className="rt-intro">목표 미대에 따라 공부·실기·학생부의 준비는 달라집니다.<br/>현재 준비 상태와 목표를 함께 보고, 무엇을 언제 준비할지 계획합니다.</p></div>
     <div className="g11-why-grid">{preparations.map(item => <article className="g11-why-card" key={item.id}>
       <div className="g11-why-icon"><PreparationIcon kind={item.id}/><span>{item.label}</span></div>
       <h3>{item.title}<br/><em>{item.next}</em></h3>

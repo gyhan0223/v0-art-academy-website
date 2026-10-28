@@ -32,8 +32,8 @@ function VacationScene({ routine }: { routine: boolean }) {
 }
 
 const vacationScenarios = [
-  { routine: false, label: "집에서 쉬기만 한다면", lead: "공부는", title: "내일부터.", lines: ["해야 할 일을 미루며", "하루가 지나가고"] },
-  { routine: true, label: "모다고의 일과로 보낸다면", lead: "오늘 할 준비를", title: "지금부터.", lines: ["정한 시간에 시작해", "해보고, 점검하고"] },
+  { routine: false, label: "미루는 하루", lead: "공부는", title: "내일부터.", lines: ["해야 할 일을 미루며", "하루가 지나가고"] },
+  { routine: true, label: "실천하는 하루", lead: "오늘의 계획을", title: "지금부터.", lines: ["정한 시간에 시작해", "하나씩 실천하고"] },
 ];
 
 export default function Grade11WinterTime() {
@@ -42,18 +42,16 @@ export default function Grade11WinterTime() {
     <section className="rt-section g11-winter-time" id="winter-time" aria-labelledby="g11-winter-time-title">
       <div className="rt-wrap">
         <div className="rt-centered">
-          <p className="rt-kicker">04 · 정한 방향을 겨울부터 실행하기</p>
-          <h2 id="g11-winter-time-title">정한 준비 방향을,<br/>겨울의 하루로 옮겨봅니다.</h2>
-          <p className="rt-intro">준비 방향을 정했다면, 실제로 지킬 수 있는 하루도 필요합니다.<br/>모다고 윈터스쿨의 기간과 일과 안에서 학습·생활 리듬을 연습합니다.</p>
+          <p className="rt-kicker">04 · 겨울부터 실천하는 하루</p>
+          <h2 id="g11-winter-time-title">계획을,<br/>매일의 습관으로.</h2>
+          <p className="rt-intro">정한 시간에 시작하고, 오늘의 계획을 실천합니다.<br/>윈터스쿨 {time.days}일 동안, 새 학기에도 이어갈 하루를 연습합니다.</p>
         </div>
         <div className="g11-time-card">
           <div className="g11-time-visual">
-            <span className="g11-time-label">일과표 기준 · 학습과 생활 습관을 함께 연습하는 시간</span>
-            <p className="g11-time-total"><strong>{time.totalHours.toLocaleString("ko-KR")}</strong><span>시간</span></p>
-            <p className="g11-time-includes">수업·자습·실기·식사·휴식·생활 포함</p>
-            <p className="g11-time-equation"><strong>{time.days}일</strong><span aria-hidden="true">×</span><span className="sr-only">곱하기</span>하루 <strong>{time.dailyHours}시간</strong></p>
-            <div className="g11-time-comparison" aria-label="쉬기만 하는 방학과 일과에 따라 준비하는 방학의 비교">
-              <p className="g11-comparison-heading">같은 {time.days}일, 어떤 하루를 반복할까요?</p>
+            <span className="g11-time-label">매일의 습관을 연습하는</span>
+            <p className="g11-time-duration"><strong>{time.days}</strong><span>일</span></p>
+            <div className="g11-time-comparison" aria-label="미루는 하루와 정해진 시간에 실천하는 하루의 비교">
+              <p className="g11-comparison-heading">어떤 하루를 반복할까요?</p>
               <div className="g11-comparison-grid">
                 {vacationScenarios.map(scenario => <article className={`g11-comparison-card ${scenario.routine ? "g11-comparison-routine" : "g11-comparison-rest"}`} key={scenario.label}>
                   <span className="g11-comparison-label">{scenario.label}</span>
@@ -82,7 +80,11 @@ export default function Grade11WinterTime() {
                 <span className="g11-day-sleep" style={{ flexGrow: time.sleepHours }}>수면 {time.sleepHours}시간</span>
               </div>
             </div>
-            <p className="g11-time-practice">같은 시간에 시작하고,<br/>정한 과제를 해보고,<br/><strong>다음 날에도 이어갈 하루를 연습합니다.</strong></p>
+            <div className="g11-time-reference">
+              <span>일과표 기준 합계</span>
+              <p className="g11-time-total"><strong>{time.totalHours.toLocaleString("ko-KR")}시간</strong><span>식사·휴식·생활 포함</span></p>
+              <p className="g11-time-equation">{time.days}일<span aria-hidden="true">×</span><span className="sr-only">곱하기</span>하루 {time.dailyHours}시간</p>
+            </div>
           </div>
         </div>
         <p className="g11-time-note g11-time-disclaimer">시작일·종료일을 포함한 {time.days}일에 매일 {time.dayStart}~{time.dayEnd} 일과를 적용한 안내 기준 합계입니다. 식사·휴식·생활을 포함하며, 입·퇴소일의 실제 운영 시간은 달라질 수 있습니다.</p>

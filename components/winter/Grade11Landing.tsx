@@ -6,9 +6,9 @@ import Grade11WinterTime from "@/components/winter/Grade11WinterTime";
 import Grade11PreparationWhy from "@/components/winter/Grade11PreparationWhy";
 
 const foundations = [
-  { key: "study", label: "현재 학업 상태", image: "/images/retake/academic-study.webp", alt: "워크북을 살펴보는 학생의 일러스트", title: <>내신과 모의고사,<br/>지금 어디쯤일까?</>, records: "고1 내신 · 모의고사 성적 · 과목별 강약점", detail: "현재 내신과 모의고사 성적을 함께 살펴봅니다. 앞으로의 내신 관리에 필요한 과제와 수능 공부에서 먼저 보완할 기초를 짚습니다." },
-  { key: "goal", label: "희망 대학·학과", image: "/images/retake/admissions-strategy.webp", alt: "준비 방향과 할 일을 살펴보는 학생의 일러스트", title: <>희망 대학·학과에는<br/>어떤 준비가 필요할까?</>, records: "관심 대학·학과 · 준비 중인 입시 방향", detail: "관심 대학·학과와 현재 준비 상태를 함께 놓고 봅니다. 수시·정시에서 어떤 준비가 필요한지 살펴보고, 지금부터 쌓아갈 실력과 준비 순서를 정리합니다. 목표가 정해지지 않았다면 관심부터 이야기합니다." },
-  { key: "routine", label: "학교생활·생기부", image: "/images/grade11/school-life.webp", alt: "고등학교 교실에서 수업에 참여하며 필기하는 학생의 일러스트", title: <>학교 수업과 활동,<br/>생기부까지 함께 보려면?</>, records: "수업 참여 · 미술 활동 · 학생부 기록", detail: "학교 수업의 배움과 미술 활동, 학생부 기록을 함께 점검합니다. 현재 공개된 홍익대 2028학년도 시행계획에서 미술우수자전형은 학교생활기록부와 미술활동보고서를 서류평가 자료로 활용합니다. 희망 전공과 연결되는 학교생활의 준비도 함께 살펴봅니다." },
+  { key: "study", image: "/images/retake/academic-study.webp", alt: "워크북을 살펴보는 학생의 일러스트", title: "공부는 어디부터 할까요?", detail: "내신과 모의고사를 보고, 지금 필요한 공부를 찾습니다." },
+  { key: "goal", image: "/images/retake/admissions-strategy.webp", alt: "준비 방향과 할 일을 살펴보는 학생의 일러스트", title: "목표 대학엔 무엇이 필요할까요?", detail: "가고 싶은 대학·학과를 살펴, 지금부터 준비할 내용을 정합니다." },
+  { key: "routine", image: "/images/grade11/school-life.webp", alt: "고등학교 교실에서 수업에 참여하며 필기하는 학생의 일러스트", title: "생기부는 어떻게 준비할까요?", detail: "관심 분야와 학교 수업·활동을 연결할 방법을 함께 찾습니다." },
 ];
 
 const faqs = [
@@ -31,7 +31,8 @@ export default function Grade11Landing() {
 
     <section className="rt-section rt-causes g12-priorities" id="foundations"><div className="rt-wrap">
       <div className="rt-centered"><p className="rt-kicker">02 · 방향을 정하기 위한 세 가지 질문</p><h2>어디를 향해 준비할지,<br/>현재 성적과 목표부터 봅니다.</h2><p className="rt-intro">현재 내신·모의고사 성적과 희망 대학·학과를 함께 봅니다.<br/>수시·정시의 가능성을 살피며, 고2 동안 쌓아갈 준비를 정합니다.</p></div>
-      <div className="rt-concern-grid g12-priority-grid">{foundations.map(item => <details className="rt-concern g12-priority-card" key={item.key}><summary><div className="rt-concern-visual"><img src={item.image} alt={item.alt} width={1200} height={800} loading="lazy" decoding="async"/></div><div className="g12-priority-label">{item.label}</div><div className="rt-concern-title"><h3>{item.title}</h3><span className="rt-expand" aria-hidden="true">+</span></div><p className="rt-concern-foot">{item.records}</p></summary><div className="rt-concern-body"><p>{item.detail}</p>{item.key === "routine" && <p className="g11-admission-source"><a href="https://www.hongik.ac.kr/kr/admission/notice-admission.do?articleNo=151353&attachNo=90076&mode=download" target="_blank" rel="noopener noreferrer">홍익대 2028학년도 시행계획 ↗</a><br/>2029학년도 세부 전형은 추후 공식 발표를 확인합니다.</p>}</div></details>)}</div>
+      <div className="rt-concern-grid g12-priority-grid">{foundations.map(item => <details className="rt-concern g12-priority-card" key={item.key}><summary><div className="rt-concern-visual"><img src={item.image} alt={item.alt} width={1200} height={800} loading="lazy" decoding="async"/></div><div className="rt-concern-title"><h3>{item.title}</h3><span className="rt-expand" aria-hidden="true">+</span></div></summary><div className="rt-concern-body"><p>{item.detail}</p></div></details>)}</div>
+      <p className="g11-foundations-note">목표가 아직 없어도, 지금 상태부터 함께 봅니다.</p>
     </div></section>
 
     <section className="rt-section rt-method g12-direction" id="direction"><div className="rt-wrap">

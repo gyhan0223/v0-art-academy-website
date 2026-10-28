@@ -1,5 +1,4 @@
 import { CAMP_INFO } from "@/lib/winter-camp";
-import { REPORT_SAMPLE } from "@/lib/winter-report";
 import {
   WEEKDAY_SCHEDULE,
   WEEKEND_SCHEDULE,
@@ -21,6 +20,12 @@ const routineDays = [
     blocks: WEEKEND_SCHEDULE,
     highlights: ["09:00", "13:35", "18:10"],
   },
+];
+
+const reportContents = [
+  { title: "공부 기록", description: "단어시험·모의고사 결과와 과제 수행을 확인합니다." },
+  { title: "생활 기록", description: "출결과 자습 참여, 기상·취침 등 하루 일과를 살펴봅니다." },
+  { title: "다음 계획", description: "선생님이 잘한 점과 어려운 점을 짚고, 다음 2주의 공부 계획을 안내합니다." },
 ];
 
 function ScheduleBlock({ block }: { block: TimeBlock }) {
@@ -101,75 +106,29 @@ export function Grade11Routine() {
 
 export function Grade11Report() {
   return (
-    <section className="rt-section rt-report-section" id="report">
-      <div className="rt-wrap rt-report-layout">
-        <div className="rt-report-copy">
-          <p className="rt-kicker">06 · 고2의 준비를 살피는 기록</p>
-          <h2>
-            “잘하고 있어요”보다,
+    <section className="rt-section rt-report-section g11-report-guide" id="report" aria-labelledby="g11-report-title">
+      <div className="rt-wrap">
+        <div className="rt-centered">
+          <p className="rt-kicker">06 · 학습·생활 리포트</p>
+          <h2 id="g11-report-title">
+            공부와 생활,
             <br />
-            <em>확인할 수 있는 기록.</em>
+            <em>2주마다 한눈에.</em>
           </h2>
           <p className="rt-intro">
-            모다고 윈터스쿨은 격주 리포트로
+            어떻게 공부하고 생활했는지,
             <br />
-            학습 습관과 보완할 과제를 함께 안내합니다.
-          </p>
-          <div className="rt-report-annotations">
-            <p>
-              <span>01</span>
-              <strong>시험·과제 기록</strong>
-              <small>어떤 개념과 유형을 어려워하는지</small>
-            </p>
-            <p>
-              <span>02</span>
-              <strong>출결·생활 확인</strong>
-              <small>공부와 생활의 기본 일과를 지켰는지</small>
-            </p>
-            <p>
-              <span>03</span>
-              <strong>선생님의 판단</strong>
-              <small>다음 기간에 어떤 기초를 보완할지</small>
-            </p>
-          </div>
-          <p className="rt-micro">
-            오른쪽은 기존 홈페이지의 운영 양식을 재구성한 예시입니다.
-            실제 학생 성적이나 학부모에게 발송한 리포트가 아닙니다.
+            다음엔 무엇을 챙길지 전합니다.
           </p>
         </div>
-
-        <div className="rt-report-sheet">
-          <div className="rt-report-sheet-top">
-            <span>MODAGO / LEARNING REPORT</span>
-            <span>운영 양식 예시</span>
-          </div>
-          <h3>{REPORT_SAMPLE.title}</h3>
-          <p className="rt-report-sub">{REPORT_SAMPLE.subtitle}</p>
-          <div className="rt-report-fields">
-            <span>학생 __________</span>
-            <span>기록 기간 __________</span>
-          </div>
-          <div className="rt-report-blocks">
-            {REPORT_SAMPLE.sections.map((section, i) => (
-              <section key={section.title}>
-                <h4>
-                  <span>{String(i + 1).padStart(2, "0")}</span>
-                  {section.title}
-                </h4>
-                {section.items.map((item) => (
-                  <div className="rt-report-line" key={item}>
-                    <p>{item}</p>
-                    <span aria-hidden="true" />
-                  </div>
-                ))}
-              </section>
-            ))}
-          </div>
-          <p className="rt-report-footnote">{REPORT_SAMPLE.note}</p>
-          <div className="rt-needed g12-report-needed">
-            <span className="rt-needed-label">필요한 자료</span>
-            <p>(필요한 자료: 개인정보를 가린 실제 발송 리포트 1건)</p>
-          </div>
+        <div className="g11-report-grid">
+          {reportContents.map((item, index) => (
+            <article className="g11-report-card" key={item.title}>
+              <span className="g11-report-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>

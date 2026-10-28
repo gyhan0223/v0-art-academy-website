@@ -11,13 +11,13 @@ import {
 const routineDays = [
   {
     name: "월 — 금",
-    caption: "학과 수업과 자기주도 학습",
+    caption: "수업과 자습",
     blocks: WEEKDAY_SCHEDULE,
     highlights: ["09:00", "13:35", "15:50", "21:50"],
   },
   {
     name: "토 — 일",
-    caption: "대학교 유형 실기",
+    caption: "대학별 실기 · 수준별 지도",
     blocks: WEEKEND_SCHEDULE,
     highlights: ["09:00", "13:35", "18:10"],
   },
@@ -44,41 +44,18 @@ export function Grade11Routine() {
       <div className="rt-wrap">
         <div className="rt-section-heading">
           <div>
-            <p className="rt-kicker">05 · 모다고에서 실행하는 하루의 일과</p>
+            <p className="rt-kicker">05 · 모다고의 한 주</p>
             <h2>
-              평일에는 학과를,
+              평일엔 공부,
               <br />
-              주말에는 실기를.
+              주말엔 실기.
             </h2>
           </div>
           <p className="rt-intro">
-            학과의 빈틈과 실기의 기초를 살펴보고,
+            국어·영어·탐구 수업과 자습,
             <br />
-            학기 중에도 이어갈 공부 습관을 연습합니다.
+            목표 대학에 맞춘 실기를 함께 준비합니다.
           </p>
-        </div>
-
-        <div className="rt-allocation">
-          <div className="rt-allocation-head">
-            <span>한 주의 준비 구조</span>
-            <span>{CAMP_INFO.name} 안내 기준</span>
-          </div>
-          <div className="rt-week-strip">
-            {["월", "화", "수", "목", "금", "토", "일"].map((day, i) => (
-              <div key={day} className={i > 4 ? "rt-week-art" : undefined}>
-                <span>{day}</span>
-                <b>{i > 4 ? "실기" : "학과"}</b>
-              </div>
-            ))}
-          </div>
-          <div className="rt-allocation-notes">
-            <p>
-              <strong>평일</strong>국어·영어·탐구 수업 · 클리닉 · 자기주도 학습
-            </p>
-            <p>
-              <strong>주말</strong>목표 대학 유형 실기 · 수준별 지도와 피드백
-            </p>
-          </div>
         </div>
 
         <div className="rt-schedule-grid">

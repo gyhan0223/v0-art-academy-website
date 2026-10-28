@@ -35,10 +35,8 @@ export default function Grade11Landing() {
       <p className="g11-foundations-note">목표가 아직 없어도, 지금 상태부터 함께 봅니다.</p>
     </div></section>
 
-    <section className="rt-section rt-method g12-direction" id="direction"><div className="rt-wrap">
-      <div className="rt-section-heading"><div><p className="rt-kicker">03 · 목표를 알고, 지금 시작할 이유를 찾기</p><h2>가야 할 방향이 보이면,<br/><em>지금 준비할 이유도 분명해집니다.</em></h2></div><p className="rt-intro">희망 대학에 필요한 준비와 현재 상태를 연결합니다.<br/>학생 스스로 왜 지금 시작해야 하는지 이해하도록 돕습니다.</p></div>
-      <div className="rt-method-row g12-direction-row"><figure className="rt-method-material rt-consult-illustration"><img src="/images/retake/consultation.webp" alt="학생과 지도자가 성적과 준비 기록을 함께 살펴보는 일러스트" width={1200} height={800} loading="lazy" decoding="async"/><figcaption>현재 상태와 목표를 연결해 준비 방향을 함께 살펴보는 장면</figcaption></figure><div className="rt-method-copy"><h3>수시·정시의 가능성을 살피고,<br/>지금 필요한 준비부터 정합니다.</h3><p>현재 내신·모의고사 성적과 희망 대학·학과를 함께 놓고 봅니다. 성적 한 번으로 수시나 정시를 단정하지 않습니다. 남은 학기와 학생부, 수능·실기 준비 상태를 함께 보고 지금 보완할 부분과 고2 동안 쌓아갈 준비를 정합니다. 성적과 준비 과정에 따라 준비 비중을 조정합니다.</p><p>방향을 일찍 잡으면 공부할 내용을 남은 학기에 나누고, 부족한 기초를 보완할 시간을 마련할 수 있습니다. 학교 수업과 활동도 목표에 맞춰 미리 준비할 수 있습니다.</p><p>학생 스스로 목표와 준비할 이유를 연결하는 과정도 필요합니다. 왜 지금 공부하고 연습해야 하는지 이해한 뒤, 정한 방향을 하루의 계획으로 옮겨봅니다.</p><a className="rt-textlink" href="#winter-time">정한 방향을 겨울의 하루로 연결하기 ↓</a></div></div>
-      <ol className="g12-preparation-path"><li><span>어디로 갈지 알고</span><strong>희망 대학과 현재 상태 함께 보기</strong></li><li><span>왜 지금 시작할지 이해하고</span><strong>남은 시간에 준비를 나누고 미리 보완하기</strong></li><li><span>납득한 방향을 실천하기</span><strong>하루의 계획으로 옮겨 연습하고 점검하기</strong></li></ol>
+    <section className="rt-section rt-method g12-direction g11-direction" id="direction" aria-labelledby="g11-direction-title"><div className="rt-wrap">
+      <div className="rt-method-row g12-direction-row"><figure className="rt-method-material rt-consult-illustration"><img src="/images/retake/consultation.webp" alt="학생과 지도자가 성적과 준비 기록을 함께 살펴보는 일러스트" width={1200} height={800} loading="lazy" decoding="async"/></figure><div className="g11-direction-copy"><p className="rt-kicker">03 · 스스로 시작할 이유</p><h2 id="g11-direction-title">왜 준비하는지 알고,<br/><em>스스로 시작하도록.</em></h2><p className="rt-intro">목표에 필요한 공부와 실기를 학생과 함께 짚습니다.<br/>왜 지금 시작해야 하는지 이해하고, 겨울의 하루에서 실천해 봅니다.</p><a className="rt-textlink" href="#winter-time">겨울의 하루 살펴보기 ↓</a></div></div>
     </div></section>
 
     <Grade11WinterTime/>

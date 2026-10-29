@@ -29,16 +29,12 @@ const reportContents = [
 ];
 
 export function Grade11Tuition() {
-  const { baseFourWeekItems, winterFirstFourWeeks, discountedFinalFourWeeks } = WINTER_CAMP_TUITION;
-  const baseFourWeeks = baseFourWeekItems.reduce((sum, item) => sum + item.amount, 0);
+  const { winterFirstFourWeeks, discountedFinalFourWeeks } = WINTER_CAMP_TUITION;
   const total = winterFirstFourWeeks + discountedFinalFourWeeks;
 
   return (
     <div className="g11-tuition">
-      <p className="g11-tuition-base">
-        <span>할인 전 월 기본요금 (4주)</span>
-        <strong>{baseFourWeeks.toLocaleString("ko-KR")}원</strong>
-      </p>
+      <p className="g11-tuition-label">겨울캠프 전용 요금 구성</p>
       <p className="g11-tuition-total">
         <span>8주 일괄 등록 총액</span>
         <strong>{total.toLocaleString("ko-KR")}<span>원</span></strong>
@@ -50,24 +46,14 @@ export function Grade11Tuition() {
         <summary>비용 자세히 보기<span aria-hidden="true">+</span></summary>
         <div className="g11-tuition-breakdown">
           <div className="g11-tuition-period">
-            <h4>할인 전 항목별 기본요금</h4>
-            <p className="g11-tuition-basis">개별 납부 · 월(4주) 기준</p>
-            <ul>
-              {baseFourWeekItems.map((item) => (
-                <li key={item.label}><span>{item.label}</span><strong>{item.amount.toLocaleString("ko-KR")}원</strong></li>
-              ))}
-            </ul>
-            <p className="g11-tuition-subtotal"><span>월 기본요금 합계</span><strong>{baseFourWeeks.toLocaleString("ko-KR")}원</strong></p>
-          </div>
-          <div className="g11-tuition-period">
-            <h4>8주 일괄 등록 시</h4>
+            <h4>겨울캠프 8주 비용 구성</h4>
             <ul>
               <li><span>첫 4주 적용금액</span><strong>{winterFirstFourWeeks.toLocaleString("ko-KR")}원</strong></li>
               <li><span>뒤 4주 할인 적용</span><strong>{discountedFinalFourWeeks.toLocaleString("ko-KR")}원</strong></li>
             </ul>
             <p className="g11-tuition-subtotal g11-tuition-payable"><span>8주 총액</span><strong>{total.toLocaleString("ko-KR")}원</strong></p>
           </div>
-          <p>월 기본요금은 개별 납부 기준이며, 8주 일괄 등록 시 뒤 4주에 할인이 적용됩니다.</p>
+          <p>겨울캠프는 별도 요금 기준을 적용합니다. 위 금액은 8주 일괄 등록 기준입니다.</p>
           <a href="/tuition">교습비 고지 확인 ↗</a>
         </div>
       </details>

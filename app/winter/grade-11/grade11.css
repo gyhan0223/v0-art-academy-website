@@ -75,9 +75,7 @@
 @media(max-width:700px){.g11-why-grid{grid-template-columns:1fr;margin-top:30px;gap:18px}.g11-why-card{padding:26px 24px;border-radius:18px}.g11-why-card h3{font-size:21px}.g11-why-icon{margin-bottom:18px;gap:20px}.g11-why-icon svg{width:64px}.g11-why-icon>span{font-size:13px}.g11-why-card>p{font-size:14px}.g11-why-progress{margin:22px 0;padding:20px}.g11-why-progress strong{font-size:14px}.g11-why-evidence summary{font-size:13px;line-height:1.8}.g11-why-evidence-grid{grid-template-columns:1fr;gap:12px}.g11-why-bridge{margin-top:32px;text-align:left}.g11-why-bridge>p:first-child{font-size:20px}.g11-why-bridge>p+p{font-size:15px}}
 
 .g11 .g11-tuition{min-width:0}
-.g11 .g11-tuition-base{margin:0 0 16px;line-height:1.7}
-.g11-tuition-base>span{display:block;font-size:12px;color:#ffffff99}
-.g11-tuition-base>strong{display:block;margin-top:3px;font-size:20px;font-weight:500;color:#ffffffcc;white-space:nowrap;font-variant-numeric:tabular-nums}
+.g11 .g11-tuition-label{margin:0 0 8px;font-size:12px;line-height:1.8;color:#f58846}
 .g11 .g11-tuition-total{margin:0;line-height:1.4}
 .g11-tuition-total>span{display:block;font-size:13px;color:#ffffffb3}
 .g11-tuition-total>strong{display:block;margin-top:4px;font-size:clamp(26px,3.6vw,34px);font-weight:700;letter-spacing:-.04em;color:#f58846;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -96,11 +94,9 @@
 .g11-tuition-breakdown li{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;padding:8px 0;font-size:12px;line-height:1.7;color:#ffffff99}
 .g11-tuition-breakdown li strong{font-weight:500;color:#ffffffcc;white-space:nowrap;font-variant-numeric:tabular-nums}
 .g11 .g11-tuition-breakdown p{margin-top:12px;font-size:11px;line-height:1.8;color:#ffffff99;word-break:keep-all}
-.g11-tuition-period+.g11-tuition-period{margin-top:20px}
 .g11-tuition-period h4{margin:0 0 8px;font-size:13px;font-weight:700;line-height:1.8}
 .g11 .g11-tuition-breakdown .g11-tuition-subtotal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;margin-top:8px;padding-top:10px;border-top:1px solid #ffffff1a;font-size:12px;line-height:1.8}
 .g11-tuition-subtotal strong{font-weight:700;color:#ffffffcc;white-space:nowrap;font-variant-numeric:tabular-nums}
-.g11 .g11-tuition-breakdown .g11-tuition-basis{margin-top:0;margin-bottom:8px}
 .g11-tuition-payable strong{color:#f58846}
 
 /* Reading links glide into the next section; native scrolling stays interruptible. */

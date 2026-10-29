@@ -46,10 +46,10 @@ export const CAMP_INFO = {
     "8주 일괄 등록 시 뒤 4주 35% 할인 적용 (월별 개별 납부 시 할인 적용 불가)",
 } as const;
 
-/** 사용자가 확인한 2027 겨울방학캠프 8주 일괄 등록 금액. 여름캠프 4주 비용과 구분합니다. */
+/** 겨울캠프의 월(4주) 기본요금은 같고, 8주 일괄 등록 할인은 뒤 4주에 적용합니다. */
 export const WINTER_CAMP_TUITION = {
-  firstFourWeeks: 4_320_000,
-  finalFourWeekItems: [
+  baseFourWeeks: 4_320_000,
+  discountedFourWeekItems: [
     { label: "실기", amount: 959_520 },
     { label: "학과", amount: 783_820 },
     { label: "독서실", amount: 171_000 },

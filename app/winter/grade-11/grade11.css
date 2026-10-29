@@ -97,12 +97,8 @@
 .g11-tuition-period h4{margin:0 0 8px;font-size:13px;font-weight:700;line-height:1.8}
 .g11 .g11-tuition-breakdown .g11-tuition-subtotal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;margin-top:8px;padding-top:10px;border-top:1px solid #ffffff1a;font-size:12px;line-height:1.8}
 .g11-tuition-subtotal strong{font-weight:700;color:#ffffffcc;white-space:nowrap;font-variant-numeric:tabular-nums}
-.g11-tuition-period:first-child .g11-tuition-subtotal{margin-top:0;padding-top:0;border-top:0}
-.g11-tuition-sum{margin-top:20px;padding:14px 0;border-top:1px solid #f5884640;border-bottom:1px solid #f5884640}
-.g11 .g11-tuition-breakdown .g11-tuition-equation{display:flex;flex-wrap:wrap;gap:4px 8px;margin-top:0;font-size:11px;line-height:1.8;font-variant-numeric:tabular-nums}
-.g11-tuition-equation>span{white-space:nowrap}
-.g11 .g11-tuition-sum .g11-tuition-subtotal{padding-top:0;border-top:0;color:#ffffffcc}
-.g11-tuition-sum strong{color:#f58846}
+.g11-tuition-breakdown .g11-tuition-discount strong,.g11-tuition-payable strong{color:#f58846}
+.g11-tuition-discount small{display:block;font-size:10px;color:#ffffff99}
 
 /* Reading links glide into the next section; native scrolling stays interruptible. */
 html:has(.g11){scroll-behavior:smooth}

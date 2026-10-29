@@ -46,16 +46,17 @@ export const CAMP_INFO = {
     "8주 일괄 등록 시 뒤 4주 35% 할인 적용 (월별 개별 납부 시 할인 적용 불가)",
 } as const;
 
-/** 겨울캠프의 월(4주) 기본요금은 같고, 8주 일괄 등록 할인은 뒤 4주에 적용합니다. */
+/** 안내표의 할인 전 개별·매월 납부 요금과 겨울캠프 일괄 등록 적용 금액을 구분합니다. */
 export const WINTER_CAMP_TUITION = {
-  baseFourWeeks: 4_320_000,
-  discountedFourWeekItems: [
-    { label: "실기", amount: 959_520 },
-    { label: "학과", amount: 783_820 },
-    { label: "독서실", amount: 171_000 },
-    { label: "기숙", amount: 390_000 },
-    { label: "식사", amount: 583_200 },
+  baseFourWeekItems: [
+    { label: "실기", amount: 1_199_400 },
+    { label: "학과", amount: 1_306_368 },
+    { label: "독서실", amount: 285_000 },
+    { label: "기숙", amount: 650_000 },
+    { label: "식사", amount: 972_000 },
   ],
+  winterFirstFourWeeks: 4_320_000,
+  discountedFinalFourWeeks: 2_887_540,
 } as const;
 
 /**

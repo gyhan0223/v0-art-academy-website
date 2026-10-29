@@ -29,16 +29,18 @@ const reportContents = [
 ];
 
 export function Grade11Tuition() {
-  const { baseFourWeeks, discountedFourWeekItems } = WINTER_CAMP_TUITION;
-  const discountedFourWeeks = discountedFourWeekItems.reduce((sum, item) => sum + item.amount, 0);
-  const baseEightWeeks = baseFourWeeks * 2;
-  const discount = baseFourWeeks - discountedFourWeeks;
-  const total = baseEightWeeks - discount;
+  const { baseFourWeekItems, winterFirstFourWeeks, discountedFinalFourWeeks } = WINTER_CAMP_TUITION;
+  const baseFourWeeks = baseFourWeekItems.reduce((sum, item) => sum + item.amount, 0);
+  const total = winterFirstFourWeeks + discountedFinalFourWeeks;
 
   return (
     <div className="g11-tuition">
+      <p className="g11-tuition-base">
+        <span>할인 전 월 기본요금 (4주)</span>
+        <strong>{baseFourWeeks.toLocaleString("ko-KR")}원</strong>
+      </p>
       <p className="g11-tuition-total">
-        <span>8주 총</span>
+        <span>8주 일괄 등록 총액</span>
         <strong>{total.toLocaleString("ko-KR")}<span>원</span></strong>
       </p>
       <p className="g11-tuition-includes">학과·실기·기숙·식사·독서실 포함</p>
@@ -48,24 +50,24 @@ export function Grade11Tuition() {
         <summary>비용 자세히 보기<span aria-hidden="true">+</span></summary>
         <div className="g11-tuition-breakdown">
           <div className="g11-tuition-period">
-            <h4>기본요금과 할인</h4>
+            <h4>할인 전 항목별 기본요금</h4>
+            <p className="g11-tuition-basis">개별 납부 · 월(4주) 기준</p>
             <ul>
-              <li><span>월 기본요금 (4주)</span><strong>{baseFourWeeks.toLocaleString("ko-KR")}원</strong></li>
-              <li><span>8주 기본금액</span><strong>{baseEightWeeks.toLocaleString("ko-KR")}원</strong></li>
-              <li className="g11-tuition-discount"><span>일괄 등록 할인<small>뒤 4주에 적용</small></span><strong>−{discount.toLocaleString("ko-KR")}원</strong></li>
-            </ul>
-            <p className="g11-tuition-subtotal g11-tuition-payable"><span>할인 후 8주 총액</span><strong>{total.toLocaleString("ko-KR")}원</strong></p>
-          </div>
-          <div className="g11-tuition-period">
-            <h4>할인 적용 후 뒤 4주 내역</h4>
-            <ul>
-              {discountedFourWeekItems.map((item) => (
+              {baseFourWeekItems.map((item) => (
                 <li key={item.label}><span>{item.label}</span><strong>{item.amount.toLocaleString("ko-KR")}원</strong></li>
               ))}
             </ul>
-            <p className="g11-tuition-subtotal"><span>할인 후 4주 금액</span><strong>{discountedFourWeeks.toLocaleString("ko-KR")}원</strong></p>
+            <p className="g11-tuition-subtotal"><span>월 기본요금 합계</span><strong>{baseFourWeeks.toLocaleString("ko-KR")}원</strong></p>
           </div>
-          <p>월 기본요금은 같으며, 일괄 등록 할인은 뒤 4주에 적용됩니다.</p>
+          <div className="g11-tuition-period">
+            <h4>8주 일괄 등록 시</h4>
+            <ul>
+              <li><span>첫 4주 적용금액</span><strong>{winterFirstFourWeeks.toLocaleString("ko-KR")}원</strong></li>
+              <li><span>뒤 4주 할인 적용</span><strong>{discountedFinalFourWeeks.toLocaleString("ko-KR")}원</strong></li>
+            </ul>
+            <p className="g11-tuition-subtotal g11-tuition-payable"><span>8주 총액</span><strong>{total.toLocaleString("ko-KR")}원</strong></p>
+          </div>
+          <p>월 기본요금은 개별 납부 기준이며, 8주 일괄 등록 시 뒤 4주에 할인이 적용됩니다.</p>
           <a href="/tuition">교습비 고지 확인 ↗</a>
         </div>
       </details>

@@ -29,7 +29,8 @@ const reportContents = [
 ];
 
 export function Grade11Tuition() {
-  const { firstFourWeeks, finalFourWeeks } = WINTER_CAMP_TUITION;
+  const { firstFourWeeks, finalFourWeekItems } = WINTER_CAMP_TUITION;
+  const finalFourWeeks = finalFourWeekItems.reduce((sum, item) => sum + item.amount, 0);
   const total = firstFourWeeks + finalFourWeeks;
 
   return (
@@ -44,10 +45,23 @@ export function Grade11Tuition() {
       <details className="g11-tuition-details">
         <summary>비용 자세히 보기<span aria-hidden="true">+</span></summary>
         <div className="g11-tuition-breakdown">
-          <ul>
-            <li><span>첫 4주</span><strong>{firstFourWeeks.toLocaleString("ko-KR")}원</strong></li>
-            <li><span>뒤 4주</span><strong>{finalFourWeeks.toLocaleString("ko-KR")}원</strong></li>
-          </ul>
+          <div className="g11-tuition-period">
+            <h4>첫 4주</h4>
+            <p className="g11-tuition-subtotal"><span>묶음 금액</span><strong>{firstFourWeeks.toLocaleString("ko-KR")}원</strong></p>
+          </div>
+          <div className="g11-tuition-period">
+            <h4>뒤 4주 · 항목별 내역</h4>
+            <ul>
+              {finalFourWeekItems.map((item) => (
+                <li key={item.label}><span>{item.label}</span><strong>{item.amount.toLocaleString("ko-KR")}원</strong></li>
+              ))}
+            </ul>
+            <p className="g11-tuition-subtotal"><span>뒤 4주 합계</span><strong>{finalFourWeeks.toLocaleString("ko-KR")}원</strong></p>
+          </div>
+          <div className="g11-tuition-sum">
+            <p className="g11-tuition-equation"><span>{firstFourWeeks.toLocaleString("ko-KR")}원</span><span>+</span><span>{finalFourWeeks.toLocaleString("ko-KR")}원</span></p>
+            <p className="g11-tuition-subtotal"><span>8주 총액</span><strong>{total.toLocaleString("ko-KR")}원</strong></p>
+          </div>
           <p>8주 일괄 등록 시 적용되는 금액입니다.</p>
           <a href="/tuition">교습비 고지 확인 ↗</a>
         </div>

@@ -49,7 +49,13 @@ export const CAMP_INFO = {
 /** 사용자가 확인한 2027 겨울방학캠프 8주 일괄 등록 금액. 여름캠프 4주 비용과 구분합니다. */
 export const WINTER_CAMP_TUITION = {
   firstFourWeeks: 4_320_000,
-  finalFourWeeks: 2_887_540,
+  finalFourWeekItems: [
+    { label: "실기", amount: 959_520 },
+    { label: "학과", amount: 783_820 },
+    { label: "독서실", amount: 171_000 },
+    { label: "기숙", amount: 390_000 },
+    { label: "식사", amount: 583_200 },
+  ],
 } as const;
 
 /**

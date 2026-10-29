@@ -57,7 +57,7 @@ export function Grade11Routine() {
             </h2>
           </div>
           <p className="rt-intro">
-            국어·영어·탐구 수업과 자습,
+            국어·영어·통합사회·통합과학 수업과 자습,
             <br />
             목표 대학에 맞춘 실기를 함께 준비합니다.
           </p>

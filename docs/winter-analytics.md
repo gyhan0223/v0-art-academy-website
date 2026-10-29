@@ -20,6 +20,8 @@
 `winter_mobile_bar`, `winter_contact_section`, `winter_form`. 나머지는 `other`입니다.
 같은 페이지의 반복 CTA 밴드는 한 종류로 합산됩니다.
 
+예비 고2 안내(`/winter/grade-11`)는 `grade11_camp`, `grade11_consult`, `grade11_sticky`로 상담 버튼 위치를 구분합니다. 전체 과정에서 고2 안내로 가는 링크는 `winter_grade11`입니다. 같은 페이지의 읽기 앵커와 시간표·리포트·요금 펼치기는 상담 예약 클릭으로 집계하지 않습니다. 모바일 하단 버튼은 과정 소개(`#camp`)에 도달한 뒤 나타나며, 버튼 클릭은 예약 완료를 뜻하지 않습니다.
+
 기존 `diagnosis_winter_cta_click`, `diagnosis_winter_results_click`은 유지합니다.
 진단 결과 버튼 하나를 누르면 기존 이벤트와 새 이벤트가 각각 발생하므로 두 이름의 수치를 합산하지 마세요.
 현재 진단은 고2 이하에 윈터스쿨, 고3·N수생에 파이널을 보여줍니다.

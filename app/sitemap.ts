@@ -38,6 +38,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/winter/grade-11`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
     // 일산캠퍼스 광고 랜딩 — 지역 키워드(일산 미술학원 등) 검색 유입 도착 페이지
     {
       url: `${baseUrl}/ilsan`,

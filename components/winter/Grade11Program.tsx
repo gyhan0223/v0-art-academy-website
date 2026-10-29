@@ -130,6 +130,36 @@ export function Grade11Report() {
             </article>
           ))}
         </div>
+        <figure className="g11-report-preview">
+          <a
+            className="g11-report-preview-thumb"
+            href="/reports/grade11-learning-report-sample.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="학습·생활 리포트 가상 예시를 PDF로 크게 보기 (새 창)"
+          >
+            <img
+              src="/images/grade11/learning-report-sample.png"
+              alt="공부·생활 기록과 다음 계획을 담은 가상 리포트 샘플"
+              width={1323}
+              height={1871}
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
+          <figcaption>
+            <h3>리포트 샘플</h3>
+            <p>리포트 구성을 보여주기 위한 가상 예시입니다.</p>
+            <a
+              className="rt-textlink"
+              href="/reports/grade11-learning-report-sample.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              PDF로 크게 보기 ↗
+            </a>
+          </figcaption>
+        </figure>
       </div>
     </section>
   );

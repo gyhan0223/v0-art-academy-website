@@ -1,6 +1,6 @@
 import { CAMP_INFO } from "@/lib/winter-camp";
 import { NAVER_BOOKING_WINTER_URL } from "@/lib/contact";
-import { Grade11Routine, Grade11Report } from "@/components/winter/Grade11Program";
+import { Grade11Routine, Grade11Report, Grade11Tuition } from "@/components/winter/Grade11Program";
 import WinterAudienceNav from "@/components/winter/WinterAudienceNav";
 import Grade11WinterTime from "@/components/winter/Grade11WinterTime";
 import Grade11PreparationWhy from "@/components/winter/Grade11PreparationWhy";
@@ -44,7 +44,7 @@ export default function Grade11Landing() {
     <Grade11Report/>
 
     <section className="rt-section rt-camp g12-camp" id="camp"><div className="rt-wrap">
-      <div className="rt-camp-layout"><div><p className="rt-kicker">07 · 준비를 실행할 모다고의 8주</p><h2>2027 모다고<br/><em>윈터스쿨.</em></h2><p className="rt-intro">2029학년도 미대입시를 준비하는 예비 고2가 참여하는<br/>홍대 본원 기숙 과정입니다.</p><div className="rt-camp-fit"><h3>이런 준비가 필요하다면 함께 살펴보세요.</h3><p>수시·정시의 가능성을 살피며 지금 필요한 준비를 알고 싶은 경우<br/>희망 대학·학과를 향한 준비 방향이 필요한 경우<br/>정한 계획을 실제 공부 습관으로 이어가고 싶은 경우</p></div><a className="rt-textlink g12-camp-contact" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade11_camp">현재 준비에 맞는지 상담하기 ↗</a></div><div className="rt-camp-facts"><dl><div><dt>기간</dt><dd>{CAMP_INFO.period}</dd></div><div><dt>장소</dt><dd>{CAMP_INFO.venueName}</dd></div><div><dt>대상</dt><dd>{CAMP_INFO.target}</dd></div><div><dt>구성</dt><dd>{CAMP_INFO.tuitionIncludes}</dd></div><div><dt>비용</dt><dd>{CAMP_INFO.tuition}<a href="/tuition">교습비 고지 확인 ↗</a></dd></div></dl><p className="rt-micro">현재 성적과 실기 경험에 맞는 수업 구성은 상담에서 확인합니다.</p><div className="rt-detail-links"><a href="/winter/teachers">강사진 보기 ↗</a><a href="/winter">전체 과정 보기 ↗</a></div></div></div>
+      <div className="rt-camp-layout"><div><p className="rt-kicker">07 · 준비를 실행할 모다고의 8주</p><h2>2027 모다고<br/><em>윈터스쿨.</em></h2><p className="rt-intro">2029학년도 미대입시를 준비하는 예비 고2가 참여하는<br/>홍대 본원 기숙 과정입니다.</p><div className="rt-camp-fit"><h3>이런 준비가 필요하다면 함께 살펴보세요.</h3><p>수시·정시의 가능성을 살피며 지금 필요한 준비를 알고 싶은 경우<br/>희망 대학·학과를 향한 준비 방향이 필요한 경우<br/>정한 계획을 실제 공부 습관으로 이어가고 싶은 경우</p></div><a className="rt-textlink g12-camp-contact" href={NAVER_BOOKING_WINTER_URL} data-winter-placement="grade11_camp">현재 준비에 맞는지 상담하기 ↗</a></div><div className="rt-camp-facts"><dl><div><dt>기간</dt><dd>{CAMP_INFO.period}</dd></div><div><dt>장소</dt><dd>{CAMP_INFO.venueName}</dd></div><div><dt>대상</dt><dd>{CAMP_INFO.target}</dd></div><div><dt>구성</dt><dd>{CAMP_INFO.tuitionIncludes}</dd></div><div><dt>비용</dt><dd><Grade11Tuition/></dd></div></dl><p className="rt-micro">현재 성적과 실기 경험에 맞는 수업 구성은 상담에서 확인합니다.</p><div className="rt-detail-links"><a href="/winter/teachers">강사진 보기 ↗</a><a href="/winter">전체 과정 보기 ↗</a></div></div></div>
       <div className="g12-faq"><h3>예비 고2 상담 전에 궁금한 점</h3>{faqs.map(item => <details key={item.question}><summary>{item.question}<span aria-hidden="true">+</span></summary><p>{item.answer}</p></details>)}</div>
     </div></section>
 

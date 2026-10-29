@@ -74,6 +74,26 @@
 @media(max-width:1000px){.g11-why-grid{gap:16px}.g11-why-card{padding:24px 20px}.g11-why-card h3{font-size:18px}.g11-why-icon{gap:12px}.g11-why-icon svg{width:54px}.g11-why-progress{padding:18px 14px}}
 @media(max-width:700px){.g11-why-grid{grid-template-columns:1fr;margin-top:30px;gap:18px}.g11-why-card{padding:26px 24px;border-radius:18px}.g11-why-card h3{font-size:21px}.g11-why-icon{margin-bottom:18px;gap:20px}.g11-why-icon svg{width:64px}.g11-why-icon>span{font-size:13px}.g11-why-card>p{font-size:14px}.g11-why-progress{margin:22px 0;padding:20px}.g11-why-progress strong{font-size:14px}.g11-why-evidence summary{font-size:13px;line-height:1.8}.g11-why-evidence-grid{grid-template-columns:1fr;gap:12px}.g11-why-bridge{margin-top:32px;text-align:left}.g11-why-bridge>p:first-child{font-size:20px}.g11-why-bridge>p+p{font-size:15px}}
 
+.g11 .g11-tuition{min-width:0}
+.g11 .g11-tuition-total{margin:0;line-height:1.4}
+.g11-tuition-total>span{display:block;font-size:13px;color:#ffffffb3}
+.g11-tuition-total>strong{display:block;margin-top:4px;font-size:clamp(26px,3.6vw,34px);font-weight:700;letter-spacing:-.04em;color:#f58846;white-space:nowrap;font-variant-numeric:tabular-nums}
+.g11-tuition-total>strong>span{margin-left:5px;font-size:.65em}
+.g11 .g11-tuition-includes{margin-top:12px;font-size:13px;line-height:1.8;color:#ffffffcc;word-break:keep-all}
+.g11 .g11-tuition-excludes{margin-top:3px;font-size:12px;line-height:1.8;color:#ffffff99;word-break:keep-all}
+.g11 .g11-tuition-condition{margin-top:8px;font-size:11px;line-height:1.8;color:#ffffff99}
+.g11-tuition-details{margin-top:16px;border-top:1px solid #ffffff1a}
+.g11-tuition-details>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:8px 0;list-style:none;cursor:pointer;font-size:13px;color:#ffffffcc}
+.g11-tuition-details>summary::-webkit-details-marker{display:none}
+.g11-tuition-details>summary>span{font-size:20px;color:#f58846}
+.g11-tuition-details[open]>summary>span{transform:rotate(45deg)}
+.g11-tuition-details>summary:focus-visible{outline:2px solid #f58846;outline-offset:4px}
+.g11-tuition-breakdown{padding:4px 0 12px}
+.g11-tuition-breakdown ul{margin:0;padding:0;list-style:none}
+.g11-tuition-breakdown li{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;padding:8px 0;font-size:12px;line-height:1.7;color:#ffffff99}
+.g11-tuition-breakdown li strong{font-weight:500;color:#ffffffcc;white-space:nowrap;font-variant-numeric:tabular-nums}
+.g11 .g11-tuition-breakdown p{margin-top:12px;font-size:11px;line-height:1.8;color:#ffffff99;word-break:keep-all}
+
 /* Reading links glide into the next section; native scrolling stays interruptible. */
 html:has(.g11){scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){html:has(.g11){scroll-behavior:auto}}

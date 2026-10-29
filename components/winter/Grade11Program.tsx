@@ -1,4 +1,4 @@
-import { CAMP_INFO } from "@/lib/winter-camp";
+import { CAMP_INFO, WINTER_CAMP_TUITION } from "@/lib/winter-camp";
 import {
   WEEKDAY_SCHEDULE,
   WEEKEND_SCHEDULE,
@@ -27,6 +27,34 @@ const reportContents = [
   { title: "생활 기록", description: "출결과 자습 참여, 기상·취침 등 하루 일과를 살펴봅니다." },
   { title: "다음 계획", description: "선생님이 잘한 점과 어려운 점을 짚고, 다음 2주의 공부 계획을 안내합니다." },
 ];
+
+export function Grade11Tuition() {
+  const { firstFourWeeks, finalFourWeeks } = WINTER_CAMP_TUITION;
+  const total = firstFourWeeks + finalFourWeeks;
+
+  return (
+    <div className="g11-tuition">
+      <p className="g11-tuition-total">
+        <span>8주 총</span>
+        <strong>{total.toLocaleString("ko-KR")}<span>원</span></strong>
+      </p>
+      <p className="g11-tuition-includes">학과·실기·기숙·식사·독서실 포함</p>
+      <p className="g11-tuition-excludes">수학·서류전형 지도 비용 별도</p>
+      <p className="g11-tuition-condition">8주 일괄 등록 기준</p>
+      <details className="g11-tuition-details">
+        <summary>비용 자세히 보기<span aria-hidden="true">+</span></summary>
+        <div className="g11-tuition-breakdown">
+          <ul>
+            <li><span>첫 4주</span><strong>{firstFourWeeks.toLocaleString("ko-KR")}원</strong></li>
+            <li><span>뒤 4주</span><strong>{finalFourWeeks.toLocaleString("ko-KR")}원</strong></li>
+          </ul>
+          <p>8주 일괄 등록 시 적용되는 금액입니다.</p>
+          <a href="/tuition">교습비 고지 확인 ↗</a>
+        </div>
+      </details>
+    </div>
+  );
+}
 
 function ScheduleBlock({ block }: { block: TimeBlock }) {
   return (

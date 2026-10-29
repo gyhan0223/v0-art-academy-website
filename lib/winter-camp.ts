@@ -38,12 +38,18 @@ export const CAMP_INFO = {
   /** D-day 자동 계산용 실제 마감일 (KST 기준) */
   deadlineISO: "2027-01-03",
 
-  // 수강료 — 구체 금액은 홈페이지에 게시하지 않고 상담 시 개별 안내.
+  // 공통 수강료 안내. 예비 고2 페이지는 아래 WINTER_CAMP_TUITION의 8주 금액을 공개합니다.
   // 법정 교습비 고지는 /tuition 페이지(학원등록번호 제02201000109호)에 게시.
   tuition: "상담 시 개별 안내",
   tuitionIncludes: "학과(국어·영어·통합사회·통합과학) · 실기 · 기숙 · 식사 · 독서실 포함",
   earlyBird:
     "8주 일괄 등록 시 뒤 4주 35% 할인 적용 (월별 개별 납부 시 할인 적용 불가)",
+} as const;
+
+/** 사용자가 확인한 2027 겨울방학캠프 8주 일괄 등록 금액. 여름캠프 4주 비용과 구분합니다. */
+export const WINTER_CAMP_TUITION = {
+  firstFourWeeks: 4_320_000,
+  finalFourWeeks: 2_887_540,
 } as const;
 
 /**

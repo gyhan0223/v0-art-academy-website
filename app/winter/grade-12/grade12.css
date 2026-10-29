@@ -1,0 +1,53 @@
+.g12 h1.g12-hero-title{font-size:clamp(38px,4.4vw,64px);line-height:1.25}
+.g12 .g12-hero-illustration{align-self:center}
+.g12 .g12-priority-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.g12-priority-label{padding:20px 24px 0;font-size:11px;letter-spacing:.08em;color:var(--gold)}
+.g12 .g12-priority-card .rt-concern-title{padding:10px 24px 12px;align-items:center}
+.g12 .g12-priority-card .rt-concern-title h3{font-size:21px;line-height:1.5;font-weight:700}
+.g12 .g12-priority-card .rt-concern-foot{padding:0 24px 24px;font-size:11px;color:#ffffff80}
+.g12 .g12-priority-card .rt-concern-body{padding:22px 24px}
+.g12 .g12-direction-row{grid-template-columns:1.15fr 1fr;gap:64px;padding:0;border:0}
+.g12-direction-row .rt-method-copy>p+p{margin-top:14px}
+.g12-direction-row .rt-textlink{display:inline-block;margin-top:24px}
+.g12-preparation-path{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px;padding:0;margin:45px 0 0}
+.g12-preparation-path li{position:relative;border-top:1px solid #f5884666;padding-top:18px}
+.g12-preparation-path li:not(:last-child):after{content:'→';position:absolute;right:-25px;top:-17px;font-size:18px;color:var(--gold)}
+.g12-preparation-path span{display:block;font-size:11px;color:var(--gold);margin-bottom:8px}
+.g12-preparation-path strong{font-size:15px;font-weight:500;line-height:1.7;color:#ffffffcc}
+.g12-habit-layout{display:grid;grid-template-columns:1.15fr 1fr;gap:64px;align-items:center}
+.g12 .g12-habit-illustration img{width:100%;height:auto;aspect-ratio:3/2;object-fit:contain;background:#000;border:1px solid #ffffff14;border-radius:24px}
+.g12-habit-illustration figcaption{font-size:11px;color:#ffffff80;line-height:1.8;margin-top:13px}
+.g12-habit-list>div+div{margin-top:24px;padding-top:24px;border-top:1px solid #ffffff1a}
+.g12-habit-list span{font-size:10px;letter-spacing:.16em;color:var(--gold)}
+.g12-habit-list h3{font-size:22px;line-height:1.5;margin-top:8px;letter-spacing:-.025em}
+.g12-habit-list p{font-size:14px;line-height:1.9;color:#ffffff99;margin-top:9px}
+.g12-year-note{display:flex;align-items:center;justify-content:space-between;gap:40px;margin-top:44px;padding-top:30px;border-top:1px solid #ffffff1a}
+.g12-year-note strong{font-size:23px;line-height:1.6;letter-spacing:-.025em;color:var(--gold);font-weight:700}
+.g12-year-note p{font-size:14px;line-height:1.9;color:#ffffff99;max-width:360px}
+.g12 .rt-routine .rt-allocation{padding:28px 30px;margin-bottom:26px}
+.g12 .rt-routine .rt-week-strip>div{min-height:100px}
+.g12 .rt-routine>.rt-wrap>.rt-micro{margin-top:26px!important}
+.g12-schedule-summary{display:grid;gap:0;margin-top:22px}
+.g12-schedule-summary>div{display:grid;grid-template-columns:78px 1fr;gap:18px;padding:15px 0;border-bottom:1px solid #ffffff14}
+.g12-schedule-summary time{font-size:12px;color:var(--gold);font-variant-numeric:tabular-nums;padding-top:2px}
+.g12-schedule-summary strong{font-size:15px;color:#fff;font-weight:500}
+.g12-schedule-summary small{display:block;font-size:12px;color:#ffffff80;margin-top:3px;line-height:1.8}
+.g12-schedule-toggle{margin-top:24px;border-top:1px solid #ffffff26}
+.g12-schedule-toggle>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;cursor:pointer;padding:16px 0 0;font-size:13px;font-weight:500;color:var(--gold)}
+.g12-schedule-toggle>summary:after{content:'+';font-size:20px;font-weight:300}.g12-schedule-toggle[open]>summary:after{content:'−'}
+.g12-schedule-toggle>summary::-webkit-details-marker,.g12-faq summary::-webkit-details-marker{display:none}
+.g12-schedule-toggle .rt-day-blocks{margin-top:22px}
+.g12-report-needed{margin-top:22px}
+.g12-report-needed .rt-needed{min-height:0}
+.g12-camp-contact{display:inline-block;margin-top:24px}
+.g12-faq{margin-top:64px;padding-top:36px;border-top:1px solid #ffffff1a}
+.g12-faq>h3{font-size:22px;margin-bottom:16px}
+.g12-faq details{border-bottom:1px solid #ffffff1a}
+.g12-faq summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:21px 0;cursor:pointer;font-size:15px;font-weight:500;color:#ffffffcc}
+.g12-faq summary>span{font-size:22px;color:var(--gold);font-weight:300;transition:transform .3s}
+.g12-faq details[open] summary>span{transform:rotate(45deg)}
+.g12-faq details>p{padding:0 0 23px;font-size:14px;line-height:1.9;color:#ffffff99;max-width:850px}
+@media(max-width:1000px){.g12 .g12-priority-grid{gap:16px}.g12 .g12-priority-card .rt-concern-title{padding:9px 18px 12px}.g12-priority-label{padding:18px 18px 0}.g12 .g12-priority-card .rt-concern-title h3{font-size:18px}.g12 .g12-priority-card .rt-concern-foot{padding:0 18px 20px;font-size:10px}.g12 .g12-direction-row,.g12-habit-layout{gap:35px}.g12-habit-list h3{font-size:20px}.g12-year-note strong{font-size:21px}}
+@media(max-width:700px){.g12 h1.g12-hero-title{font-size:36px}.g12 .g12-priority-grid{grid-template-columns:1fr;gap:18px}.g12 .g12-priority-card .rt-concern-title h3{font-size:21px}.g12 .g12-priority-card .rt-concern-foot{font-size:12px}.g12-priority-label{font-size:12px}.g12 .g12-priority-card .rt-concern-body{padding:20px 18px}.g12 .g12-direction-row,.g12-habit-layout{grid-template-columns:1fr;gap:30px}.g12 .g12-direction-row .rt-method-copy h3{font-size:27px}.g12-preparation-path{gap:16px;margin-top:32px}.g12-preparation-path li{padding-top:14px}.g12-preparation-path li:not(:last-child):after{right:-15px}.g12-preparation-path strong{font-size:12px}.g12-preparation-path span{font-size:10px}.g12 .g12-habit-illustration img{border-radius:16px}.g12-habit-list h3{font-size:22px}.g12-year-note{display:block;margin-top:32px;padding-top:25px}.g12-year-note strong{font-size:23px}.g12-year-note p{margin-top:16px}.g12 .rt-routine .rt-allocation{padding:22px 17px}.g12 .rt-routine .rt-week-strip>div{min-height:90px}.g12-schedule-summary>div{grid-template-columns:66px 1fr;gap:14px}.g12-schedule-summary strong{font-size:14px}.g12-schedule-summary small{font-size:12px}.g12-schedule-toggle>summary{font-size:13px}.g12-faq{margin-top:44px;padding-top:28px}.g12-faq>h3{font-size:21px}.g12-faq summary{font-size:14px;line-height:1.8}.g12-faq details>p{font-size:14px}}
+
+@media(max-width:360px){.g12 h1.g12-reform-hero-title{font-size:32px}}

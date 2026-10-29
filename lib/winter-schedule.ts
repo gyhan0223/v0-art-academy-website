@@ -46,7 +46,7 @@ export const WEEKDAY_SCHEDULE: TimeBlock[] = [
     end: "12:50",
     label: "학과 수업",
     short: "학과 수업",
-    note: "국어 · 영어 · 탐구 (요일별)",
+    note: "국어 · 영어 · 통합사회 · 통합과학 (요일별)",
     type: "hakgwa",
   },
   { start: "12:50", end: "13:35", label: "점심 시간", short: "점심", type: "life" },
@@ -55,7 +55,7 @@ export const WEEKDAY_SCHEDULE: TimeBlock[] = [
     end: "15:50",
     label: "학과 클리닉",
     short: "학과 클리닉",
-    note: "국어 · 영어 클리닉 / 탐구",
+    note: "국어 · 영어 클리닉 / 통합사회 · 통합과학",
     type: "hakgwa",
   },
   {

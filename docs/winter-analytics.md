@@ -17,7 +17,12 @@
 
 위치: `jungsi_middle`, `jungsi_bottom`, `diagnosis_result`, `home_banner`,
 `nav_desktop`, `nav_mobile`, `winter_hero`, `winter_cta_band`,
-`winter_mobile_bar`, `winter_contact_section`, `winter_form`. 나머지는 `other`입니다.
+`winter_mobile_bar`, `winter_contact_section`, `winter_form`, `retake_hero`, `retake_consult`, `retake_sticky`. 위치 표시가 없으면 `other`입니다.
+N수생 안내의 첫 화면은 `#exam-2028` 내용으로 이동하며 상담 클릭으로 수집하지 않습니다. 기존 `retake_hero`는 과거 데이터 구분용입니다. 하단 상담·모바일 고정 버튼은 각각 `retake_consult`·`retake_sticky`로 구분합니다. 모바일 고정 버튼은 준비 방법(`#method`)을 읽기 시작한 뒤 나타납니다. 네이버 예약 버튼 클릭을 수집하며, 예약 완료를 뜻하지 않습니다.
+2028 수능 개편 안내 뒤 상담 버튼은 `retake_reform`으로 구분합니다. 공식 출처와 수업 설계 예시 펼치기, 같은 페이지 내 이동은 상담 예약 클릭으로 세지 않습니다.
+예비 고3 안내(`/winter/grade-12`)의 첫 화면은 `#exam-2028`로 이동하는 읽기 버튼입니다. 기존 `grade12_hero`는 과거 데이터 구분용으로 남깁니다. 상담 버튼은 `grade12_direction`, `grade12_camp`, `grade12_consult`, `grade12_sticky`로 위치를 구분합니다. 모바일 고정 상담 버튼은 준비 방향(`#direction`) 설명에 도달한 뒤 나타나며, 페이지 안의 안내 링크와 시간표 펼치기는 예약 클릭으로 세지 않습니다.
+예비 고2 안내(`/winter/grade-11`)의 첫 화면은 `#why-grade2`로 이어지는 읽기 버튼입니다. 기존 `grade11_hero`는 과거 데이터 구분용입니다. 상담 버튼은 `grade11_camp`, `grade11_consult`, `grade11_sticky`로 위치를 구분합니다. 기존 `grade11_direction`은 현재 읽기 앵커로 대체됐습니다. 모바일 고정 상담 버튼은 준비의 이유·상태 점검·겨울 실행·운영 안내를 읽고 과정 소개(`#camp`)에 도달한 뒤 나타납니다. 버튼 클릭은 상담 예약 완료를 뜻하지 않습니다.
+N수생 안내의 같은 페이지 내 이동(`#causes`, `#camp`, `#routine`, `#consult`)은 윈터스쿨 페이지 이동으로 세지 않습니다.
 같은 페이지의 반복 CTA 밴드는 한 종류로 합산됩니다.
 
 기존 `diagnosis_winter_cta_click`, `diagnosis_winter_results_click`은 유지합니다.
@@ -47,3 +52,5 @@
 `node --test tests/winter-analytics.test.cjs`
 
 분류, 쿼리/전화번호 제외, 아이콘 클릭, 우클릭 제외/가운데 클릭 포함, 분석 오류 시 기본 동작 유지 확인.
+
+예비 고3의 2028 개편 안내 뒤 상담 버튼은 `grade12_reform`으로 구분합니다. 개편 안내 앵커·출처·설계 예시 펼치기는 상담 예약 클릭으로 세지 않습니다.

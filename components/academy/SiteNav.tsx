@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { X, Menu, ChevronDown } from "lucide-react";
 import {
   SHOW_ANNOUNCEMENT,
+  WINTER_AUDIENCE_PAGES,
   WINTER_PAGES,
   getRemainingLabel,
   getRemainingTotal,
@@ -132,6 +133,11 @@ const navItems: NavItem[] = [
         desc: "대상·정원·기간과 8주 운영 방식",
         badge: "모집중",
       },
+      ...WINTER_AUDIENCE_PAGES.map((page) => ({
+        label: page.label,
+        href: page.href,
+        desc: page.description,
+      })),
       // 하위 페이지는 lib/winter-camp.ts의 WINTER_PAGES 하나만 고치면 여기와
       // /winter 하단 카드가 함께 바뀐다
       ...WINTER_PAGES.map((page) => ({
@@ -154,6 +160,7 @@ const navItems: NavItem[] = [
  * 한 단계 아래 경로일 때만 활성으로 본다.
  */
 function isChildActive(pathname: string, href: string): boolean {
+  if (href === "/winter") return pathname === href;
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 

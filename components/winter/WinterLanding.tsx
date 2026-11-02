@@ -276,6 +276,16 @@ export default function WinterLanding() {
             여는 파주 기숙학원으로 그대로 이어집니다.
           </motion.p>
 
+          <motion.div {...fadeUp} className="mt-5 text-center" data-winter-placement="winter_grade11">
+            <Link
+              href="/winter/grade-11"
+              className="inline-flex items-center gap-2 text-sm font-medium text-accent underline underline-offset-4 transition-opacity hover:opacity-80"
+            >
+              예비 고2 겨울 준비 살펴보기
+              <ArrowRight size={15} aria-hidden="true" />
+            </Link>
+          </motion.div>
+
           {/* 재수생 학부모가 가장 먼저 묻는 것 — "2월 말에 끝나면 그다음은" */}
           <motion.div {...fadeUp} className="mt-8">
             <Link

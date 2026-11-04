@@ -155,10 +155,6 @@ export function Grade12Report() {
               <small>다음 기간에 무엇을 보완할지</small>
             </p>
           </div>
-          <p className="rt-micro">
-            오른쪽은 기존 홈페이지의 운영 양식을 재구성한 예시입니다.
-            실제 학생 성적이나 학부모에게 발송한 리포트가 아닙니다.
-          </p>
         </div>
 
         <div className="rt-report-sheet">
@@ -189,10 +185,6 @@ export function Grade12Report() {
             ))}
           </div>
           <p className="rt-report-footnote">{REPORT_SAMPLE.note}</p>
-          <div className="rt-needed g12-report-needed">
-            <span className="rt-needed-label">필요한 자료</span>
-            <p>(필요한 자료: 개인정보를 가린 실제 발송 리포트 1건)</p>
-          </div>
         </div>
       </div>
     </section>

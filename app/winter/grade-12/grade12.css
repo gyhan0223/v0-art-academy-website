@@ -37,8 +37,6 @@
 .g12-schedule-toggle>summary:after{content:'+';font-size:20px;font-weight:300}.g12-schedule-toggle[open]>summary:after{content:'−'}
 .g12-schedule-toggle>summary::-webkit-details-marker,.g12-faq summary::-webkit-details-marker{display:none}
 .g12-schedule-toggle .rt-day-blocks{margin-top:22px}
-.g12-report-needed{margin-top:22px}
-.g12-report-needed .rt-needed{min-height:0}
 .g12-camp-contact{display:inline-block;margin-top:24px}
 .g12-faq{margin-top:64px;padding-top:36px;border-top:1px solid #ffffff1a}
 .g12-faq>h3{font-size:22px;margin-bottom:16px}

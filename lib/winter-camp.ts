@@ -38,7 +38,7 @@ export const CAMP_INFO = {
   /** D-day 자동 계산용 실제 마감일 (KST 기준) */
   deadlineISO: "2027-01-03",
 
-  // 공통 수강료 안내. 예비 고2 페이지는 아래 WINTER_CAMP_TUITION의 8주 금액을 공개합니다.
+  // 공통 수강료 안내. 예비 고2·N수생 페이지는 아래 WINTER_CAMP_TUITION의 8주 금액을 공개합니다.
   // 법정 교습비 고지는 /tuition 페이지(학원등록번호 제02201000109호)에 게시.
   tuition: "상담 시 개별 안내",
   tuitionIncludes: "학과(국어·영어·통합사회·통합과학) · 실기 · 기숙 · 식사 · 독서실 포함",

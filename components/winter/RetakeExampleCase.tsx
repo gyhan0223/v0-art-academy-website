@@ -9,10 +9,9 @@ const y = (grade: number) => 36 + (grade - 1) * 44;
 export function RetakeExampleCase() {
   return (
     <article className="rt-feature-case rt-example-case">
-      <div className="rt-case-top"><span className="rt-example-badge">가상 사례</span><span>실제 수강생 기록이 아닙니다</span></div>
       <h3>9월까지 올랐던 성적,<br/><em>수능에서도 이어졌을까요?</em></h3>
       <figure className="rt-example-chart">
-        <figcaption><strong>국어 등급 흐름</strong><span>숫자가 낮을수록 높은 등급</span></figcaption>
+        <figcaption><strong>국어 등급 흐름 예시</strong></figcaption>
         <svg viewBox="0 0 600 282" role="img" aria-labelledby="rt-example-chart-title rt-example-chart-desc">
           <title id="rt-example-chart-title">국어 등급의 가상 예시</title>
           <desc id="rt-example-chart-desc">실제 학생 기록이 아닙니다. 6월 모의평가 3등급에서 9월 모의평가 2등급으로 상승한 뒤 수능에서는 4등급으로 하락하는 가상의 흐름입니다. 세로축은 위쪽 1등급부터 아래쪽 5등급까지 표시합니다.</desc>
@@ -45,33 +44,5 @@ export function RetakeWinterFoundation() {
         <li><span>수능</span><strong>끝까지 이어갈<br/>준비를 목표로</strong></li>
       </ol>
     </div>
-  );
-}
-
-export function RetakeExampleInterview() {
-  const questions = [
-    {
-      question: "지난 준비에서 가장 어려웠던 건 무엇인가요?",
-      answer: "모의평가 성적은 올랐는데, 수능이 가까워질수록 잠드는 시간과 공부 시간이 흔들렸어요. 책상에 앉아 있어도 계획한 만큼 집중하지 못하는 날이 많았어요.",
-    },
-    {
-      question: "다시 시작한다면 무엇부터 정하고 싶나요?",
-      answer: "어디가 부족했는지 먼저 짚고, 무엇을 먼저 보완할지 정하고 싶어요. 그래야 하루 계획도 구체적으로 세울 수 있을 것 같아요.",
-    },
-    {
-      question: "겨울에는 어떤 준비를 하고 싶나요?",
-      answer: "정해진 시간에 공부를 시작하고, 학과와 실기를 함께 이어가는 연습을 하고 싶어요. 수능 날까지 이어갈 수 있는 생활을 겨울부터 만들어 보고 싶어요.",
-    },
-  ];
-  return (
-    <article className="rt-small-case rt-interview rt-example-interview" id="student-perspective">
-      <div className="rt-case-top"><span className="rt-example-badge">가상 인터뷰</span><span>상황을 설명하기 위한 예시</span></div>
-      <h3>다시 준비한다면,<br/><em>무엇부터 바꿀까요?</em></h3>
-      <dl className="rt-interview-dialogue">{questions.map((item,i) => <div key={item.question}>
-        <dt><span aria-hidden="true">Q{String(i+1).padStart(2,"0")}</span>{item.question}</dt>
-        <dd>{item.answer}</dd>
-      </div>)}</dl>
-      <p className="rt-interview-note">앞의 가상 사례를 바탕으로 구성한 원고입니다. 실제 학생의 인터뷰나 모다고 수강 후기가 아닙니다.</p>
-    </article>
   );
 }

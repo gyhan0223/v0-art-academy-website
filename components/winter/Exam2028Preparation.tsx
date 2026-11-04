@@ -95,9 +95,8 @@ export default function Exam2028Preparation({ audience = "retake" }: { audience?
               <ol className="rt-reform-plan">
                 {preparationExample.map(step => <li key={step.weeks}><span className="rt-reform-week"><b>{step.weeks}</b>주</span><h4>{step.title}</h4><p>{step.detail}</p><small>{step.output}</small></li>)}
               </ol>
-              <div className="rt-reform-material-example">
+              <div className="rt-reform-material-example rt-reform-material-complete">
                 <div><span>자료 구성 예시</span><strong>{isGrade12 ? "개념 이해 → 수능형 문항 → 이번 주 보완" : "이전 학습 → 새 출제 범위 → 이번 주 준비"}</strong><p>{isGrade12 ? "국어 · 화법과 언어·독서와 작문·문학의 개념을 문항에 적용" : "국어 · 기존 독서·문학 학습과 새 화법·언어 범위를 대조"}<br/>{isGrade12 ? "탐구 · 통합사회·통합과학의 개념 이해와 자료 해석을 함께 점검" : "탐구 · 통합사회·통합과학의 익숙한 개념과 낯선 단원을 구분"}<br/>목표 미대 · 응시 영역과 실제 반영 기준을 별도로 확인</p></div>
-                <p className="rt-reform-needed">(필요한 자료: 통합사회·통합과학 담당 강사, 확정 주차별 수업계획·교재, 개편형 진단·평가 문항)</p>
               </div>
             </div>
           </details>

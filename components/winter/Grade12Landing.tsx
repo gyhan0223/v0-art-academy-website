@@ -22,8 +22,8 @@ export default function Grade12Landing() {
 
     <section className="rt-hero">
       <div className="rt-wrap rt-hero-grid">
-        <div className="rt-hero-copy"><p className="rt-kicker">2028학년도 미대입시를 준비하는 예비 고3에게</p><h1 className="g12-hero-title g12-reform-hero-title">2028 개편 수능,<br/><em>목표 미대에 맞춰<br/>준비합니다.</em></h1><p className="rt-lead">바뀐 출제 범위와 목표 미대의 반영 기준을 함께 보고,<br/>겨울의 학과 수업·실기·학습 점검으로 연결합니다.</p><div className="rt-actions"><a className="rt-button" href="#exam-2028">미대 입시생을 위한 2028 개편안 보기 ↓</a></div><p className="rt-hero-note">새 출제 범위 확인 · 학과·실기 연계 · 격주 학습 점검</p></div>
-        <figure className="rt-plan-visual rt-hero-illustration g12-hero-illustration"><img src="/images/grade12/grade12-hero.webp" alt="워크북과 실기 스케치북을 함께 살펴보며 다음 준비를 생각하는 예비 고3 학생의 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/><figcaption><span>새로운 수능의 기준으로 준비하는 고3.</span></figcaption></figure>
+        <div className="rt-hero-copy"><p className="rt-kicker">2028학년도 미대입시를 준비하는 예비 고3에게</p><h1 className="g12-hero-title g12-reform-hero-title">2028 개편 수능,<br/><em>목표 미대에 맞춰<br/>준비합니다.</em></h1><p className="rt-lead">바뀐 출제 범위와 목표 미대의 반영 기준을 함께 보고,<br/>겨울의 학과 수업·실기·학습 점검으로 연결합니다.</p><div className="rt-actions"><a className="rt-button" href="#exam-2028">미대 입시생을 위한 2028 개편안 보기 ↓</a></div></div>
+        <figure className="rt-plan-visual rt-hero-illustration g12-hero-illustration"><img src="/images/grade12/grade12-hero.webp" alt="워크북과 실기 스케치북을 함께 살펴보며 다음 준비를 생각하는 예비 고3 학생의 일러스트" width={1254} height={1254} fetchPriority="high" decoding="async"/></figure>
       </div>
     </section>
 

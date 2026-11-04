@@ -62,8 +62,6 @@ export default function Exam2028Preparation({ audience = "retake" }: { audience?
           </article>
         </div>
 
-        {!isGrade12 && <University2028Comparison/>}
-
         <details className="rt-reform-official">
           <summary>공식 변경사항과 출처 확인<span aria-hidden="true">+</span></summary>
           <div>
@@ -76,6 +74,8 @@ export default function Exam2028Preparation({ audience = "retake" }: { audience?
             <p>교육부 공식 발표 기준 · 2026.10.26 확인</p>
           </div>
         </details>
+
+        {!isGrade12 && <University2028Comparison/>}
 
         <div className="rt-reform-readiness">
           <div className="rt-reform-readiness-heading">

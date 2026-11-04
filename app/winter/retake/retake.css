@@ -228,3 +228,6 @@
 .rt .rt-camp-tuition-breakdown .rt-camp-tuition-subtotal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;margin-top:8px;padding-top:10px;border-top:1px solid #ffffff1a;font-size:12px;line-height:1.8}
 .rt-camp-tuition-subtotal strong{font-weight:700;color:#ffffffcc;white-space:nowrap;font-variant-numeric:tabular-nums}
 .rt-camp-tuition-payable strong{color:#f58846}
+
+/* Native anchor scrolling glides between sections and remains interruptible. */
+@media(prefers-reduced-motion:no-preference){html:has(.rt-retake){scroll-behavior:smooth}}

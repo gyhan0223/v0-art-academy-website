@@ -5,8 +5,8 @@ import "../retake/retake.css";
 import "./grade12.css";
 
 export const metadata: Metadata = {
-  title: "2028 개편 수능, 목표 미대에 맞춘 고3 준비 | 모두다른고양이",
-  description: "2028학년도 수능 개편에 맞춘 예비 고3 겨울 준비. 공통 출제 범위·통합탐구·모의평가 일정을 확인하고, 목표 미대에 맞춰 학과·실기·학습 점검을 연결합니다.",
+  title: "고3이 되기 전, 목표 미대에 맞춘 겨울 준비 | 모두다른고양이",
+  description: "2028학년도 미대입시를 준비하는 예비 고3의 겨울. 목표 대학의 반영 기준과 현재 성적·실기를 함께 보고, 이번 겨울에 집중할 공부와 실기를 정합니다.",
   alternates: { canonical: "/winter/grade-12" },
   robots: { index: false, follow: true },
 };

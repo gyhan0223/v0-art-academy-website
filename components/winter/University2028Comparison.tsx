@@ -4,17 +4,18 @@ const universitySources = {
   kookmin: "https://admission.kookmin.ac.kr/helper/notice.php?category=all&ctype=view&no=1064",
 };
 
-export default function University2028Comparison() {
+export default function University2028Comparison({ showHeading = true, verifiedOn = "2026.10.26" }: { showHeading?: boolean; verifiedOn?: string }) {
+  const UniversityHeading = showHeading ? "h4" : "h3";
   return (
-    <div className="rt-university-comparison" id="university-2028" aria-labelledby="rt-university-title">
-      <header className="rt-university-heading">
+    <div className="rt-university-comparison" id="university-2028" aria-labelledby={showHeading ? "rt-university-title" : undefined} aria-label={showHeading ? undefined : "2028학년도 주요 미대 정시 반영 기준"}>
+      {showHeading && <header className="rt-university-heading">
         <p className="rt-kicker">대학이 발표한 실제 반영 기준</p>
         <h3 id="rt-university-title">같은 2028 수능,<br/><em>목표 미대에 따라 준비가 달라집니다.</em></h3>
         <p>서울대·홍익대·국민대의 정시 일반전형을 비교해 보세요.</p>
-      </header>
+      </header>}
       <div className="rt-university-grid">
         <article className="rt-university-card">
-          <header><span>미술대학 · 정시 일반전형</span><h4>서울대학교</h4></header>
+          <header><span>미술대학 · 정시 일반전형</span><UniversityHeading className="rt-university-name">서울대학교</UniversityHeading></header>
           <p className="rt-university-key">수학과 두 탐구까지,<br/><strong>모두 반영합니다.</strong></p>
           <div className="rt-university-ratio" aria-label="2단계 수능 상대 반영비율 국어 100, 수학 100, 사회 50, 과학 50">
             <span>국어<b>100</b></span><span>수학<b>100</b></span><span>사회<b>50</b></span><span>과학<b>50</b></span>
@@ -25,7 +26,7 @@ export default function University2028Comparison() {
           <a className="rt-university-source" href={universitySources.snu} target="_blank" rel="noopener noreferrer">시행계획 원문 · 책자 19·33쪽 ↗</a>
         </article>
         <article className="rt-university-card">
-          <header><span>서울캠퍼스 미술계열 · 수능우수자전형</span><h4>홍익대학교</h4></header>
+          <header><span>서울캠퍼스 미술계열 · 수능우수자전형</span><UniversityHeading className="rt-university-name">홍익대학교</UniversityHeading></header>
           <p className="rt-university-key">국어·수학·탐구 중<br/><strong>두 영역을 반영합니다.</strong></p>
           <div className="rt-university-ratio rt-university-ratio-three" aria-label="국어 수학 탐구 중 두 영역 각각 40퍼센트, 영어 20퍼센트">
             <span>선택 영역 1<b>40<small>%</small></b></span><span>선택 영역 2<b>40<small>%</small></b></span><span>영어<b>20<small>%</small></b></span>
@@ -36,7 +37,7 @@ export default function University2028Comparison() {
           <a className="rt-university-source" href={universitySources.hongik} target="_blank" rel="noopener noreferrer">시행계획 원문 · 책자 19~20쪽 ↗</a>
         </article>
         <article className="rt-university-card">
-          <header><span>조형대학 · 정시 일반전형</span><h4>국민대학교</h4></header>
+          <header><span>조형대학 · 정시 일반전형</span><UniversityHeading className="rt-university-name">국민대학교</UniversityHeading></header>
           <p className="rt-university-key">국어·영어는 필수,<br/><strong>수학·탐구 중 상위 영역.</strong></p>
           <div className="rt-university-ratio rt-university-ratio-three" aria-label="국어 33.3퍼센트, 영어 33.3퍼센트, 수학과 탐구 중 상위 영역 33.3퍼센트">
             <span>국어<b>33.3<small>%</small></b></span><span>영어<b>33.3<small>%</small></b></span><span>수학 / 탐구<b>33.3<small>%</small></b></span>
@@ -47,8 +48,8 @@ export default function University2028Comparison() {
           <a className="rt-university-source" href={universitySources.kookmin} target="_blank" rel="noopener noreferrer">전형계획 원문 · 책자 39~41쪽 ↗</a>
         </article>
       </div>
-      <div className="rt-university-takeaway"><strong>탐구를 모두 응시하는 것과,<br/>대학이 두 과목을 모두 반영하는 것은 다릅니다.</strong><p>목표 대학의 반영 방식부터 확인해야, 이번 겨울에 힘을 쏟을 과목도 구체적으로 정할 수 있습니다.</p></div>
-      <p className="rt-university-note">2026.10.26 확인 · 2028학년도 대학별 시행계획 기준(홍익대 2026.07.09 수정본). 표시한 모집단위·전형에 한한 비교입니다. 최종 지원 전 해당 학년도 모집요강을 다시 확인하세요.</p>
+      {showHeading && <div className="rt-university-takeaway"><strong>탐구를 모두 응시하는 것과,<br/>대학이 두 과목을 모두 반영하는 것은 다릅니다.</strong><p>목표 대학의 반영 방식부터 확인해야, 이번 겨울에 힘을 쏟을 과목도 구체적으로 정할 수 있습니다.</p></div>}
+      <p className="rt-university-note">{verifiedOn} 확인 · 2028학년도 대학별 시행계획 기준(홍익대 2026.07.09 수정본). 표시한 모집단위·전형에 한한 비교입니다. 최종 지원 전 해당 학년도 모집요강을 다시 확인하세요.</p>
     </div>
   );
 }

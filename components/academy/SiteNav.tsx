@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, Menu } from "lucide-react";
+import { X, Menu, ChevronDown } from "lucide-react";
 import {
   SHOW_ANNOUNCEMENT,
   WINTER_AUDIENCE_PAGES,
@@ -320,6 +320,11 @@ export default function SiteNav() {
                       }`}
                     >
                       {item.label}
+                      <ChevronDown
+                        size={14}
+                        strokeWidth={2}
+                        className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                      />
                     </button>
 
                     <div
@@ -433,6 +438,11 @@ export default function SiteNav() {
                   className="flex items-center gap-1 whitespace-nowrap rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
                 >
                   상담 신청
+                  <ChevronDown
+                    size={14}
+                    strokeWidth={2.5}
+                    className={`transition-transform duration-200 ${consultOpen ? "rotate-180" : ""}`}
+                  />
                 </button>
 
                 <div
@@ -525,6 +535,11 @@ export default function SiteNav() {
                         0{idx + 1}
                       </span>
                       {item.label}
+                      <ChevronDown
+                        size={16}
+                        strokeWidth={2}
+                        className={`ml-auto text-white/40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                      />
                     </button>
 
                     <div

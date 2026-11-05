@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, Menu, ChevronDown } from "lucide-react";
@@ -11,7 +11,6 @@ import {
   getRemainingLabel,
   getRemainingTotal,
 } from "@/lib/winter-camp";
-import { WINTER_CONSULT_LABEL } from "@/lib/winter-consultation";
 import { CONSULT_HREF, goToConsult } from "@/components/winter/shared";
 import { CAMPUSES } from "@/lib/contact";
 import { CONSULTING_INFO } from "@/lib/consulting";
@@ -42,6 +41,7 @@ type NavChild = {
   href: string;
   desc?: string;
   badge?: string;
+  groupHeading?: string;
 };
 
 type NavItem = {
@@ -133,17 +133,19 @@ const navItems: NavItem[] = [
         desc: "대상·정원·기간과 8주 운영 방식",
         badge: "모집중",
       },
-      ...WINTER_AUDIENCE_PAGES.map((page) => ({
+      ...WINTER_AUDIENCE_PAGES.map((page, index) => ({
         label: page.label,
         href: page.href,
         desc: page.description,
+        groupHeading: index === 0 ? "학년별 겨울 준비" : undefined,
       })),
       // 하위 페이지는 lib/winter-camp.ts의 WINTER_PAGES 하나만 고치면 여기와
       // /winter 하단 카드가 함께 바뀐다
-      ...WINTER_PAGES.map((page) => ({
+      ...WINTER_PAGES.map((page, index) => ({
         label: page.label,
         href: page.href,
         desc: page.desc,
+        groupHeading: index === 0 ? "과정 안내" : undefined,
       })),
     ],
   },
@@ -172,6 +174,9 @@ export default function SiteNav() {
   const [consultOpen, setConsultOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLElement>(null);
+  const mobileOpenButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileCloseButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const isWinterPage =
     pathname === "/winter" || pathname.startsWith("/winter/");
@@ -188,6 +193,22 @@ export default function SiteNav() {
     setShowAnnouncement(false);
   };
 
+  const closeMobileMenu = useCallback(() => {
+    if (mobileMenuRef.current?.contains(document.activeElement)) {
+      mobileOpenButtonRef.current?.focus({ preventScroll: true });
+    }
+    setIsOpen(false);
+    setExpanded(null);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const frame = window.requestAnimationFrame(() => {
+      mobileCloseButtonRef.current?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [isOpen]);
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     handleScroll();
@@ -196,11 +217,10 @@ export default function SiteNav() {
   }, []);
 
   useEffect(() => {
-    setIsOpen(false);
+    closeMobileMenu();
     setOpenMenu(null);
     setConsultOpen(false);
-    setExpanded(null);
-  }, [pathname]);
+  }, [pathname, closeMobileMenu]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -213,6 +233,24 @@ export default function SiteNav() {
       if (e.key === "Escape") {
         setOpenMenu(null);
         setConsultOpen(false);
+        if (isOpen) closeMobileMenu();
+      }
+      if (e.key === "Tab" && isOpen) {
+        const menu = mobileMenuRef.current;
+        const focusable = Array.from(
+          menu?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])") ?? [],
+        ).filter((el) => !el.closest("[inert]") && el.getClientRects().length > 0);
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!first || !last) return;
+        const outside = !menu?.contains(document.activeElement);
+        if (e.shiftKey && (document.activeElement === first || outside)) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (document.activeElement === last || outside)) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -221,7 +259,7 @@ export default function SiteNav() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
-  }, []);
+  }, [isOpen, closeMobileMenu]);
 
   // /diagnosis 온보딩과 /consulting 전환 랜딩, /final 수능 파이널 랜딩은
   // 자체 상단 바를 쓴다 — 일반 네비·공지 띠를 숨긴다.
@@ -308,7 +346,7 @@ export default function SiteNav() {
                   >
                     <button
                       type="button"
-                      onClick={() => setOpenMenu(open ? null : item.href)}
+                      onClick={(event) => setOpenMenu(event.detail === 0 && open ? null : item.href)}
                       aria-expanded={open}
                       aria-haspopup="true"
                       className={`flex items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
@@ -321,9 +359,7 @@ export default function SiteNav() {
                       <ChevronDown
                         size={14}
                         strokeWidth={2}
-                        className={`transition-transform duration-200 ${
-                          open ? "rotate-180" : ""
-                        }`}
+                        className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
                       />
                     </button>
 
@@ -334,7 +370,7 @@ export default function SiteNav() {
                           : "invisible opacity-0 -translate-y-1"
                       }`}
                     >
-                      <ul className="overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/40">
+                      <ul className="max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-lg border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-md shadow-xl shadow-black/40">
                         {item.children.map((child) => {
                           const childActive = isChildActive(
                             pathname,
@@ -342,8 +378,14 @@ export default function SiteNav() {
                           );
                           return (
                             <li key={child.href}>
+                              {child.groupHeading && (
+                                <span className="block border-t border-white/10 px-4 pb-1 pt-4 text-[10px] font-semibold tracking-widest text-accent/80">
+                                  {child.groupHeading}
+                                </span>
+                              )}
                               <Link
                                 href={child.href}
+                                aria-current={childActive ? "page" : undefined}
                                 className={`block px-4 py-3.5 transition-colors border-b border-white/5 last:border-b-0 hover:bg-white/5 ${
                                   childActive ? "bg-white/5" : ""
                                 }`}
@@ -416,7 +458,7 @@ export default function SiteNav() {
                 onClick={goToConsult}
                 className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
               >
-                아이에게 맞는지 상담
+                상담 예약
               </Link>
             ) : (
               <div
@@ -426,7 +468,7 @@ export default function SiteNav() {
               >
                 <button
                   type="button"
-                  onClick={() => setConsultOpen(!consultOpen)}
+                  onClick={(event) => setConsultOpen(event.detail === 0 ? !consultOpen : true)}
                   aria-expanded={consultOpen}
                   aria-haspopup="true"
                   className="flex items-center gap-1 whitespace-nowrap rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
@@ -435,9 +477,7 @@ export default function SiteNav() {
                   <ChevronDown
                     size={14}
                     strokeWidth={2.5}
-                    className={`transition-transform duration-200 ${
-                      consultOpen ? "rotate-180" : ""
-                    }`}
+                    className={`transition-transform duration-200 ${consultOpen ? "rotate-180" : ""}`}
                   />
                 </button>
 
@@ -474,9 +514,12 @@ export default function SiteNav() {
 
           {/* Mobile hamburger */}
           <button
+            ref={mobileOpenButtonRef}
             onClick={() => setIsOpen(true)}
             className="p-2 text-white hover:text-accent transition-colors md:hidden"
             aria-label="메뉴 열기"
+            aria-expanded={isOpen}
+            aria-controls="mobile-site-menu"
           >
             <Menu size={24} strokeWidth={1.5} />
           </button>
@@ -485,6 +528,11 @@ export default function SiteNav() {
 
       {/* Mobile drawer */}
       <div
+        role="dialog"
+        aria-label="모바일 메뉴"
+        aria-modal={isOpen || undefined}
+        aria-hidden={!isOpen}
+        inert={!isOpen}
         className={`fixed inset-0 z-[100] md:hidden transition-all duration-300 ${
           isOpen ? "visible" : "invisible"
         }`}
@@ -493,21 +541,24 @@ export default function SiteNav() {
           className={`absolute inset-0 bg-black transition-opacity duration-300 ${
             isOpen ? "opacity-60" : "opacity-0"
           }`}
-          onClick={() => setIsOpen(false)}
+          onClick={closeMobileMenu}
         />
         <nav
+          ref={mobileMenuRef}
+          id="mobile-site-menu"
           className={`absolute top-0 right-0 h-full w-72 bg-[#0a0a0a] border-l border-white/10 flex flex-col transition-transform duration-300 ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
           aria-label="모바일 메뉴"
           data-winter-placement="nav_mobile"
         >
-          <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+          <div className="flex shrink-0 items-center justify-between px-6 py-5 border-b border-white/10">
             <span className="font-black text-sm tracking-tight text-white">
               모두다른고양이
             </span>
             <button
-              onClick={() => setIsOpen(false)}
+              ref={mobileCloseButtonRef}
+              onClick={closeMobileMenu}
               className="p-1 text-white/60 hover:text-white transition-colors"
               aria-label="메뉴 닫기"
             >
@@ -515,7 +566,7 @@ export default function SiteNav() {
             </button>
           </div>
 
-          <ul className="flex flex-col py-4 flex-1">
+          <ul className="flex min-h-0 flex-1 flex-col overflow-y-auto py-4">
             {navItems.map((item, idx) => {
               if (item.children) {
                 const open = expanded === item.href;
@@ -534,13 +585,13 @@ export default function SiteNav() {
                       <ChevronDown
                         size={16}
                         strokeWidth={2}
-                        className={`ml-auto text-white/40 transition-transform duration-200 ${
-                          open ? "rotate-180" : ""
-                        }`}
+                        className={`ml-auto text-white/40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
                       />
                     </button>
 
                     <div
+                      inert={!open}
+                      aria-hidden={!open}
                       className={`grid transition-all duration-300 ${
                         open
                           ? "grid-rows-[1fr] opacity-100"
@@ -555,8 +606,14 @@ export default function SiteNav() {
                           );
                           return (
                             <li key={child.href}>
+                              {child.groupHeading && (
+                                <span className="block border-t border-white/10 pb-1 pl-14 pr-6 pt-4 text-[10px] font-semibold tracking-widest text-accent/80">
+                                  {child.groupHeading}
+                                </span>
+                              )}
                               <Link
                                 href={child.href}
+                                aria-current={childActive ? "page" : undefined}
                                 className={`block py-3.5 pl-14 pr-6 text-sm border-b border-white/5 transition-colors hover:bg-white/5 ${
                                   childActive
                                     ? "text-accent"
@@ -604,12 +661,12 @@ export default function SiteNav() {
                 <Link
                   href={CONSULT_HREF}
                   onClick={(e) => {
-                    setIsOpen(false);
+                    closeMobileMenu();
                     goToConsult(e);
                   }}
                   className="block rounded-md bg-accent px-4 py-3 text-center text-sm font-medium text-black"
                 >
-                  {WINTER_CONSULT_LABEL}
+                  상담 예약하기
                 </Link>
               ) : (
                 CAMPUSES.map((campus) => (
@@ -627,7 +684,7 @@ export default function SiteNav() {
             </li>
           </ul>
 
-          <div className="px-6 py-6 border-t border-white/10 space-y-3">
+          <div className="shrink-0 px-6 py-6 border-t border-white/10 space-y-3">
             <a href={`tel:${CAMPUS_HONGDAE.phone}`} className="block">
               <span className="block text-white/50 text-xs tracking-widest">
                 {CAMPUS_HONGDAE.phone}

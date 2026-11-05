@@ -37,8 +37,6 @@
 .g12-schedule-toggle>summary:after{content:'+';font-size:20px;font-weight:300}.g12-schedule-toggle[open]>summary:after{content:'−'}
 .g12-schedule-toggle>summary::-webkit-details-marker,.g12-faq summary::-webkit-details-marker{display:none}
 .g12-schedule-toggle .rt-day-blocks{margin-top:22px}
-.g12-report-needed{margin-top:22px}
-.g12-report-needed .rt-needed{min-height:0}
 .g12-camp-contact{display:inline-block;margin-top:24px}
 .g12-faq{margin-top:64px;padding-top:36px;border-top:1px solid #ffffff1a}
 .g12-faq>h3{font-size:22px;margin-bottom:16px}
@@ -51,3 +49,11 @@
 @media(max-width:700px){.g12 h1.g12-hero-title{font-size:36px}.g12 .g12-priority-grid{grid-template-columns:1fr;gap:18px}.g12 .g12-priority-card .rt-concern-title h3{font-size:21px}.g12 .g12-priority-card .rt-concern-foot{font-size:12px}.g12-priority-label{font-size:12px}.g12 .g12-priority-card .rt-concern-body{padding:20px 18px}.g12 .g12-direction-row,.g12-habit-layout{grid-template-columns:1fr;gap:30px}.g12 .g12-direction-row .rt-method-copy h3{font-size:27px}.g12-preparation-path{gap:16px;margin-top:32px}.g12-preparation-path li{padding-top:14px}.g12-preparation-path li:not(:last-child):after{right:-15px}.g12-preparation-path strong{font-size:12px}.g12-preparation-path span{font-size:10px}.g12 .g12-habit-illustration img{border-radius:16px}.g12-habit-list h3{font-size:22px}.g12-year-note{display:block;margin-top:32px;padding-top:25px}.g12-year-note strong{font-size:23px}.g12-year-note p{margin-top:16px}.g12 .rt-routine .rt-allocation{padding:22px 17px}.g12 .rt-routine .rt-week-strip>div{min-height:90px}.g12-schedule-summary>div{grid-template-columns:66px 1fr;gap:14px}.g12-schedule-summary strong{font-size:14px}.g12-schedule-summary small{font-size:12px}.g12-schedule-toggle>summary{font-size:13px}.g12-faq{margin-top:44px;padding-top:28px}.g12-faq>h3{font-size:21px}.g12-faq summary{font-size:14px;line-height:1.8}.g12-faq details>p{font-size:14px}}
 
 @media(max-width:360px){.g12 h1.g12-reform-hero-title{font-size:32px}}
+
+.g12-admissions .rt-university-comparison{margin:0;padding-top:0;border-top:0}
+.g12-admissions .rt-university-name{font-size:25px;font-weight:900;letter-spacing:-.04em;margin-top:9px}
+.g12-admissions .g12-exam-reference{margin-top:30px}
+.g12-admissions-next{margin-top:38px;padding-top:30px;border-top:1px solid #ffffff1a;text-align:center}
+.g12-admissions-next p{font-size:16px;line-height:1.9;color:#ffffff99}
+.g12-admissions-next strong{color:#fff;font-weight:500}
+.g12-admissions-next .rt-textlink{display:inline-block;margin-top:20px}

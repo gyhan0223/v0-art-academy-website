@@ -39,8 +39,8 @@ test('internal winter links and contact channels are distinct; query values neve
 
 test('reading anchors do not inflate winter link clicks; real contact actions still count', () => {
   const { getWinterLinkEvent: classify } = load();
-  const page = 'https://www.modago.me/winter/grade-11';
-  for (const href of ['#why-grade2', '#camp', '#routine', '#consult', '#', '/winter/grade-11#camp']) {
+  const page = 'https://www.modago.me/winter/retake';
+  for (const href of ['#causes', '#camp', '#routine', '#consult', '#', '/winter/retake#camp']) {
     assert.equal(classify(href, page), null);
   }
   assert.equal(classify('/winter', page).event, 'winter_link_click');

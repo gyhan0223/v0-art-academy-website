@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/winter/grade-11" },
-  robots: { index: true, follow: true },
+  robots: { index: process.env.VERCEL_ENV !== "preview", follow: true },
   openGraph: {
     type: "website",
     url: "https://www.modago.me/winter/grade-11",

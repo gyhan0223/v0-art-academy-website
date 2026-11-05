@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, Menu, ChevronDown } from "lucide-react";
@@ -174,6 +174,9 @@ export default function SiteNav() {
   const [consultOpen, setConsultOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLElement>(null);
+  const mobileOpenButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileCloseButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const isWinterPage =
     pathname === "/winter" || pathname.startsWith("/winter/");
@@ -190,6 +193,22 @@ export default function SiteNav() {
     setShowAnnouncement(false);
   };
 
+  const closeMobileMenu = useCallback(() => {
+    if (mobileMenuRef.current?.contains(document.activeElement)) {
+      mobileOpenButtonRef.current?.focus({ preventScroll: true });
+    }
+    setIsOpen(false);
+    setExpanded(null);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const frame = window.requestAnimationFrame(() => {
+      mobileCloseButtonRef.current?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [isOpen]);
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     handleScroll();
@@ -198,11 +217,10 @@ export default function SiteNav() {
   }, []);
 
   useEffect(() => {
-    setIsOpen(false);
+    closeMobileMenu();
     setOpenMenu(null);
     setConsultOpen(false);
-    setExpanded(null);
-  }, [pathname]);
+  }, [pathname, closeMobileMenu]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -215,6 +233,24 @@ export default function SiteNav() {
       if (e.key === "Escape") {
         setOpenMenu(null);
         setConsultOpen(false);
+        if (isOpen) closeMobileMenu();
+      }
+      if (e.key === "Tab" && isOpen) {
+        const menu = mobileMenuRef.current;
+        const focusable = Array.from(
+          menu?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])") ?? [],
+        ).filter((el) => !el.closest("[inert]") && el.getClientRects().length > 0);
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!first || !last) return;
+        const outside = !menu?.contains(document.activeElement);
+        if (e.shiftKey && (document.activeElement === first || outside)) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (document.activeElement === last || outside)) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -223,7 +259,7 @@ export default function SiteNav() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
-  }, []);
+  }, [isOpen, closeMobileMenu]);
 
   // /diagnosis 온보딩과 /consulting 전환 랜딩, /final 수능 파이널 랜딩은
   // 자체 상단 바를 쓴다 — 일반 네비·공지 띠를 숨긴다.
@@ -310,7 +346,7 @@ export default function SiteNav() {
                   >
                     <button
                       type="button"
-                      onClick={() => setOpenMenu(open ? null : item.href)}
+                      onClick={(event) => setOpenMenu(event.detail === 0 && open ? null : item.href)}
                       aria-expanded={open}
                       aria-haspopup="true"
                       className={`flex items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
@@ -432,7 +468,7 @@ export default function SiteNav() {
               >
                 <button
                   type="button"
-                  onClick={() => setConsultOpen(!consultOpen)}
+                  onClick={(event) => setConsultOpen(event.detail === 0 ? !consultOpen : true)}
                   aria-expanded={consultOpen}
                   aria-haspopup="true"
                   className="flex items-center gap-1 whitespace-nowrap rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-85"
@@ -478,9 +514,12 @@ export default function SiteNav() {
 
           {/* Mobile hamburger */}
           <button
+            ref={mobileOpenButtonRef}
             onClick={() => setIsOpen(true)}
             className="p-2 text-white hover:text-accent transition-colors md:hidden"
             aria-label="메뉴 열기"
+            aria-expanded={isOpen}
+            aria-controls="mobile-site-menu"
           >
             <Menu size={24} strokeWidth={1.5} />
           </button>
@@ -489,6 +528,11 @@ export default function SiteNav() {
 
       {/* Mobile drawer */}
       <div
+        role="dialog"
+        aria-label="모바일 메뉴"
+        aria-modal={isOpen || undefined}
+        aria-hidden={!isOpen}
+        inert={!isOpen}
         className={`fixed inset-0 z-[100] md:hidden transition-all duration-300 ${
           isOpen ? "visible" : "invisible"
         }`}
@@ -497,9 +541,11 @@ export default function SiteNav() {
           className={`absolute inset-0 bg-black transition-opacity duration-300 ${
             isOpen ? "opacity-60" : "opacity-0"
           }`}
-          onClick={() => setIsOpen(false)}
+          onClick={closeMobileMenu}
         />
         <nav
+          ref={mobileMenuRef}
+          id="mobile-site-menu"
           className={`absolute top-0 right-0 h-full w-72 bg-[#0a0a0a] border-l border-white/10 flex flex-col transition-transform duration-300 ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
@@ -511,7 +557,8 @@ export default function SiteNav() {
               모두다른고양이
             </span>
             <button
-              onClick={() => setIsOpen(false)}
+              ref={mobileCloseButtonRef}
+              onClick={closeMobileMenu}
               className="p-1 text-white/60 hover:text-white transition-colors"
               aria-label="메뉴 닫기"
             >
@@ -543,6 +590,8 @@ export default function SiteNav() {
                     </button>
 
                     <div
+                      inert={!open}
+                      aria-hidden={!open}
                       className={`grid transition-all duration-300 ${
                         open
                           ? "grid-rows-[1fr] opacity-100"
@@ -612,7 +661,7 @@ export default function SiteNav() {
                 <Link
                   href={CONSULT_HREF}
                   onClick={(e) => {
-                    setIsOpen(false);
+                    closeMobileMenu();
                     goToConsult(e);
                   }}
                   className="block rounded-md bg-accent px-4 py-3 text-center text-sm font-medium text-black"

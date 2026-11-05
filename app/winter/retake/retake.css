@@ -231,3 +231,5 @@
 
 /* Native anchor scrolling glides between sections and remains interruptible. */
 @media(prefers-reduced-motion:no-preference){html:has(.rt-retake){scroll-behavior:smooth}}
+
+.rt-concern>summary:focus-visible{outline-offset:-3px}

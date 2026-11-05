@@ -71,7 +71,7 @@ const MEASURE_STEPS = [
   {
     step: "1주차",
     title: "진단고사",
-    desc: "입소 첫 주에 국어·영어·탐구 세 과목을 평가원 기출로 응시합니다. 지금 등급이 어디인지 먼저 확정하고, 과목별로 8주 목표를 정합니다.",
+    desc: "입소 첫 주에 국어·영어·탐구의 현재 학습 수준을 확인합니다. 과목별로 보완할 부분과 8주 목표를 정합니다.",
     icon: ClipboardCheck,
   },
   {
@@ -515,6 +515,13 @@ export default function WinterLanding() {
               수강료는 학생별 과정 구성에 따라 달라져, 상담을 통해 정확히
               안내드립니다.
             </p>
+            <Link
+              href="/winter/grade-11#camp"
+              className="mt-4 inline-flex items-center gap-1.5 text-sm text-accent underline-offset-4 hover:underline"
+            >
+              8주 일괄 등록 비용 구성 보기
+              <ArrowRight size={14} />
+            </Link>
 
             {/* 일괄 등록 할인 (얼리버드) */}
             <div className="mt-7 rounded-xl border border-accent/30 bg-accent/[0.06] px-6 py-5">
@@ -534,7 +541,7 @@ export default function WinterLanding() {
                 <Phone size={15} />
                 수강료 상담 {CAMP_INFO.phone}
               </a>
-              {/* 수강료는 상담에서만 안내한다 → 방문 날짜를 바로 잡을 수 있게 */}
+              {/* 개별 과정 구성 문의 후 방문 날짜를 정할 수 있게 */}
               <NaverBookingButton
                 className="px-7 py-3.5 text-sm"
                 label="방문 일정 예약"

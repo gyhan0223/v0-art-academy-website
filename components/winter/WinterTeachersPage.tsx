@@ -49,8 +49,8 @@ const SUBJECT_PLANS = [
     method: "매일 밤 100단어 시험 + 구문 강의 + 오답 관리",
   },
   {
-    subject: "사회탐구",
-    goal: "선택 과목 개념 1회독을 목표로 기본 개념을 정리합니다.",
+    subject: "탐구",
+    goal: "핵심 개념을 정리하고, 자료 해석과 단원별 문제 풀이를 연습합니다.",
     method: "개념 강의 + 단원별 문제 풀이",
   },
 ];
@@ -71,7 +71,7 @@ export default function WinterTeachersPage() {
   const count = getFacultyCount();
 
   const stats = [
-    { value: count.academic, unit: "명", label: "학과 (국어·영어·사탐)" },
+    { value: count.academic, unit: "명", label: "학과 강사진" },
     { value: count.practical, unit: "명", label: "실기" },
     { value: count.resident, unit: "명", label: "본원 상주 전임" },
   ];
@@ -83,7 +83,7 @@ export default function WinterTeachersPage() {
           <SubPageHeader
             en="Teachers"
             title="강사진"
-            sub="윈터스쿨 학과(국어·영어·사회탐구)는 강사가 직접 가르치고, 주말 실기는 지원 대학 유형에 맞춰 붙습니다. 강사마다 한 줄로 먼저 밝히고, 경력은 네 줄까지만 적었습니다."
+            sub="평일에는 국어·영어·탐구를, 주말에는 지원 대학 유형에 맞춘 실기를 지도합니다. 강사별 지도 방식과 경력을 확인해 보세요."
           />
 
           {IS_PLACEHOLDER && (
@@ -119,9 +119,8 @@ export default function WinterTeachersPage() {
               ))}
             </div>
             <p className="mt-6 border-t border-white/10 pt-5 text-sm leading-relaxed text-white/60 break-keep">
-              수학 강사가 없는 것은 빠진 것이 아니라 뺀 것입니다. 미대 정시는
-              대부분 수학을 반영하지 않기 때문에, 겨울 8주를 국어·영어·탐구 세
-              과목에 몰아줍니다. 본원에 상주하는 사람은 실기를 직접 지도하는 대표
+              목표 대학에 따라 수능 반영 과목은 다릅니다. 수학 수업은 기본 구성에
+              포함되지 않습니다. 본원에 상주하는 사람은 실기를 직접 지도하는 대표
               한 명이고, 학과 강사는 전원 담당 수업 시간에 들어오는 출강입니다.
             </p>
           </motion.section>
@@ -175,7 +174,7 @@ export default function WinterTeachersPage() {
 
           {/* 학과 수업 운영 주체 — /teachers와 같은 사실을 여기서도 밝힌다 */}
           <p className="mt-8 rounded-lg border border-white/10 bg-white/[0.02] px-5 py-4 text-xs leading-relaxed text-white/45 break-keep">
-            학과(국어·영어·사회탐구) 수업은 홍대 본원과 같은 곳(마포구 와우산로23길
+            학과 수업은 홍대 본원과 같은 곳(마포구 와우산로23길
             9)에서 운영하는 아름다운학원 강사진이 담당하고, 실기는 모두다른고양이
             미술학원이 직접 지도합니다. 두 이름이 한 건물에서 학과와 실기를 나눠
             맡습니다.
@@ -199,7 +198,7 @@ export default function WinterTeachersPage() {
           <SectionHead
             en="Curriculum"
             ko="과목별로 8주 동안 하는 것"
-            sub="미대가 반영하는 국어·영어·탐구 세 과목에 8주를 전부 씁니다."
+            sub="국어·영어·탐구의 현재 수준을 살피고, 필요한 공부를 이어갑니다."
           />
 
           <div className="grid gap-4 md:grid-cols-3">

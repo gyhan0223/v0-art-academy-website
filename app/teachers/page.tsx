@@ -89,10 +89,9 @@ export default function Page() {
           </div>
 
           <p className="mt-6 border-t border-white/10 pt-5 text-sm leading-relaxed text-white/60 break-keep">
-            수학 강사가 없는 것은 빠진 것이 아니라 뺀 것입니다. 미대 정시는
-            대부분 수학을 반영하지 않기 때문에, 국어·영어·탐구 세 과목에 시간을
-            몰아줍니다. 실기는 주말마다 이어 가되, 학과 성적으로 지원할 대학이
-            좁혀지면 그 대학의 실기 유형에 맞춰 붙습니다.
+            목표 대학에 따라 수능 반영 과목은 다릅니다. 수학 수업은 기본 구성에
+            포함되지 않습니다. 국어·영어·탐구를 공부하고, 주말에는 목표 대학의
+            실기 유형에 맞춰 훈련합니다.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-white/60 break-keep">
             본원에 상주하는 사람은 실기를 직접 지도하는 대표 한 명이고, 학과

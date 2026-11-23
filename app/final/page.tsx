@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import FinalLanding from "@/components/final/FinalLanding";
 import { CAMPUSES } from "@/lib/contact";
-import { FINAL_IS_PUBLISHED, FINAL_PROGRAM } from "@/lib/final-program";
+import PostExamLinks from "@/components/final/PostExamLinks";
+import { FINAL_IS_PUBLISHED, FINAL_IS_RECRUITING, FINAL_PROGRAM } from "@/lib/final-program";
 
 /**
  * /final — 2027 미대입시 수능 파이널 집중반 랜딩.
@@ -14,9 +15,10 @@ import { FINAL_IS_PUBLISHED, FINAL_PROGRAM } from "@/lib/final-program";
  * 코드는 그대로 두고 스위치만 되돌리면 다시 열린다.
  */
 
-const PAGE_TITLE = `${FINAL_PROGRAM.name} | 모두다른고양이 미술학원`;
-const PAGE_DESCRIPTION =
-  "수능까지 남은 시간은 같아도 필요한 공부는 다릅니다. 미대 정시를 준비하는 고3·N수생이 지금까지 해온 공부와 희망 대학을 함께 살펴보고, 남은 기간에 유지할 공부와 먼저 보완할 부분을 정하는 국어·영어·사회탐구 집중 과정. 홍대 본원.";
+const PAGE_TITLE = `${FINAL_PROGRAM.name}${FINAL_IS_RECRUITING ? "" : " 모집 종료"} | 모두다른고양이 미술학원`;
+const PAGE_DESCRIPTION = FINAL_IS_RECRUITING
+  ? "수능까지 남은 시간은 같아도 필요한 공부는 다릅니다. 미대 정시를 준비하는 고3·N수생이 지금까지 해온 공부와 희망 대학을 함께 살펴보고, 남은 기간에 유지할 공부와 먼저 보완할 부분을 정하는 국어·영어·사회탐구 집중 과정. 홍대 본원."
+  : "2027 수능 파이널 집중반 모집이 종료되었습니다. 올해 미대 정시 지원을 준비한다면 가·나·다군별 대학과 실기 유형을 확인해 보세요.";
 
 export const metadata: Metadata = {
   title: PAGE_TITLE,
@@ -92,8 +94,18 @@ const courseJsonLd = {
 };
 
 export default function Page() {
-  // 과정 준비가 끝날 때까지 홈페이지에서 아예 보이지 않게 닫아 둔다.
   if (!FINAL_IS_PUBLISHED) notFound();
+  if (!FINAL_IS_RECRUITING) {
+    return (
+      <main className="mx-auto max-w-xl px-5 py-20 text-white">
+        <h1 className="break-keep text-3xl font-bold">{FINAL_PROGRAM.shortName} 모집이 종료되었습니다</h1>
+        <p className="mt-4 break-keep leading-relaxed text-white/75">
+          올해 미대 정시를 준비한다면 지원하려는 학과의 모집군과 실기 유형을 확인해 보세요.
+        </p>
+        <PostExamLinks />
+      </main>
+    );
+  }
 
   return (
     <>

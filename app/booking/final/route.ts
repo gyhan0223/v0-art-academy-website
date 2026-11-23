@@ -10,11 +10,15 @@
  */
 
 import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
+import { FINAL_IS_RECRUITING, FINAL_PROGRAM } from "@/lib/final-program";
 import { NAVER_BOOKING_FINAL_ITEM } from "@/lib/contact";
 
 export const dynamic = "force-dynamic";
 
 export function GET() {
+  if (!FINAL_IS_RECRUITING) redirect(FINAL_PROGRAM.href);
+
   // 서버는 UTC로 돌므로 반드시 KST 기준으로 날짜를 뽑는다.
   // en-CA 로케일이 YYYY-MM-DD 형식을 그대로 내준다.
   const today = new Intl.DateTimeFormat("en-CA", {

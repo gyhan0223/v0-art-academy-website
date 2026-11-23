@@ -48,11 +48,10 @@ export const FINAL_IS_PUBLISHED = true;
 
 /**
  * 모집 노출 여부(페이지가 공개된 동안에만 의미가 있다).
- * true  — 네비게이션 메뉴 "수능 파이널" 항목과 상단 공지 띠가 /final을 가리킨다
- * false — 메뉴·공지에서 빠지고 공지 띠는 윈터스쿨 안내로 돌아간다
- *         (/final 페이지 자체는 그대로 접근 가능)
+ * true  — 메뉴와 진단 결과에서 모집 중인 과정으로 연결한다.
+ * false — 기존 과정·예약 주소는 종료 안내를 제공하고 진단 결과는 정시 가이드로 연결한다.
  */
-const FINAL_RECRUITING = true;
+const FINAL_RECRUITING = false;
 
 /** 실제로 메뉴·공지·사이트맵 빈도에 쓰는 값 — 비공개면 항상 false */
 export const FINAL_IS_RECRUITING = FINAL_IS_PUBLISHED && FINAL_RECRUITING;

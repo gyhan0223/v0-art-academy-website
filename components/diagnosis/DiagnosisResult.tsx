@@ -3,7 +3,7 @@
 /**
  * 진단 결과 화면.
  * - 고3·N수(FINAL_TRACK_GRADES): (target이 있으면 목표 대학 분석 먼저)
- *   → 현재 가·나·다 조합 → 한 등급 상승 비교 → 수능 파이널 집중반(/final) 카드
+ *   → 현재 가·나·다 조합과 모집 시기에 맞는 다음 단계
  * - 고2: 같은 흐름이되 마지막이 윈터스쿨 안내
  * - 고1·중3 이하: 희망 대학까지의 거리(정량화 가능할 때만) → 윈터스쿨 안내
  * target은 온보딩의 희망 대학 단계뿐 아니라 /guide/jungsi-2027 대학 카드
@@ -14,7 +14,6 @@
  *
  * 유료 1:1 컨설팅 CTA는 어느 학년에게도 보여주지 않는다 — 무료 진단 직후에
  * 유료 상품을 붙이면 진단 자체가 영업으로 읽힌다(2026-09-08 제거).
- * 다음 단계 카드는 학년당 정확히 하나만 렌더된다: 고3·N수는 파이널, 나머지는 윈터스쿨.
  */
 
 import { useEffect, useMemo, useRef } from "react";
@@ -45,6 +44,8 @@ import { trackDiagnosis } from "@/lib/diagnosis/analytics";
 import { ComboCard, TierBadge } from "./ComboCards";
 import PlanCheck from "./PlanCheck";
 import FinalConversion from "./FinalConversion";
+import PostExamLinks from "@/components/final/PostExamLinks";
+import { FINAL_IS_RECRUITING } from "@/lib/final-program";
 import GradeUpComparison from "./GradeUpComparison";
 import WinterConversion from "./WinterConversion";
 import { useFadeProps } from "./step-ui";
@@ -288,7 +289,6 @@ export default function DiagnosisResult({
 }) {
   const fade = useFadeProps();
   const branch = resultBranchOf(grade);
-  // 고3·N수생 — 다음 단계는 수능 파이널 하나뿐. 컨설팅·윈터스쿨은 렌더하지 않는다.
   const finalTrack = isFinalTrack(grade);
   const filters = useMemo<DiagnosisFilters>(
     () => ({ gender, silgi }),
@@ -327,6 +327,14 @@ export default function DiagnosisResult({
   }, [grade, gender, silgi, score, branch, target, entrySource, plan]);
 
   const showCombo = !scoreless && (branch === "simulation" || target == null);
+  const postExam = finalTrack && !FINAL_IS_RECRUITING;
+  // 정시 가이드에서 직접 담아 온 조합을 추천 결과보다 우선한다.
+  const guidePicks = plan.length > 0 || scoreless
+    ? plan
+    : GUNS.flatMap((gun) => {
+        const pick = current.combo[gun];
+        return pick ? [pick.entry] : [];
+      });
 
   return (
     <motion.div {...fade} className="mx-auto w-full max-w-md px-5 pb-24 pt-6">
@@ -384,6 +392,16 @@ export default function DiagnosisResult({
         </section>
       )}
 
+      {postExam && (
+        <section data-winter-placement="diagnosis_result" className="mt-8 rounded-2xl border border-white/15 p-5">
+          <h2 className="text-[22px] font-bold text-white">올해 정시 원서 준비</h2>
+          <p className="mt-2 break-keep text-[15px] leading-relaxed text-white/75">
+            지원하려는 학과의 모집군과 수능·실기 반영 비율을 비교해 보세요.
+          </p>
+          <PostExamLinks pickIds={guidePicks.map((entry) => entry.id)} />
+        </section>
+      )}
+
       {/* 한 등급 상승 비교 (고2·고3·N수) */}
       {branch === "simulation" && gradeUp != null && (
         <div className="mt-12">
@@ -391,9 +409,7 @@ export default function DiagnosisResult({
         </div>
       )}
 
-      {/* 수능 파이널 집중반 카드 — 고3·N수생의 유일한 다음 단계.
-          한 등급 상승 비교 바로 아래에 둔다(성적이 없으면 안내문 아래). */}
-      {finalTrack && (
+      {finalTrack && FINAL_IS_RECRUITING && (
         <div className="mt-12">
           <FinalConversion
             hasGradeUp={gradeUp != null}
@@ -436,7 +452,7 @@ export default function DiagnosisResult({
         </section>
       )}
 
-      {/* 윈터스쿨 전환 — 고3·N수생에게는 절대 보여주지 않는다 */}
+      {/* 예비 학년의 겨울 과정 안내 */}
       {!finalTrack && (
         <div className="mt-12">
           <WinterConversion />

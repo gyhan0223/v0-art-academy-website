@@ -7,6 +7,7 @@
  * 색만으로 구분하지 않도록 뱃지에 항상 텍스트를 함께 쓴다.
  */
 
+import { ChevronDown } from "lucide-react";
 import type { Gun } from "@/lib/jungsi-data";
 import { silgiShort } from "@/lib/jungsi-data";
 import { isSilgiFree } from "@/lib/diagnosis/silgi";
@@ -26,13 +27,25 @@ export const TIER_BADGE: Record<string, string> = {
   참고: "border-white/20 bg-white/5 text-white/60",
 };
 
-export function TierBadge({ tier }: { tier?: string }) {
+export function TierBadge({
+  tier,
+  showChevron = false,
+}: {
+  tier?: string;
+  showChevron?: boolean;
+}) {
   const label = tier && tier !== "낮음" ? tier : "참고";
   return (
     <span
-      className={`inline-block shrink-0 rounded-full border px-2.5 py-1 text-[12px] font-medium ${TIER_BADGE[label] ?? TIER_BADGE["참고"]}`}
+      className={`inline-flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[12px] font-medium ${TIER_BADGE[label] ?? TIER_BADGE["참고"]}`}
     >
       {label}
+      {showChevron && (
+        <ChevronDown
+          aria-hidden="true"
+          className="size-3.5 group-open:rotate-180 motion-safe:transition-transform"
+        />
+      )}
     </span>
   );
 }
@@ -63,54 +76,51 @@ export function ComboCard({
         )}
       </div>
       {pick ? (
-        <>
-          <div className="mt-1.5 flex items-start justify-between gap-3">
-            <p className="text-lg font-bold leading-snug text-white">
-              {pick.entry.university}
-              {pick.entry.campus ? (
-                <span className="text-[14px] font-normal text-white/60">
-                  {" "}
-                  {pick.entry.campus}
-                </span>
-              ) : null}
-            </p>
-            {/* 도전 상향 카드는 입결 비공개라도 '도전'으로 표기 */}
-            <TierBadge tier={pick.stretch ? "도전" : pick.tier} />
-          </div>
-          <p className="mt-1.5 text-sm leading-relaxed text-white/65">
-            {pick.entry.units}
-          </p>
-          <p className="mt-1.5 text-[13px] text-white/55">
-            {silgiShort(pick.entry)}
-            {isSilgiFree(pick.entry) && " · 실기 무관"}
-          </p>
-          <details className="group mt-3">
-            <summary className="cursor-pointer list-none text-[13px] text-white/60 transition-colors hover:text-accent group-open:text-accent">
+        <details className="group mt-1.5">
+          <summary className="cursor-pointer list-none rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent [&::-webkit-details-marker]:hidden">
+            <span className="flex items-start justify-between gap-3">
+              <span className="text-lg font-bold leading-snug text-white">
+                {pick.entry.university}
+                {pick.entry.campus ? (
+                  <span className="text-[14px] font-normal text-white/60">
+                    {" "}
+                    {pick.entry.campus}
+                  </span>
+                ) : null}
+              </span>
+              {/* 도전 상향 카드는 입결 비공개라도 '도전'으로 표기 */}
+              <TierBadge tier={pick.stretch ? "도전" : pick.tier} showChevron />
+            </span>
+            <span className="mt-1.5 block text-sm leading-relaxed text-white/65">
+              {pick.entry.units}
+            </span>
+            <span className="mt-1.5 block text-[13px] text-white/55">
+              {silgiShort(pick.entry)}
+              {isSilgiFree(pick.entry) && " · 실기 무관"}
+            </span>
+            <span className="mt-3 block text-[13px] text-white/60 transition-colors group-hover:text-accent group-open:text-accent">
               왜 추천했나요?
-            </summary>
-            <div className="mt-2.5 space-y-2">
-              {pick.entry.method.map((m) => (
-                <p
-                  key={m}
-                  className="text-[13px] leading-relaxed text-white/65"
-                >
-                  {m}
-                </p>
-              ))}
-              {pick.cutoffLabel && (
-                <p className="text-[13px] text-white/50">
-                  참고 합격선: {pick.cutoffLabel}
-                </p>
-              )}
-              {!pick.cutoffLabel && (
-                <p className="text-[13px] text-white/50">
-                  이 대학은 최근 입시결과가 공개되지 않아 지원권 판정 없이
-                  참고로 보여드려요.
-                </p>
-              )}
-            </div>
-          </details>
-        </>
+            </span>
+          </summary>
+          <div className="mt-2.5 space-y-2">
+            {pick.entry.method.map((m) => (
+              <p key={m} className="text-[13px] leading-relaxed text-white/65">
+                {m}
+              </p>
+            ))}
+            {pick.cutoffLabel && (
+              <p className="text-[13px] text-white/50">
+                참고 합격선: {pick.cutoffLabel}
+              </p>
+            )}
+            {!pick.cutoffLabel && (
+              <p className="text-[13px] text-white/50">
+                이 대학은 최근 입시결과가 공개되지 않아 지원권 판정 없이
+                참고로 보여드려요.
+              </p>
+            )}
+          </div>
+        </details>
       ) : (
         <p className="mt-2 text-[15px] leading-relaxed text-white/55">
           이 군에서는 조건에 맞는 추천 대학을 찾지 못했어요. 실기 유형이나

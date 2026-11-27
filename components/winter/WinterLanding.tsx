@@ -47,7 +47,6 @@ import { REPORT_SAMPLE } from "@/lib/winter-report";
 import CtaBand from "@/components/winter/CtaBand";
 import ManagementOverview from "@/components/winter/ManagementOverview";
 import {
-  WINTER_CONSULT_LABEL,
   WINTER_CONSULT_DESCRIPTION,
 } from "@/lib/winter-consultation";
 import ConsultForm from "@/components/winter/ConsultForm";
@@ -159,11 +158,11 @@ export default function WinterLanding() {
         {/* 하위 페이지에서 넘어와도 같은 자리에 같은 줄이 보이도록, 개요에도 화면 상단에 둔다 */}
         <WinterTabs className="relative z-10 mx-auto w-full max-w-4xl" />
 
-        <div className="relative z-10 mx-auto flex max-w-4xl flex-1 flex-col items-center justify-center pt-8 text-center">
-          <p className="mb-2.5 text-xs md:text-sm tracking-[0.3em] text-accent uppercase">
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-1 flex-col items-center justify-center pt-4 text-center md:pt-8">
+          <p className="mb-1 text-xs md:mb-2.5 md:text-sm tracking-[0.3em] text-accent uppercase">
             최상위권 미대 전문
           </p>
-          <p className="mb-4 text-[13px] md:text-sm tracking-[0.2em] text-white/60">
+          <p className="mb-2 text-[13px] md:mb-4 md:text-sm tracking-[0.2em] text-white/60">
             {CAMP_INFO.name} · 홍대 본원 기숙
           </p>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-tight text-white break-keep">
@@ -171,11 +170,39 @@ export default function WinterLanding() {
             <br />
             함께 관리하는 8주
           </h1>
-          <p className="mt-5 text-base md:text-xl text-white/75 break-keep">
+          <p className="mt-3 text-base md:mt-5 md:text-xl text-white/75 break-keep">
             예비 고2·고3과 재수생 선행반의 겨울 8주.
             <br className="md:hidden" /> 평일은 학과 직강, 주말은 대학교 유형
             실기.
           </p>
+
+          <div
+            data-winter-placement="winter_hero"
+            className="mt-4 flex w-full flex-col items-center gap-2 sm:mt-7 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3"
+          >
+            <NaverBookingButton
+              className="min-h-12 w-full px-6 py-3 text-base sm:w-auto"
+              href={NAVER_BOOKING_WINTER_URL}
+              label="방문 상담 예약"
+            />
+            <a
+              href={CAMP_INFO.phoneTel}
+              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/25 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:border-white/50 sm:w-auto sm:px-6"
+            >
+              <Phone size={16} aria-hidden />
+              홍대 본원 전화 {CAMP_INFO.phone}
+            </a>
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+              <Link
+                href={CONSULT_HREF}
+                onClick={goToConsult}
+                className="rounded px-1 py-2 text-sm font-medium text-white underline underline-offset-4 hover:text-accent"
+              >
+                전화 상담 요청
+              </Link>
+              <NaverTalkButton className="px-3 py-2 text-sm" />
+            </div>
+          </div>
 
           {/* 긴급성 — D-day + 정원 */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
@@ -186,38 +213,6 @@ export default function WinterLanding() {
             </span>
           </div>
 
-          {/* CTA — 모바일 첫 화면 안에 반드시 노출 */}
-          <div
-            data-winter-placement="winter_hero"
-            className="mt-7 flex w-full flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center"
-          >
-            <Link
-              href={CONSULT_HREF}
-              onClick={goToConsult}
-              className="w-full rounded-full bg-accent px-8 py-4 text-center text-base font-bold text-black transition-opacity hover:opacity-85 sm:w-auto"
-            >
-              {WINTER_CONSULT_LABEL}
-            </Link>
-            {/* 연락을 기다리지 않고 방문 날짜까지 바로 잡고 싶은 분들 */}
-            <NaverBookingButton
-              className="w-full px-8 py-4 text-base sm:w-auto"
-              href={NAVER_BOOKING_WINTER_URL}
-              label="방문 일정 예약하기"
-            />
-            {/* 전화·톡톡은 보조 동선 — 모바일에서는 두 칸으로 붙여 첫 화면을 덜 밀어낸다 */}
-            <div className="grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto sm:gap-3">
-              <a
-                href={CAMP_INFO.phoneTel}
-                className="flex w-full items-center justify-center gap-2 rounded-full border border-white/25 px-4 py-4 text-base font-medium text-white transition-colors hover:border-white/50 sm:w-auto sm:px-8"
-              >
-                <Phone size={17} />
-                전화 문의
-                <span className="hidden sm:inline">{CAMP_INFO.phone}</span>
-              </a>
-              {/* 전화도 신청도 아직인 분들 — 톡톡으로 먼저 묻게 열어 둔다 */}
-              <NaverTalkButton className="w-full px-4 py-4 text-base sm:w-auto sm:px-8" />
-            </div>
-          </div>
           <p className="mt-3 text-[13px] text-white/55">
             {WINTER_CONSULT_DESCRIPTION}
           </p>
